@@ -3,8 +3,10 @@ Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.1
 Date: 2015-09-09
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Author: Hong Xu
+Maintainer: Hong Xu <hx23@duke.edu>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
 LazyData: TRUE
+URL: https://github.com/xu-hong/rphenoscape
+BugReports: https://github.com/xu-hong/rphenoscape/issues

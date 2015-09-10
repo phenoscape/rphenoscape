@@ -12,9 +12,7 @@
 #   Build and Reload Package:  'Cmd + Shift + B'
 #   Check Package:             'Cmd + Shift + E'
 #   Test Package:              'Cmd + Shift + T'
-.onAttach <- function(libname, pkgname) {
-  packageStartupMessage("Welcome to my first package")
-}
+
 hello <- function() {
   print("Hello, world!")
 }
