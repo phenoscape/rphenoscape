@@ -10,3 +10,19 @@ License: What license is it under?
 LazyData: TRUE
 URL: https://github.com/xu-hong/rphenoscape
 BugReports: https://github.com/xu-hong/rphenoscape/issues
+VignetteBuilder: knitr
+Roxygen: list(wrap = FALSE)
+Depends:
+    R (>= 2.10)
+Imports:
+    XML,
+    jsonlite,
+    httr,
+    dplyr,
+    data.table,
+    taxize
+Suggests:
+    roxygen2,
+    knitr,
+    testthat,
+    plyr
