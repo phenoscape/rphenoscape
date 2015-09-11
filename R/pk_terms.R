@@ -16,11 +16,15 @@
 
 gk_term <- function(iri, verbose=TRUE) {
   mssg(verbose, "Retrieving term IDs...")
-  url <- paste("http://kb.phenoscape.org/api/term?iri=", iri, sep="")
-  tt <- GET(url)
-  stop_for_status(tt)
-  outseq <- content(tt, as="text")
 
-  return(outseq)
+  url <- paste("http://kb.phenoscape.org/api/term?iri=", iri, sep="")
+  res <- GET(url)
+  stop_for_status(res)
+  out <- content(res, as="text")
+
+  lst <- jsonlite::fromJSON(out, simplifyVector = TRUE, flatten = TRUE)
+  # result <- dplyr::tbl_df(data.frame(lst))
+
+  return(lst)
 }
 
