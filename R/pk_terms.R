@@ -14,11 +14,11 @@
 #' @examples
 #'
 
-gk_term <- function(iri, verbose=TRUE) {
+gk_term_details <- function(iri, verbose=TRUE) {
   mssg(verbose, "Retrieving term IDs...")
 
-  url <- paste("http://kb.phenoscape.org/api/term?iri=", iri, sep="")
-  res <- GET(url)
+  queryseq <- list(iri=iri)
+  res <- GET("http://kb.phenoscape.org/api/term", query=queryseq)
   stop_for_status(res)
   out <- content(res, as="text")
 
