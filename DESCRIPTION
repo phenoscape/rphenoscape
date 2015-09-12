@@ -3,7 +3,7 @@ Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.1
 Date: 2015-09-09
-Author: Hong Xu
+Authors@R: person("Hong", "Xu", email = "hx23@duke.edu", role = c("aut", "cre"))
 Maintainer: Hong Xu <hx23@duke.edu>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
