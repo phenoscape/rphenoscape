@@ -44,6 +44,7 @@ pk_details <- function(term, as, verbose=TRUE) {
 pk_GET <- function(url, queryseq, verbose=TRUE) {
   mssg(verbose, "Retrieving details...")
   res <- GET(url, query = queryseq)
+  # TODO: a more elegant way to handle status
   stop_for_status(res)
   out <- content(res, as = "text")
 
@@ -61,11 +62,7 @@ pk_get_iri <- function(text, as, verbose=TRUE, limit=10) {
                     pato = phenotype_id())
 
   queryseq <- list(text = text, definedBy = onto_id, limit = limit )
-  res <- GET('http://kb.phenoscape.org/api/term/search_classes', query = queryseq)
-  stop_for_status(res)
-  out <- content(res, as = "text")
-
-  lst <- jsonlite::fromJSON(out, simplifyVector = TRUE, flatten = TRUE)
+  lst <- pk_GET('http://kb.phenoscape.org/api/term/search_classes', query = queryseq)
 
   return(lst$results)
 }
