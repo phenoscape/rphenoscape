@@ -1,5 +1,5 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("Welcome to my first package")
+  packageStartupMessage("Welcome to rphenoscape package")
 }
 
 mssg <- function(v, ...) if(v) message(...)

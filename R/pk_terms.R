@@ -37,8 +37,8 @@ pk_details <- function(term, as, verbose=TRUE) {
   iri <- iri_df[1, "@id"]
   queryseq <- list(iri = iri)
 
-  pk_GET("http://kb.phenoscape.org/api/term", queryseq, verbose)
-
+  lst <- pk_GET("http://kb.phenoscape.org/api/term", queryseq, verbose)
+  dplyr::as_data_frame(lst)
 }
 
 pk_GET <- function(url, queryseq, verbose=TRUE) {
@@ -61,8 +61,6 @@ pk_get_iri <- function(text, as, verbose=TRUE, limit=10) {
                     pato = phenotype_id())
 
   queryseq <- list(text = text, definedBy = onto_id, limit = limit )
-
-  mssg(T, queryseq)
   res <- GET('http://kb.phenoscape.org/api/term/search_classes', query = queryseq)
   stop_for_status(res)
   out <- content(res, as = "text")
