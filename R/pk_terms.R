@@ -27,11 +27,11 @@ pk_phenotype_detail <- function(term, verbose=TRUE) {
 }
 
 pk_details <- function(term, as, verbose=TRUE) {
-
+  mssg(verbose, "Retrieving details...")
   iri_df <- pk_get_iri(term, as, verbose)
   if (length(iri_df) == 0) {
     mssg(TRUE, paste("Could not find", term, "in the database."))
-    return()
+    return(invisible(FALSE))
   }
   # naively take the first result
   iri <- iri_df[1, "@id"]
@@ -42,10 +42,8 @@ pk_details <- function(term, as, verbose=TRUE) {
 }
 
 pk_GET <- function(url, queryseq, verbose=TRUE) {
-  mssg(verbose, "Retrieving details...")
   res <- GET(url, query = queryseq)
-  # TODO: a more elegant way to handle status
-  stop_for_status(res)
+  stop_for_pk_status(res)
   out <- content(res, as = "text")
 
   jsonlite::fromJSON(out, simplifyVector = TRUE, flatten = TRUE)
@@ -53,7 +51,6 @@ pk_GET <- function(url, queryseq, verbose=TRUE) {
 }
 
 pk_get_iri <- function(text, as, verbose=TRUE, limit=10) {
-
   mssg(verbose, paste("Querying the IRI for", text, sep = " "))
   as_type <- match.arg(as, c("vto", "uberon", "pato"))
   onto_id <- switch(as_type,
@@ -62,7 +59,7 @@ pk_get_iri <- function(text, as, verbose=TRUE, limit=10) {
                     pato = phenotype_id())
 
   queryseq <- list(text = text, definedBy = onto_id, limit = limit )
-  lst <- pk_GET('http://kb.phenoscape.org/api/term/search_classes', query = queryseq)
+  lst <- pk_GET('http://kb.phenoscape.org/api/term/search_classes_', query = queryseq)
 
   return(lst$results)
 }
