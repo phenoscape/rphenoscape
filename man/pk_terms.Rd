@@ -3,11 +3,11 @@
 \name{pk_terms}
 \alias{pk_anatomical_detail}
 \alias{pk_phenotype_detail}
-\alias{pk_taxa_detail}
+\alias{pk_taxon_detail}
 \alias{pk_terms}
 \title{Get traits}
 \usage{
-pk_taxa_detail(term, verbose = TRUE)
+pk_taxon_detail(term, verbose = TRUE)
 
 pk_anatomical_detail(term, verbose = TRUE)
 

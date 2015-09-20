@@ -20,7 +20,8 @@ Imports:
     httr,
     dplyr,
     data.table,
-    taxize
+    taxize,
+    RNeXML
 Suggests:
     roxygen2,
     knitr,
