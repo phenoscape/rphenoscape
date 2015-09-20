@@ -79,29 +79,33 @@ stop_for_pk_status <- function(x) {
     return(invisible(TRUE))
   }
 
+  known_cases = c(
+    "400" = "Malformed parameters.",
+    "404" = "URL path used for this version is outdated, please update.",
+    "500" = "Malformed parameters.",
+    "504" = "The search term is too generic; server timed out."
+  )
+
+  if (as.character(status) %in% attributes(known_cases)$names) {
+    stop(pk_condition(x, "error", message = known_cases[as.character(status)], call = sys.call(-1)))
+  }
+
+  stop(pk_condition(x, "error", call=sys.call(-1)))
+
+}
+
+pk_condition <- function(x, type, message = NULL, call = sys.call(-1)) {
+  status <- x$status_code
   status_desc <- http_statuses_msg[as.character(status)]
-  status_msg <- function(...) paste(..., "(", status, ")", status_desc, sep = " ")
+  message <- paste("(", status, ") ", status_desc, ifelse(is.null(message), "", ": "), message, sep = "")
 
-  # known cases
-  if (x$status_code == 500 ) {
-    stop(httr::http_condition(x, "error",
-                              message = status_msg("Malformed parameters."),
-                              call = sys.call(-1)))
-  }
+  type <- match.arg(type, c("error", "warning", "message"))
 
-  if (x$status_code == 404) {
-    stop(httr::http_condition(x, "error",
-                              message = status_msg("URL path used for this version is outdated, please update."),
-                              call = sys.call(-1)))
-  }
+  cond_class <- paste("http_", status, sep = "")
 
-  if (x$status_code == 504) {
-    stop(httr::http_condition(x, "error",
-                              message = status_msg("The search term is too generic; server timed out."),
-                              call = sys.call(-1)))
-  }
-
-  stop(httr::http_condition(x, "error", call=sys.call(-1)))
-
+  structure(
+    class = c(cond_class, type, "condition"),
+    list(message = message, call = call)
+  )
 }
 

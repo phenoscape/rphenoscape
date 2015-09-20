@@ -34,4 +34,4 @@ pk_ontotrace <- function(taxon, entity, variable_only=TRUE) {
 }
 
 ontotrace_url <- "http://kb.phenoscape.org/api/ontotrace"
-default_connection <- "<http://purl.obolibrary.org/obo/BFO_0000050> some"
+default_connection <- "<http://purl.obolibrary.org/obo/BFO_0000050> some" # "part-of some"

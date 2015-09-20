@@ -63,6 +63,7 @@ pk_get_iri <- function(text, as, verbose=TRUE, limit=10) {
     return(invisible(FALSE))
   }
   # naively take the first result
+  # TODO: to be updated once API is updated
   iri_df[1, "@id"]
 }
 
