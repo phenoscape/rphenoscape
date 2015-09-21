@@ -27,3 +27,15 @@ test_that("Test retriving IRI", {
   expect_equal(ii, FALSE)
   expect_equal(iii, FALSE)
 })
+
+
+test_that("Test getting classification information", {
+  t <- pk_taxon_class("Fisherichthys")
+  tt <- pk_taxon_class("Fisherichthys folmeri")
+  ttt <- pk_taxon_class("Fisherichthys TT")
+
+  expect_output(str(t), 'List of 5')
+  expect_output(str(tt), 'List of 5')
+  expect_equal(ttt, FALSE)
+
+})
