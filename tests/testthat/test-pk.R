@@ -39,3 +39,9 @@ test_that("Test getting classification information", {
   expect_equal(ttt, FALSE)
 
 })
+
+test_that("Test OnTrace", {
+  m <- pk_ontotrace("Ictalurus", "fin")
+
+  expect_equal(m, TRUE)
+})

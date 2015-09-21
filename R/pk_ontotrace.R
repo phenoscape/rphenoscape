@@ -36,8 +36,10 @@ pk_ontotrace <- function(taxon, entity, variable_only=TRUE) {
 
   d <- tempfile()
   write(out, file = d)
-  nex <- nexml_read(d)  # error in parsing xml : “ns:LiteralMeta” is not a defined class
+  #nex <- nexml_read(d)  # error in parsing xml : “ns:LiteralMeta” is not a defined class
                         # should be "nex:LiteralMeta"
+
+  nex <- nexml_validate(d) # validate fails
   unlink(d)
   nex
 
