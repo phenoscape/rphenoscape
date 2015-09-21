@@ -29,7 +29,17 @@ pk_ontotrace <- function(taxon, entity, variable_only=TRUE) {
   out <- content(res, as = "text")
 
   # TODO: parse NeXML
-  get_characters(out)
+
+  #xml_doc <- XML::xmlParse(out, asText = TRUE)
+  #nexml_read(xml_doc) # error: nexml_read cannot read XMLInternalDocument
+                       # cannot coerce type 'externalptr' to vector of type 'character'
+
+  d <- tempfile()
+  write(out, file = d)
+  nex <- nexml_read(d)  # error in parsing xml : “ns:LiteralMeta” is not a defined class
+                        # should be "nex:LiteralMeta"
+  unlink(d)
+  nex
 
 }
 
