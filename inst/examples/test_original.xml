@@ -1,0 +1,106 @@
+<nexml xmlns="http://www.nexml.org/2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.9" xsi:schemaLocation="http://www.nexml.org/2009 http://www.nexml.org/2009/nexml.xsd http://www.bioontologies.org/obd/schema/pheno http://purl.org/phenoscape/phenoxml.xsd">
+  <meta xmlns:ns="http://www.nexml.org/2009" xmlns:ter="http://purl.org/dc/terms/" xsi:type="ns:LiteralMeta" property="ter:creator"/>
+  <meta xmlns:ns="http://www.nexml.org/2009" xmlns:ter="http://purl.org/dc/terms/" xsi:type="ns:LiteralMeta" property="ter:description">Generated from the Phenoscape Knowledgebase on 2015-9-22 by Ontotrace query:
+* taxa: &lt;http://purl.obolibrary.org/obo/VTO_0036217>
+* entities: &lt;http://purl.obolibrary.org/obo/BFO_0000050> some &lt;http://purl.obolibrary.org/obo/UBERON_0008897></meta>
+  <otus id="t1b117f2a-3239-4a1c-8fe7-256dc4aec049">
+    <otu id="http://purl.obolibrary.org/obo/VTO_0036225" label="Ictalurus punctatus" about="#http://purl.obolibrary.org/obo/VTO_0036225">
+      <meta xmlns:ns="http://www.nexml.org/2009" xmlns:ter="http://rs.tdwg.org/dwc/terms/" xsi:type="ns:ResourceMeta" rel="ter:taxonID" href="http://purl.obolibrary.org/obo/VTO_0036225"/>
+    </otu>
+    <otu id="http://purl.obolibrary.org/obo/VTO_0061498" label="Ictalurus mexicanus" about="#http://purl.obolibrary.org/obo/VTO_0061498">
+      <meta xmlns:ns="http://www.nexml.org/2009" xmlns:ter="http://rs.tdwg.org/dwc/terms/" xsi:type="ns:ResourceMeta" rel="ter:taxonID" href="http://purl.obolibrary.org/obo/VTO_0061498"/>
+    </otu>
+    <otu id="http://purl.obolibrary.org/obo/VTO_0061495" label="Ictalurus australis" about="#http://purl.obolibrary.org/obo/VTO_0061495">
+      <meta xmlns:ns="http://www.nexml.org/2009" xmlns:ter="http://rs.tdwg.org/dwc/terms/" xsi:type="ns:ResourceMeta" rel="ter:taxonID" href="http://purl.obolibrary.org/obo/VTO_0061495"/>
+    </otu>
+    <otu id="http://purl.obolibrary.org/obo/VTO_0036221" label="Ictalurus balsanus" about="#http://purl.obolibrary.org/obo/VTO_0036221">
+      <meta xmlns:ns="http://www.nexml.org/2009" xmlns:ter="http://rs.tdwg.org/dwc/terms/" xsi:type="ns:ResourceMeta" rel="ter:taxonID" href="http://purl.obolibrary.org/obo/VTO_0036221"/>
+    </otu>
+    <otu id="http://purl.obolibrary.org/obo/VTO_0036218" label="Ictalurus pricei" about="#http://purl.obolibrary.org/obo/VTO_0036218">
+      <meta xmlns:ns="http://www.nexml.org/2009" xmlns:ter="http://rs.tdwg.org/dwc/terms/" xsi:type="ns:ResourceMeta" rel="ter:taxonID" href="http://purl.obolibrary.org/obo/VTO_0036218"/>
+    </otu>
+    <otu id="http://purl.obolibrary.org/obo/VTO_0036223" label="Ictalurus furcatus" about="#http://purl.obolibrary.org/obo/VTO_0036223">
+      <meta xmlns:ns="http://www.nexml.org/2009" xmlns:ter="http://rs.tdwg.org/dwc/terms/" xsi:type="ns:ResourceMeta" rel="ter:taxonID" href="http://purl.obolibrary.org/obo/VTO_0036223"/>
+    </otu>
+    <otu id="http://purl.obolibrary.org/obo/VTO_0036220" label="Ictalurus lupus" about="#http://purl.obolibrary.org/obo/VTO_0036220">
+      <meta xmlns:ns="http://www.nexml.org/2009" xmlns:ter="http://rs.tdwg.org/dwc/terms/" xsi:type="ns:ResourceMeta" rel="ter:taxonID" href="http://purl.obolibrary.org/obo/VTO_0036220"/>
+    </otu>
+    <otu id="http://purl.obolibrary.org/obo/VTO_0061497" label="Ictalurus dugesii" about="#http://purl.obolibrary.org/obo/VTO_0061497">
+      <meta xmlns:ns="http://www.nexml.org/2009" xmlns:ter="http://rs.tdwg.org/dwc/terms/" xsi:type="ns:ResourceMeta" rel="ter:taxonID" href="http://purl.obolibrary.org/obo/VTO_0061497"/>
+    </otu>
+    <otu id="http://purl.obolibrary.org/obo/VTO_0061496" label="Ictalurus sp. (Mo 1991)" about="#http://purl.obolibrary.org/obo/VTO_0061496">
+      <meta xmlns:ns="http://www.nexml.org/2009" xmlns:ter="http://rs.tdwg.org/dwc/terms/" xsi:type="ns:ResourceMeta" rel="ter:taxonID" href="http://purl.obolibrary.org/obo/VTO_0061496"/>
+    </otu>
+  </otus>
+  <characters xmlns:ns="http://www.nexml.org/2009" id="082ef705-0ce2-4d94-aab7-c73abcd57410" xsi:type="ns:StandardCells" otus="t1b117f2a-3239-4a1c-8fe7-256dc4aec049">
+    <format>
+      <states id="sc528b354-bb29-4529-b3a2-4162fe16ab7f">
+        <state id="http://purl.obolibrary.org/obo/UBERON_2002002#1" label="present" symbol="1"/>
+        <state id="http://purl.obolibrary.org/obo/UBERON_2002002#0" label="absent" symbol="0"/>
+        <polymorphic_state_set id="5b567ade-afbd-4484-9f29-6603f776ff01">
+          <member state="http://purl.obolibrary.org/obo/UBERON_2002002#1"/>
+          <member state="http://purl.obolibrary.org/obo/UBERON_2002002#0"/>
+        </polymorphic_state_set>
+      </states>
+      <states id="sb079cba2-6b13-4574-a9a6-e968b4eeba48">
+        <state id="http://purl.obolibrary.org/obo/UBERON_2001788#1" label="present" symbol="1"/>
+        <state id="http://purl.obolibrary.org/obo/UBERON_2001788#0" label="absent" symbol="0"/>
+        <polymorphic_state_set id="7bcd33a3-be2e-4b43-bf26-9ab0d13c8297">
+          <member state="http://purl.obolibrary.org/obo/UBERON_2001788#1"/>
+          <member state="http://purl.obolibrary.org/obo/UBERON_2001788#0"/>
+        </polymorphic_state_set>
+      </states>
+      <states id="s34f649d1-7ede-4291-8174-69a17762c597">
+        <state id="http://purl.obolibrary.org/obo/UBERON_2002001#1" label="present" symbol="1"/>
+        <state id="http://purl.obolibrary.org/obo/UBERON_2002001#0" label="absent" symbol="0"/>
+      </states>
+      <char id="http://purl.obolibrary.org/obo/UBERON_2002002" label="anterior distal serration of pectoral fin spine" states="sc528b354-bb29-4529-b3a2-4162fe16ab7f"/>
+      <char id="http://purl.obolibrary.org/obo/UBERON_2001788" label="pelvic splint" states="sb079cba2-6b13-4574-a9a6-e968b4eeba48"/>
+      <char id="http://purl.obolibrary.org/obo/UBERON_2002001" label="anterior dentation of pectoral fin spine" states="s34f649d1-7ede-4291-8174-69a17762c597"/>
+    </format>
+    <matrix>
+      <row id="10ea5705-f9f7-4ebd-9fa0-bb9d5702d42e" otu="http://purl.obolibrary.org/obo/VTO_0036225">
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002002" state="http://purl.obolibrary.org/obo/UBERON_2002002#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2001788" state="7bcd33a3-be2e-4b43-bf26-9ab0d13c8297"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002001" state="http://purl.obolibrary.org/obo/UBERON_2002001#1"/>
+      </row>
+      <row id="aa7bda51-8ddb-4d31-8b83-a1bd6c382ebb" otu="http://purl.obolibrary.org/obo/VTO_0061498">
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002002" state="http://purl.obolibrary.org/obo/UBERON_2002002#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2001788" state="http://purl.obolibrary.org/obo/UBERON_2001788#1"/>
+      </row>
+      <row id="e76b3095-e898-4025-8898-91a6f7fc97e6" otu="http://purl.obolibrary.org/obo/VTO_0061495">
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002002" state="http://purl.obolibrary.org/obo/UBERON_2002002#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2001788" state="http://purl.obolibrary.org/obo/UBERON_2001788#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002001" state="http://purl.obolibrary.org/obo/UBERON_2002001#1"/>
+      </row>
+      <row id="be6b2929-1310-484f-aa84-a9b971405c5f" otu="http://purl.obolibrary.org/obo/VTO_0036221">
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002002" state="5b567ade-afbd-4484-9f29-6603f776ff01"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2001788" state="http://purl.obolibrary.org/obo/UBERON_2001788#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002001" state="http://purl.obolibrary.org/obo/UBERON_2002001#0"/>
+      </row>
+      <row id="13b15448-9848-458e-ba75-c9327a9510a8" otu="http://purl.obolibrary.org/obo/VTO_0036218">
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002002" state="http://purl.obolibrary.org/obo/UBERON_2002002#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2001788" state="http://purl.obolibrary.org/obo/UBERON_2001788#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002001" state="http://purl.obolibrary.org/obo/UBERON_2002001#1"/>
+      </row>
+      <row id="3a9daed3-15a6-48ed-99e1-31bc2a0477f2" otu="http://purl.obolibrary.org/obo/VTO_0036223">
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002002" state="http://purl.obolibrary.org/obo/UBERON_2002002#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2001788" state="http://purl.obolibrary.org/obo/UBERON_2001788#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002001" state="http://purl.obolibrary.org/obo/UBERON_2002001#0"/>
+      </row>
+      <row id="62552560-e008-436f-95ef-eb1b98dd5a36" otu="http://purl.obolibrary.org/obo/VTO_0036220">
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002002" state="http://purl.obolibrary.org/obo/UBERON_2002002#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2001788" state="http://purl.obolibrary.org/obo/UBERON_2001788#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002001" state="http://purl.obolibrary.org/obo/UBERON_2002001#1"/>
+      </row>
+      <row id="179f6f36-343d-464e-a6bd-436f67f5fa76" otu="http://purl.obolibrary.org/obo/VTO_0061497">
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2002002" state="http://purl.obolibrary.org/obo/UBERON_2002002#1"/>
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2001788" state="http://purl.obolibrary.org/obo/UBERON_2001788#1"/>
+      </row>
+      <row id="9091b27d-4456-4ae1-b36e-8e32ecfaf2e1" otu="http://purl.obolibrary.org/obo/VTO_0061496">
+        <cell char="http://purl.obolibrary.org/obo/UBERON_2001788" state="http://purl.obolibrary.org/obo/UBERON_2001788#0"/>
+      </row>
+    </matrix>
+  </characters>
+  <trees id="ta6fa1aa9-b1de-4e25-bc64-ec70722f8e74" otus="t1b117f2a-3239-4a1c-8fe7-256dc4aec049"/>
+</nexml> 

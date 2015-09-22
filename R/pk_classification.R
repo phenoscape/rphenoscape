@@ -33,7 +33,6 @@ pk_class <- function(x, as, verbose=TRUE) {
 
   queryseq <- list(iri = iri)
   pk_GET(pk_class_url, queryseq = queryseq)
-
 }
 
 

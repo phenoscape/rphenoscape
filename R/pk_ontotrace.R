@@ -48,7 +48,7 @@ pk_ontotrace <- function(taxon, entity, variable_only=TRUE) {
 
 test_nexml <- function(){
 
-  nex <- nexml_read("./inst/examples/comp_analysis.xml")
+  nex <- nexml_read("./inst/examples/test_original.xml")
 
   tree <- get_trees_list(nex)
   df <- get_characters(nex)
