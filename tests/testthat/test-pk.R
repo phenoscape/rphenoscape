@@ -34,9 +34,21 @@ test_that("Test getting classification information", {
   tt <- pk_taxon_class("Fisherichthys folmeri")
   ttt <- pk_taxon_class("Fisherichthys TT")
 
+  a <- pk_anatomical_class("fin")
+  aa <- pk_anatomical_class("fin FF")
+
+  p <- pk_phenotype_class("shape")
+  pp <- pk_phenotype_class("shape SS")
+
   expect_output(str(t), 'List of 5')
   expect_output(str(tt), 'List of 5')
   expect_equal(ttt, FALSE)
+
+  expect_output(str(a), 'List of 5')
+  expect_equal(aa, FALSE)
+
+  expect_output(str(p), 'List of 5')
+  expect_equal(pp, FALSE)
 
 })
 
