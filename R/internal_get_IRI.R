@@ -24,9 +24,9 @@ anatomical_id <- function() 'http://purl.obolibrary.org/obo/uberon.owl'
 phenotype_id <- function() 'http://purl.obolibrary.org/obo/pato.owl'
 
 pk_GET <- function(url, queryseq, verbose=TRUE) {
-  res <- GET(url, query = queryseq)
+  res <- httr::GET(url, query = queryseq)
   stop_for_pk_status(res)
-  out <- content(res, as = "text")
+  out <- httr::content(res, as = "text")
 
   jsonlite::fromJSON(out, simplifyVector = TRUE, flatten = TRUE)
 
