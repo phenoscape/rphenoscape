@@ -40,7 +40,7 @@ pk_ontotrace <- function(taxon, entity, variable_only=TRUE) {
                         # “ns:ResourceMeta” is not a defined class
                         # after changing to"nex:LiteralMeta" and “nex:ResourceMeta” it works
 
-  nex <- nexml_validate(d) # validate fails
+  nex <- nexml_validate(d) # TODO: validate fails
   unlink(d)
   nex
 
@@ -48,7 +48,12 @@ pk_ontotrace <- function(taxon, entity, variable_only=TRUE) {
 
 test_nexml <- function(){
 
-  nex <- nexml_read("./inst/examples/test_original.xml")
+  ## both validation fails
+  nexml_validate("./inst/examples/test.xml")
+  nexml_validate("./inst/examples/test_original.xml")
+
+
+  nex <- nexml_read("./inst/examples/test.xml")
 
   tree <- get_trees_list(nex)
   df <- get_characters(nex)
