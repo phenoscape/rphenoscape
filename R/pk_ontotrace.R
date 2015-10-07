@@ -41,19 +41,18 @@ pk_ontotrace <- function(taxon, entity, variable_only=TRUE) {
   # try to read in as file
   d <- tempfile()
   write(out, file = d)
-  #nex <- nexml_read(d)  # error in parsing xml : “ns:LiteralMeta” is not a defined class
+  nex <- nexml_read(d)  # error in parsing xml : “ns:LiteralMeta” is not a defined class
                         # “ns:ResourceMeta” is not a defined class
                         # after changing to"nex:LiteralMeta" and “nex:ResourceMeta” it works
   # fail loudly
-  #tryCatch(
-  #  nex <- nexml_validate(d),
-  #  error = function(x) stop(x),
-  #  warning = function(x) stop(x)
-  #)
+#   tryCatch(
+#     nex <- nexml_validate(d),
+#     error = function(x) stop(x),
+#     warning = function(x) stop(x)
+#   )
 
-  nex <- nexml_validate(d)
   unlink(d)
-  nex
+  get_characters(nex)
 }
 
 test_read_ns <- function() {

@@ -52,22 +52,23 @@ test_that("Test getting classification information", {
 
 })
 
-test_that("Test OnTrace, nexml_read", {
-  #m <- pk_ontotrace("Ictalurus", "fin")
-  rns <- test_read_ns()
-  #rnex <- test_read_nex()
+test_that("Test OnToTrace", {
+  m <- pk_ontotrace("Ictalurus", "fin")
+  expect_output(str(m), "data.frame")
 
-  expect_output(str(rns), "data.frame")
-  #expect_output(str(rnex), "data.frame")
 })
 
-test_that("Test OnTrace, nexml_validate", {
-  #m <- pk_ontotrace("Ictalurus", "fin")
-  vns <- test_validate_ns()
-  #vnex <- test_validate_nex()
-
-  expect_equal(vns, TRUE)
-  #expect_equal(vnex, TRUE)
-})
+#
+#
+# test_that("Test OnTrace, nexml_read", {
+#   rns <- test_read_ns()
+#   expect_output(str(rns), "data.frame")
+#
+# })
+#
+# test_that("Test OnTrace, nexml_validate", {
+#   vns <- test_validate_ns()
+#   expect_equal(vns, TRUE)
+# })
 
 
