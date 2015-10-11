@@ -4,6 +4,8 @@
 #' @import RNeXML
 #' @param taxon characters
 #' @param entity characters; anatomical class expression
+#' @param relation c("part of", "develops from")
+#' @variable_only logical
 #'
 #' @return data.frame
 #'
@@ -15,45 +17,65 @@
 #'
 #' @export
 #' @rdname pk_ontotrace
-pk_ontotrace <- function(taxon, entity, variable_only=TRUE) {
-  taxon_iri <- pk_get_iri(taxon, "vto")
-  ana_iri <- pk_get_iri(entity, "uberon")
-  if (length(taxon_iri) == 0 || length(ana_iri) == 0) {
-    mssg(length(taxon_iri) == 0, paste("Could not find", taxon, "in the database."))
-    mssg(length(ana_iri) == 0, paste("Could not find", entity, "in the database."))
+pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
+  taxon_entity_list <- list(...)
+
+  if (length(taxon_entity_list$taxon) == 0 || length(taxon_entity_list$entity) == 0) {
+    mssg(TRUE, "please explicitly specify taxon and entity parameter,
+         e.g. pk_ontotrace(taxon = \"Ictalurus\", entity = \"fin\")")
     return(invisible(FALSE))
   }
-  queryseq = list(taxon = paste0("<", taxon_iri, ">"),
-                  entity = paste0(default_connection, "<", ana_iri, ">"),
+
+  taxon_iris <- lapply(taxon_entity_list$taxon, FUN = pk_get_iri, as = "vto")
+  entity_iris <- lapply(taxon_entity_list$entity, FUN = pk_get_iri, as = "uberon")
+
+  if (FALSE %in% taxon_iris || FALSE %in% entity_iris) {
+#     mssg(TRUE, paste("Could not find",
+#                      taxon_entity_list$taxon[which(taxon_iris == FALSE)],
+#                      taxon_entity_list$entity[which(entity_iris == FALSE)],
+#                      "in the database."))
+    return(invisible(FALSE))
+  }
+  relation_type <- match.arg(tolower(relation), c("part of", "develops from"))
+  relation_id <- switch(relation_type,
+                        "part of" = part_relation,
+                        "develops from" = develops_relation)
+
+  # insert necessary "<" and ">" before concatenating string
+  taxon_iris <- lapply(taxon_iris, FUN = function(x) paste0("<", x, ">"))
+  entity_iris <- lapply(entity_iris, FUN = function(x) paste0("(", relation_id, "<", x, ">)"))
+
+  queryseq = list(taxon = paste(taxon_iris, collapse = " or "),
+                  entity = paste(entity_iris, collapse = " or "),
                   variable_only = variable_only)
 
+  print(queryseq)
 
   res <- httr::GET(ontotrace_url, query = queryseq)
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")
 
-  # TODO: parse NeXML
-
-  # try to read in as XMLInternalDocument object
-  #xml_doc <- XML::xmlParse(out, asText = TRUE)
-  #nexml_read(xml_doc) # error: nexml_read cannot read XMLInternalDocument
-                       # cannot coerce type 'externalptr' to vector of type 'character'
-  # try to read in as file
+  # write to a temporary file
   d <- tempfile()
   write(out, file = d)
-  nex <- nexml_read(d)  # error in parsing xml : “ns:LiteralMeta” is not a defined class
-                        # “ns:ResourceMeta” is not a defined class
-                        # after changing to"nex:LiteralMeta" and “nex:ResourceMeta” it works
-  # fail loudly
-#   tryCatch(
-#     nex <- nexml_validate(d),
-#     error = function(x) stop(x),
-#     warning = function(x) stop(x)
-#   )
+  # parse
+  nex <- nexml_read(d)
 
   unlink(d)
+  # return the matrix
   get_characters(nex)
 }
+
+
+
+
+
+ontotrace_url <- "http://kb.phenoscape.org/api/ontotrace"
+part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050> some " # "part of some"
+develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202> some " # "develops from some"
+
+#------------------------------#
+#      Tests for RNeXML        #
 
 test_read_ns <- function() {
   nex <- nexml_read(paste0(path, "test_original.xml"))
@@ -78,5 +100,4 @@ test_validate_nex <- function() {
 }
 
 path <- paste0(system.file(package = "rphenoscape"), "/examples/")
-ontotrace_url <- "http://kb.phenoscape.org/api/ontotrace"
-default_connection <- "<http://purl.obolibrary.org/obo/BFO_0000050> some" # "part-of some"
+
