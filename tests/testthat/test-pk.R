@@ -53,9 +53,19 @@ test_that("Test getting classification information", {
 })
 
 test_that("Test OnToTrace", {
-  m <- pk_ontotrace("Ictalurus", "fin")
-  expect_output(str(m), "data.frame")
+  single <- pk_ontotrace(taxon = "Ictalurus", entity = "fin")
+  multi <- pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin", "spine"))
+  rel <- pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"),
+                      entity = c("fin", "spine"),
+                      relation = "develops from")
+  err1 <- pk_ontotrace(taxon = "Ictalurus TT", entity = "fin", relation = "other relation")
+  err2 <- pk_ontotrace(taxon = c("Ictalurus", "Ameiurus XXX"), entity = c("fin", "spine"))
 
+  expect_output(str(single), "data.frame")
+  expect_output(str(multi), "data.frame")
+  expect_output(str(rel), "data.frame")
+  expect_equal(err1, FALSE)
+  expect_equal(err2, FALSE)
 })
 
 #
