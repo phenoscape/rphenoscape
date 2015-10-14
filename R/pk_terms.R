@@ -27,7 +27,7 @@ pk_phenotype_detail <- function(term, verbose=TRUE) {
 }
 
 pk_details <- function(term, as, verbose=TRUE) {
-  iri <- pk_get_iri(term, as, verbose)
+  iri <- pk_get_iri(term, as)
   if (iri == FALSE) return(invisible(FALSE))
 
   mssg(verbose, "Retrieving term details")
