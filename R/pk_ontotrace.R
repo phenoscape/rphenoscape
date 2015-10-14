@@ -5,7 +5,7 @@
 #' @param taxon characters
 #' @param entity characters; anatomical class expression
 #' @param relation c("part of", "develops from")
-#' @variable_only logical
+#' @param variable_only logical
 #'
 #' @return data.frame
 #'
@@ -52,33 +52,40 @@ pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
 
   # insert necessary "<" and ">" before concatenating string
   taxon_iris <- lapply(taxon_iris, FUN = function(x) paste0("<", x, ">"))
-  entity_iris <- lapply(entity_iris, FUN = function(x) paste0("(", relation_id, "<", x, ">)"))
+  entity_iris <- lapply(entity_iris, FUN = function(x) paste0("(", relation_id, quantifier, "<", x, ">)"))
 
   queryseq = list(taxon = paste(taxon_iris, collapse = " or "),
                   entity = paste(entity_iris, collapse = " or "),
                   variable_only = variable_only)
-  # TEST
-  print(queryseq)
 
   res <- httr::GET(ontotrace_url, query = queryseq)
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")
+
+
+  #xml_doc <- XML::xmlParse(out, asText = TRUE)
+  #nexml_read(xml_doc) # error: nexml_read cannot read XMLInternalDocument
+                       # cannot coerce type 'externalptr' to vector of type 'character'
 
   # write to a temporary file
   d <- tempfile()
   write(out, file = d)
   # parse
   nex <- nexml_read(d)
-
   unlink(d)
-  # return the matrix
-  get_characters(nex)
+
+  return(list(
+  matrix = get_characters(nex),
+  IDs = get_metadata(nex, level = "otu")
+  ))
 }
 
 
 ontotrace_url <- "http://kb.phenoscape.org/api/ontotrace"
-part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050> some " # "part of some"
-develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202> some " # "develops from some"
+# seperate quantifier
+quantifier <- " some "
+part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050>" # "part of some"
+develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202>" # "develops from some"
 
 #------------------------------#
 #      Tests for RNeXML        #
