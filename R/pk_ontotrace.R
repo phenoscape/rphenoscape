@@ -26,6 +26,11 @@ pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
     return(invisible(FALSE))
   }
 
+  relation_type <- match.arg(tolower(relation), c("part of", "develops from"))
+  relation_id <- switch(relation_type,
+                        "part of" = part_relation,
+                        "develops from" = develops_relation)
+
   taxon_iris <- lapply(taxon_entity_list$taxon, FUN = pk_get_iri, as = "vto")
   entity_iris <- lapply(taxon_entity_list$entity, FUN = pk_get_iri, as = "uberon")
 
@@ -36,10 +41,7 @@ pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
 #                      "in the database."))
     return(invisible(FALSE))
   }
-  relation_type <- match.arg(tolower(relation), c("part of", "develops from"))
-  relation_id <- switch(relation_type,
-                        "part of" = part_relation,
-                        "develops from" = develops_relation)
+
 
   # insert necessary "<" and ">" before concatenating string
   taxon_iris <- lapply(taxon_iris, FUN = function(x) paste0("<", x, ">"))
@@ -48,7 +50,7 @@ pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
   queryseq = list(taxon = paste(taxon_iris, collapse = " or "),
                   entity = paste(entity_iris, collapse = " or "),
                   variable_only = variable_only)
-
+  # TEST
   print(queryseq)
 
   res <- httr::GET(ontotrace_url, query = queryseq)
@@ -65,9 +67,6 @@ pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
   # return the matrix
   get_characters(nex)
 }
-
-
-
 
 
 ontotrace_url <- "http://kb.phenoscape.org/api/ontotrace"
