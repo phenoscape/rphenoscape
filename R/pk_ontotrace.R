@@ -12,7 +12,7 @@
 #' @description
 #' Generate matrix of inferred presence/absence associations for anatomical structures
 #' subsumed by the provided entity class expression, for any taxa within the provided
-#' taxon class expression
+#' taxon class expression.
 #'
 #'
 #' @export
@@ -40,6 +40,7 @@ pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
   taxon_iris <- lapply(taxon_entity_list$taxon, FUN = pk_get_iri, as = "vto", verbose = FALSE)
   entity_iris <- lapply(taxon_entity_list$entity, FUN = pk_get_iri, as = "uberon", verbose = FALSE)
 
+  # FALSE will be returned by pk_get_iri if there's no match in database
   if (FALSE %in% taxon_iris || FALSE %in% entity_iris) {
     stop(paste(c("Could not find",
                  taxon_entity_list$taxon[which(taxon_iris == FALSE)],
@@ -48,7 +49,6 @@ pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
                collapse = " | "),
          call. = FALSE)
   }
-
 
   # insert necessary "<" and ">" before concatenating string
   taxon_iris <- lapply(taxon_iris, FUN = function(x) paste0("<", x, ">"))
@@ -70,22 +70,27 @@ pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
   # write to a temporary file
   d <- tempfile()
   write(out, file = d)
-  # parse
   nex <- nexml_read(d)
   unlink(d)
 
-  return(list(
-  matrix = get_characters(nex),
-  IDs = get_metadata(nex, level = "otu")
-  ))
+  ont_matrix <- get_characters(nex)
+  ont_row_names <- row.names(ont_matrix)
+  ont_matrix <- as.data.frame(apply(ont_matrix, 2, function(x) as.numeric(as.character(x))))
+  row.names(ont_matrix) <- ont_row_names
+
+
+  # TODO: add ordered taxonID and entityID to the list
+  list_to_return <- list(matrix = ont_matrix,
+                         IDs = get_metadata(nex, level = "otu"))
+
+  return(ont_matrix)
 }
 
 
 ontotrace_url <- "http://kb.phenoscape.org/api/ontotrace"
-# seperate quantifier
-quantifier <- " some "
-part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050>" # "part of some"
-develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202>" # "develops from some"
+quantifier <- " some " # seperate quantifier
+part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050>" # "part of"
+develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202>" # "develops from"
 
 #------------------------------#
 #      Tests for RNeXML        #
