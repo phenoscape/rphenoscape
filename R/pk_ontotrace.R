@@ -62,16 +62,8 @@ pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")
 
-
-  #xml_doc <- XML::xmlParse(out, asText = TRUE)
-  #nexml_read(xml_doc) # error: nexml_read cannot read XMLInternalDocument
-                       # cannot coerce type 'externalptr' to vector of type 'character'
-
-  # write to a temporary file
-  d <- tempfile()
-  write(out, file = d)
-  nex <- nexml_read(d)
-  unlink(d)
+  xml_doc <- XML::xmlParse(out, asText = TRUE)
+  nex <- nexml_read(xml_doc)
 
   ont_matrix <- get_characters(nex)
   ont_row_names <- row.names(ont_matrix)
