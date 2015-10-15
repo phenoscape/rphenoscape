@@ -4,9 +4,13 @@
 \alias{pk_ontotrace}
 \title{Returns a NeXML-format evolutionary character matrix.}
 \usage{
-pk_ontotrace(taxon, entity, variable_only = TRUE)
+pk_ontotrace(..., relation = "part of", variable_only = TRUE)
 }
 \arguments{
+\item{relation}{c("part of", "develops from")}
+
+\item{variable_only}{logical}
+
 \item{taxon}{characters}
 
 \item{entity}{characters; anatomical class expression}
@@ -17,6 +21,6 @@ data.frame
 \description{
 Generate matrix of inferred presence/absence associations for anatomical structures
 subsumed by the provided entity class expression, for any taxa within the provided
-taxon class expression
+taxon class expression.
 }
 
