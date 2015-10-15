@@ -62,9 +62,15 @@ test_that("Test OnToTrace", {
   err2 <- function() pk_ontotrace(taxon = c("Ictalurus", "Ameiurus XXX"), entity = c("fin", "spine"))
   err3 <- function() pk_ontotrace("Ictalurus TT", "fin", relation = "other relation")
 
+
   expect_output(str(single), "data.frame")
   expect_output(str(multi), "data.frame")
   expect_output(str(rel), "data.frame")
+
+  expect_equal(all(apply(single, 2, is.numeric)), TRUE)
+  expect_equal(all(apply(multi, 2, is.numeric)), TRUE)
+  expect_equal(all(apply(rel, 2, is.numeric)), TRUE)
+
   expect_error(err1())
   expect_error(err2())
   expect_error(err3())
