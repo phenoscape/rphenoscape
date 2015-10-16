@@ -60,10 +60,9 @@ pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
 
   res <- httr::GET(ontotrace_url, query = queryseq)
   stop_for_pk_status(res)
-  out <- httr::content(res, as = "text")
+  out <- httr::content(res, as = "parsed")
 
-  xml_doc <- XML::xmlParse(out, asText = TRUE)
-  nex <- nexml_read(xml_doc)
+  nex <- nexml_read(out)
 
   ont_matrix <- get_characters(nex)
   ont_row_names <- row.names(ont_matrix)
