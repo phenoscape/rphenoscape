@@ -60,7 +60,7 @@ test_that("Test OnToTrace", {
                       relation = "develops from")
   err1 <- function() pk_ontotrace(taxon = "Ictalurus TT", entity = "fin", relation = "other relation")
   err2 <- function() pk_ontotrace(taxon = c("Ictalurus", "Ameiurus XXX"), entity = c("fin", "spine"))
-  err3 <- function() pk_ontotrace("Ictalurus TT", "fin", relation = "other relation")
+  err3 <- function() pk_ontotrace("Ictalurus TT", "fin")
 
 
   expect_output(str(single), "data.frame")

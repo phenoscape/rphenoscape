@@ -21,15 +21,15 @@
 #'
 #' @export
 #' @rdname pk_ontotrace
-pk_ontotrace <- function(..., relation = "part of", get_metadata = TRUE, variable_only=TRUE) {
-  taxon_entity_list <- list(...)
-
-  if (length(taxon_entity_list$taxon) == 0 || length(taxon_entity_list$entity) == 0) {
-    stop("please explicitly specify taxon and entity parameter,
-         e.g. pk_ontotrace(taxon = \"Ictalurus\", entity = \"fin\"),
-         or pk_ontotrace(taxon = c(\"Ictalurus\", \"Ameiurus\"), entity = c(\"fin\", \"spine\"))",
-         call. = FALSE)
-  }
+pk_ontotrace <- function(taxon, entity, relation = "part of", get_metadata = TRUE, variable_only=TRUE) {
+#   taxon_entity_list <- list(...)
+#
+#   if (length(taxon_entity_list$taxon) == 0 || length(taxon_entity_list$entity) == 0) {
+#     stop("please explicitly specify taxon and entity parameter,
+#          e.g. pk_ontotrace(taxon = \"Ictalurus\", entity = \"fin\"),
+#          or pk_ontotrace(taxon = c(\"Ictalurus\", \"Ameiurus\"), entity = c(\"fin\", \"spine\"))",
+#          call. = FALSE)
+#   }
 
   tryCatch(
     relation_type <- match.arg(tolower(relation), c("part of", "develops from")),
@@ -41,16 +41,16 @@ pk_ontotrace <- function(..., relation = "part of", get_metadata = TRUE, variabl
                         "part of" = part_relation,
                         "develops from" = develops_relation)
 
-  taxon_iris <- lapply(taxon_entity_list$taxon, FUN = pk_get_iri, as = "vto", verbose = FALSE)
-  entity_iris <- lapply(taxon_entity_list$entity, FUN = pk_get_iri, as = "uberon", verbose = FALSE)
+  taxon_iris <- lapply(taxon, FUN = pk_get_iri, as = "vto", verbose = FALSE)
+  entity_iris <- lapply(entity, FUN = pk_get_iri, as = "uberon", verbose = FALSE)
 
   # FALSE will be returned by pk_get_iri if there's no match in database
   if (FALSE %in% taxon_iris || FALSE %in% entity_iris) {
     stop(paste(c("Could not find",
-                 taxon_entity_list$taxon[which(taxon_iris == FALSE)],
-                 taxon_entity_list$entity[which(entity_iris == FALSE)],
+                 taxon[which(taxon_iris == FALSE)],
+                 entity[which(entity_iris == FALSE)],
                  "in the database."),
-               collapse = " | "),
+               collapse = " * "),
          call. = FALSE)
   }
 

@@ -4,19 +4,19 @@
 \alias{pk_ontotrace}
 \title{Returns a NeXML-format evolutionary character matrix.}
 \usage{
-pk_ontotrace(..., relation = "part of", get_metadata = TRUE,
+pk_ontotrace(taxon, entity, relation = "part of", get_metadata = TRUE,
   variable_only = TRUE)
 }
 \arguments{
+\item{taxon}{character: Required. A single character string or a vector of taxa.}
+
+\item{entity}{characters: Required. A single character string or a vector of anatomical class expressions.}
+
 \item{relation}{character string: Optional. Has to be either "part of" or "develops from". Default is "part of".}
 
 \item{get_metadata}{logical: Optional. If TRUE the result will contain the metadata data.frame. Default is TRUE}
 
 \item{variable_only}{logical: Optional. Default is TRUE.}
-
-\item{taxon}{character: Required. A single character string or a vector of taxa.}
-
-\item{entity}{characters: Required. A single character string or a vector of anatomical class expressions.}
 }
 \value{
 data.frame: The OntoTrace matrix.
