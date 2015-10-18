@@ -68,17 +68,18 @@ pk_ontotrace <- function(..., relation = "part of", get_metadata = TRUE, variabl
 
   nex <- nexml_read(out)
 
-  ont_matrix <- get_characters(nex)
-  ont_row_names <- row.names(ont_matrix)
-  ont_matrix <- as.data.frame(apply(ont_matrix, 2, function(x) as.numeric(as.character(x))))
-  row.names(ont_matrix) <- ont_row_names
-
+  m <- get_characters(nex) # returned data.frame with taxon names as row index
+  m[] <- lapply(m, function(x) as.numeric(as.character(x)))
+  ont_row_names <- row.names(m)
+  rownames(m) <- NULL
+  m <- dplyr::mutate(m, taxon = ont_row_names)
+  m <- m[, c(ncol(m), 1:ncol(m)-1)]
 
   # TODO: add ordered taxonID and entityID to the list
-  list_to_return <- list(matrix = ont_matrix,
+  list_to_return <- list(matrix = m,
                          IDs = get_metadata(nex, level = "otu"))
 
-  return(ont_matrix)
+  return(m)
 }
 
 

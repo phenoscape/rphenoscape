@@ -67,9 +67,9 @@ test_that("Test OnToTrace", {
   expect_output(str(multi), "data.frame")
   expect_output(str(rel), "data.frame")
 
-  expect_equal(all(apply(single, 2, is.numeric)), TRUE)
-  expect_equal(all(apply(multi, 2, is.numeric)), TRUE)
-  expect_equal(all(apply(rel, 2, is.numeric)), TRUE)
+  expect_equal(all(apply(single[,-1], 2, is.numeric)), TRUE)
+  expect_equal(all(apply(multi[,-1], 2, is.numeric)), TRUE)
+  expect_equal(all(apply(rel[,-1], 2, is.numeric)), TRUE)
 
   expect_error(err1())
   expect_error(err2())
