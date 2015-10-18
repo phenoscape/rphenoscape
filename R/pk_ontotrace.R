@@ -2,22 +2,26 @@
 #'
 #' @name pk_ontotrace
 #' @import RNeXML
-#' @param taxon characters
-#' @param entity characters; anatomical class expression
-#' @param relation c("part of", "develops from")
-#' @param variable_only logical
+#' @param taxon character: Required. A single character string or a vector of taxa.
+#' @param entity characters: Required. A single character string or a vector of anatomical class expressions.
+#' @param relation character string: Optional. Has to be either "part of" or "develops from". Default is "part of".
+#' @param get_metadata logical: Optional. If TRUE the result will contain the metadata data.frame. Default is TRUE
+#' @param variable_only logical: Optional. Default is TRUE.
 #'
-#' @return data.frame
+#' @return data.frame: The OntoTrace matrix.
 #'
 #' @description
 #' Generate matrix of inferred presence/absence associations for anatomical structures
 #' subsumed by the provided entity class expression, for any taxa within the provided
 #' taxon class expression.
-#'
+#' @examples
+#' pk_ontotrace(taxon = "Ictalurus", entity = "fin")
+#' pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = "fin")
+#' pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin", "spine"), relation = "develops from")
 #'
 #' @export
 #' @rdname pk_ontotrace
-pk_ontotrace <- function(..., relation = "part of", variable_only=TRUE) {
+pk_ontotrace <- function(..., relation = "part of", get_metadata = TRUE, variable_only=TRUE) {
   taxon_entity_list <- list(...)
 
   if (length(taxon_entity_list$taxon) == 0 || length(taxon_entity_list$entity) == 0) {

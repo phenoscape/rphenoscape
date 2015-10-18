@@ -4,23 +4,31 @@
 \alias{pk_ontotrace}
 \title{Returns a NeXML-format evolutionary character matrix.}
 \usage{
-pk_ontotrace(..., relation = "part of", variable_only = TRUE)
+pk_ontotrace(..., relation = "part of", get_metadata = TRUE,
+  variable_only = TRUE)
 }
 \arguments{
-\item{relation}{c("part of", "develops from")}
+\item{relation}{character string: Optional. Has to be either "part of" or "develops from". Default is "part of".}
 
-\item{variable_only}{logical}
+\item{get_metadata}{logical: Optional. If TRUE the result will contain the metadata data.frame. Default is TRUE}
 
-\item{taxon}{characters}
+\item{variable_only}{logical: Optional. Default is TRUE.}
 
-\item{entity}{characters; anatomical class expression}
+\item{taxon}{character: Required. A single character string or a vector of taxa.}
+
+\item{entity}{characters: Required. A single character string or a vector of anatomical class expressions.}
 }
 \value{
-data.frame
+data.frame: The OntoTrace matrix.
 }
 \description{
 Generate matrix of inferred presence/absence associations for anatomical structures
 subsumed by the provided entity class expression, for any taxa within the provided
 taxon class expression.
+}
+\examples{
+pk_ontotrace(taxon = "Ictalurus", entity = "fin")
+pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = "fin")
+pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin", "spine"), relation = "develops from")
 }
 
