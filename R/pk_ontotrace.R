@@ -77,8 +77,13 @@ pk_ontotrace <- function(taxon, entity, relation = "part of", get_metadata = FAL
 
   # TODO: add ordered taxonID and entityID to the list
   if (get_metadata == TRUE) {
+    id_taxa <- get_metadata(nex, level = "otu")
+    id_entity <- get_metadata(nex, level = "char")
+
     m_re <- list(matrix = m_re,
-                 IDs = get_metadata(nex, level = "otu"))
+                 id_taxa = id_taxa[which(names(id_taxa) == meta_attr_taxon)],
+                 id_entity = id_entity[which(names(id_entity) == meta_attr_entitiy)]
+                 )
   }
   return(m_re)
 }
@@ -88,6 +93,8 @@ ontotrace_url <- "http://kb.phenoscape.org/api/ontotrace"
 quantifier <- " some " # seperate quantifier
 part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050>" # "part of"
 develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202>" # "develops from"
+meta_attr_taxon <- "dwc:taxonID"
+meta_attr_entitiy <- "obo:IAO_0000219"
 
 #------------------------------#
 #      Tests for RNeXML        #
