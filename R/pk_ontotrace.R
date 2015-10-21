@@ -21,7 +21,7 @@
 #'
 #' @export
 #' @rdname pk_ontotrace
-pk_ontotrace <- function(taxon, entity, relation = "part of", get_metadata = TRUE, variable_only=TRUE) {
+pk_ontotrace <- function(taxon, entity, relation = "part of", get_metadata = FALSE, variable_only=TRUE) {
 #   taxon_entity_list <- list(...)
 #
 #   if (length(taxon_entity_list$taxon) == 0 || length(taxon_entity_list$entity) == 0) {
@@ -73,13 +73,14 @@ pk_ontotrace <- function(taxon, entity, relation = "part of", get_metadata = TRU
   ont_row_names <- row.names(m)
   rownames(m) <- NULL
   m <- dplyr::mutate(m, taxon = ont_row_names)
-  m <- m[, c(ncol(m), 1:ncol(m)-1)]
+  m_re <- m[, c(ncol(m), 1:ncol(m)-1)]
 
   # TODO: add ordered taxonID and entityID to the list
-  list_to_return <- list(matrix = m,
-                         IDs = get_metadata(nex, level = "otu"))
-
-  return(m)
+  if (get_metadata == TRUE) {
+    m_re <- list(matrix = m_re,
+                 IDs = get_metadata(nex, level = "otu"))
+  }
+  return(m_re)
 }
 
 
