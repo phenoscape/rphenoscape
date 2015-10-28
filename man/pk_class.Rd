@@ -14,7 +14,7 @@ pk_anatomical_class(x, verbose = TRUE)
 pk_phenotype_class(x, verbose = TRUE)
 }
 \arguments{
-\item{term}{characters}
+\item{x}{characters, name of the term}
 }
 \value{
 A list containing data.frame

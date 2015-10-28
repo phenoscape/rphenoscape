@@ -1,7 +1,7 @@
 #' Classificatoin
 #'
 #' @name pk_class
-#' @param term characters
+#' @param x characters, name of the term
 #'
 #' @return A list containing data.frame
 #'

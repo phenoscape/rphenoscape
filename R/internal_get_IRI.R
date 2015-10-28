@@ -1,3 +1,4 @@
+#' @export
 pk_get_iri <- function(text, as, verbose=TRUE, limit=10) {
   mssg(verbose, paste("Querying the IRI for", text, sep = " "))
   as_type <- match.arg(as, c("vto", "uberon", "pato"))

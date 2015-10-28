@@ -2,9 +2,11 @@
 
 export(pk_anatomical_class)
 export(pk_anatomical_detail)
+export(pk_get_iri)
 export(pk_ontotrace)
 export(pk_phenotype_class)
 export(pk_phenotype_detail)
+export(pk_search_studies)
 export(pk_taxon_class)
 export(pk_taxon_detail)
 import(RNeXML)
