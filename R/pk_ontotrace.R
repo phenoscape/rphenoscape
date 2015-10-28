@@ -68,21 +68,23 @@ pk_ontotrace <- function(taxon, entity, relation = "part of", get_metadata = FAL
 
   nex <- nexml_read(out)
 
+
   m <- get_characters(nex) # returned data.frame with taxon names as row index
   m[] <- lapply(m, function(x) as.numeric(as.character(x)))
-  ont_row_names <- row.names(m)
+  ont_row_names <- rownames(m)
   rownames(m) <- NULL
   m <- dplyr::mutate(m, taxon = ont_row_names)
-  m_re <- m[, c(ncol(m), 1:ncol(m)-1)]
+  m_re <- dplyr::as_data_frame(m[, c(ncol(m), 1:ncol(m)-1)])
 
   # TODO: add ordered taxonID and entityID to the list
   if (get_metadata == TRUE) {
-    id_taxa <- get_metadata(nex, level = "otu")
-    id_entity <- get_metadata(nex, level = "char")
+    id_taxa <- get_taxa(nex)
+    #id_entity <- get_metadata(nex, level = "char")
 
     m_re <- list(matrix = m_re,
-                 id_taxa = id_taxa[which(names(id_taxa) == meta_attr_taxon)],
-                 id_entity = id_entity[which(names(id_entity) == meta_attr_entitiy)]
+                 id_taxa = id_taxa
+                 #id_taxa = id_taxa[which(names(id_taxa) == meta_attr_taxon)]
+                 #id_entity = id_entity[which(names(id_entity) == meta_attr_entitiy)]
                  )
   }
   return(m_re)

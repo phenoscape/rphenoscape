@@ -4,7 +4,7 @@
 \alias{pk_ontotrace}
 \title{Returns a NeXML-format evolutionary character matrix.}
 \usage{
-pk_ontotrace(taxon, entity, relation = "part of", get_metadata = TRUE,
+pk_ontotrace(taxon, entity, relation = "part of", get_metadata = FALSE,
   variable_only = TRUE)
 }
 \arguments{
