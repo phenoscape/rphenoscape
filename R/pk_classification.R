@@ -1,8 +1,7 @@
 #' Classificatoin
 #'
-#' @name pk_class
 #' @param x characters, name of the term
-#'
+#' @name pk_class
 #' @return A list containing data.frame
 #'
 #' @description Return direct superclasses, direct subclasses, and equivalent classes of a given term
@@ -24,7 +23,6 @@ pk_phenotype_class <- function(x, verbose=TRUE) {
   pk_class(x, as = "pato", verbose)
 }
 
-
 pk_class <- function(x, as, verbose=TRUE) {
   iri <- pk_get_iri(x, as = as)
   if (iri == FALSE) return(invisible(FALSE))
@@ -34,6 +32,8 @@ pk_class <- function(x, as, verbose=TRUE) {
   queryseq <- list(iri = iri)
   pk_GET(pk_class_url, queryseq = queryseq)
 }
-
-
 pk_class_url <- "http://kb.phenoscape.org/api/term/classification"
+
+
+
+

@@ -3,6 +3,8 @@
 export(pk_anatomical_class)
 export(pk_anatomical_detail)
 export(pk_get_iri)
+export(pk_if_ancestor)
+export(pk_if_descendant)
 export(pk_ontotrace)
 export(pk_phenotype_class)
 export(pk_phenotype_detail)
