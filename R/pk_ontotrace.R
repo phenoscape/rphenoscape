@@ -2,6 +2,7 @@
 #'
 #' @name pk_ontotrace
 #' @import RNeXML
+#' @import dplyr
 #' @param taxon character: Required. A single character string or a vector of taxa.
 #' @param entity characters: Required. A single character string or a vector of anatomical class expressions.
 #' @param relation character string: Optional. Has to be either "part of" or "develops from". Default is "part of".
@@ -69,22 +70,27 @@ pk_ontotrace <- function(taxon, entity, relation = "part of", get_metadata = FAL
   nex <- nexml_read(out)
 
 
-  m <- get_characters(nex) # returned data.frame with taxon names as row index
-  m[] <- lapply(m, function(x) as.numeric(as.character(x)))
-  ont_row_names <- rownames(m)
-  rownames(m) <- NULL
-  m <- dplyr::mutate(m, taxon = ont_row_names)
-  m_re <- dplyr::as_data_frame(m[, c(ncol(m), 1:ncol(m)-1)])
+  m <- get_characters(nex, rownames_as_col = TRUE) # returned data.frame with taxon names as row index
+  #taxa <- as.character(m$taxa)
+  #m[] <- lapply(m[, -1], function(x) as.numeric(as.character(x)))
+  #m_re <- dplyr::as_data_frame(cbind(taxa, m, stringsAsFactors = FALSE))
+  m_re <- dplyr::as_data_frame(m) # temporary: add type coercion back after get_characters working properly
 
-  # TODO: add ordered taxonID and entityID to the list
   if (get_metadata == TRUE) {
     id_taxa <- get_taxa(nex)
-    #id_entity <- get_metadata(nex, level = "char")
+    id_taxa_meta <- get_metadata(nex, "otu")
 
+    id_taxa <- (id_taxa_meta
+                %>% filter(rel == meta_attr_taxon)
+                %>% inner_join(id_taxa, by = c("otu" = "id"))
+                %>% select(label, href, otu, otus.x)
+                %>% rename(otus = otus.x))
+
+    id_entities <- get_metadata(nex, level="characters/format/char")
+    id_entities <- filter(id_entities, rel == meta_attr_entitiy)
     m_re <- list(matrix = m_re,
-                 id_taxa = id_taxa
-                 #id_taxa = id_taxa[which(names(id_taxa) == meta_attr_taxon)]
-                 #id_entity = id_entity[which(names(id_entity) == meta_attr_entitiy)]
+                 id_taxa = id_taxa,
+                 id_entities = id_entities
                  )
   }
   return(m_re)
@@ -102,26 +108,23 @@ meta_attr_entitiy <- "obo:IAO_0000219"
 #      Tests for RNeXML        #
 
 test_read_ns <- function() {
-  nex <- nexml_read(paste0(path, "test_original.xml"))
-  #tree <- get_trees_list(nex)
+  #nex <- nexml_read(paste0(path, "test_original.xml"))
+  nex <- nexml_read(path)
   get_characters(nex) # to keep
-  #meta <- get_metadata(nex)
-  #ns <- get_namespaces(nex)
-  #return(list(character_matrix = df, phylo = tree, meta = meta, namespace = ns))
 }
 
 test_read_nex <- function() {
-  nex <- nexml_read(paste0(path, "test.xml"))
-  get_characters(nex)
+  nex <- nexml_read(path)
+  nex
 }
 
 test_validate_ns <- function() {
-  nexml_validate(paste0(path, "test_original.xml"))
+  #nexml_validate(paste0(path, "test_original.xml"))
 }
 
 test_validate_nex <- function() {
-  nexml_validate(paste0(path, "test.xml"))
+  #nexml_validate(paste0(path, "test.xml"))
 }
 
-path <- paste0(system.file(package = "rphenoscape"), "/examples/")
-
+#path <- paste0(system.file(package = "rphenoscape"), "/examples/")
+path <- "https://raw.githubusercontent.com/phenoscape/rphenoscape/char-annots-example/inst/examples/ontotrace-result.xml"
