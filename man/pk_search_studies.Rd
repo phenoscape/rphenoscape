@@ -4,12 +4,14 @@
 \alias{pk_search_studies}
 \title{Query studies by taxa and anatomical entities}
 \usage{
-pk_search_studies(taxon, entity)
+pk_search_studies(taxon, entity, relation = "part of")
 }
 \arguments{
 \item{taxon}{}
 
 \item{entity}{}
+
+\item{relation}{}
 }
 \value{
 data.frame

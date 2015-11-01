@@ -81,6 +81,20 @@ test_that("Test OnToTrace", {
   expect_error(err3())
 })
 
+
+test_that("Test getting study information", {
+  s <- pk_search_studies("Ictalurus", "fin")
+  ss <- pk_search_studies("Ictalurus FF", "fin")
+  sss <- pk_search_studies("coral", "fin")
+
+  expect_output(str(s), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
+  expect_equal(ss, FALSE)
+  expect_equal(sss, FALSE)
+
+})
+
+
+
 #
 #
 # test_that("Test OnTrace, nexml_read", {
