@@ -26,6 +26,16 @@ pk_phenotype_detail <- function(term, verbose=TRUE) {
   pk_details(term, as = "pato", verbose)
 }
 
+#' @export
+#' @rdname pk_terms
+pk_gene_detail <- function(term, verbose=TRUE) {
+  queryseq <- list(text = term)
+  res <- httr::GET("http://kb.phenoscape.org/api/gene/search", query = queryseq)
+  stop_for_pk_status(res)
+  out <- httr::content(res, as = "text")
+  out # TODO: parsing
+}
+
 pk_details <- function(term, as, verbose=TRUE) {
   iri <- pk_get_iri(term, as)
   if (iri == FALSE) return(invisible(FALSE))
