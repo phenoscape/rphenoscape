@@ -28,4 +28,3 @@ pk_is_ancestor <- function(taxon, candidates) {
 }
 
 pk_subsumer_url <- "http://kb.phenoscape.org/api/term/least_common_subsumers"
-"iris=http://purl.obolibrary.org/obo/VTO_0036225,http://purl.obolibrary.org/obo/VTO_0036217&definedBy=http://purl.obolibrary.org/obo/vto.owl"
