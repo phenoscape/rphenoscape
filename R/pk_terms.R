@@ -43,7 +43,7 @@ pk_details <- function(term, as, verbose=TRUE) {
   mssg(verbose, "Retrieving term details")
 
   queryseq <- list(iri = iri)
-  lst <- pk_GET("http://kb.phenoscape.org/api/term", queryseq, verbose)
+  lst <- pk_GET("http://kb.phenoscape.org/api/term", queryseq)
   dplyr::as_data_frame(lst)
 }
 

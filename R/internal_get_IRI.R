@@ -24,7 +24,7 @@ taxon_id <- function() 'http://purl.obolibrary.org/obo/vto.owl'
 anatomical_id <- function() 'http://purl.obolibrary.org/obo/uberon.owl'
 phenotype_id <- function() 'http://purl.obolibrary.org/obo/pato.owl'
 
-pk_GET <- function(url, queryseq, verbose=TRUE) {
+pk_GET <- function(url, queryseq) {
   res <- httr::GET(url, query = queryseq)
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")

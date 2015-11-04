@@ -2,6 +2,7 @@
 
 export(pk_anatomical_class)
 export(pk_anatomical_detail)
+export(pk_gene_detail)
 export(pk_get_iri)
 export(pk_is_ancestor)
 export(pk_is_descendant)

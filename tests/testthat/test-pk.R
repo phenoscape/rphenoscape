@@ -1,9 +1,9 @@
 context("rphenoscape test")
 
 test_that("Test term search", {
-  a <- pk_taxon_detail("coral")
+  a <- pk_taxon_detail("Coralliozetus")
   b <- pk_phenotype_detail("shape")
-  c <- pk_anatomical_detail("fin")
+  c <- pk_anatomical_detail("basihyal bone")
 
   aa <- pk_taxon_detail("coral tt")
   bb <- pk_phenotype_detail("shape tt")
@@ -54,10 +54,10 @@ test_that("Test getting classification information", {
 
 test_that("Test OnToTrace", {
   single <- pk_ontotrace(taxon = "Ictalurus", entity = "fin")
-  multi <- pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin", "spine"))
-  rel <- pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"),
-                      entity = c("fin", "spine"),
-                      relation = "develops from")
+  multi <- pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin spine", "pelvic splint"))
+#   rel <- pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"),
+#                       entity = c("fin spine", "pelvic splint"),
+#                       relation = "develops from")
 
   single1 <- pk_ontotrace(taxon = "Ictalurus", entity = "fin", get_metadata = TRUE)
 
@@ -68,7 +68,7 @@ test_that("Test OnToTrace", {
 
   expect_output(str(single), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
   expect_output(str(multi), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
-  expect_output(str(rel), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
+#  expect_output(str(rel), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
 
   expect_output(str(single1), "List of 3")
 

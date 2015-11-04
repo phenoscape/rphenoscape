@@ -2,6 +2,7 @@
 % Please edit documentation in R/pk_terms.R
 \name{pk_terms}
 \alias{pk_anatomical_detail}
+\alias{pk_gene_detail}
 \alias{pk_phenotype_detail}
 \alias{pk_taxon_detail}
 \alias{pk_terms}
@@ -12,6 +13,8 @@ pk_taxon_detail(term, verbose = TRUE)
 pk_anatomical_detail(term, verbose = TRUE)
 
 pk_phenotype_detail(term, verbose = TRUE)
+
+pk_gene_detail(term, verbose = TRUE)
 }
 \arguments{
 \item{term}{characters}

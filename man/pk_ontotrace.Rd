@@ -4,7 +4,7 @@
 \alias{pk_ontotrace}
 \title{Returns a NeXML-format evolutionary character matrix.}
 \usage{
-pk_ontotrace(taxon, entity, relation = "part of", get_metadata = FALSE,
+pk_ontotrace(taxon, entity, get_metadata = FALSE, relation = "part of",
   variable_only = TRUE)
 }
 \arguments{
@@ -12,9 +12,9 @@ pk_ontotrace(taxon, entity, relation = "part of", get_metadata = FALSE,
 
 \item{entity}{characters: Required. A single character string or a vector of anatomical class expressions.}
 
-\item{relation}{character string: Optional. Has to be either "part of" or "develops from". Default is "part of".}
-
 \item{get_metadata}{logical: Optional. If TRUE the result will contain the metadata data.frame. Default is TRUE}
+
+\item{relation}{character string: Optional. Has to be either "part of" or "develops from". Default is "part of".}
 
 \item{variable_only}{logical: Optional. Default is TRUE.}
 }

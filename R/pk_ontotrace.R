@@ -22,7 +22,7 @@
 #'
 #' @export
 #' @rdname pk_ontotrace
-pk_ontotrace <- function(taxon, entity, relation = "part of", get_metadata = FALSE, variable_only=TRUE) {
+pk_ontotrace <- function(taxon, entity, get_metadata = FALSE, relation = "part of", variable_only=TRUE) {
 #   taxon_entity_list <- list(...)
 #
 #   if (length(taxon_entity_list$taxon) == 0 || length(taxon_entity_list$entity) == 0) {
