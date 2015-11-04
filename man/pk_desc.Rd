@@ -8,12 +8,12 @@
 \usage{
 pk_is_descendant(taxon, candidates)
 
-pk_is_ancestor(taxon, ids)
+pk_is_ancestor(taxon, candidates)
 }
 \arguments{
 \item{taxon}{}
 
-\item{ids,}{a list or vector of taxon IRIs}
+\item{candidates,}{a list or vector of taxon IRIs, now only works for one candiate input}
 }
 \value{
 a list of matching ids
