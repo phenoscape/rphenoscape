@@ -17,8 +17,8 @@
 #' taxon class expression.
 #' @examples
 #' pk_ontotrace(taxon = "Ictalurus", entity = "fin")
-#' pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = "fin")
-#' pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin", "spine"), relation = "develops from")
+#' pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine", get_metadata = TRUE)
+#' pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin spine", "pelvic splint"), relation = "develops from")
 #'
 #' @export
 #' @rdname pk_ontotrace
@@ -70,11 +70,9 @@ pk_ontotrace <- function(taxon, entity, get_metadata = FALSE, relation = "part o
   nex <- nexml_read(out)
 
 
-  m <- get_characters(nex, rownames_as_col = TRUE) # returned data.frame with taxon names as row index
-  #taxa <- as.character(m$taxa)
-  #m[] <- lapply(m[, -1], function(x) as.numeric(as.character(x)))
-  #m_re <- dplyr::as_data_frame(cbind(taxa, m, stringsAsFactors = FALSE))
-  m_re <- dplyr::as_data_frame(m) # temporary: add type coercion back after get_characters working properly
+  m <- get_characters(nex, rownames_as_col = TRUE, otu_id = get_metadata, otus_id = get_metadata) # returned data.frame with taxon names as row index
+  #m_re <- dplyr::as_data_frame(cbind(lcol, rcol, stringsAsFactors = FALSE))
+  m_re <- dplyr::as_data_frame(m)
 
   if (get_metadata == TRUE) {
     id_taxa <- get_taxa(nex)
@@ -86,8 +84,14 @@ pk_ontotrace <- function(taxon, entity, get_metadata = FALSE, relation = "part o
                 %>% select(label, href, otu, otus.x)
                 %>% rename(otus = otus.x))
 
-    id_entities <- get_metadata(nex, level="characters/format/char")
-    id_entities <- filter(id_entities, rel == meta_attr_entitiy)
+    id_entities <- RNeXML:::get_level(nex, "characters/format/char") # RNeXML, fix-get-characters branch
+    id_entities_meta <- get_metadata(nex, level="characters/format/char")
+
+    id_entities <- (id_entities_meta
+                    %>% filter(rel == meta_attr_entitiy)
+                    %>% inner_join(id_entities, by = c("char" = "id"))
+                    %>% select(label, href, char))
+
     m_re <- list(matrix = m_re,
                  id_taxa = id_taxa,
                  id_entities = id_entities
