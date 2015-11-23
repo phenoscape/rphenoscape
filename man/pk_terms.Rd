@@ -14,12 +14,14 @@ pk_anatomical_detail(term, verbose = TRUE)
 
 pk_phenotype_detail(term, verbose = TRUE)
 
-pk_gene_detail(term, verbose = TRUE)
+pk_gene_detail(term, taxon = "", verbose = TRUE)
 }
 \arguments{
 \item{term}{characters}
 
-\item{verbose}{logical; If TRUE (default), informative messages printed.}
+\item{verbose}{logical; optional. If TRUE (default), informative messages printed.}
+
+\item{taxon, }{optional.}
 }
 \value{
 A data.frame with term id, label, and definition
