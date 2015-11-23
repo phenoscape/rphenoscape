@@ -72,7 +72,7 @@ test_that("Test OnToTrace", {
 
   expect_output(str(single1), "List of 3")
 
-# TODO: matrix needs fixing
+# should the value be numeric?
 #   expect_equal(all(apply(single[,-1], 2, is.numeric)), TRUE)
 #   expect_equal(all(apply(multi[,-1], 2, is.numeric)), TRUE)
 #   expect_equal(all(apply(rel[,-1], 2, is.numeric)), TRUE)

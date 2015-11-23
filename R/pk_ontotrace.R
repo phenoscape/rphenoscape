@@ -18,7 +18,7 @@
 #' @examples
 #' pk_ontotrace(taxon = "Ictalurus", entity = "fin")
 #' pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine", get_metadata = TRUE)
-#' pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin spine", "pelvic splint"), relation = "develops from")
+#'
 #'
 #' @export
 #' @rdname pk_ontotrace
@@ -69,7 +69,6 @@ pk_ontotrace <- function(taxon, entity, get_metadata = FALSE, relation = "part o
 
   nex <- nexml_read(out)
 
-
   m <- get_characters(nex, rownames_as_col = TRUE, otu_id = get_metadata, otus_id = get_metadata) # returned data.frame with taxon names as row index
   #m_re <- dplyr::as_data_frame(cbind(lcol, rcol, stringsAsFactors = FALSE))
   m_re <- dplyr::as_data_frame(m)
@@ -78,18 +77,19 @@ pk_ontotrace <- function(taxon, entity, get_metadata = FALSE, relation = "part o
     id_taxa <- get_taxa(nex)
     id_taxa_meta <- get_metadata(nex, "otu")
 
+
     id_taxa <- (id_taxa_meta
                 %>% filter(rel == meta_attr_taxon)
-                %>% inner_join(id_taxa, by = c("otu" = "id"))
+                %>% inner_join(id_taxa, by = c("otu" = "otu"))
                 %>% select(label, href, otu, otus.x)
                 %>% rename(otus = otus.x))
 
-    id_entities <- RNeXML:::get_level(nex, "characters/format/char") # RNeXML, fix-get-characters branch
+    id_entities <- get_level(nex, "characters/format/char")
     id_entities_meta <- get_metadata(nex, level="characters/format/char")
 
     id_entities <- (id_entities_meta
                     %>% filter(rel == meta_attr_entitiy)
-                    %>% inner_join(id_entities, by = c("char" = "id"))
+                    %>% inner_join(id_entities, by = c("char" = "char"))
                     %>% select(label, href, char))
 
     m_re <- list(matrix = m_re,
