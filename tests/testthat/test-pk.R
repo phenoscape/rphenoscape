@@ -59,6 +59,14 @@ test_that("Test getting classification information", {
 
 })
 
+test_that("Test Descendant/Ancestor", {
+  fl <- pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
+  tl <- pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
+
+  expect_equal(fl, c(F, F, T))
+  expect_equal(tl, c(T, F, F))
+})
+
 test_that("Test OnToTrace", {
   single <- pk_ontotrace(taxon = "Ictalurus", entity = "fin")
   multi <- pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin spine", "pelvic splint"))
