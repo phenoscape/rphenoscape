@@ -25,6 +25,6 @@ pk_gene_detail(term, verbose = TRUE)
 A data.frame with term id, label, and definition
 }
 \description{
-To be expanded
+Retrieve details about a taxa, an anatomical structure, or a phenotype.
 }
 

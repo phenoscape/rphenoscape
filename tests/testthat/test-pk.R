@@ -9,6 +9,10 @@ test_that("Test term search", {
   bb <- pk_phenotype_detail("shape tt")
   cc <- pk_anatomical_detail("fin tt")
 
+
+  g <- pk_gene_detail("socs5")
+  gg <- pk_gene_detail("socs5", "Danio rerio")
+
   expect_output(str(a), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
   expect_output(str(b), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
   expect_output(str(c), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
@@ -16,6 +20,9 @@ test_that("Test term search", {
   expect_equal(aa, FALSE)
   expect_equal(bb, FALSE)
   expect_equal(cc, FALSE)
+
+  expect_output(str(g), "data.frame")
+  expect_output(str(gg), "data.frame")
 })
 
 test_that("Test retriving IRI", {

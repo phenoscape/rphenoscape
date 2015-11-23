@@ -3,7 +3,7 @@
 #' @name pk_terms
 #' @import httr
 #' @param term characters
-#' @param verbose logical; If TRUE (default), informative messages printed.
+#' @param verbose logical; optional. If TRUE (default), informative messages printed.
 #'
 #' @return A data.frame with term id, label, and definition
 #'
@@ -37,20 +37,27 @@ pk_phenotype_detail <- function(term, verbose=TRUE) {
   pk_details(term, as = "pato", verbose)
 }
 
+#'
 #' @export
+#' @param term
+#' @param taxon, optional.
+#'
 #' @rdname pk_terms
-pk_gene_detail <- function(term, verbose=TRUE) {
+pk_gene_detail <- function(term, taxon = "", verbose=TRUE) {
+  # TODO: resolve taxon to NCBI IRI
   queryseq <- list(text = term)
-  res <- httr::GET("http://kb.phenoscape.org/api/gene/search", query = queryseq)
+  res <- httr::GET("http://kb.phenoscape.org/api/gene/search",
+                   query = queryseq,
+                   add_headers(Accept = "application/json")) # explicitly ask for json
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")
-  out # TODO: parsing
+  jsonlite::fromJSON(out, simplifyVector = TRUE, flatten = TRUE)$results
 }
 
 #' Test if a taxa is extinct.
 #'
-#' @param term characters
-#' @return logical
+#' @param term character, the taxon name to be tested.
+#' @return logical, TRUE if extinct, FALSE if not
 #'
 #' @export
 pk_is_extinct <- function(term) {
