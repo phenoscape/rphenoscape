@@ -7,7 +7,7 @@
 #'
 #' @return A data.frame with term id, label, and definition
 #'
-#' @description To be expanded
+#' @description Retrieve details about a taxa, an anatomical structure, or a phenotype.
 #'
 #'
 #' @export
@@ -21,8 +21,11 @@ pk_taxon_detail <- function(term, verbose=TRUE) {
 
   queryseq <- list(iri = iri)
   lst <- pk_GET(pk_taxon_url, queryseq)
-  dplyr::as_data_frame(as.list(unlist(lst)))
+  det <- dplyr::as_data_frame(as.list(unlist(lst)))
+  det$extinct <- as.logical(det$extinct)
+  det
 }
+#'
 #' @export
 #' @rdname pk_terms
 pk_anatomical_detail <- function(term, verbose=TRUE) {
@@ -42,6 +45,18 @@ pk_gene_detail <- function(term, verbose=TRUE) {
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")
   out # TODO: parsing
+}
+
+#' Test if a taxa is extinct.
+#'
+#' @param term characters
+#' @return logical
+#'
+#' @export
+pk_is_extinct <- function(term) {
+  det <- pk_taxon_detail(term)
+  if (is.logical(det)) return(invisible(FALSE))
+  det$extinct
 }
 
 pk_details <- function(term, as, verbose=TRUE) {
