@@ -13,7 +13,15 @@
 #' @export
 #' @rdname pk_terms
 pk_taxon_detail <- function(term, verbose=TRUE) {
-  pk_details(term, as = "vto", verbose)
+  #pk_details(term, as = "vto", verbose)
+  # update to a verbose version of taxon search
+  iri <- pk_get_iri(term, as = "vto")
+  if (iri == FALSE) return(invisible(FALSE))
+  mssg(verbose, "Retrieving term details")
+
+  queryseq <- list(iri = iri)
+  lst <- pk_GET(pk_taxon_url, queryseq)
+  dplyr::as_data_frame(as.list(unlist(lst)))
 }
 #' @export
 #' @rdname pk_terms
@@ -47,5 +55,6 @@ pk_details <- function(term, as, verbose=TRUE) {
   dplyr::as_data_frame(lst)
 }
 
+pk_taxon_url <- "http://kb.phenoscape.org/api/taxon"
 
 
