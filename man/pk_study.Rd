@@ -2,10 +2,13 @@
 % Please edit documentation in R/pk_study.R
 \name{pk_study}
 \alias{pk_get_studies}
+\alias{pk_search_studies}
 \alias{pk_study}
 \title{Query studies by taxa and anatomical entities}
 \usage{
 pk_get_studies(taxon, entity, relation = "part of")
+
+pk_search_studies(taxon, entity, relation = "part of")
 }
 \arguments{
 \item{relation}{}
