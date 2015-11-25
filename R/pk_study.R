@@ -57,6 +57,7 @@ pk_search_studies <- function(taxon, entity, relation = "part of") {
 #
 #   }
   s1 <- sdf$`@id`[1]
+  #s1 <- "http://dx.doi.org/10.1111/j.1096-3642.1981.tb01575.x"
   queryseq <- list(iri = s1)
   res <- httr::GET(pk_study_matrix_url, query = queryseq)
   stop_for_pk_status(res)
@@ -71,15 +72,14 @@ pk_search_studies <- function(taxon, entity, relation = "part of") {
   mat <- rbind(colnames(mat0), mat0)
   #
   states <- get_level(nex, "characters/format/states/state")[, c("symbol", "label", "states")]
-  #
-  chars <- get_level(nex, "characters/format/char")[, c("states", "label")]
+  chars <- get_level(nex, "characters/format/char")[, c("states", "char", "label")]
 
   # util function
   translate_symbol <- function(col) {
     lab <- col[1]
     rest <- col[-1]
     # get the states id corresponds to current column
-    st <- chars$states[chars$label == lab]
+    st <- chars$states[chars$char == lab]
     # find matching rows in states data frame for current column
     states_match <- states[states$states == st, ]
     #
@@ -88,15 +88,10 @@ pk_search_studies <- function(taxon, entity, relation = "part of") {
       else NA
     })
   }
-
   lst <- apply(mat, 2, translate_symbol)
   ret <- as.data.frame(lst, stringsAsFactors = FALSE)
   ret
 }
-
-
-
-
 
 
 make_machester <- function(x) paste0("<", x, ">")

@@ -117,18 +117,11 @@ test_read_ns <- function() {
   get_characters(nex) # to keep
 }
 
-test_read_nex <- function() {
+test_read_nex <- function(path = path0) {
   nex <- nexml_read(path)
   nex
 }
 
-test_validate_ns <- function() {
-  #nexml_validate(paste0(path, "test_original.xml"))
-}
-
-test_validate_nex <- function() {
-  #nexml_validate(paste0(path, "test.xml"))
-}
 
 #path <- paste0(system.file(package = "rphenoscape"), "/examples/")
-path <- "https://raw.githubusercontent.com/phenoscape/rphenoscape/char-annots-example/inst/examples/ontotrace-result.xml"
+path0 <- "https://raw.githubusercontent.com/phenoscape/rphenoscape/char-annots-example/inst/examples/ontotrace-result.xml"
