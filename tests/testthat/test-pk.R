@@ -99,11 +99,12 @@ test_that("Test OnToTrace", {
 
 
 test_that("Test getting study information", {
-  s <- pk_search_studies("Ictalurus", "fin")
+  #s <- pk_search_studies(taxon = "Ameiurus", entity = "pelvic splint")
+  s1 <- pk_search_study('https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&btnG=&hl=en&as_sdt=0%2C42')
   ss <- pk_search_studies("Ictalurus FF", "fin")
   sss <- pk_search_studies("coral", "fin")
 
-  expect_output(str(s), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
+  expect_output(str(s1), 'data.frame')
   expect_equal(ss, FALSE)
   expect_equal(sss, FALSE)
 

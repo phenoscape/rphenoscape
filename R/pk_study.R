@@ -15,6 +15,7 @@
 #' @examples
 #'
 #' pk_get_studies(taxon = "Ictalurus", entity = "fin")
+#' pk_search_studies(taxon = "Ameiurus", entity = "pelvic splint")
 #'
 #' @export
 #' @rdname pk_study
@@ -48,17 +49,10 @@ pk_get_studies <- function(taxon, entity, relation = "part of") {
 }
 
 #' @export
-#' @rdname pk_study
-pk_search_studies <- function(taxon, entity, relation = "part of") {
-  sdf <- pk_get_studies(taxon, entity, relation)
-  if (is.logical(sdf)) return(invisible(FALSE))
+#' @param study_id
+pk_search_study <- function(study_id) {
 
-#   for (s in sdf$`@id`) {
-#
-#   }
-  s1 <- sdf$`@id`[1]
-  #s1 <- "http://dx.doi.org/10.1111/j.1096-3642.1981.tb01575.x"
-  queryseq <- list(iri = s1)
+  queryseq <- list(iri = study_id)
   res <- httr::GET(pk_study_matrix_url, query = queryseq)
   stop_for_pk_status(res)
   out <- httr::content(res, as = "parsed")
@@ -79,7 +73,11 @@ pk_search_studies <- function(taxon, entity, relation = "part of") {
     lab <- col[1]
     rest <- col[-1]
     # get the states id corresponds to current column
-    st <- chars$states[chars$char == lab]
+    if (unique_label(chars)) {
+      st <- chars$states[chars$label == lab]
+    } else {
+      st <- chars$states[chars$char == lab]
+    }
     # find matching rows in states data frame for current column
     states_match <- states[states$states == st, ]
     #
@@ -94,7 +92,32 @@ pk_search_studies <- function(taxon, entity, relation = "part of") {
 }
 
 
+#' @export
+#' @rdname pk_study
+pk_search_studies <- function(taxon, entity, relation = "part of") {
+  sdf <- pk_get_studies(taxon, entity, relation)
+  if (is.logical(sdf)) return(invisible(FALSE))
+
+  message("....This might take a while....")
+  ret <- vector('list')
+
+  for (s in sdf$`@id`) {
+    message(s)
+    ret[[s]] <- pk_search_study(s)
+  }
+
+  ret
+}
+
+
 make_machester <- function(x) paste0("<", x, ">")
+unique_label <- function(m) {
+  # this is dependent on <char/> being in
+  # the format of  character_*
+  cname <- colnames(m)[1]
+  c <- grepl('character', cname)
+  return(!c)
+}
 
 pk_study_url <- "http://kb.phenoscape.org/api/study/query"
 pk_study_matrix_url <- "http://kb.phenoscape.org/api/study/matrix"

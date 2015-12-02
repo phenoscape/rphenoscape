@@ -24,6 +24,7 @@ input entity expression.
 \examples{
 
 pk_get_studies(taxon = "Ictalurus", entity = "fin")
+pk_search_studies(taxon = "Ameiurus", entity = "pelvic splint")
 
 }
 
