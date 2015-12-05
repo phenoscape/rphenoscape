@@ -60,9 +60,11 @@ pk_search_study <- function(study_id) {
   message("Parse NeXML....")
   nex <- nexml_read(out)
 
+  return(nex)
+
   message("Map symbols to labels...")
   # matrix
-  mat0 <- get_characters(nex)
+  mat0 <- get_characters(nex, rownames_as_col = TRUE, otu_id = get_metadata)
   mat <- rbind(colnames(mat0), mat0)
   #
   states <- get_level(nex, "characters/format/states/state")[, c("symbol", "label", "states")]

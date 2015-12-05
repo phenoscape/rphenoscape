@@ -68,47 +68,44 @@ test_that("Test Descendant/Ancestor", {
 })
 
 test_that("Test OnToTrace", {
-  single <- pk_ontotrace(taxon = "Ictalurus", entity = "fin")
-  multi <- pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin spine", "pelvic splint"))
-#   rel <- pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"),
-#                       entity = c("fin spine", "pelvic splint"),
-#                       relation = "develops from")
+  single_nex <- pk_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
+  multi_nex <- pk_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin spine", "pelvic splint"))
 
-  single1 <- pk_ontotrace(taxon = "Ictalurus", entity = "fin", get_metadata = TRUE)
+  expect_output(class(single_nex), 'nexml')
+  expect_output(class(multi_nex), 'nexml')
 
-  err1 <- function() pk_ontotrace(taxon = "Ictalurus TT", entity = "fin", relation = "other relation")
-  err2 <- function() pk_ontotrace(taxon = c("Ictalurus", "Ameiurus XXX"), entity = c("fin", "spine"))
-  err3 <- function() pk_ontotrace("Ictalurus TT", "fin")
-
-
-  expect_output(str(single), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
-  expect_output(str(multi), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
-#  expect_output(str(rel), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
-
-  expect_output(str(single1), "List of 3")
-
-# should the value be numeric?
-#   expect_equal(all(apply(single[,-1], 2, is.numeric)), TRUE)
-#   expect_equal(all(apply(multi[,-1], 2, is.numeric)), TRUE)
-#   expect_equal(all(apply(rel[,-1], 2, is.numeric)), TRUE)
+  err1 <- function() pk_ontotrace_xml(taxon = "Ictalurus TT", entity = "fin", relation = "other relation")
+  err2 <- function() pk_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus XXX"), entity = c("fin", "spine"))
+  err3 <- function() pk_ontotrace_xml("Ictalurus TT", "fin")
 
   expect_error(err1())
   expect_error(err2())
   expect_error(err3())
+
+  single_mat <- pk_ontotrace(single_nex)
+  multi_mat <- pk_ontotrace(multi_nex)
+
+  expect_output(str(single_mat), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
+  expect_output(str(multi_mat), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
+
+  single_met <- pk_ontotrace_meta(single_nex)
+  expect_output(str(single_met), "List of 2")
+
+
 })
 
-
-test_that("Test getting study information", {
-  #s <- pk_search_studies(taxon = "Ameiurus", entity = "pelvic splint")
-  s1 <- pk_search_study('https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&btnG=&hl=en&as_sdt=0%2C42')
-  ss <- pk_search_studies("Ictalurus FF", "fin")
-  sss <- pk_search_studies("coral", "fin")
-
-  expect_output(str(s1), 'data.frame')
-  expect_equal(ss, FALSE)
-  expect_equal(sss, FALSE)
-
-})
+#
+# test_that("Test getting study information", {
+#   #s <- pk_search_studies(taxon = "Ameiurus", entity = "pelvic splint")
+#   s1 <- pk_search_study('https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&btnG=&hl=en&as_sdt=0%2C42')
+#   ss <- pk_search_studies("Ictalurus FF", "fin")
+#   sss <- pk_search_studies("coral", "fin")
+#
+#   expect_output(str(s1), 'data.frame')
+#   expect_equal(ss, FALSE)
+#   expect_equal(sss, FALSE)
+#
+# })
 
 
 

@@ -2,21 +2,15 @@
 % Please edit documentation in R/pk_ontotrace.R
 \name{pk_ontotrace}
 \alias{pk_ontotrace}
+\alias{pk_ontotrace_meta}
 \title{Returns a NeXML-format evolutionary character matrix.}
 \usage{
-pk_ontotrace(taxon, entity, get_metadata = FALSE, relation = "part of",
-  variable_only = TRUE)
+pk_ontotrace(nex)
+
+pk_ontotrace_meta(nex)
 }
 \arguments{
-\item{taxon}{character: Required. A single character string or a vector of taxa.}
-
-\item{entity}{characters: Required. A single character string or a vector of anatomical class expressions.}
-
-\item{get_metadata}{logical: Optional. If TRUE the result will contain the metadata data.frame. Default is TRUE}
-
-\item{relation}{character string: Optional. Has to be either "part of" or "develops from". Default is "part of".}
-
-\item{variable_only}{logical: Optional. Default is TRUE.}
+\item{nex, }{a nexml object}
 }
 \value{
 data.frame: The OntoTrace matrix.
@@ -27,9 +21,9 @@ subsumed by the provided entity class expression, for any taxa within the provid
 taxon class expression.
 }
 \examples{
-pk_ontotrace(taxon = "Ictalurus", entity = "fin")
-pk_ontotrace(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine", get_metadata = TRUE)
-
-
+nex0 <- pk_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
+nex <- pk_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine", get_metadata = TRUE)
+pk_ontotrace(nex)
+pk_ontotrace_meta(nex)
 }
 
