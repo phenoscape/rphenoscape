@@ -1,5 +1,4 @@
-#' Query studies by taxa and anatomical entities
-#' @name pk_study
+#' Query the list of studies by taxa and anatomical entities
 #' @param taxon
 #' @param entity
 #' @param relation
@@ -14,12 +13,12 @@
 #'
 #' @examples
 #'
-#' pk_get_studies(taxon = "Ictalurus", entity = "fin")
-#' pk_search_studies(taxon = "Ameiurus", entity = "pelvic splint")
+#' slist <- pk_get_study_list(taxon = "Ictalurus", entity = "fin")
+#' pk_get_study(slist$id)
+#' pk_get_study_meta(slist$id)
 #'
 #' @export
-#' @rdname pk_study
-pk_get_studies <- function(taxon, entity, relation = "part of") {
+pk_get_study_list <- function(taxon, entity, relation = "part of") {
 
   tryCatch(
     relation_type <- match.arg(tolower(relation), c("part of", "develops from")),
@@ -45,22 +44,28 @@ pk_get_studies <- function(taxon, entity, relation = "part of") {
     return(invisible(FALSE))
   }
 
-  dplyr::as_data_frame(d)
+  d <- dplyr::as_data_frame(d)
+  d %>% dplyr::rename(id = `@id`)
 }
 
+#' pk_get_study
+#' @param nexmls, a list of RNeXml object
 #' @export
-#' @param study_id
-pk_search_study <- function(study_id) {
+pk_get_study <- function(nexmls) {
 
-  queryseq <- list(iri = study_id)
-  res <- httr::GET(pk_study_matrix_url, query = queryseq)
-  stop_for_pk_status(res)
-  out <- httr::content(res, as = "parsed")
+  message("....This might take a while....")
+  ret <- vector('list')
 
-  message("Parse NeXML....")
-  nex <- nexml_read(out)
+  for (s in nexmls) {
+    message(s)
+    ret[[s]] <- pk_get_study_by_one(s)
+  }
 
-  return(nex)
+  ret
+}
+
+
+pk_get_study_by_one <- function(nex) {
 
   message("Map symbols to labels...")
   # matrix
@@ -94,24 +99,6 @@ pk_search_study <- function(study_id) {
 }
 
 
-#' @export
-#' @rdname pk_study
-pk_search_studies <- function(taxon, entity, relation = "part of") {
-  sdf <- pk_get_studies(taxon, entity, relation)
-  if (is.logical(sdf)) return(invisible(FALSE))
-
-  message("....This might take a while....")
-  ret <- vector('list')
-
-  for (s in sdf$`@id`) {
-    message(s)
-    ret[[s]] <- pk_search_study(s)
-  }
-
-  ret
-}
-
-
 make_machester <- function(x) paste0("<", x, ">")
 unique_label <- function(m) {
   # this is dependent on <char/> being in
@@ -122,6 +109,5 @@ unique_label <- function(m) {
 }
 
 pk_study_url <- "http://kb.phenoscape.org/api/study/query"
-pk_study_matrix_url <- "http://kb.phenoscape.org/api/study/matrix"
 part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050>" # "part of"
 develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202>" # "develops from"

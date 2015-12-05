@@ -1,5 +1,4 @@
-#' Returns a NeXML object.
-#' @name pk_get_xml
+#' pk_get_ontotrace_xml
 #' @import RNeXML
 #' @import dplyr
 #' @param taxon character: Required. A single character string or a vector of taxa.
@@ -8,11 +7,10 @@
 #' @param variable_only logical: Optional. Default is TRUE.
 #' @return RNeXML object
 #' @examples
-#' nex0 <- pk_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
-#' nex <- pk_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine", get_metadata = TRUE)
+#' nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
+#' nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine", get_metadata = TRUE)
 #' @export
-#' @rdname pk_get_xml
-pk_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_only = TRUE) {
+pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_only = TRUE) {
 
   tryCatch(
     relation_type <- match.arg(tolower(relation), c("part of", "develops from")),
@@ -54,7 +52,35 @@ pk_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_only 
 
 }
 
+
+#' pk_get_study_xml
+#' @param study_ids
+#' @return a list of nexml objects
+#' @export
+pk_get_study_xml <- function(study_ids) {
+
+  message("....This might take a while....")
+  ret <- vector('list')
+
+  for (s in study_ids) {
+    message(s)
+    queryseq <- list(iri = s)
+    res <- httr::GET(pk_study_matrix_url, query = queryseq)
+    stop_for_pk_status(res)
+    out <- httr::content(res, as = "parsed")
+
+    message("Parse NeXML....")
+    nex <- nexml_read(out)
+
+    ret[[s]] <- nex
+  }
+
+  ret
+}
+
+
 ontotrace_url <- "http://kb.phenoscape.org/api/ontotrace"
 quantifier <- " some " # seperate quantifier
 part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050>" # "part of"
 develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202>" # "develops from"
+pk_study_matrix_url <- "http://kb.phenoscape.org/api/study/matrix"

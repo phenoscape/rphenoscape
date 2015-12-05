@@ -12,13 +12,13 @@
 #' subsumed by the provided entity class expression, for any taxa within the provided
 #' taxon class expression.
 #' @examples
-#' nex0 <- pk_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
-#' nex <- pk_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine", get_metadata = TRUE)
-#' pk_ontotrace(nex)
-#' pk_ontotrace_meta(nex)
+#' nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
+#' nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine", get_metadata = TRUE)
+#' pk_get_ontotrace(nex)
+#' pk_get_ontotrace_meta(nex)
 #' @export
 #' @rdname pk_ontotrace
-pk_ontotrace <- function(nex) {
+pk_get_ontotrace <- function(nex) {
 
   m <- get_characters(nex, rownames_as_col = TRUE,
                       otu_id = TRUE, otus_id = TRUE)
@@ -28,7 +28,7 @@ pk_ontotrace <- function(nex) {
 
 #' @export
 #' @rdname pk_ontotrace
-pk_ontotrace_meta <- function(nex) {
+pk_get_ontotrace_meta <- function(nex) {
 
   id_taxa <- get_taxa(nex)
   id_taxa_meta <- get_metadata(nex, "otu")
