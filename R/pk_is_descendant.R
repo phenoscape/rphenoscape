@@ -8,7 +8,7 @@
 #' @export
 #' @rdname pk_desc
 pk_is_descendant <- function(taxon, candidates) {
-  taxon_iris <- lapply(c(taxon, candidates), FUN = pk_get_iri, as = "vto", verbose = TRUE)
+  taxon_iris <- lapply(c(taxon, candidates), FUN = pk_get_iri, as = "vto", verbose = F)
   if (FALSE %in% taxon_iris) return(invisible(FALSE))
 
   queryseq <- list(iri = taxon_iris[[1]])
@@ -24,7 +24,7 @@ pk_is_descendant <- function(taxon, candidates) {
 #' @export
 #' @rdname pk_desc
 pk_is_ancestor <- function(taxon, candidates) {
-  taxon_iris <- lapply(c(taxon, candidates), FUN = pk_get_iri, as = "vto", verbose = TRUE)
+  taxon_iris <- lapply(c(taxon, candidates), FUN = pk_get_iri, as = "vto", verbose = F)
   if (FALSE %in% taxon_iris) return(invisible(FALSE))
 
   queryseq <- list(iri = taxon_iris[[1]])
@@ -38,7 +38,7 @@ pk_is_ancestor <- function(taxon, candidates) {
 
 
 pk_is_descendant_ <- function(taxon, candidates) {
-  taxon_iris <- lapply(c(taxon, candidates), FUN = pk_get_iri, as = "vto", verbose = TRUE)
+  taxon_iris <- lapply(c(taxon, candidates), FUN = pk_get_iri, as = "vto", verbose = F)
   if (FALSE %in% taxon_iris) return(invisible(FALSE))
   queryseq <- list(iris = paste(taxon_iris, collapse = ","),
                    definedBy = "http://purl.obolibrary.org/obo/vto.owl")

@@ -106,12 +106,6 @@ Get the ancestors/descendants of a taxon from a given list:
 pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
 ```
 
-```
-## Querying the IRI for Halecostomi
-## Querying the IRI for Halecostomi
-## Querying the IRI for Icteria
-## Querying the IRI for Sciaenidae
-```
 
 ```
 ## [1] FALSE FALSE  TRUE
@@ -121,12 +115,6 @@ pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
 pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
 ```
 
-```
-## Querying the IRI for Sciaenidae
-## Querying the IRI for Halecostomi
-## Querying the IRI for Abeomelomys
-## Querying the IRI for Sciaenidae
-```
 
 ```
 ## [1]  TRUE FALSE FALSE
@@ -140,9 +128,6 @@ First get the NeXML object of the search result.
 nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
 ```
 
-```
-## Warning in .nextMethod(obj = obj, from = from): NAs introduced by coercion
-```
 Then retrieve wanted information from the NeXML object.  
 Get OntoTrace Matrix:
 

@@ -12,7 +12,7 @@ pk_get_iri <- function(text, as, verbose=FALSE, limit=10) {
   iri_df <- lst$results
 
   if (length(iri_df) == 0) {
-    mssg(verbose, paste0("Could not find \"", text, "\" in the database. Please check your input."))
+    mssg(T, paste0("Could not find \"", text, "\" in the database. Please check your input."))
     return(invisible(FALSE))
   }
   # naively take the first result
