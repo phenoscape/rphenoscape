@@ -14,8 +14,9 @@
 #' @examples
 #'
 #' slist <- pk_get_study_list(taxon = "Ictalurus", entity = "fin")
-#' pk_get_study(slist$id)
-#' pk_get_study_meta(slist$id)
+#' nex_list <- pk_get_study_xml(slist$id)
+#' pk_get_study(nex_list)
+#' pk_get_study_meta(nex_list)
 #'
 #' @export
 pk_get_study_list <- function(taxon, entity, relation = "part of") {
@@ -56,9 +57,8 @@ pk_get_study <- function(nexmls) {
   message("....This might take a while....")
   ret <- vector('list')
 
-  for (s in nexmls) {
-    message(s)
-    ret[[s]] <- pk_get_study_by_one(s)
+  for (n in nexmls) {
+    ret[[s]] <- pk_get_study_by_one(n)
   }
 
   ret
@@ -69,7 +69,7 @@ pk_get_study_by_one <- function(nex) {
 
   message("Map symbols to labels...")
   # matrix
-  mat0 <- get_characters(nex, rownames_as_col = TRUE, otu_id = get_metadata)
+  mat0 <- get_characters(nex, rownames_as_col = TRUE, otu_id = TRUE)
   mat <- rbind(colnames(mat0), mat0)
   #
   states <- get_level(nex, "characters/format/states/state")[, c("symbol", "label", "states")]
