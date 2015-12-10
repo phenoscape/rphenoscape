@@ -1,5 +1,5 @@
 #' @export
-pk_get_iri <- function(text, as, verbose=TRUE, limit=10) {
+pk_get_iri <- function(text, as, verbose=FALSE, limit=10) {
   mssg(verbose, paste("Querying the IRI for", text, sep = " "))
   as_type <- match.arg(as, c("vto", "uberon", "pato"))
   onto_id <- switch(as_type,

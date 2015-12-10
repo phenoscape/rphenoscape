@@ -23,6 +23,7 @@ taxon class expression.
 }
 \examples{
 nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
+
 nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine", get_metadata = TRUE)
 pk_get_ontotrace(nex)
 pk_get_ontotrace_meta(nex)

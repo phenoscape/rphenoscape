@@ -12,7 +12,7 @@
 #'
 #' @export
 #' @rdname pk_terms
-pk_taxon_detail <- function(term, verbose=TRUE) {
+pk_taxon_detail <- function(term, verbose=FALSE) {
   #pk_details(term, as = "vto", verbose)
   # update to a verbose version of taxon search
   iri <- pk_get_iri(term, as = "vto")
@@ -28,12 +28,12 @@ pk_taxon_detail <- function(term, verbose=TRUE) {
 #'
 #' @export
 #' @rdname pk_terms
-pk_anatomical_detail <- function(term, verbose=TRUE) {
+pk_anatomical_detail <- function(term, verbose=FALSE) {
   pk_details(term, as = "uberon", verbose)
 }
 #' @export
 #' @rdname pk_terms
-pk_phenotype_detail <- function(term, verbose=TRUE) {
+pk_phenotype_detail <- function(term, verbose=FALSE) {
   pk_details(term, as = "pato", verbose)
 }
 
@@ -43,7 +43,7 @@ pk_phenotype_detail <- function(term, verbose=TRUE) {
 #' @param taxon, optional.
 #'
 #' @rdname pk_terms
-pk_gene_detail <- function(term, taxon = "", verbose=TRUE) {
+pk_gene_detail <- function(term, taxon = "", verbose=FALSE) {
   # TODO: resolve taxon to NCBI IRI
   queryseq <- list(text = term)
   res <- httr::GET("http://kb.phenoscape.org/api/gene/search",
@@ -66,7 +66,7 @@ pk_is_extinct <- function(term) {
   det$extinct
 }
 
-pk_details <- function(term, as, verbose=TRUE) {
+pk_details <- function(term, as, verbose=FALSE) {
   iri <- pk_get_iri(term, as)
   if (iri == FALSE) return(invisible(FALSE))
 

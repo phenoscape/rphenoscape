@@ -8,13 +8,13 @@
 \alias{pk_terms}
 \title{Get traits}
 \usage{
-pk_taxon_detail(term, verbose = TRUE)
+pk_taxon_detail(term, verbose = FALSE)
 
-pk_anatomical_detail(term, verbose = TRUE)
+pk_anatomical_detail(term, verbose = FALSE)
 
-pk_phenotype_detail(term, verbose = TRUE)
+pk_phenotype_detail(term, verbose = FALSE)
 
-pk_gene_detail(term, taxon = "", verbose = TRUE)
+pk_gene_detail(term, taxon = "", verbose = FALSE)
 }
 \arguments{
 \item{term}{characters}

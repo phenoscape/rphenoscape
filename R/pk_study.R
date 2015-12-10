@@ -54,10 +54,12 @@ pk_get_study_list <- function(taxon, entity, relation = "part of") {
 #' @export
 pk_get_study <- function(nexmls) {
 
-  message("....This might take a while....")
+  snames <- names(nexmls)
   ret <- vector('list')
 
-  for (n in nexmls) {
+  for (i in 1:length(nexmls)) {
+    s <- snames[i]
+    n <- nexmls[[i]]
     ret[[s]] <- pk_get_study_by_one(n)
   }
 
@@ -65,12 +67,13 @@ pk_get_study <- function(nexmls) {
 }
 
 
+# get study matrix from one nexml objectd
 pk_get_study_by_one <- function(nex) {
 
   message("Map symbols to labels...")
   # matrix
   mat0 <- get_characters(nex, rownames_as_col = TRUE, otu_id = TRUE)
-  mat <- rbind(colnames(mat0), mat0)
+  mat <- rbind(colnames(mat0)[-c(1,2)], mat0[, -c(1,2)])
   #
   states <- get_level(nex, "characters/format/states/state")[, c("symbol", "label", "states")]
   chars <- get_level(nex, "characters/format/char")[, c("states", "char", "label")]
@@ -80,7 +83,7 @@ pk_get_study_by_one <- function(nex) {
     lab <- col[1]
     rest <- col[-1]
     # get the states id corresponds to current column
-    if (unique_label(chars)) {
+    if (unique_label(mat)) {
       st <- chars$states[chars$label == lab]
     } else {
       st <- chars$states[chars$char == lab]
@@ -95,7 +98,8 @@ pk_get_study_by_one <- function(nex) {
   }
   lst <- apply(mat, 2, translate_symbol)
   ret <- as.data.frame(lst, stringsAsFactors = FALSE)
-  ret
+  cbind(mat0[, c(1,2)], ret)
+
 }
 
 
