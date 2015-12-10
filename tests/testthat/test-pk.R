@@ -97,14 +97,16 @@ test_that("Test OnToTrace", {
 #
 test_that("Test getting study information", {
     slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
-#   s1 <- pk_search_study('https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&btnG=&hl=en&as_sdt=0%2C42')
-#   ss <- pk_search_studies("Ictalurus FF", "fin")
-#   sss <- pk_search_studies("coral", "fin")
-#
+    s1 <- pk_get_study_xml('https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&btnG=&hl=en&as_sdt=0%2C42')
+    ss1 <- pk_get_study(s1)
+    sss1 <- pk_get_study_meta(s1)
+
     expect_output(str(slist), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
-#   expect_equal(ss, FALSE)
-#   expect_equal(sss, FALSE)
-#
+    expect_output(class(s1[[1]]), 'nexml')
+    expect_output(class(ss1[[1]]), 'data.frame')
+    expect_output(class(sss1[[1]]), 'list')
+    expect_output(str(sss1[[1]]$id_taxa), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
+
 })
 
 

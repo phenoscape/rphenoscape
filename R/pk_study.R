@@ -4,6 +4,7 @@
 #' @param relation
 #'
 #' @import RNeXML
+#' @import dplyr
 #' @return data.frame
 #'
 #' @description
@@ -66,8 +67,25 @@ pk_get_study <- function(nexmls) {
   ret
 }
 
+#' pk_get_study_meta
+#' @param nexmls, a list of RNeXml object
+#' @export
+pk_get_study_meta <- function(nexmls) {
 
-# get study matrix from one nexml objectd
+  snames <- names(nexmls)
+  ret <- vector('list')
+
+  for (i in 1:length(nexmls)) {
+    s <- snames[i]
+    n <- nexmls[[i]]
+    ret[[s]] <- pk_get_study_meta_by_one(n)
+  }
+
+  ret
+}
+
+
+# get study matrix from one nexml object
 pk_get_study_by_one <- function(nex) {
 
   message("Map symbols to labels...")
@@ -102,6 +120,28 @@ pk_get_study_by_one <- function(nex) {
 
 }
 
+# get meta data for study matrix from one nexml object
+pk_get_study_meta_by_one <- function(nex) {
+
+  id_taxa <- get_taxa(nex)
+  id_taxa_meta <- get_metadata(nex, "otu")
+
+  id_taxa <- (id_taxa_meta
+              %>% filter(rel == meta_attr_taxon)
+              %>% inner_join(id_taxa, by = c("otu" = "otu"))
+              %>% select(label, href, otu, otus.x)
+              %>% rename(otus = otus.x))
+
+  id_entities <- get_level(nex, "characters/format/char")
+  #id_entities_meta <- get_metadata(nex, level="characters/format/char")
+
+  id_entities <- select(id_entities, label, char)
+
+  m_re <- list(id_taxa = id_taxa,
+               id_entities = id_entities)
+
+  return(m_re)
+}
 
 make_machester <- function(x) paste0("<", x, ">")
 unique_label <- function(m) {
