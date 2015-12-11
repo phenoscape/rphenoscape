@@ -111,17 +111,3 @@ test_that("Test getting study information", {
 
 
 
-#
-#
-# test_that("Test OnTrace, nexml_read", {
-#   rns <- test_read_ns()
-#   expect_output(str(rns), "data.frame")
-#
-# })
-#
-# test_that("Test OnTrace, nexml_validate", {
-#   vns <- test_validate_ns()
-#   expect_equal(vns, TRUE)
-# })
-
-

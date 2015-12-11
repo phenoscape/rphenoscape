@@ -1,7 +1,5 @@
 
 # rphenoscape: R package to make phenotypic traits from the Phenoscape Knowledgebase available from within R.
-* Maintainer: Hong Xu
-* Author: Hong Xu, Hilmar Lapp
 
 Most of the services provided with [Phenoscape Knowledgebase web API](http://docs.phenoscapekb.apiary.io) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices. 
 
@@ -205,14 +203,17 @@ Retrieve the list of studies.
 ```
 
 ```
-Source: local data frame [7 x 2]                                                                                               
-1 https://scholar.google.com/scholar?q=Higher-level+Phylogeny+of+Siluriformes%2C+With+a+New+Classification+of+the+Order+%28Teleostei%2C+Ostariop
-2                                                                                           http://dx.doi.org/10.1111/j.1096-3642.1981.tb01575.x
-3                                                                    http://search.informit.com.au/documentSummary;dn=057273049071593;res=IELHSS
-4              https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&btnG=&hl=en&as_sdt=0%2C42
-5 https://scholar.google.com/scholar?q=Anatomy%2C+relationships+and+systematics+of+the+Bagridae+%28Teleostei%3A+Siluroidei%29+with+a+hypothesis+
-6 https://scholar.google.com/scholar?q=Studies+on+the+systematics+and+phylogeny+of+the+catfish+family+Auchenipteridae+%28Teleostei%3A+Siluriform
-7                                                              http://www.bioone.org/doi/abs/10.1635/0097-3157(2008)157%5B73:APSOTA%5D2.0.CO%3B2
+Source: local data frame [7 x 2]
+
+                                                                                                                        id
+                                                                                                                     (chr)
+1 https://scholar.google.com/scholar?q=Higher-level+Phylogeny+of+Siluriformes%2C+With+a+New+Classification+of+the+Order+%2
+2                                                                     http://dx.doi.org/10.1111/j.1096-3642.1981.tb01575.x
+3                                              http://search.informit.com.au/documentSummary;dn=057273049071593;res=IELHSS
+4 https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&btnG=&hl=en&as_s
+5 https://scholar.google.com/scholar?q=Anatomy%2C+relationships+and+systematics+of+the+Bagridae+%28Teleostei%3A+Siluroidei
+6 https://scholar.google.com/scholar?q=Studies+on+the+systematics+and+phylogeny+of+the+catfish+family+Auchenipteridae+%28T
+7                                        http://www.bioone.org/doi/abs/10.1635/0097-3157(2008)157%5B73:APSOTA%5D2.0.CO%3B2
 Variables not shown: label (chr)
 ```
 
