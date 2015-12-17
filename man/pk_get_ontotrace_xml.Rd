@@ -23,7 +23,12 @@ RNeXML object
 pk_get_ontotrace_xml
 }
 \examples{
-nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
-nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine", get_metadata = TRUE)
+\dontrun{
+nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus australis", entity = "fin")
+}
+\dontrun{
+nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"),
+                            entity = "fin spine")
+}
 }
 

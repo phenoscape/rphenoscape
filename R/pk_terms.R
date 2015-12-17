@@ -1,11 +1,12 @@
-#' Get traits
+#' Get details about a given term
+#'
 #' @name pk_terms
 #' @import httr
 #' @param term character. The term to be searched.
 #' @param verbose logical: optional. If TRUE (default), informative messages printed.
 #' @return A data.frame with term id, label, and definition
-#'
-#' @description Retrieve details about a taxa, an anatomical structure, a gene, or a phenotype.
+#' @description
+#' Retrieve details about a taxon, an anatomical structure, a gene, or a phenotype.
 #'
 #' @examples
 #' pk_taxon_detail("Coralliozetus")
@@ -27,7 +28,7 @@ pk_taxon_detail <- function(term, verbose=FALSE) {
   det$extinct <- as.logical(det$extinct)
   det
 }
-#'
+
 #' @export
 #' @rdname pk_terms
 pk_anatomical_detail <- function(term, verbose=FALSE) {
@@ -39,10 +40,9 @@ pk_phenotype_detail <- function(term, verbose=FALSE) {
   pk_details(term, as = "pato", verbose)
 }
 
-#'
 #' @export
 #' @rdname pk_terms
-pk_gene_detail <- function(term, taxon = "", verbose=FALSE) {
+pk_gene_detail <- function(term, verbose=FALSE) {
   # TODO: resolve taxon to NCBI IRI
   queryseq <- list(text = term)
   res <- httr::GET("http://kb.phenoscape.org/api/gene/search",

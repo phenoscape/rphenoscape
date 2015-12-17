@@ -52,6 +52,7 @@ pk_is_descendant_ <- function(taxon, candidates) {
   taxon_iris[-1] %in% ans
 
 }
-#pk_subsumer_url <- "http://kb.phenoscape.org/api/term/least_common_subsumers"
+
+pk_subsumer_url <- "http://kb.phenoscape.org/api/term/least_common_subsumers"
 pk_anacestor_url <- "http://kb.phenoscape.org/api/term/all_ancestors"
 pk_descendant_url <- "http://kb.phenoscape.org/api/term/all_descendants"

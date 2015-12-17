@@ -22,8 +22,9 @@ subsumed by the provided entity class expression, for any taxa within the provid
 taxon class expression.
 }
 \examples{
+\dontrun{
 nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
-
+}
 nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
 pk_get_ontotrace(nex)
 pk_get_ontotrace_meta(nex)

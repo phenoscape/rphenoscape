@@ -1,6 +1,7 @@
 #' Classificatoin
 #'
-#' @param x characters, name of the term
+#' @param x character. Name of the term
+#' @param verbose logical: optional. If TRUE (default), informative messages printed.
 #' @name pk_class
 #' @return A list containing data.frame
 #'
@@ -30,7 +31,7 @@ pk_class <- function(x, as, verbose=TRUE) {
   mssg(verbose, "Retrieving classification information")
 
   queryseq <- list(iri = iri)
-  pk_GET(pk_class_url, queryseq = queryseq)
+  pk_GET(pk_class_url, query = queryseq)
 }
 pk_class_url <- "http://kb.phenoscape.org/api/term/classification"
 

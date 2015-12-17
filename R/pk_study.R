@@ -14,7 +14,7 @@
 #'
 #' @examples
 #'
-#' slist <- pk_get_study_list(taxon = "Ictalurus", entity = "fin")
+#' slist <- pk_get_study_list(taxon = "Ictalurus australis", entity = "fin")
 #' nex_list <- pk_get_study_xml(slist$id)
 #' pk_get_study(nex_list)
 #' pk_get_study_meta(nex_list)
@@ -35,6 +35,10 @@ pk_get_study_list <- function(taxon, entity, relation = "part of") {
   taxon_id <- pk_get_iri(taxon, as = "vto")
   entity_id <- pk_get_iri(entity, as = "uberon")
 
+  if (taxon_id == FALSE || entity_id == FALSE) {
+    return(invisible(FALSE))
+  }
+
   queryseq <- list(taxon = make_machester(taxon_id),
                    entity = paste0(relation_id, " some ", make_machester(entity_id)))
 
@@ -45,6 +49,8 @@ pk_get_study_list <- function(taxon, entity, relation = "part of") {
     mssg(T, paste("No study found in database."))
     return(invisible(FALSE))
   }
+  # NULLing out : for the R CMD CHECK
+  `@id` <- NULL
 
   d <- dplyr::as_data_frame(d)
   d %>% dplyr::rename(id = `@id`)
@@ -122,6 +128,9 @@ pk_get_study_by_one <- function(nex) {
 
 # get meta data for study matrix from one nexml object
 pk_get_study_meta_by_one <- function(nex) {
+
+  # NULLing out : for the R CMD CHECK
+  rel <- label <- href <- otu <- otus.x <- char <- NULL
 
   id_taxa <- get_taxa(nex)
   id_taxa_meta <- get_metadata(nex, "otu")

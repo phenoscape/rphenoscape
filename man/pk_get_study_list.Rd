@@ -23,7 +23,7 @@ input entity expression.
 }
 \examples{
 
-slist <- pk_get_study_list(taxon = "Ictalurus", entity = "fin")
+slist <- pk_get_study_list(taxon = "Ictalurus australis", entity = "fin")
 nex_list <- pk_get_study_xml(slist$id)
 pk_get_study(nex_list)
 pk_get_study_meta(nex_list)

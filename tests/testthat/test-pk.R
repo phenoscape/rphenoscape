@@ -14,16 +14,17 @@ test_that("Test term search", {
   g <- pk_gene_detail("socs5")
   gg <- pk_gene_detail("socs5", "Danio rerio")
 
-  expect_output(str(a), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
-  expect_output(str(b), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
-  expect_output(str(c), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
+  expect_is(a, 'data.frame')
+  expect_is(b, 'data.frame')
+  expect_is(c, 'data.frame')
+
 
   expect_equal(aa, FALSE)
   expect_equal(bb, FALSE)
   expect_equal(cc, FALSE)
 
-  expect_output(str(g), "data.frame")
-  expect_output(str(gg), "data.frame")
+  expect_is(g, "data.frame")
+  expect_is(gg, "data.frame")
 })
 
 test_that("Test retriving IRI", {
@@ -80,22 +81,23 @@ test_that("Test OnToTrace", {
   expect_output(class(multi_nex), 'nexml')
 
   err1 <- function() pk_get_ontotrace_xml(taxon = "Ictalurus TT", entity = "fin", relation = "other relation")
-  err2 <- function() pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus XXX"), entity = c("fin", "spine"))
-  err3 <- function() pk_get_ontotrace_xml("Ictalurus TT", "fin")
+
+  f1 <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus XXX"), entity = c("fin", "spine"))
+  f2 <- pk_get_ontotrace_xml("Ictalurus TT", "fin")
 
   expect_error(err1())
-  expect_error(err2())
-  expect_error(err3())
+  expect_equal(f1, FALSE)
+  expect_equal(f2, FALSE)
 
   single_mat <- pk_get_ontotrace(single_nex)
   multi_mat <- pk_get_ontotrace(multi_nex)
 
-  expect_output(str(single_mat), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
-  expect_output(str(multi_mat), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
+  expect_is(single_mat, 'data.frame')
+  expect_is(multi_mat, 'data.frame')
 
   single_met <- pk_get_ontotrace_meta(single_nex)
-  expect_output(str(single_met), "List of 2")
 
+  expect_is(single_met, 'list')
 
 })
 
@@ -107,11 +109,11 @@ test_that("Test getting study information", {
     ss1 <- pk_get_study(s1)
     sss1 <- pk_get_study_meta(s1)
 
-    expect_output(str(slist), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
-    expect_output(class(s1[[1]]), 'nexml')
-    expect_output(class(ss1[[1]]), 'data.frame')
-    expect_output(class(sss1[[1]]), 'list')
-    expect_output(str(sss1[[1]]$id_taxa), "Classes ‘tbl_df’, ‘tbl’ and 'data.frame'")
+    expect_is(slist, 'data.frame')
+    expect_is(s1[[1]], 'nexml')
+    expect_is(ss1[[1]], 'data.frame')
+    expect_is(sss1[[1]], 'list')
+    expect_is(sss1[[1]]$id_taxa, 'data.frame')
 
 })
 

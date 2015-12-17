@@ -6,7 +6,7 @@
 \alias{pk_phenotype_detail}
 \alias{pk_taxon_detail}
 \alias{pk_terms}
-\title{Get traits}
+\title{Get details about a given term}
 \usage{
 pk_taxon_detail(term, verbose = FALSE)
 
@@ -14,7 +14,7 @@ pk_anatomical_detail(term, verbose = FALSE)
 
 pk_phenotype_detail(term, verbose = FALSE)
 
-pk_gene_detail(term, taxon = "", verbose = FALSE)
+pk_gene_detail(term, verbose = FALSE)
 }
 \arguments{
 \item{term}{character. The term to be searched.}
@@ -25,7 +25,7 @@ pk_gene_detail(term, taxon = "", verbose = FALSE)
 A data.frame with term id, label, and definition
 }
 \description{
-Retrieve details about a taxa, an anatomical structure, a gene, or a phenotype.
+Retrieve details about a taxon, an anatomical structure, a gene, or a phenotype.
 }
 \examples{
 pk_taxon_detail("Coralliozetus")

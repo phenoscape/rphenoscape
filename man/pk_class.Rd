@@ -14,7 +14,9 @@ pk_anatomical_class(x, verbose = TRUE)
 pk_phenotype_class(x, verbose = TRUE)
 }
 \arguments{
-\item{x}{characters, name of the term}
+\item{x}{character. Name of the term}
+
+\item{verbose}{logical: optional. If TRUE (default), informative messages printed.}
 }
 \value{
 A list containing data.frame
