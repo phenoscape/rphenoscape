@@ -1,6 +1,7 @@
 context("rphenoscape test")
 
 test_that("Test term search", {
+  skip_on_cran()
   a <- pk_taxon_detail("Coralliozetus")
   b <- pk_phenotype_detail("shape")
   c <- pk_anatomical_detail("basihyal bone")
@@ -26,6 +27,7 @@ test_that("Test term search", {
 })
 
 test_that("Test retriving IRI", {
+  skip_on_cran()
   i <- pk_get_iri("Coralliozetus", "vto")
   ii <- pk_get_iri("Coralliozetus TT", "vto")
   iii <- pk_get_iri("Coralliozetus", "pato")
@@ -37,6 +39,7 @@ test_that("Test retriving IRI", {
 
 
 test_that("Test getting classification information", {
+  skip_on_cran()
   t <- pk_taxon_class("Fisherichthys")
   tt <- pk_taxon_class("Fisherichthys folmeri")
   ttt <- pk_taxon_class("Fisherichthys TT")
@@ -60,6 +63,7 @@ test_that("Test getting classification information", {
 })
 
 test_that("Test Descendant/Ancestor", {
+  skip_on_cran()
   fl <- pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
   tl <- pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
 
@@ -68,6 +72,7 @@ test_that("Test Descendant/Ancestor", {
 })
 
 test_that("Test OnToTrace", {
+  skip_on_cran()
   single_nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
   multi_nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin spine", "pelvic splint"))
 
@@ -96,6 +101,7 @@ test_that("Test OnToTrace", {
 
 #
 test_that("Test getting study information", {
+    skip_on_cran()
     slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
     s1 <- pk_get_study_xml('https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&btnG=&hl=en&as_sdt=0%2C42')
     ss1 <- pk_get_study(s1)
