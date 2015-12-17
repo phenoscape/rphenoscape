@@ -1,13 +1,11 @@
 #' Get traits
-#'
 #' @name pk_terms
 #' @import httr
-#' @param term characters
-#' @param verbose logical; optional. If TRUE (default), informative messages printed.
-#'
+#' @param term character. The term to be searched.
+#' @param verbose logical: optional. If TRUE (default), informative messages printed.
 #' @return A data.frame with term id, label, and definition
 #'
-#' @description Retrieve details about a taxa, an anatomical structure, or a phenotype.
+#' @description Retrieve details about a taxa, an anatomical structure, a gene, or a phenotype.
 #'
 #' @examples
 #' pk_taxon_detail("Coralliozetus")
@@ -55,15 +53,13 @@ pk_gene_detail <- function(term, taxon = "", verbose=FALSE) {
   jsonlite::fromJSON(out, simplifyVector = TRUE, flatten = TRUE)$results
 }
 
-#' Test if a taxa is extinct.
+#' Test if a taxon is extinct.
 #'
-#' @param term character, the taxon name to be tested.
+#' @param taxon character, the taxon name to be tested.
 #' @return logical, TRUE if extinct, FALSE if not
-#' @example
-#' pk_is_extinct("Fisherichthys")
 #' @export
-pk_is_extinct <- function(term) {
-  det <- pk_taxon_detail(term)
+pk_is_extinct <- function(taxon) {
+  det <- pk_taxon_detail(taxon)
   if (is.logical(det)) return(invisible(FALSE))
   det$extinct
 }

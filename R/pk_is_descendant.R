@@ -1,6 +1,6 @@
 #' pk_is_descendant
-#' @param taxon
-#' @param candidates, a list or vector of taxon IRIs, now only works for one candiate input
+#' @param taxon character. The taxon name
+#' @param candidates a list or vector of taxon IRIs, now only works for one candiate input
 #' @return a list of matching ids
 #'
 #' @name pk_desc

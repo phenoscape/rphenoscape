@@ -54,7 +54,7 @@ pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_o
 
 
 #' pk_get_study_xml
-#' @param study_ids
+#' @param study_ids, a list of study ids.
 #' @return a list of nexml objects
 #' @export
 pk_get_study_xml <- function(study_ids) {

@@ -11,12 +11,19 @@ pk_is_descendant(taxon, candidates)
 pk_is_ancestor(taxon, candidates)
 }
 \arguments{
-\item{candidates, }{a list or vector of taxon IRIs, now only works for one candiate input}
+\item{taxon}{character. The taxon name}
+
+\item{candidates}{a list or vector of taxon IRIs, now only works for one candiate input}
 }
 \value{
 a list of matching ids
 }
 \description{
 pk_is_descendant
+}
+\examples{
+pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
+pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
+
 }
 

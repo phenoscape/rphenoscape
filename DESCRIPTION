@@ -5,8 +5,7 @@ Version: 0.1
 Date: 2015-09-09
 Authors@R: person("Hong", "Xu", email = "hx23@duke.edu", role = c("aut", "cre"))
 Maintainer: Hong Xu <hx23@duke.edu>
-Description: Most of the services provided with Phenoscape Knowledgebase web API return data in JSON format, plain text (usually tab-delimited), and NeXML.
-This package facilitates the interfacing to the the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices.
+Description: Most of the services provided with Phenoscape Knowledgebase web API return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices.
 License: What license is it under?
 LazyData: TRUE
 URL: https://github.com/xu-hong/rphenoscape

@@ -7,7 +7,11 @@
 pk_get_study_list(taxon, entity, relation = "part of")
 }
 \arguments{
-\item{relation}{}
+\item{taxon}{character. The taxon name.}
+
+\item{entity}{character. The entity name.}
+
+\item{relation}{character. Can be chosen from "part of" and "develops from".}
 }
 \value{
 data.frame

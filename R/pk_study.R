@@ -1,7 +1,7 @@
 #' Query the list of studies by taxa and anatomical entities
-#' @param taxon
-#' @param entity
-#' @param relation
+#' @param taxon character. The taxon name.
+#' @param entity character. The entity name.
+#' @param relation character. Can be chosen from "part of" and "develops from".
 #'
 #' @import RNeXML
 #' @import dplyr

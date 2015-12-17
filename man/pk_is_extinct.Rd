@@ -2,17 +2,17 @@
 % Please edit documentation in R/pk_terms.R
 \name{pk_is_extinct}
 \alias{pk_is_extinct}
-\title{Test if a taxa is extinct.}
+\title{Test if a taxon is extinct.}
 \usage{
-pk_is_extinct(term)
+pk_is_extinct(taxon)
 }
 \arguments{
-\item{term}{character, the taxon name to be tested.}
+\item{taxon}{character, the taxon name to be tested.}
 }
 \value{
 logical, TRUE if extinct, FALSE if not
 }
 \description{
-Test if a taxa is extinct.
+Test if a taxon is extinct.
 }
 

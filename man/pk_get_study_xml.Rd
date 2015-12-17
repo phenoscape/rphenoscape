@@ -6,6 +6,9 @@
 \usage{
 pk_get_study_xml(study_ids)
 }
+\arguments{
+\item{study_ids, }{a list of study ids.}
+}
 \value{
 a list of nexml objects
 }

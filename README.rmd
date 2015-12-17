@@ -1,9 +1,14 @@
 
 # rphenoscape: R package to make phenotypic traits from the Phenoscape Knowledgebase available from within R.
+
+[![Build Status](https://travis-ci.org/xu-hong/rphenoscape.svg?branch=master)](https://travis-ci.org/xu-hong/rphenoscape)
+
 * Maintainer: Hong Xu
 * Author: Hong Xu, Hilmar Lapp
 
-Most of the services provided with Phenoscape Knowledgebase web API return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices. 
+
+Most of the services provided with [Phenoscape Knowledgebase web API](http://docs.phenoscapekb.apiary.io) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices. 
+
 
 ## Getting Started
 The development version of rphenoscape is available on [Github](www.github.com/xu-hong/rphenoscape). With the `devtools` package installed on your system, rphenoscape can be installed using:
@@ -85,15 +90,15 @@ pk_get_ontotrace_meta(nex)
 ```
 
 ## Study Matrix
-Retrieve the list of studies.
+Retrieve the list of studies (results returned as ```data.frame```).
 ```{r}
 (slist <- pk_get_study_list(taxon = "Ictalurus australis", entity = "fin"))
 ```
-Get the ReXML object from the study id.
+Get the ReXML object for each study id.
 ```{r}
 (nex_list <- pk_get_study_xml(slist$id))
 ```
-Retrieve the study matrix and corresponding meta data.
+From the list of ReXML objects, retrieve the study matrices and corresponding meta data.
 ```{r}
 study_matrix <- pk_get_study(nex_list)
 study_matrix[[1]][1:5, 1:5]

@@ -17,16 +17,20 @@ pk_phenotype_detail(term, verbose = FALSE)
 pk_gene_detail(term, taxon = "", verbose = FALSE)
 }
 \arguments{
-\item{term}{characters}
+\item{term}{character. The term to be searched.}
 
-\item{verbose}{logical; optional. If TRUE (default), informative messages printed.}
-
-\item{taxon, }{optional.}
+\item{verbose}{logical: optional. If TRUE (default), informative messages printed.}
 }
 \value{
 A data.frame with term id, label, and definition
 }
 \description{
-Retrieve details about a taxa, an anatomical structure, or a phenotype.
+Retrieve details about a taxa, an anatomical structure, a gene, or a phenotype.
+}
+\examples{
+pk_taxon_detail("Coralliozetus")
+pk_anatomical_detail("basihyal bone")
+pk_gene_detail("socs5")
+
 }
 
