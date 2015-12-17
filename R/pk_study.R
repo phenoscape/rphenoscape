@@ -13,12 +13,12 @@
 #' input entity expression.
 #'
 #' @examples
-#'
+#' \dontrun{
 #' slist <- pk_get_study_list(taxon = "Ictalurus australis", entity = "fin")
 #' nex_list <- pk_get_study_xml(slist$id)
 #' pk_get_study(nex_list)
 #' pk_get_study_meta(nex_list)
-#'
+#' }
 #' @export
 pk_get_study_list <- function(taxon, entity, relation = "part of") {
 
