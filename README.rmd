@@ -1,0 +1,107 @@
+
+# rphenoscape: R package to make phenotypic traits from the Phenoscape Knowledgebase available from within R.
+* Maintainer: Hong Xu
+* Author: Hong Xu, Hilmar Lapp
+
+Most of the services provided with Phenoscape Knowledgebase web API return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices. 
+
+## Getting Started
+The development version of rphenoscape is available on [Github](www.github.com/xu-hong/rphenoscape). With the `devtools` package installed on your system, rphenoscape can be installed using:
+
+
+```{r compile-settings, include=FALSE}
+## Set the paths for cache and figure
+library(methods)
+library(knitr)
+opts_chunk$set(cache = 1)
+basename <- gsub(".Rmd", "", knitr:::knit_concord$get('infile')) 
+opts_chunk$set(fig.path = paste("figure/", basename, "-", sep=""),
+               cache.path = paste("cache/", basename, "/", sep=""))
+```
+
+```{r, echo=FALSE}
+library(knitr)
+opts_knit$set(upload.fun = imgur_upload)
+opts_chunk$set(tidy=FALSE, warning=FALSE, message=FALSE, comment = NA, verbose = TRUE)
+```
+
+
+```{r, eval = FALSE}
+library(devtools)
+install_github("rphenoscape", "xu-hong")
+library(rphenoscape)
+```
+```{r, echo = FALSE}
+library(rphenoscape)
+```
+## Term Search 
+
+Search for details for a given taxon:
+```{r}
+pk_taxon_detail("Coralliozetus")
+```
+
+Search for details for a given anatomical structure:
+```{r}
+pk_anatomical_detail("basihyal bone")
+```
+
+Search for details for a given gene name:
+```{r}
+pk_gene_detail("socs5")
+```
+
+#### Miscellaneous methods:
+Resolve a given term to its IRI:
+```{r}
+pk_get_iri("Coralliozetus", "vto")
+pk_get_iri("basihyal bone", "uberon")
+```
+
+Test if a taxon is extinct:
+```{r}
+pk_is_extinct("Fisherichthys")
+```
+Get the ancestors/descendants of a taxon from a given list:
+```{r}
+pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
+pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
+```
+
+
+## Ontotrace Matrix
+First get the NeXML object of the search result.
+```{r}
+nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
+```
+Then retrieve wanted information from the NeXML object.  
+Get OntoTrace Matrix:
+```{r}
+pk_get_ontotrace(nex)
+```
+Get meta data:
+```{r}
+pk_get_ontotrace_meta(nex)
+```
+
+## Study Matrix
+Retrieve the list of studies.
+```{r}
+(slist <- pk_get_study_list(taxon = "Ictalurus australis", entity = "fin"))
+```
+Get the ReXML object from the study id.
+```{r}
+(nex_list <- pk_get_study_xml(slist$id))
+```
+Retrieve the study matrix and corresponding meta data.
+```{r}
+study_matrix <- pk_get_study(nex_list)
+study_matrix[[1]][1:5, 1:5]
+```
+```{r}
+study_metas <- pk_get_study_meta(nex_list)
+study_metas[[1]]
+```
+
+[![ropensci_footer](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
+
