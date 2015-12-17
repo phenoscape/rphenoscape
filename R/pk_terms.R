@@ -9,6 +9,10 @@
 #'
 #' @description Retrieve details about a taxa, an anatomical structure, or a phenotype.
 #'
+#' @examples
+#' pk_taxon_detail("Coralliozetus")
+#' pk_anatomical_detail("basihyal bone")
+#' pk_gene_detail("socs5")
 #'
 #' @export
 #' @rdname pk_terms
@@ -39,9 +43,6 @@ pk_phenotype_detail <- function(term, verbose=FALSE) {
 
 #'
 #' @export
-#' @param term
-#' @param taxon, optional.
-#'
 #' @rdname pk_terms
 pk_gene_detail <- function(term, taxon = "", verbose=FALSE) {
   # TODO: resolve taxon to NCBI IRI
@@ -58,13 +59,15 @@ pk_gene_detail <- function(term, taxon = "", verbose=FALSE) {
 #'
 #' @param term character, the taxon name to be tested.
 #' @return logical, TRUE if extinct, FALSE if not
-#'
+#' @example
+#' pk_is_extinct("Fisherichthys")
 #' @export
 pk_is_extinct <- function(term) {
   det <- pk_taxon_detail(term)
   if (is.logical(det)) return(invisible(FALSE))
   det$extinct
 }
+
 
 pk_details <- function(term, as, verbose=FALSE) {
   iri <- pk_get_iri(term, as)

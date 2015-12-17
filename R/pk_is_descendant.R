@@ -4,6 +4,9 @@
 #' @return a list of matching ids
 #'
 #' @name pk_desc
+#' @examples
+#' pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
+#' pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
 #'
 #' @export
 #' @rdname pk_desc
