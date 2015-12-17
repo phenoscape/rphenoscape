@@ -7,8 +7,13 @@
 #' @param variable_only logical: Optional. Default is TRUE.
 #' @return RNeXML object
 #' @examples
-#' nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
-#' nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine", get_metadata = TRUE)
+#' \dontrun{
+#' nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus australis", entity = "fin")
+#' }
+#' \dontrun{
+#' nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"),
+#'                             entity = "fin spine")
+#' }
 #' @export
 pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_only = TRUE) {
 
@@ -27,12 +32,13 @@ pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_o
 
   # FALSE will be returned by pk_get_iri if there's no match in database
   if (FALSE %in% taxon_iris || FALSE %in% entity_iris) {
-    stop(paste(c("Could not find",
-                 taxon[which(taxon_iris == FALSE)],
-                 entity[which(entity_iris == FALSE)],
-                 "in the database."),
-               collapse = " * "),
-         call. = FALSE)
+#     stop(paste(c("Could not find",
+#                  taxon[which(taxon_iris == FALSE)],
+#                  entity[which(entity_iris == FALSE)],
+#                  "in the database."),
+#                collapse = " * "),
+#          call. = FALSE)
+    return(invisible(FALSE))
   }
 
   # insert necessary "<" and ">" before concatenating string
