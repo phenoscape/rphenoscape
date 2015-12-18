@@ -22,8 +22,9 @@ a list of matching ids
 pk_is_descendant
 }
 \examples{
+\dontrun{
 pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
 pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
-
+}
 }
 

@@ -5,9 +5,10 @@
 #'
 #' @name pk_desc
 #' @examples
+#' \dontrun{
 #' pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
 #' pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
-#'
+#' }
 #' @export
 #' @rdname pk_desc
 pk_is_descendant <- function(taxon, candidates) {
