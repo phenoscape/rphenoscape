@@ -11,7 +11,6 @@
 #' Return studies containing taxa which are members of the optional input taxon
 #' expression and are have annotated phenotypes which are relevant to the optional
 #' input entity expression.
-#'
 #' @examples
 #' \dontrun{
 #' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
