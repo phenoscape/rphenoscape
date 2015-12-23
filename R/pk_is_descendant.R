@@ -1,7 +1,7 @@
 #' pk_is_descendant
 #' @param taxon character. The taxon name
-#' @param candidates a list or vector of taxon IRIs, now only works for one candiate input
-#' @return a list of matching ids
+#' @param candidates a list of taxa
+#' @return a list of TRUE/FALSE, indicating if the corresponding taxon in the candidate list is descendant/ancestor or not.
 #'
 #' @name pk_desc
 #' @examples
@@ -12,34 +12,29 @@
 #' @export
 #' @rdname pk_desc
 pk_is_descendant <- function(taxon, candidates) {
-  taxon_iris <- lapply(c(taxon, candidates), FUN = pk_get_iri, as = "vto", verbose = F)
-  if (FALSE %in% taxon_iris) return(invisible(FALSE))
-
-  queryseq <- list(iri = taxon_iris[[1]])
-  result <- pk_GET(pk_descendant_url, queryseq)$results
-  if (length(result) == 0) {
-    message(paste("Could not find the descendants of", taxon, "in the database."))
-    return(invisible(FALSE))
-  }
-  taxon_iris[-1] %in% result$`@id`
-
+  pk_is(taxon, candidates, 'descendant')
 }
 
 #' @export
 #' @rdname pk_desc
 pk_is_ancestor <- function(taxon, candidates) {
+  pk_is(taxon, candidates, 'ancestor')
+}
+
+
+pk_is <- function(taxon, candidates, thetype) {
   taxon_iris <- lapply(c(taxon, candidates), FUN = pk_get_iri, as = "vto", verbose = F)
   if (FALSE %in% taxon_iris) return(invisible(FALSE))
 
   queryseq <- list(iri = taxon_iris[[1]])
-  result <- pk_GET(pk_anacestor_url, queryseq)$results
+  theurl <- ifelse(thetype == 'ancestor', pk_anacestor_url, pk_descendant_url)
+  result <- pk_GET(theurl, queryseq)$results
   if (length(result) == 0) {
-    message(paste("Could not find the ancestors of", taxon, "in the database."))
+    message(paste("Could not find the", thetype, "of", taxon, "in the database."))
     return(invisible(FALSE))
   }
   taxon_iris[-1] %in% result$`@id`
 }
-
 
 pk_is_descendant_ <- function(taxon, candidates) {
   taxon_iris <- lapply(c(taxon, candidates), FUN = pk_get_iri, as = "vto", verbose = F)

@@ -13,10 +13,10 @@ pk_is_ancestor(taxon, candidates)
 \arguments{
 \item{taxon}{character. The taxon name}
 
-\item{candidates}{a list or vector of taxon IRIs, now only works for one candiate input}
+\item{candidates}{a list of taxa}
 }
 \value{
-a list of matching ids
+a list of TRUE/FALSE, indicating if the corresponding taxon in the candidate list is descendant/ancestor or not.
 }
 \description{
 pk_is_descendant
