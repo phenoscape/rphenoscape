@@ -22,10 +22,11 @@ expression and are have annotated phenotypes which are relevant to the optional
 input entity expression.
 }
 \examples{
+\dontrun{
 slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
-nex_list <- pk_get_study_xml(slist$id[1]) # retrieve the matrix for the 1st study
+nex_list <- pk_get_study_xml(slist$id[2]) # retrieve the matrix for the 2nd study
 pk_get_study(nex_list)
 pk_get_study_meta(nex_list)
-
+}
 }
 
