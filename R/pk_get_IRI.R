@@ -1,7 +1,7 @@
 #' Resolve a text term into IRI
 #'
 #' @param text character. The term to be resolved
-#' @param as character. Ontology type. For a taxon, use'vto', anatomical structure, 'uberon', phenotype, 'pato'.
+#' @param as character. Ontology type. For a taxon, use "vto", anatomical structure, "uberon", phenotype, "pato".
 #' @param verbose logical: optional. If TRUE (default), informative messages printed.
 #'
 #' @return character. The resolved IRI.

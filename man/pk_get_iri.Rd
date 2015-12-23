@@ -9,7 +9,7 @@ pk_get_iri(text, as, verbose = FALSE)
 \arguments{
 \item{text}{character. The term to be resolved}
 
-\item{as}{character. Ontology type. For a taxon, use'vto', anatomical structure, 'uberon', phenotype, 'pato'.}
+\item{as}{character. Ontology type. For a taxon, use "vto", anatomical structure, "uberon", phenotype, "pato".}
 
 \item{verbose}{logical: optional. If TRUE (default), informative messages printed.}
 }
