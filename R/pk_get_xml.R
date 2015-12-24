@@ -62,6 +62,11 @@ pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_o
 #' pk_get_study_xml
 #' @param study_ids, a list of study ids.
 #' @return a list of nexml objects
+#' @examples
+#' \dontrun{
+#' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
+#' nex_list <- pk_get_study_xml(slist$id)
+#' }
 #' @export
 pk_get_study_xml <- function(study_ids) {
 

@@ -14,9 +14,6 @@
 #' @examples
 #' \dontrun{
 #' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
-#' nex_list <- pk_get_study_xml(slist$id[2]) # retrieve the matrix for the 2nd study
-#' pk_get_study(nex_list)
-#' pk_get_study_meta(nex_list)
 #' }
 #' @export
 pk_get_study_list <- function(taxon, entity, relation = "part of") {
@@ -56,7 +53,14 @@ pk_get_study_list <- function(taxon, entity, relation = "part of") {
 }
 
 #' pk_get_study
-#' @param nexmls, a list of RNeXml object
+#' @param nexmls, a list of NeXml object
+#' @examples
+#' \dontrun{
+#' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
+#' nex_list <- pk_get_study_xml(slist$id) # get the list of NeXML objects for the studies
+#' pk_get_study(nex_list) # retrieve the study matrices
+#' pk_get_study_meta(nex_list) # retrieve the meta data for the studies
+#' }
 #' @export
 pk_get_study <- function(nexmls) {
 
@@ -73,7 +77,14 @@ pk_get_study <- function(nexmls) {
 }
 
 #' pk_get_study_meta
-#' @param nexmls, a list of RNeXml object
+#' @param nexmls, a list of NeXml object
+#' @examples
+#' \dontrun{
+#' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
+#' nex_list <- pk_get_study_xml(slist$id) # get the list of NeXML objects for the studies
+#' pk_get_study(nex_list) # retrieve the study matrices
+#' pk_get_study_meta(nex_list) # retrieve the meta data for the studies
+#' }
 #' @export
 pk_get_study_meta <- function(nexmls) {
 

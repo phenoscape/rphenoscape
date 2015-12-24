@@ -3,20 +3,20 @@
 #' @param candidates a list of taxa
 #' @return a list of TRUE/FALSE, indicating if the corresponding taxon in the candidate list is descendant/ancestor or not.
 #'
-#' @name pk_desc
+#' @name pk_is
 #' @examples
 #' \dontrun{
 #' pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
 #' pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
 #' }
 #' @export
-#' @rdname pk_desc
+#' @rdname pk_is
 pk_is_descendant <- function(taxon, candidates) {
   pk_is(taxon, candidates, 'descendant')
 }
 
 #' @export
-#' @rdname pk_desc
+#' @rdname pk_is
 pk_is_ancestor <- function(taxon, candidates) {
   pk_is(taxon, candidates, 'ancestor')
 }
