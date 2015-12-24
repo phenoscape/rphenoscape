@@ -2,7 +2,7 @@
 % Please edit documentation in R/pk_get_xml.R
 \name{pk_get_ontotrace_xml}
 \alias{pk_get_ontotrace_xml}
-\title{pk_get_ontotrace_xml}
+\title{Return the NeXML object}
 \usage{
 pk_get_ontotrace_xml(taxon, entity, relation = "part of",
   variable_only = TRUE)
@@ -20,7 +20,7 @@ pk_get_ontotrace_xml(taxon, entity, relation = "part of",
 RNeXML object
 }
 \description{
-pk_get_ontotrace_xml
+Return the NeXML object
 }
 \examples{
 \dontrun{

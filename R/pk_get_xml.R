@@ -1,4 +1,4 @@
-#' pk_get_ontotrace_xml
+#' Return the NeXML object
 #' @import RNeXML
 #' @import dplyr
 #' @param taxon character: Required. A single character string or a vector of taxa.

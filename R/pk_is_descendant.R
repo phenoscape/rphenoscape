@@ -1,4 +1,4 @@
-#' pk_is_descendant
+#' Test if a list of taxa is descendant/ancestor of a given term
 #' @param taxon character. The taxon name
 #' @param candidates a list of taxa
 #' @return a list of TRUE/FALSE, indicating if the corresponding taxon in the candidate list is descendant/ancestor or not.
