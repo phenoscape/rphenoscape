@@ -7,7 +7,7 @@
 * Author: Hong Xu, Hilmar Lapp
 
 
-Most of the services provided with [Phenoscape Knowledgebase web API](http://docs.phenoscapekb.apiary.io) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices. 
+Most of the services provided with [Phenoscape Knowledgebase web API](http://docs.phenoscapekb.apiary.io) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices. 
 
 
 ## Getting Started
@@ -33,13 +33,67 @@ opts_chunk$set(tidy=FALSE, warning=FALSE, message=FALSE, comment = NA, verbose =
 
 ```{r, eval = FALSE}
 library(devtools)
-install_github("rphenoscape", "xu-hong")
+install_github("xu-hong/rphenoscape")
 library(rphenoscape)
 ```
 ```{r, echo = FALSE}
 library(rphenoscape)
 ```
-## Term Search 
+
+## Character Matrix via Ontotrace
+Use Ontotrace to obtain a character matrix for a taxonomic clade and anatomical region of interest. 
+
+The [Phenoscape Knowledgebase web API](http://docs.phenoscapekb.apiary.io/#reference/ontotrace) returns the evolutionary character matrix in NeXML format. The first step is to get the NeXML object using ```pk_get_ontotrace_xml``` method. 
+```{r}
+nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
+```
+Then retrieve wanted information from the NeXML object.  
+Get character matrix:
+```{r}
+(m <- pk_get_ontotrace(nex))
+```
+The character matrix can be integrated with other data, such as meta data which include taxon identifiers, character identifiers, etc.
+Get meta data:
+```{r}
+(meta <- pk_get_ontotrace_meta(nex))
+```
+
+## Character Matrices for Studies
+To obtain the character matrices for studies published for a taxonomic clade and anatomical region of interest.
+
+First step is to retrieve the list of studies given a taxonomic clade and anatomical structures (returned as ```data.frame```).
+```{r}
+(slist <- pk_get_study_list(taxon = "Ictalurus australis", entity = "fin"))
+```
+
+Based off the study ids retained from previous step, get the evolutionary character matrix for each study id (in NeXML-format) using ```pk_get_study_xml```.
+```{r}
+(nex_list <- pk_get_study_xml(slist$id))
+```
+
+From the list of ReXML objects, retrieve the character matrices.
+```{r}
+study_matrix <- pk_get_study(nex_list)
+study_matrix[[1]][1:5, 1:5]
+```
+
+Each character matrix can be integrated with other data, such as meta data which include taxon identifiers, character identifiers, etc.
+Get meta data:
+```{r}
+study_metas <- pk_get_study_meta(nex_list)
+study_metas[[1]]
+```
+
+## Obtain Other Data
+### Subsetting a Matrix
+A matrix obtained from Phenoscape can be subsetted (filtered) by taxonomic subgroup or anatomical part. For example, using ```pk_is_descendant``` and ```pk_is_ancestor``` methods, a matrix can be subsetted to a taxonomic subgroup that is the descendants/ancestors of a given taxon.
+```{r}
+m # original character matrix
+(is_desc <- pk_is_descendant('Ictalurus', m$taxa))
+m[is_desc, ] #subsetting to the descendants of Ictalurus
+```
+
+### Term Search
 
 Search for details for a given taxon:
 ```{r}
@@ -51,10 +105,6 @@ Search for details for a given anatomical structure:
 pk_anatomical_detail("basihyal bone")
 ```
 
-Search for details for a given gene name:
-```{r}
-pk_gene_detail("socs5")
-```
 
 #### Miscellaneous methods:
 Resolve a given term to its IRI:
@@ -66,46 +116,6 @@ pk_get_iri("basihyal bone", "uberon")
 Test if a taxon is extinct:
 ```{r}
 pk_is_extinct("Fisherichthys")
-```
-Get the ancestors/descendants of a taxon from a given list:
-```{r}
-pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
-pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
-```
-
-
-## Ontotrace Matrix
-First get the NeXML object of the search result.
-```{r}
-nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
-```
-Then retrieve wanted information from the NeXML object.  
-Get OntoTrace Matrix:
-```{r}
-pk_get_ontotrace(nex)
-```
-Get meta data:
-```{r}
-pk_get_ontotrace_meta(nex)
-```
-
-## Study Matrix
-Retrieve the list of studies (results returned as ```data.frame```).
-```{r}
-(slist <- pk_get_study_list(taxon = "Ictalurus australis", entity = "fin"))
-```
-Get the ReXML object for each study id.
-```{r}
-(nex_list <- pk_get_study_xml(slist$id))
-```
-From the list of ReXML objects, retrieve the study matrices and corresponding meta data.
-```{r}
-study_matrix <- pk_get_study(nex_list)
-study_matrix[[1]][1:5, 1:5]
-```
-```{r}
-study_metas <- pk_get_study_meta(nex_list)
-study_metas[[1]]
 ```
 
 [![ropensci_footer](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
