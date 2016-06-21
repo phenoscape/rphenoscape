@@ -51,7 +51,9 @@ pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_o
 
   res <- httr::GET(ontotrace_url, query = queryseq)
   stop_for_pk_status(res)
-  out <- httr::content(res, as = "parsed")
+  # if passing parsed XML to RNeXML, it needs to be in classes of the XML
+  # package, but httr::content now uses the xml2 package for parsing text/xml
+  out <- httr::content(res, as = "text")
 
   nex <- nexml_read(out)
   return(nex)
@@ -78,7 +80,9 @@ pk_get_study_xml <- function(study_ids) {
     queryseq <- list(iri = s)
     res <- httr::GET(pk_study_matrix_url, query = queryseq)
     stop_for_pk_status(res)
-    out <- httr::content(res, as = "parsed")
+    # if passing parsed XML to RNeXML, it needs to be in classes of the XML
+    # package, but httr::content now uses the xml2 package for parsing text/xml
+    out <- httr::content(res, as = "text")
 
     message("Parse NeXML....")
     nex <- nexml_read(out)
