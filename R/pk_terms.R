@@ -73,7 +73,7 @@ pk_details <- function(term, as, verbose=FALSE) {
 
   queryseq <- list(iri = iri)
   lst <- pk_GET("http://kb.phenoscape.org/api/term", queryseq)
-  dplyr::as_data_frame(lst)
+  dplyr::as_data_frame(Filter(function(x) !is.list(x), lst))
 }
 
 pk_taxon_url <- "http://kb.phenoscape.org/api/taxon"
