@@ -77,8 +77,8 @@ test_that("Test OnToTrace", {
   single_nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
   multi_nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin spine", "pelvic splint"))
 
-  expect_output(class(single_nex), 'nexml')
-  expect_output(class(multi_nex), 'nexml')
+  expect_s4_class(single_nex, 'nexml')
+  expect_s4_class(multi_nex, 'nexml')
 
   err1 <- function() pk_get_ontotrace_xml(taxon = "Ictalurus TT", entity = "fin", relation = "other relation")
 
