@@ -1,6 +1,8 @@
 .RData
-.Rbuildignore
 .Rhistory
 .Rproj.user/
 rphenoscape.Rproj
 .Rproj.user
+cache
+rphenoscape*.tar.gz
+*.Rcheck

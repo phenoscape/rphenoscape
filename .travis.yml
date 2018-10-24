@@ -2,3 +2,6 @@ language: r
 cache: packages
 r:
   - release
+
+apt_packages:
+  - libgit2-dev

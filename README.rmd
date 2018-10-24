@@ -1,7 +1,12 @@
+---
+output:
+  html_document:
+    keep_md: yes
+---
 
 # rphenoscape: R package to make phenotypic traits from the Phenoscape Knowledgebase available from within R.
 
-[![Build Status](https://travis-ci.org/xu-hong/rphenoscape.svg?branch=master)](https://travis-ci.org/xu-hong/rphenoscape)
+[![Build Status](https://travis-ci.org/phenoscape/rphenoscape.svg?branch=master)](https://travis-ci.org/phenoscape/rphenoscape)
 
 * Maintainer: Hong Xu
 * Author: Hong Xu, Hilmar Lapp
@@ -118,5 +123,5 @@ Test if a taxon is extinct:
 pk_is_extinct("Fisherichthys")
 ```
 
-[![ropensci_footer](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
+[![ropensci_footer](https://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
 
