@@ -20,4 +20,3 @@ pk_get_study(nex_list) # retrieve the study matrices
 pk_get_study_meta(nex_list) # retrieve the meta data for the studies
 }
 }
-

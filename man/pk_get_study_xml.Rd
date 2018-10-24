@@ -21,4 +21,3 @@ slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
 nex_list <- pk_get_study_xml(slist$id)
 }
 }
-

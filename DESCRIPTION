@@ -10,7 +10,7 @@ LazyData: TRUE
 URL: https://github.com/xu-hong/rphenoscape
 BugReports: https://github.com/xu-hong/rphenoscape/issues
 VignetteBuilder: knitr
-Roxygen: list(wrap = FALSE)
+Roxygen: list(markdown = TRUE)
 Depends: 
     R (>= 2.10)
 Imports: 
@@ -25,4 +25,4 @@ Suggests:
     plyr,
     rmarkdown
 Remotes: ropensci/RNeXML
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.0

@@ -15,4 +15,3 @@ logical, TRUE if extinct, FALSE if not
 \description{
 Test if a taxon is extinct.
 }
-

@@ -31,4 +31,3 @@ nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"),
                             entity = "fin spine")
 }
 }
-
