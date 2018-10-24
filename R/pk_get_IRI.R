@@ -62,9 +62,17 @@ anatomical_id <- function() 'http://purl.obolibrary.org/obo/uberon.owl'
 phenotype_id <- function() 'http://purl.obolibrary.org/obo/pato.owl'
 
 pk_GET <- function(url, query) {
-  res <- httr::GET(url, query = query)
+  res <- httr::GET(url, httr::accept_json(), query = query)
   stop_for_pk_status(res)
-  out <- httr::content(res, as = "text")
+  # if content-type is application/json, httr:content() doesn't assume UTF-8
+  # encoding if charset isn't provided by the server, arguably erroneously
+  # (because specifying a different charset would violate the spec)
+  enc <- NULL
+  if (startsWith(res$headers$`content-type`, "application/json") &&
+      length(grep("charset", res$headers$`content-type`, fixed = TRUE)) == 0) {
+    enc = "UTF-8"
+  }
+  out <- httr::content(res, as = "text", encoding = enc)
 
   jsonlite::fromJSON(out, simplifyVector = TRUE, flatten = TRUE)
 
