@@ -52,10 +52,14 @@ slist <- pk_get_study_list(entity = "pelvic fin", includeRels = c("part of"))
 nrow(slist)
 
 # including not only parts but also historical and serial homologs
-slist <- pk_get_study_list(entity = "pelvic fin", includeRels = c("part of", "serially homologous to", "historical homologous to"))
+slist <- pk_get_study_list(entity = "pelvic fin",
+                           includeRels = c("part of",
+                                           "serially homologous to",
+                                           "historical homologous to"))
 nrow(slist)
 # relationship names can be given as prefixes
-slist1 <- pk_get_study_list(entity = "pelvic fin", includeRels = c("part", "serial", "historical"))
+slist1 <- pk_get_study_list(entity = "pelvic fin",
+                            includeRels = c("part", "serial", "historical"))
 nrow(slist1) == nrow(slist)
 
 # or apply no filter, obtaining all studies in the KB
