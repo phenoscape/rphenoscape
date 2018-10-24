@@ -7,16 +7,15 @@
 pk_get_iri(text, as, verbose = FALSE)
 }
 \arguments{
-\item{text}{character. The term to be resolved}
+\item{text}{character. The term to be resolved.}
 
 \item{as}{character. Ontology type. For a taxon, use "vto", anatomical structure, "uberon", phenotype, "pato".}
 
 \item{verbose}{logical: optional. If TRUE (default), informative messages printed.}
 }
 \value{
-character. The resolved IRI.
+character. The resolved IRI, or the unmodified input \code{text} if it was already an HTTP URI.
 }
 \description{
 Resolve a text term into IRI
 }
-
