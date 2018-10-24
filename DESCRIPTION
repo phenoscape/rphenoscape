@@ -2,8 +2,8 @@ Package: rphenoscape
 Type: Package
 Title: Semantically rich phenotypic traits from the Phenoscape Knowledgebase
 Version: 0.1.1
-Authors@R: c(person("Hong", "Xu", email = "hx23@duke.edu", role = c("aut", "cre")),
-  person("Hilmar", "Lapp", email = "hilmar.lapp@duke.edu", role = c("aut"),
+Authors@R: c(person("Hong", "Xu", email = "hx23@duke.edu", role = "aut"),
+  person("Hilmar", "Lapp", email = "hilmar.lapp@duke.edu", role = c("cre", "aut"),
          comment = c(ORCID="0000-0001-9107-0714")))
 Description: This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices.
 License: MIT + file LICENSE

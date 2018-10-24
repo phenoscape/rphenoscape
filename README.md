@@ -5,8 +5,8 @@ rphenoscape: Semantically rich phenotypic traits from the Phenoscape Knowledgeba
 [![Build
 Status](https://travis-ci.org/phenoscape/rphenoscape.svg?branch=master)](https://travis-ci.org/phenoscape/rphenoscape)
 
--   Maintainer: Hong Xu
--   Author: Hong Xu, Hilmar Lapp
+- Author: Hong Xu, Hilmar Lapp
+- Maintainer: Hilmar Lapp
 
 Most of the services provided with [Phenoscape Knowledgebase web
 API](http://kb.phenoscape.org/apidocs/) return data in JSON format,
