@@ -7,7 +7,7 @@
 * Author: Hong Xu, Hilmar Lapp
 
 
-Most of the services provided with [Phenoscape Knowledgebase web API](http://docs.phenoscapekb.apiary.io) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices. 
+Most of the services provided with [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices. 
 
 
 ## Getting Started
@@ -30,7 +30,7 @@ library(rphenoscape)
 ## Character Matrix via Ontotrace
 Use Ontotrace to obtain a character matrix for a taxonomic clade and anatomical region of interest. 
 
-The [Phenoscape Knowledgebase web API](http://docs.phenoscapekb.apiary.io/#reference/ontotrace) returns the evolutionary character matrix in NeXML format. The first step is to get the NeXML object using ```pk_get_ontotrace_xml``` method. 
+The [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/#/OntoTrace/get_ontotrace) returns the evolutionary character matrix in NeXML format. The first step is to get the NeXML object using ```pk_get_ontotrace_xml``` method. 
 
 ```r
 nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
