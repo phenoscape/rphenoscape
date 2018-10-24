@@ -1,12 +1,15 @@
 #' Resolve a text term into IRI
 #'
-#' @param text character. The term to be resolved
+#' @param text character. The term to be resolved.
 #' @param as character. Ontology type. For a taxon, use "vto", anatomical structure, "uberon", phenotype, "pato".
 #' @param verbose logical: optional. If TRUE (default), informative messages printed.
 #'
-#' @return character. The resolved IRI.
+#' @return character. The resolved IRI, or the unmodified input `text` if it was already an HTTP URI.
 #' @export
 pk_get_iri <- function(text, as, verbose=FALSE) {
+  # if the query string is already a HTTP URI, return it as the result
+  if (startsWith(text, "http://") || startsWith(text, "https://")) return(text)
+
   mssg(verbose, paste("Querying the IRI for", text, sep = " "))
   as_type <- match.arg(as, c("vto", "uberon", "pato"))
   onto_id <- switch(as_type,

@@ -2,28 +2,64 @@
 % Please edit documentation in R/pk_study.R
 \name{pk_get_study_list}
 \alias{pk_get_study_list}
-\title{Query the list of studies by taxa and anatomical entities}
+\title{Query the list of studies by taxa, anatomical entities, and quqlities.}
 \usage{
-pk_get_study_list(taxon, entity, relation = "part of")
+pk_get_study_list(taxon = NA, entity = NA, quality = NA,
+  includeRels = NA, relation = "part of")
 }
 \arguments{
-\item{taxon}{character. The taxon name.}
+\item{taxon}{character. The name of the taxon by which to filter, if any.}
 
-\item{entity}{character. The entity name.}
+\item{entity}{character. The name of the anatomical entity by which to filter, if any.}
 
-\item{relation}{character. Can be chosen from "part of" and "develops from".}
+\item{quality}{character. The name of the phenotypic quality by which to filter, if any.}
+
+\item{includeRels}{character or vector of characters. The names of relationships
+for anatomical entities to include in addition to subtype (\code{is_a}, \code{rdfs:subClassOf}).
+Defaults to \code{"part_of"}. Set to \code{FALSE} to not include any additional relationships.
+Otherwise one or more of \code{"part of"}, \code{"historical homologous to"}, and
+\code{"serially homologous to"}, or set to \code{TRUE} to include all possible ones. It is
+acceptable to use unambiguous prefixes, for example \code{"historical homolog"}.}
+
+\item{relation}{character. Deprecated, for backwards compatibility defaults to
+\code{part of}. Only used if \code{includeRels} is left at its default value.}
 }
 \value{
 data.frame
 }
 \description{
-Return studies containing taxa which are members of the optional input taxon
-expression and are have annotated phenotypes which are relevant to the optional
-input entity expression.
+Return studies that contain taxa which are members of the optional input taxon,
+and characters which have phenotype annotations subsumed by the given entity and quality
+terms.
 }
 \examples{
 \dontrun{
-slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
-}
-}
+# by default, parts are included
+slist <- pk_get_study_list(taxon = "Siluridae", entity = "fin")
+colnames(slist)
+nrow(slist)
 
+# can also disable parts
+slist <- pk_get_study_list(taxon = "Siluridae", entity = "fin", includeRels = FALSE)
+nrow(slist)
+
+# or filter studies only by entity, including their parts
+slist <- pk_get_study_list(entity = "pelvic fin", includeRels = c("part of"))
+nrow(slist)
+
+# or filter studies only by entity, including their parts
+slist <- pk_get_study_list(entity = "pelvic fin", includeRels = c("part of"))
+nrow(slist)
+
+# including not only parts but also historical and serial homologs
+slist <- pk_get_study_list(entity = "pelvic fin", includeRels = c("part of", "serially homologous to", "historical homologous to"))
+nrow(slist)
+# relationship names can be given as prefixes
+slist1 <- pk_get_study_list(entity = "pelvic fin", includeRels = c("part", "serial", "historical"))
+nrow(slist1) == nrow(slist)
+
+# or apply no filter, obtaining all studies in the KB
+slist <- pk_get_study_list()
+nrow(slist)
+}
+}

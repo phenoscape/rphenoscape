@@ -1,42 +1,107 @@
-#' Query the list of studies by taxa and anatomical entities
-#' @param taxon character. The taxon name.
-#' @param entity character. The entity name.
-#' @param relation character. Can be chosen from "part of" and "develops from".
+#' Query the list of studies by taxa, anatomical entities, and quqlities.
+#' @param taxon character. The name of the taxon by which to filter, if any.
+#' @param entity character. The name of the anatomical entity by which to filter, if any.
+#' @param quality character. The name of the phenotypic quality by which to filter, if any.
+#' @param includeRels character or vector of characters. The names of relationships
+#'  for anatomical entities to include in addition to subtype (`is_a`, `rdfs:subClassOf`).
+#'  Defaults to `"part_of"`. Set to `FALSE` to not include any additional relationships.
+#'  Otherwise one or more of `"part of"`, `"historical homologous to"`, and
+#'  `"serially homologous to"`, or set to `TRUE` to include all possible ones. It is
+#'  acceptable to use unambiguous prefixes, for example `"historical homolog"`.
+#' @param relation character. Deprecated, for backwards compatibility defaults to
+#'  `part of`. Only used if `includeRels` is left at its default value.
 #'
 #' @import RNeXML
 #' @import dplyr
 #' @return data.frame
 #'
 #' @description
-#' Return studies containing taxa which are members of the optional input taxon
-#' expression and are have annotated phenotypes which are relevant to the optional
-#' input entity expression.
+#' Return studies that contain taxa which are members of the optional input taxon,
+#' and characters which have phenotype annotations subsumed by the given entity and quality
+#' terms.
 #' @examples
 #' \dontrun{
-#' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
+#' # by default, parts are included
+#' slist <- pk_get_study_list(taxon = "Siluridae", entity = "fin")
+#' colnames(slist)
+#' nrow(slist)
+#'
+#' # can also disable parts
+#' slist <- pk_get_study_list(taxon = "Siluridae", entity = "fin", includeRels = FALSE)
+#' nrow(slist)
+#'
+#' # or filter studies only by entity, including their parts
+#' slist <- pk_get_study_list(entity = "pelvic fin", includeRels = c("part of"))
+#' nrow(slist)
+#'
+#' # or filter studies only by entity, including their parts
+#' slist <- pk_get_study_list(entity = "pelvic fin", includeRels = c("part of"))
+#' nrow(slist)
+#'
+#' # including not only parts but also historical and serial homologs
+#' slist <- pk_get_study_list(entity = "pelvic fin",
+#'                            includeRels = c("part of",
+#'                                            "serially homologous to",
+#'                                            "historical homologous to"))
+#' nrow(slist)
+#' # relationship names can be given as prefixes
+#' slist1 <- pk_get_study_list(entity = "pelvic fin",
+#'                             includeRels = c("part", "serial", "historical"))
+#' nrow(slist1) == nrow(slist)
+#'
+#' # or apply no filter, obtaining all studies in the KB
+#' slist <- pk_get_study_list()
+#' nrow(slist)
 #' }
 #' @export
-pk_get_study_list <- function(taxon, entity, relation = "part of") {
+pk_get_study_list <- function(taxon = NA, entity = NA, quality = NA,
+                              includeRels = NA, relation = "part of") {
 
-  tryCatch(
-    relation_type <- match.arg(tolower(relation), c("part of", "develops from")),
-    error = function(e) {
-      stop(conditionMessage(e), call. = FALSE)
-    })
+  if (all(is.na(includeRels)))
+    includeRels <- c(relation)
+  else if (is.logical(includeRels))
+    if (includeRels)
+      includeRels <- c("part of",
+                       "historical homologous to",
+                       "serially homologous to")
+    else
+      includeRels <- c()
 
-  relation_id <- switch(relation_type,
-                        "part of" = part_relation,
-                        "develops from" = develops_relation)
-
-  taxon_id <- pk_get_iri(taxon, as = "vto")
-  entity_id <- pk_get_iri(entity, as = "uberon")
-
-  if (taxon_id == FALSE || entity_id == FALSE) {
-    return(invisible(FALSE))
+  if (length(includeRels) > 0) {
+    tryCatch(
+      includeRels <- match.arg(includeRels,
+                               c("part of",
+                                 "historical homologous to",
+                                 "serially homologous to"),
+                               several.ok = TRUE),
+      error = function(e) {
+        stop(conditionMessage(e), call. = FALSE)
+      })
   }
 
-  queryseq <- list(taxon = make_machester(taxon_id),
-                   entity = paste0(relation_id, " some ", make_machester(entity_id)))
+  queryseq <- lapply(includeRels,
+                     function(x)
+                       switch(x,
+                              "part of"=c(parts="true"),
+                              "historical homologous to"=c(historical_homologs="true"),
+                              "serially homologous to"=c(serial_homologs="true")))
+  queryseq <- as.list(unlist(queryseq))
+
+  iriQueryParam <- function(lookupText, definedIn, paramName) {
+    if (is.na(lookupText)) return(list())
+    termIRI <- pk_get_iri(lookupText, as = definedIn)
+    if (termIRI == FALSE) stop("Failed to resolve ", lookupText, " in ", toupper(definedIn),
+                               call. = FALSE)
+    paramList <- list(termIRI)
+    names(paramList) <- paramName
+    paramList
+  }
+
+  queryseq <- c(queryseq,
+                iriQueryParam(taxon, "vto", "in_taxon"),
+                iriQueryParam(entity, "uberon", "entity"),
+                iriQueryParam(quality, "pato", "quality"),
+                limit = "100000")
 
   out <- pk_GET(pk_study_url, queryseq)
   d <- out$results
@@ -162,7 +227,6 @@ pk_get_study_meta_by_one <- function(nex) {
   return(m_re)
 }
 
-make_machester <- function(x) paste0("<", x, ">")
 unique_label <- function(m) {
   # this is dependent on <char/> being in
   # the format of  character_*
@@ -172,5 +236,3 @@ unique_label <- function(m) {
 }
 
 pk_study_url <- "http://kb.phenoscape.org/api/study/query"
-part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050>" # "part of"
-develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202>" # "develops from"
