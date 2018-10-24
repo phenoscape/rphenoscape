@@ -16,7 +16,7 @@ Most of the services provided with [Phenoscape Knowledgebase web API](http://kb.
 
 
 ## Getting Started
-The development version of rphenoscape is available on [Github](www.github.com/xu-hong/rphenoscape). With the `devtools` package installed on your system, rphenoscape can be installed using:
+The development version of rphenoscape is available on [Github](www.github.com/phenoscape/rphenoscape). With the `devtools` package installed on your system, rphenoscape can be installed using:
 
 
 
@@ -27,7 +27,7 @@ The development version of rphenoscape is available on [Github](www.github.com/x
 
 ```r
 library(devtools)
-install_github("xu-hong/rphenoscape")
+install_github("phenoscape/rphenoscape")
 library(rphenoscape)
 ```
 
