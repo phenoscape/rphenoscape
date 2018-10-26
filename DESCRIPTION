@@ -1,14 +1,14 @@
 Package: rphenoscape
 Type: Package
-Title: R package to make phenotypic traits from the Phenoscape Knowledgebase available from within R
+Title: Semantically rich phenotypic traits from the Phenoscape Knowledgebase
 Version: 0.1.1
 Authors@R: person("Hong", "Xu", email = "hx23@duke.edu", role = c("aut", "cre"))
 Maintainer: Hong Xu <hx23@duke.edu>
 Description: This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices.
 License: MIT + file LICENSE
 LazyData: TRUE
-URL: https://github.com/xu-hong/rphenoscape
-BugReports: https://github.com/xu-hong/rphenoscape/issues
+URL: https://github.com/rphenoscape/rphenoscape
+BugReports: https://github.com/rphenoscape/rphenoscape/issues
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Depends: 
@@ -17,7 +17,7 @@ Imports:
     jsonlite,
     httr,
     dplyr,
-    RNeXML
+    RNeXML (> 2.1.2)
 Suggests: 
     roxygen2,
     knitr,
