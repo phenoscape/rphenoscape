@@ -1,3 +1,4 @@
+<!-- README.md is generated from README.rmd. Please edit that file -->
 rphenoscape: Semantically rich phenotypic traits from the Phenoscape Knowledgebase
 ==================================================================================
 
