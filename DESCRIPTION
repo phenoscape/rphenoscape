@@ -18,12 +18,11 @@ Imports:
     jsonlite,
     httr,
     dplyr,
-    RNeXML (> 2.1.2)
+    RNeXML (>= 2.2.0)
 Suggests: 
     roxygen2,
     knitr,
     testthat,
     plyr,
     rmarkdown
-Remotes: ropensci/RNeXML
 RoxygenNote: 6.1.0
