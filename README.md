@@ -22,10 +22,16 @@ The development version of rphenoscape is available on
 package installed on your system, rphenoscape can be installed using:
 
 ``` r
-library(devtools)
-install_github("phenoscape/rphenoscape")
+devtools::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
 library(rphenoscape)
 ```
+
+The option `build_opts` ensures that the vignettes will be built and installed
+as well. This will require a recent version of the knitr and rmarkdown 
+packages. You can install these beforehand, or include the option
+`dependencies=TRUE`. The latter will also install packages otherwise only 
+needed for testing and for generating the help pages, which, if you don't
+develop packages yourself, may be much more than you need.
 
 Character Matrix via Ontotrace
 ------------------------------
