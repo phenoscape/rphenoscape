@@ -130,5 +130,6 @@ Test if a taxon is extinct:
 pk_is_extinct("Fisherichthys")
 ```
 
-[![ropensci_footer](https://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
+---
+<center>[![Phenoscape Knowledgebase](https://wiki.phenoscape.org/wg/phenoscape/images/f/f6/Phenoscape_Logo.png)](http://kb.phenoscape.org)</center>
 
