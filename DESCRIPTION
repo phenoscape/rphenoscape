@@ -25,4 +25,6 @@ Suggests:
     testthat,
     plyr,
     rmarkdown
-RoxygenNote: 6.1.0
+Language: en-US
+Encoding: UTF-8
+RoxygenNote: 6.1.1
