@@ -18,7 +18,7 @@ Imports:
     jsonlite,
     httr,
     dplyr,
-    RNeXML (>= 2.2.0)
+    RNeXML (>= 2.3.0)
 Suggests: 
     roxygen2,
     knitr,
