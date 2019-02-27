@@ -1,7 +1,7 @@
 Package: rphenoscape
 Type: Package
 Title: Semantically rich phenotypic traits from the Phenoscape Knowledgebase
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(person("Hong", "Xu", email = "hx23@duke.edu", role = c("aut", "cre")),
   person("Hilmar", "Lapp", email = "hilmar.lapp@duke.edu", role = c("aut"),
          comment = c(ORCID="0000-0001-9107-0714")))
@@ -18,7 +18,7 @@ Imports:
     jsonlite,
     httr,
     dplyr,
-    RNeXML (>= 2.2.0)
+    RNeXML (>= 2.3.0)
 Suggests: 
     roxygen2,
     knitr,
