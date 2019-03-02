@@ -49,7 +49,7 @@ pk_get_ontotrace_meta <- function(nex) {
   id_entities_meta <- get_metadata(nex, level="characters/format/char")
 
   id_entities <- (id_entities_meta
-                  %>% filter(property == meta_attr_entitiy)
+                  %>% filter(property == meta_attr_entity)
                   %>% inner_join(id_entities, by = c("char" = "char"))
                   %>% select(label, href, char))
 
@@ -61,7 +61,7 @@ pk_get_ontotrace_meta <- function(nex) {
 
 
 meta_attr_taxon <- "dwc:taxonID"
-meta_attr_entitiy <- "obo:IAO_0000219"
+meta_attr_entity <- "obo:IAO_0000219"
 
 #------------------------------#
 #      Tests for RNeXML        #
