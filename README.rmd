@@ -52,83 +52,16 @@ packages. You can install these beforehand, or include the option
 needed for testing and for generating the help pages, which, if you don't
 develop packages yourself, may be much more than you need.
 
-## Character Matrix via Ontotrace
-Use Ontotrace to obtain a character matrix for a taxonomic clade and anatomical region of interest. 
+## Package Usage Information
+The functionality and operations of the RPhenoscape package can be viewed on the dedicated package website:
 
-The [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/#/OntoTrace/get_ontotrace) returns the evolutionary character matrix in NeXML format. The first step is to get the NeXML object using ```pk_get_ontotrace_xml``` method. 
-```{r}
-nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
-```
-Then retrieve wanted information from the NeXML object.  
-Get character matrix:
-```{r}
-(m <- pk_get_ontotrace(nex))
-```
-The character matrix can be integrated with other data, such as meta data which include taxon identifiers, character identifiers, etc.
-Get meta data:
-```{r}
-(meta <- pk_get_ontotrace_meta(nex))
-```
+http://kb.phenoscape.org/apidocs/
 
-## Character Matrices for Studies
-To obtain the character matrices for studies published for a taxonomic clade and anatomical region of interest.
-
-First step is to retrieve the list of studies given a taxonomic clade and anatomical structures (returned as ```data.frame```).
-```{r}
-(slist <- pk_get_study_list(taxon = "Ictalurus australis", entity = "fin"))
-```
-
-Based off the study ids retained from previous step, get the evolutionary character matrix for each study id (in NeXML-format) using ```pk_get_study_xml```.
-```{r}
-(nex_list <- pk_get_study_xml(slist$id))
-```
-
-From the list of RNeXML objects, retrieve the character matrices.
-```{r}
-study_matrix <- pk_get_study(nex_list)
-study_matrix[[1]][1:5, 1:5]
-```
-
-Each character matrix can be integrated with other data, such as meta data which include taxon identifiers, character identifiers, etc.
-Get meta data:
-```{r}
-study_metas <- pk_get_study_meta(nex_list)
-study_metas[[1]]
-```
-
-## Obtain Other Data
-### Subsetting a Matrix
-A matrix obtained from Phenoscape can be subsetted (filtered) by taxonomic subgroup or anatomical part. For example, using ```pk_is_descendant``` and ```pk_is_ancestor``` methods, a matrix can be subsetted to a taxonomic subgroup that is the descendants/ancestors of a given taxon.
-```{r}
-m # original character matrix
-(is_desc <- pk_is_descendant('Ictalurus', m$taxa))
-m[is_desc, ] #subsetting to the descendants of Ictalurus
-```
-
-### Term Search
-
-Search for details for a given taxon:
-```{r}
-pk_taxon_detail("Coralliozetus")
-```
-
-Search for details for a given anatomical structure:
-```{r}
-pk_anatomical_detail("basihyal bone")
-```
-
-
-#### Miscellaneous methods:
-Resolve a given term to its IRI:
-```{r}
-pk_get_iri("Coralliozetus", "vto")
-pk_get_iri("basihyal bone", "uberon")
-```
-
-Test if a taxon is extinct:
-```{r}
-pk_is_extinct("Fisherichthys")
-```
+*Among the functions described on the package website are:*
+Using Ontotrace to obtain a character matrix
+Obtaining the character matrices for studies published for a taxonomic clade
+Subsetting matricies by taxonomic subgroup or anatomical part
+Searching for details for a given taxon
 
 ---
 <center>[![Phenoscape Knowledgebase](https://wiki.phenoscape.org/wg/phenoscape/images/f/f6/Phenoscape_Logo.png)](http://kb.phenoscape.org)</center>
