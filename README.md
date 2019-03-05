@@ -33,5 +33,5 @@ The functionality and operations of the RPhenoscape package can be viewed on the
 ------------------------------------------------------------------------
 
 <center>
-[![Phenoscape Knowledgebase](https://wiki.phenoscape.org/wg/phenoscape/images/f/f6/Phenoscape_Logo.png)](http://kb.phenoscape.org)
+\[![Phenoscape Knowledgebase](https://wiki.phenoscape.org/wg/phenoscape/images/f/f6/Phenoscape_Logo.png)(<http://kb.phenoscape.org>)
 </center>
