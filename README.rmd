@@ -64,5 +64,5 @@ Subsetting matricies by taxonomic subgroup or anatomical part
 Searching for details for a given taxon
 
 ---
-<center>[![Phenoscape Knowledgebase](https://wiki.phenoscape.org/wg/phenoscape/images/f/f6/Phenoscape_Logo.png)](http://kb.phenoscape.org)</center>
+[![Phenoscape Knowledgebase](https://wiki.phenoscape.org/wg/phenoscape/images/f/f6/Phenoscape_Logo.png)](http://kb.phenoscape.org)
 
