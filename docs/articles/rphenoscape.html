@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -97,67 +97,67 @@
 <p>Then retrieve wanted information from the NeXML object.<br>
 Get character matrix:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(m &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pk_ontotrace.html">pk_get_ontotrace</a></span>(nex))</code></pre></div>
-<pre><code>## # A tibble: 15 x 5
-##    taxa      otu     otus       `anterior dentation… `anterior distal serr…
-##    &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;                     &lt;int&gt; &lt;chr&gt;                 
-##  1 Ameiurus… VTO_00… td22893cc…                    1 1                     
-##  2 Ameiurus… VTO_00… td22893cc…                    1 1                     
-##  3 Ameiurus… VTO_00… td22893cc…                   NA 0 and 1               
-##  4 Ameiurus… VTO_00… td22893cc…                   NA 1                     
-##  5 Ameiurus… VTO_00… td22893cc…                    1 1                     
-##  6 Ameiurus… VTO_00… td22893cc…                    1 1                     
-##  7 Ameiurus… VTO_00… td22893cc…                    1 1                     
-##  8 Ictaluru… VTO_00… td22893cc…                    1 1                     
-##  9 Ictaluru… VTO_00… td22893cc…                    0 0 and 1               
-## 10 Ictaluru… VTO_00… td22893cc…                   NA 1                     
-## 11 Ictaluru… VTO_00… td22893cc…                    0 1                     
-## 12 Ictaluru… VTO_00… td22893cc…                    1 1                     
-## 13 Ictaluru… VTO_00… td22893cc…                   NA 1                     
-## 14 Ictaluru… VTO_00… td22893cc…                    1 1                     
-## 15 Ictaluru… VTO_00… td22893cc…                    1 1</code></pre>
+<pre><code># A tibble: 15 x 5
+   taxa      otu     otus       `anterior dentation… `anterior distal serr…
+   &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;                     &lt;int&gt; &lt;chr&gt;                 
+ 1 Ameiurus… VTO_00… t7b0e90eb…                    1 1                     
+ 2 Ameiurus… VTO_00… t7b0e90eb…                    1 1                     
+ 3 Ameiurus… VTO_00… t7b0e90eb…                   NA 1 and 0               
+ 4 Ameiurus… VTO_00… t7b0e90eb…                   NA 1                     
+ 5 Ameiurus… VTO_00… t7b0e90eb…                    1 1                     
+ 6 Ameiurus… VTO_00… t7b0e90eb…                    1 1                     
+ 7 Ameiurus… VTO_00… t7b0e90eb…                    1 1                     
+ 8 Ictaluru… VTO_00… t7b0e90eb…                    1 1                     
+ 9 Ictaluru… VTO_00… t7b0e90eb…                    0 1 and 0               
+10 Ictaluru… VTO_00… t7b0e90eb…                   NA 1                     
+11 Ictaluru… VTO_00… t7b0e90eb…                    0 1                     
+12 Ictaluru… VTO_00… t7b0e90eb…                    1 1                     
+13 Ictaluru… VTO_00… t7b0e90eb…                   NA 1                     
+14 Ictaluru… VTO_00… t7b0e90eb…                    1 1                     
+15 Ictaluru… VTO_00… t7b0e90eb…                    1 1                     </code></pre>
 <p>The character matrix can be integrated with other data, such as meta data which include taxon identifiers, character identifiers, etc. Get meta data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(meta &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pk_ontotrace.html">pk_get_ontotrace_meta</a></span>(nex))</code></pre></div>
-<pre><code>## $id_taxa
-##                     label                                       href
-## 1          Ameiurus melas http://purl.obolibrary.org/obo/VTO_0036272
-## 2         Ictalurus lupus http://purl.obolibrary.org/obo/VTO_0036220
-## 3  Ameiurus platycephalus http://purl.obolibrary.org/obo/VTO_0036276
-## 4      Ictalurus balsanus http://purl.obolibrary.org/obo/VTO_0036221
-## 5     Ictalurus punctatus http://purl.obolibrary.org/obo/VTO_0036225
-## 6   Ameiurus serracanthus http://purl.obolibrary.org/obo/VTO_0036277
-## 7       Ameiurus brunneus http://purl.obolibrary.org/obo/VTO_0036273
-## 8     Ictalurus australis http://purl.obolibrary.org/obo/VTO_0061495
-## 9        Ictalurus pricei http://purl.obolibrary.org/obo/VTO_0036218
-## 10     Ameiurus nebulosus http://purl.obolibrary.org/obo/VTO_0036278
-## 11       Ameiurus natalis http://purl.obolibrary.org/obo/VTO_0036274
-## 12    Ictalurus mexicanus http://purl.obolibrary.org/obo/VTO_0061498
-## 13     Ictalurus furcatus http://purl.obolibrary.org/obo/VTO_0036223
-## 14         Ameiurus catus http://purl.obolibrary.org/obo/VTO_0036275
-## 15      Ictalurus dugesii http://purl.obolibrary.org/obo/VTO_0061497
-##            otu                                  otus
-## 1  VTO_0036272 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 2  VTO_0036220 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 3  VTO_0036276 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 4  VTO_0036221 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 5  VTO_0036225 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 6  VTO_0036277 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 7  VTO_0036273 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 8  VTO_0061495 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 9  VTO_0036218 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 10 VTO_0036278 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 11 VTO_0036274 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 12 VTO_0061498 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 13 VTO_0036223 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 14 VTO_0036275 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 15 VTO_0061497 td22893cc-fb61-4ae6-9d2b-85a6afefb26f
-## 
-## $id_entities
-##                                             label
-## 1 anterior distal serration of pectoral fin spine
-## 2        anterior dentation of pectoral fin spine
-##                                            href           char
-## 1 http://purl.obolibrary.org/obo/UBERON_2002002 UBERON_2002002
-## 2 http://purl.obolibrary.org/obo/UBERON_2002001 UBERON_2002001</code></pre>
+<pre><code>$id_taxa
+                    label                                       href
+1     Ictalurus mexicanus http://purl.obolibrary.org/obo/VTO_0061498
+2         Ictalurus lupus http://purl.obolibrary.org/obo/VTO_0036220
+3          Ameiurus catus http://purl.obolibrary.org/obo/VTO_0036275
+4  Ameiurus platycephalus http://purl.obolibrary.org/obo/VTO_0036276
+5      Ameiurus nebulosus http://purl.obolibrary.org/obo/VTO_0036278
+6     Ictalurus australis http://purl.obolibrary.org/obo/VTO_0061495
+7        Ictalurus pricei http://purl.obolibrary.org/obo/VTO_0036218
+8     Ictalurus punctatus http://purl.obolibrary.org/obo/VTO_0036225
+9   Ameiurus serracanthus http://purl.obolibrary.org/obo/VTO_0036277
+10         Ameiurus melas http://purl.obolibrary.org/obo/VTO_0036272
+11       Ameiurus natalis http://purl.obolibrary.org/obo/VTO_0036274
+12     Ictalurus furcatus http://purl.obolibrary.org/obo/VTO_0036223
+13      Ameiurus brunneus http://purl.obolibrary.org/obo/VTO_0036273
+14     Ictalurus balsanus http://purl.obolibrary.org/obo/VTO_0036221
+15      Ictalurus dugesii http://purl.obolibrary.org/obo/VTO_0061497
+           otu                                  otus
+1  VTO_0061498 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+2  VTO_0036220 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+3  VTO_0036275 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+4  VTO_0036276 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+5  VTO_0036278 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+6  VTO_0061495 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+7  VTO_0036218 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+8  VTO_0036225 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+9  VTO_0036277 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+10 VTO_0036272 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+11 VTO_0036274 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+12 VTO_0036223 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+13 VTO_0036273 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+14 VTO_0036221 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+15 VTO_0061497 t7b0e90eb-b87e-457a-bf40-475fa2d3c748
+
+$id_entities
+                                            label
+1 anterior distal serration of pectoral fin spine
+2        anterior dentation of pectoral fin spine
+                                           href           char
+1 http://purl.obolibrary.org/obo/UBERON_2002002 UBERON_2002002
+2 http://purl.obolibrary.org/obo/UBERON_2002001 UBERON_2002001</code></pre>
 </div>
 <div id="character-matrices-for-studies" class="section level2">
 <h2 class="hasAnchor">
@@ -165,356 +165,352 @@ Get character matrix:</p>
 <p>To obtain the character matrices for studies published for a taxonomic clade and anatomical region of interest.</p>
 <p>First step is to retrieve the list of studies given a taxonomic clade and anatomical structures (returned as <code>data.frame</code>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(slist &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pk_get_study_list.html">pk_get_study_list</a></span>(<span class="dt">taxon =</span> <span class="st">"Ictalurus australis"</span>, <span class="dt">entity =</span> <span class="st">"fin"</span>))</code></pre></div>
-<pre><code>## # A tibble: 1 x 2
-##   id                                                           label       
-##   &lt;chr&gt;                                                        &lt;chr&gt;       
-## 1 https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictal… Lundberg (1…</code></pre>
+<pre><code># A tibble: 1 x 2
+  id                                                           label       
+  &lt;chr&gt;                                                        &lt;chr&gt;       
+1 https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictal… Lundberg (1…</code></pre>
 <p>Based off the study ids retained from previous step, get the evolutionary character matrix for each study id (in NeXML-format) using <code>pk_get_study_xml</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(nex_list &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pk_get_study_xml.html">pk_get_study_xml</a></span>(slist<span class="op">$</span>id))</code></pre></div>
-<pre><code>## ....This might take a while....</code></pre>
-<pre><code>## https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&amp;btnG=&amp;hl=en&amp;as_sdt=0%2C42</code></pre>
-<pre><code>## Parse NeXML....</code></pre>
-<pre><code>## $`https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&amp;btnG=&amp;hl=en&amp;as_sdt=0%2C42`
-## A nexml object representing:
-##       0 phylogenetic tree blocks, where: 
-##       block 1 contains NULL phylogenetic trees
-##   block 0 contains  phylogenetic trees 
-##       393 meta elements 
-##       1 character matrices 
-##       22 taxonomic units 
-##  Taxa:    Ameiurus natalis, Ictalurus mexicanus, Ameiurus serracanthus, Satan eurystomus, Ictalurus pricei, Ictalurus balsanus ... 
-## 
-##  NeXML generated by RNeXML using schema version: 0.9 
-##  size: 6.6 Mb</code></pre>
+<pre><code>$`https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&amp;btnG=&amp;hl=en&amp;as_sdt=0%2C42`
+A nexml object representing:
+     0 phylogenetic tree blocks, where: 
+     block 1 contains NULL phylogenetic trees
+     block 0 contains  phylogenetic trees 
+     395 meta elements 
+     1 character matrices 
+     22 taxonomic units 
+ Taxa:   Pylodictis olivaris, Ictalurus dugesii, Ameiurus platycephalus, Ameiurus catus, Ictalurus punctatus, Ameiurus natalis ... 
+
+ NeXML generated by RNeXML using schema version: 0.9 
+ size: 6.6 Mb </code></pre>
 <p>From the list of ReXML objects, retrieve the character matrices.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">study_matrix &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pk_get_study.html">pk_get_study</a></span>(nex_list)</code></pre></div>
-<pre><code>## Map symbols to labels...</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">study_matrix[[<span class="dv">1</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
-<pre><code>##                 taxa                                      otu
-## 1  Ameiurus brunneus otu_9db5cdb0-d107-453a-a2b1-1dc64ec2931d
-## 2     Ameiurus catus otu_774736e0-d1b9-486a-baba-423098a1425d
-## 3     Ameiurus melas otu_11101d83-0974-4a47-a483-6377c5a05aa3
-## 4   Ameiurus natalis otu_e1cb73d1-1197-4001-850e-8d9c02bc77d9
-## 5 Ameiurus nebulosus otu_108b7d43-91b4-44c9-a767-6e36da7eb36d
-##   Anal-fin rays, species mean count Anterior dentations of pectoral spine
-## 1                           16.1-20                                 large
-## 2                         20.1-25.5                              moderate
-## 3                         20.1-25.5                                 small
-## 4                           25.6-28                                 small
-## 5                         20.1-25.5                              moderate
-##   Anterior distal serrae of pectoral spine
-## 1               &lt;3 moderately sharp serrae
-## 2              3-6 moderately sharp serrae
-## 3             absent or scarcely developed
-## 4              3-6 moderately sharp serrae
-## 5               &lt;3 moderately sharp serrae</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">study_matrix &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pk_get_study.html">pk_get_study</a></span>(nex_list)
+study_matrix[[<span class="dv">1</span>]][<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</code></pre></div>
+<pre><code>                taxa                                      otu
+1  Ameiurus brunneus otu_1cfc1481-fc6b-4e13-91d1-e62e446706b6
+2     Ameiurus catus otu_f776d056-bce2-4787-992f-22179b01b62c
+3     Ameiurus melas otu_2a650f46-51a8-403e-af68-4bc89343aae1
+4   Ameiurus natalis otu_7b240e39-09d8-49c8-bff3-7640fe2f762a
+5 Ameiurus nebulosus otu_4756f1c5-e393-4d90-8fc9-c4bdb01d479c
+  Anal-fin rays, species mean count Anterior dentations of pectoral spine
+1                           16.1-20                                 large
+2                         20.1-25.5                              moderate
+3                         20.1-25.5                                 small
+4                           25.6-28                                 small
+5                         20.1-25.5                              moderate
+  Anterior distal serrae of pectoral spine
+1               &lt;3 moderately sharp serrae
+2              3-6 moderately sharp serrae
+3             absent or scarcely developed
+4              3-6 moderately sharp serrae
+5               &lt;3 moderately sharp serrae</code></pre>
 <p>Each character matrix can be integrated with other data, such as meta data which include taxon identifiers, character identifiers, etc. Get meta data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">study_metas &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pk_get_study_meta.html">pk_get_study_meta</a></span>(nex_list)
 study_metas[[<span class="dv">1</span>]]</code></pre></div>
-<pre><code>## $id_taxa
-##                      label                                       href
-## 1         Ameiurus natalis http://purl.obolibrary.org/obo/VTO_0036274
-## 2      Ictalurus mexicanus http://purl.obolibrary.org/obo/VTO_0061498
-## 3    Ameiurus serracanthus http://purl.obolibrary.org/obo/VTO_0036277
-## 4         Satan eurystomus http://purl.obolibrary.org/obo/VTO_0061485
-## 5         Ictalurus pricei http://purl.obolibrary.org/obo/VTO_0036218
-## 6       Ictalurus balsanus http://purl.obolibrary.org/obo/VTO_0036221
-## 7      Ictalurus australis http://purl.obolibrary.org/obo/VTO_0061495
-## 8      Ictalurus punctatus http://purl.obolibrary.org/obo/VTO_0036225
-## 9      Pylodictis olivaris http://purl.obolibrary.org/obo/VTO_0036282
-## 10         Ictalurus lupus http://purl.obolibrary.org/obo/VTO_0036220
-## 11 Trogloglanis pattersoni http://purl.obolibrary.org/obo/VTO_0061501
-## 12       Ameiurus brunneus http://purl.obolibrary.org/obo/VTO_0036273
-## 13          Ameiurus catus http://purl.obolibrary.org/obo/VTO_0036275
-## 14        Noturus insignis http://purl.obolibrary.org/obo/VTO_0036237
-## 15  Prietella phreatophila http://purl.obolibrary.org/obo/VTO_0036265
-## 16      Ictalurus furcatus http://purl.obolibrary.org/obo/VTO_0036223
-## 17       Ictalurus dugesii http://purl.obolibrary.org/obo/VTO_0061497
-## 18          Ameiurus melas http://purl.obolibrary.org/obo/VTO_0036272
-## 19          Noturus flavus http://purl.obolibrary.org/obo/VTO_0036263
-## 20       Noturus stigmosus http://purl.obolibrary.org/obo/VTO_0036261
-## 21      Ameiurus nebulosus http://purl.obolibrary.org/obo/VTO_0036278
-## 22  Ameiurus platycephalus http://purl.obolibrary.org/obo/VTO_0036276
-##                                         otu
-## 1  otu_e1cb73d1-1197-4001-850e-8d9c02bc77d9
-## 2  otu_49fa4c98-9241-4f48-952c-736a93b709e3
-## 3  otu_3ff355a6-c83f-492a-a1f7-8df344a4fe14
-## 4  otu_4a616ab3-177a-475e-8e81-60a03e764653
-## 5  otu_7036a475-a8bc-4481-9cc4-4fdcbf720963
-## 6  otu_6fc972c6-52ef-458a-b351-50f39a617271
-## 7  otu_22ebd6eb-f746-4ed7-adfa-801235be13ba
-## 8  otu_8017d590-697c-4d89-a1e7-37bdbaa47d06
-## 9  otu_acc002de-532a-4419-b3e0-ca904b706540
-## 10 otu_97b6b503-4f88-41ef-8ed9-66b21311b038
-## 11 otu_a9190018-b948-46d8-930d-122443ba1357
-## 12 otu_9db5cdb0-d107-453a-a2b1-1dc64ec2931d
-## 13 otu_774736e0-d1b9-486a-baba-423098a1425d
-## 14 otu_663b1b3d-4a86-448b-8f04-8a6ef8094184
-## 15 otu_f41e7e2c-ee5b-4a6a-8014-228bceb2b974
-## 16 otu_8689e9f9-bb32-4ae7-98ed-273411ee5b5c
-## 17 otu_c5d6d445-a14b-49e2-a97d-143995a63847
-## 18 otu_11101d83-0974-4a47-a483-6377c5a05aa3
-## 19 otu_655808f8-39f1-47a7-8c12-bf95ec0ea808
-## 20 otu_37645dd4-43d8-4059-8072-bc7a7e432168
-## 21 otu_108b7d43-91b4-44c9-a767-6e36da7eb36d
-## 22 otu_a0883f48-94b4-4b2b-9d01-6c420ffbc864
-##                                         otus
-## 1  otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 2  otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 3  otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 4  otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 5  otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 6  otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 7  otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 8  otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 9  otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 10 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 11 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 12 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 13 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 14 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 15 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 16 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 17 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 18 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 19 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 20 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 21 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 22 otus_0e2c26f8-6a05-4aa0-b0b7-ad328321aa11
-## 
-## $id_entities
-##                                                               label
-## 1                                     Posterior flap of adipose fin
-## 2                                                    Gill membranes
-## 3                                                       Orbital rim
-## 4                                                        Caudal fin
-## 5                                               Lateral line extent
-## 6                                                 Mesethmoid cornua
-## 7                           Width of snout across mesethmoid cornua
-## 8                                          Width of mesethmoid neck
-## 9        Cross-sectional form of skull (juveniles and young adults)
-## 10                             Neurocranial width at epiphyseal bar
-## 11                            Posterior cranial fontanelle (adults)
-## 12                Supraoccipital process and associated supraneural
-## 13                                    Sagittal crests on skull roof
-## 14                                      Transverse occipital crests
-## 15                               Muscle crests on margin of frontal
-## 16                     Sculpturing pattern of supraoccipital crests
-## 17                                     Anterior extent of sphenotic
-## 18                                                Sphenotic process
-## 19                                   Extrascapular bone composition
-## 20                                              Pterotic wing shape
-## 21                                                 Pterotic surface
-## 22                                                      Nasal shape
-## 23                                               Infraorbital bones
-## 24                                             Lateral ethmoid wing
-## 25                             Superficial ophthalmic nerve foramen
-## 26                                                  Orbital foramen
-## 27                                                Parasphenoid stem
-## 28                                  Ascending wings of parasphenoid
-## 29    Posterior end of adductor arcus palatini scar on parasphenoid
-## 30                                         Vertical wing of frontal
-## 31                                      Pterosphenoid-prootic joint
-## 32                                           Orbitosphenoid shelves
-## 33                                        Prootic-exoccipital joint
-## 34                                      Prootic-basioccipital joint
-## 35                                                    Optic foramen
-## 36                                                  Mandible length
-## 37                    Mandibular sensory canal pores, species modes
-## 38                           First mandibular sensory pore and tube
-## 39                            Mandibular symphyseal ventral process
-## 40                                   Anteroventral crest of dentary
-## 41                                                 Coronoid process
-## 42                                   Posterior process of articular
-## 43                                                 Premaxilla width
-## 44                                     Mesial process of premaxilla
-## 45                                    Lateral process of premaxilla
-## 46                               Premaxillary teeth-size and number
-## 47                               Jaw teeth-shape and size gradation
-## 48                                Jaw adductor musculature-A3 layer
-## 49                                                  Palatine length
-## 50                          Hyomandibular (otic region joint) shape
-## 51                                Anterior process of hyomandibular
-## 52      Opercular facet position on posterior edge of hyomandibular
-## 53                                Hyomandibular-metapterygoid joint
-## 54                                     Hyomandibular-quadrate joint
-## 55  Scar on hyomandibular for A3 bundle of jaw adductor musculature
-## 56         Crest on hyomandibular for levator arcus palatini muscle
-## 57      Crest on hyomandibular for A2 bundle of jaw adductor muscle
-## 58               Crest on hyomandibular for levator operculi muscle
-## 59     Process on hyomandibular for adductor hyomandibularis muscle
-## 60     External foramen of facial nerve canal through hyomandibular
-## 61                                                 Symplectic canal
-## 62             Jaw adductor muscle attachment surface on preopercle
-## 63                                         Upper limb of preopercle
-## 64                                                  Suprapreopercle
-## 65                              Quadrate-metapterygoid joint length
-## 66                         Quadrate-metapterygoid joint composition
-## 67                                               Metapterygoid form
-## 68                                               Endopterygoid size
-## 69                                         Epihyal-ceratohyal joint
-## 70                                        Dorsal edge of ceratohyal
-## 71                                                    Epihyal shape
-## 72                                Ceratohyal-ventral hypohyal joint
-## 73                                                  Dorsal hypohyal
-## 74                                                    Urohyal shape
-## 75                                                    Opercle shape
-## 76                      Scar on opercle for levator operculi muscle
-## 77                                               Interopercle shape
-## 78                                     Dorsal pits on first centrum
-## 79                                  Ventral ridges on first centrum
-## 80                          Development of superficial ossification
-## 81                       Anterior limb of fourth transverse process
-## 82           Vertical lamina between third and fourth neural spines
-## 83                                   Neural complex = supraneural 3
-## 84                                        Depth of Weberian complex
-## 85                                                      Gas bladder
-## 86                         Precaudal vertebrae, species mean number
-## 87                            Caudal vertebrae, species mean number
-## 88                                                         Hypurals
-## 89                                                   Hypurapophysis
-## 90                                  Caudal-fin branched ray numbers
-## 91            Middle Nuchal plate of first dorsal-fin pterygiophore
-## 92           Spine base condyles on second dorsal-fin pterygiophore
-## 93                                     Dorsal-fin spine development
-## 94                                Anal-fin rays, species mean count
-## 95                      Pectoral-fin soft rays, species modal count
-## 96                                             Pectoral-fin radials
-## 97             Ornamentation pattern on posterior cleithral process
-## 98                            Length of posterior cleithral process
-## 99                                    Length of cleithral symphysis
-## 100                    Coracoid midline sutures, species mean count
-## 101                                        Ventral keel of coracoid
-## 102               Secondary keel on coracoid below scapular foramen
-## 103                               Extensor muscle fossa on coracoid
-## 104                                           Transcapular ligament
-## 105                           Subpterotic process of supracleithrum
-## 106                                              Pectoral spine tip
-## 107                        Anterior distal serrae of pectoral spine
-## 108                           Anterior dentations of pectoral spine
-## 109                                Anterior ridge of pectoral spine
-## 110                                       Posterior dentation shape
-## 111                                       Posterior dentation bases
-## 112                                    Pectoral spine late ontogeny
-## 113                         Posterolateral process of basipterygium
-## 114                                                   Pelvic splint
-## 115                           Pelvic-fin rays, species modal counts
-##                                               char
-## 1   character_1909cde3-654e-4ab4-9bf1-38a31bf45fb7
-## 2   character_a08d4fe9-26ce-4f40-804c-a2f1cb210dd3
-## 3   character_daf354ab-075f-4acb-8c0c-81c9f61ce771
-## 4   character_bf3bcbd2-eef2-41de-878c-894466573e2e
-## 5   character_6059d43f-4346-4416-b741-524977e1a2c1
-## 6   character_70917fd2-87c4-4efb-b495-65851049b5b8
-## 7   character_163912c1-6a2d-4542-8fd2-30c95b79c5cd
-## 8   character_4651895e-bc8a-4057-84c6-cd879fbe13a0
-## 9   character_fd303a8a-6e8d-4710-a4aa-7ab648c216f5
-## 10  character_760c143c-c87b-487f-b159-21d29d8e37c6
-## 11  character_039a3a6a-23b6-4b98-b63f-3b0b41dc8177
-## 12  character_3cd63381-d9e9-422a-9a63-23708a846225
-## 13  character_b14da3ed-e882-4ebc-9f47-18d022d909bc
-## 14  character_76f87503-cfff-4331-9ecd-e339f8a3744d
-## 15  character_218275ae-d196-42ed-b075-f66455c974a0
-## 16  character_ec391da4-7b7a-434d-855c-e76ca6fdc315
-## 17  character_d35e89c2-3d1f-46f4-b3a1-8aad29b2afd8
-## 18  character_1615c9fe-af98-4a97-b00b-9f7d3a74d31c
-## 19  character_bee7cec6-7eee-4a7a-ae8a-262c0f2cae93
-## 20  character_2c50aabd-420d-44b3-b6c7-653659559640
-## 21  character_530ad44c-5777-41f2-81da-24a6c119c0bf
-## 22  character_52bf10e0-b001-4129-9baf-dbfdc85e0f05
-## 23  character_07112994-06e0-4bdc-bfa4-4af822949ee2
-## 24  character_c430d301-055f-4f88-a597-1c062d338045
-## 25  character_dbf94de3-031b-4761-b6af-bb4479e2804b
-## 26  character_63b742cc-f88a-49af-9ad6-32802bb2f7df
-## 27  character_feccf216-4f18-45d6-92ce-dc7f4ba17d16
-## 28  character_49b18bf4-347f-4733-80a4-22b5a18ee6d2
-## 29  character_7cf19cef-c7b3-47d2-8c26-79d0906e1712
-## 30  character_f060cbd2-a8cd-403d-a15b-b25187d2d204
-## 31  character_71e9a705-d1aa-461a-93c5-d49c31f35018
-## 32  character_15558f4e-437c-4999-b70e-87430df4e43b
-## 33  character_d2cf0ab5-2872-4050-acda-b59afb024012
-## 34  character_4611ee55-176e-4a72-846f-9cab0caf5f42
-## 35  character_c93ab96a-31ed-423e-b833-bfc70ba03bb5
-## 36  character_03aff89b-94ee-489a-887f-c532d3e6e408
-## 37  character_73932cc0-afdb-4ab1-b0ad-d10a662e87d7
-## 38  character_72ecc138-20b3-4187-993b-0268f85b38f2
-## 39  character_28b18f55-03be-45f7-94a6-2dbb2eba7295
-## 40  character_1ac7c927-8be7-4aa4-992c-661e47007b49
-## 41  character_e30256ae-3e86-4859-84d0-354242552da3
-## 42  character_c559f831-5458-4a18-a8a6-6d13d32ee86c
-## 43  character_527b24b5-d79c-468f-a9f2-2b473d795fc7
-## 44  character_5af24c27-0bd9-4aec-8138-86154300ec74
-## 45  character_21ed715d-4142-421b-8f07-dc25e705c09b
-## 46  character_2c583039-486a-42b2-b222-56cb4e337830
-## 47  character_c6ae66e8-a1a0-41b4-aa4f-a9477c66616c
-## 48  character_70100c3a-bc94-4b40-bc7c-b0dd0e9c1820
-## 49  character_bf48d3b7-509c-4360-aa2f-67d32b0a70cb
-## 50  character_17e9416f-479e-4e25-a360-bca944770c91
-## 51  character_b572658f-3dc9-410e-8624-dc13aa03f2b4
-## 52  character_4b59536e-1fea-4781-a3d2-cf211bb4d847
-## 53  character_c9ade5ff-a511-49f9-8a3c-01a024d4e712
-## 54  character_b4e2052e-1c33-489c-8791-6da98c1d80a9
-## 55  character_83f89220-58a8-4ab8-bc93-ea701f7c0e20
-## 56  character_9fd37684-0f50-4ef7-a72b-1b76c89e53f7
-## 57  character_2caeab8c-c032-459e-bbfd-e8874c98f7c4
-## 58  character_dcf8d886-eb55-47a6-86c1-6fdb87b0d8cb
-## 59  character_59fe5d61-6b0b-4261-9027-40285e1c10a0
-## 60  character_170e0587-1680-442b-9503-02b1833cec9c
-## 61  character_42265f62-54bd-4f15-939c-7a6387430db4
-## 62  character_a243d363-f8ed-417d-bd80-e4c9f94b994c
-## 63  character_fee9db31-6bde-49ee-87c5-5da41e4d7884
-## 64  character_c58d8cb9-c69a-4e41-a85a-097b99da9f42
-## 65  character_efff00ea-b0cb-4f47-b512-55df242b1201
-## 66  character_fcc8110b-f834-48b3-8e33-b4da3ebd3b75
-## 67  character_a538aa83-291b-47d4-96fd-cbcc55e3651c
-## 68  character_b5c20904-87c4-43fe-aad9-14a8be5679cd
-## 69  character_318a3146-596d-4c7a-a0cc-5348ac056d24
-## 70  character_2a1fbae4-50b4-4516-859f-edd59d30cad1
-## 71  character_56a1b71f-ea4c-4562-959f-a571dd51e182
-## 72  character_e734a2b1-859d-4bc3-a0ff-a575cf896d59
-## 73  character_f0e5a29c-c09f-46e0-98cc-d1f20e7fab53
-## 74  character_b23ca5da-4557-4203-828c-fde9239252a9
-## 75  character_3f797c65-7382-486e-b793-26b704faba56
-## 76  character_19977791-f3b3-4ab9-a154-1b781de134e7
-## 77  character_f2f50092-4485-4953-ba51-a72621dd435a
-## 78  character_2d086645-3ca9-4d4d-af05-086d95cc7bfa
-## 79  character_88197eb8-9e9a-4fbf-880c-8a3f0761307b
-## 80  character_7dd7e352-0531-4111-b9c7-c3fba80973ce
-## 81  character_9bb596a6-c4f1-4e62-8007-18ffbbcbcc77
-## 82  character_344c7bc8-b9f1-45b9-a37e-bdd9ecf2a0bb
-## 83  character_d586d036-a57a-4de1-84ea-0b3cee08eaa8
-## 84  character_0aa9b73f-e286-4f6b-971a-fa722fc8b312
-## 85  character_dcb7390b-d05e-4907-a9b0-8d14823a2a59
-## 86  character_d4e0ed5e-cf54-46c2-a68a-d7f792d852ac
-## 87  character_8ba4346f-36f1-4eca-9b4b-bf7c5954ce46
-## 88  character_b20849d4-8681-4a49-8e16-55ab88be8477
-## 89  character_abbc9d4a-5768-4635-a69e-07adccef4898
-## 90  character_56278a39-9c15-4e27-9850-869450facf9d
-## 91  character_0ffd1745-ce24-4273-b3dc-5287c66078c2
-## 92  character_030973da-a4a9-4ae5-8960-f68acb3c557b
-## 93  character_b9406db6-00fe-406c-8dec-8d354a9336c1
-## 94  character_c67f5cff-4aaf-4783-a9aa-d980cc22ef68
-## 95  character_3ae32f27-b535-4c96-87db-28fd94321e36
-## 96  character_c7c3a293-8414-4e0d-9842-85845d696cb9
-## 97  character_bf3fc8aa-9c22-4f52-a0e2-6921cd044386
-## 98  character_dc579cd4-b9c4-448a-8919-467021c2e908
-## 99  character_27457f64-cbc7-4926-875c-0478e5932ab7
-## 100 character_2c014e55-5a4f-4cd2-b2f2-68207807d1fc
-## 101 character_9af5ab2b-97cd-42ff-bad4-d6d47504b8cb
-## 102 character_73388233-9386-42f4-872d-867345e19943
-## 103 character_b64fe204-a70f-4482-85d6-644f118d60b5
-## 104 character_ce0d18a5-9098-479c-a7c1-7264adf1710e
-## 105 character_4bbe4fca-b04d-49c5-83ac-079822af1271
-## 106 character_e04c94c7-aaa0-4675-b72d-244ac2b93e1c
-## 107 character_3e636165-a8a9-4fc8-b838-f9b9cb783b03
-## 108 character_e2dacfcd-71ab-4e5a-85c8-f77b4382b8dd
-## 109 character_2c3a0656-6012-4885-8ba0-27aaa76ac9af
-## 110 character_bbdcc541-48b5-4c92-8355-a677251148d8
-## 111 character_6f0ed22a-fa80-4634-925a-f12a6ce7ae46
-## 112 character_da784bd9-9d44-4c8f-a951-2253334d8190
-## 113 character_ace40613-8c89-4391-bec6-9aba044fa46f
-## 114 character_f9710dca-0d2e-4ed0-a366-276fcb336c6a
-## 115 character_dcb3d0c2-5426-4f08-9885-11da411ee7e1</code></pre>
+<pre><code>$id_taxa
+                     label                                       href
+1      Pylodictis olivaris http://purl.obolibrary.org/obo/VTO_0036282
+2        Ictalurus dugesii http://purl.obolibrary.org/obo/VTO_0061497
+3   Ameiurus platycephalus http://purl.obolibrary.org/obo/VTO_0036276
+4           Ameiurus catus http://purl.obolibrary.org/obo/VTO_0036275
+5      Ictalurus punctatus http://purl.obolibrary.org/obo/VTO_0036225
+6         Ameiurus natalis http://purl.obolibrary.org/obo/VTO_0036274
+7           Ameiurus melas http://purl.obolibrary.org/obo/VTO_0036272
+8         Satan eurystomus http://purl.obolibrary.org/obo/VTO_0061485
+9      Ictalurus mexicanus http://purl.obolibrary.org/obo/VTO_0061498
+10      Ictalurus furcatus http://purl.obolibrary.org/obo/VTO_0036223
+11 Trogloglanis pattersoni http://purl.obolibrary.org/obo/VTO_0061501
+12        Ictalurus pricei http://purl.obolibrary.org/obo/VTO_0036218
+13        Noturus insignis http://purl.obolibrary.org/obo/VTO_0036237
+14          Noturus flavus http://purl.obolibrary.org/obo/VTO_0036263
+15      Ameiurus nebulosus http://purl.obolibrary.org/obo/VTO_0036278
+16       Ameiurus brunneus http://purl.obolibrary.org/obo/VTO_0036273
+17  Prietella phreatophila http://purl.obolibrary.org/obo/VTO_0036265
+18         Ictalurus lupus http://purl.obolibrary.org/obo/VTO_0036220
+19   Ameiurus serracanthus http://purl.obolibrary.org/obo/VTO_0036277
+20      Ictalurus balsanus http://purl.obolibrary.org/obo/VTO_0036221
+21     Ictalurus australis http://purl.obolibrary.org/obo/VTO_0061495
+22       Noturus stigmosus http://purl.obolibrary.org/obo/VTO_0036261
+                                        otu
+1  otu_a8add20f-a3e1-44c5-bd8d-11187fdc35bc
+2  otu_1fd9ac90-3104-4bdd-8a42-5ab89363eb84
+3  otu_16a8caa1-db78-41bf-be7a-0c5c073d9483
+4  otu_f776d056-bce2-4787-992f-22179b01b62c
+5  otu_02c5a900-d347-438e-b27f-55234fe4653a
+6  otu_7b240e39-09d8-49c8-bff3-7640fe2f762a
+7  otu_2a650f46-51a8-403e-af68-4bc89343aae1
+8  otu_87ce4308-4423-4591-a512-16a2fd215b89
+9  otu_11668cef-8639-4020-b0dc-e6171bbdb8f0
+10 otu_8b2e5b65-d100-4414-b034-d1153f581579
+11 otu_db1a518f-6d04-4490-b2e3-a2c53afaec10
+12 otu_7cacf400-deaa-4226-b14a-09759a4cbcac
+13 otu_fd8d2767-6042-4ef1-8aa6-3086fcb0273a
+14 otu_271d952c-4b75-4efb-b518-13b10ff783ba
+15 otu_4756f1c5-e393-4d90-8fc9-c4bdb01d479c
+16 otu_1cfc1481-fc6b-4e13-91d1-e62e446706b6
+17 otu_a3f63017-5112-481b-944f-653b40299418
+18 otu_51157631-dddd-4579-b403-31689846dea6
+19 otu_78eebaff-9877-405f-be5b-43d79d864910
+20 otu_b177299e-71c8-4ad1-9795-c146b6fdc66e
+21 otu_58f4bbf7-3665-43a3-bc14-8981930d9856
+22 otu_6155d164-426a-4316-ab59-94ee6c29c9cd
+                                        otus
+1  otus_cb805c57-7141-490c-b434-3e9e7fed0301
+2  otus_cb805c57-7141-490c-b434-3e9e7fed0301
+3  otus_cb805c57-7141-490c-b434-3e9e7fed0301
+4  otus_cb805c57-7141-490c-b434-3e9e7fed0301
+5  otus_cb805c57-7141-490c-b434-3e9e7fed0301
+6  otus_cb805c57-7141-490c-b434-3e9e7fed0301
+7  otus_cb805c57-7141-490c-b434-3e9e7fed0301
+8  otus_cb805c57-7141-490c-b434-3e9e7fed0301
+9  otus_cb805c57-7141-490c-b434-3e9e7fed0301
+10 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+11 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+12 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+13 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+14 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+15 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+16 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+17 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+18 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+19 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+20 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+21 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+22 otus_cb805c57-7141-490c-b434-3e9e7fed0301
+
+$id_entities
+                                                              label
+1                                     Posterior flap of adipose fin
+2                                                    Gill membranes
+3                                                       Orbital rim
+4                                                        Caudal fin
+5                                               Lateral line extent
+6                                                 Mesethmoid cornua
+7                           Width of snout across mesethmoid cornua
+8                                          Width of mesethmoid neck
+9        Cross-sectional form of skull (juveniles and young adults)
+10                             Neurocranial width at epiphyseal bar
+11                            Posterior cranial fontanelle (adults)
+12                Supraoccipital process and associated supraneural
+13                                    Sagittal crests on skull roof
+14                                      Transverse occipital crests
+15                               Muscle crests on margin of frontal
+16                     Sculpturing pattern of supraoccipital crests
+17                                     Anterior extent of sphenotic
+18                                                Sphenotic process
+19                                   Extrascapular bone composition
+20                                              Pterotic wing shape
+21                                                 Pterotic surface
+22                                                      Nasal shape
+23                                               Infraorbital bones
+24                                             Lateral ethmoid wing
+25                             Superficial ophthalmic nerve foramen
+26                                                  Orbital foramen
+27                                                Parasphenoid stem
+28                                  Ascending wings of parasphenoid
+29    Posterior end of adductor arcus palatini scar on parasphenoid
+30                                         Vertical wing of frontal
+31                                      Pterosphenoid-prootic joint
+32                                           Orbitosphenoid shelves
+33                                        Prootic-exoccipital joint
+34                                      Prootic-basioccipital joint
+35                                                    Optic foramen
+36                                                  Mandible length
+37                    Mandibular sensory canal pores, species modes
+38                           First mandibular sensory pore and tube
+39                            Mandibular symphyseal ventral process
+40                                   Anteroventral crest of dentary
+41                                                 Coronoid process
+42                                   Posterior process of articular
+43                                                 Premaxilla width
+44                                     Mesial process of premaxilla
+45                                    Lateral process of premaxilla
+46                               Premaxillary teeth-size and number
+47                               Jaw teeth-shape and size gradation
+48                                Jaw adductor musculature-A3 layer
+49                                                  Palatine length
+50                          Hyomandibular (otic region joint) shape
+51                                Anterior process of hyomandibular
+52      Opercular facet position on posterior edge of hyomandibular
+53                                Hyomandibular-metapterygoid joint
+54                                     Hyomandibular-quadrate joint
+55  Scar on hyomandibular for A3 bundle of jaw adductor musculature
+56         Crest on hyomandibular for levator arcus palatini muscle
+57      Crest on hyomandibular for A2 bundle of jaw adductor muscle
+58               Crest on hyomandibular for levator operculi muscle
+59     Process on hyomandibular for adductor hyomandibularis muscle
+60     External foramen of facial nerve canal through hyomandibular
+61                                                 Symplectic canal
+62             Jaw adductor muscle attachment surface on preopercle
+63                                         Upper limb of preopercle
+64                                                  Suprapreopercle
+65                              Quadrate-metapterygoid joint length
+66                         Quadrate-metapterygoid joint composition
+67                                               Metapterygoid form
+68                                               Endopterygoid size
+69                                         Epihyal-ceratohyal joint
+70                                        Dorsal edge of ceratohyal
+71                                                    Epihyal shape
+72                                Ceratohyal-ventral hypohyal joint
+73                                                  Dorsal hypohyal
+74                                                    Urohyal shape
+75                                                    Opercle shape
+76                      Scar on opercle for levator operculi muscle
+77                                               Interopercle shape
+78                                     Dorsal pits on first centrum
+79                                  Ventral ridges on first centrum
+80                          Development of superficial ossification
+81                       Anterior limb of fourth transverse process
+82           Vertical lamina between third and fourth neural spines
+83                                   Neural complex = supraneural 3
+84                                        Depth of Weberian complex
+85                                                      Gas bladder
+86                         Precaudal vertebrae, species mean number
+87                            Caudal vertebrae, species mean number
+88                                                         Hypurals
+89                                                   Hypurapophysis
+90                                  Caudal-fin branched ray numbers
+91            Middle Nuchal plate of first dorsal-fin pterygiophore
+92           Spine base condyles on second dorsal-fin pterygiophore
+93                                     Dorsal-fin spine development
+94                                Anal-fin rays, species mean count
+95                      Pectoral-fin soft rays, species modal count
+96                                             Pectoral-fin radials
+97             Ornamentation pattern on posterior cleithral process
+98                            Length of posterior cleithral process
+99                                    Length of cleithral symphysis
+100                    Coracoid midline sutures, species mean count
+101                                        Ventral keel of coracoid
+102               Secondary keel on coracoid below scapular foramen
+103                               Extensor muscle fossa on coracoid
+104                                           Transcapular ligament
+105                           Subpterotic process of supracleithrum
+106                                              Pectoral spine tip
+107                        Anterior distal serrae of pectoral spine
+108                           Anterior dentations of pectoral spine
+109                                Anterior ridge of pectoral spine
+110                                       Posterior dentation shape
+111                                       Posterior dentation bases
+112                                    Pectoral spine late ontogeny
+113                         Posterolateral process of basipterygium
+114                                                   Pelvic splint
+115                           Pelvic-fin rays, species modal counts
+                                              char
+1   character_283db437-8d56-44b8-a596-42b99239c32e
+2   character_b91b5d5f-eed7-43ad-8d8b-96ac5a6b7144
+3   character_9f9f4904-dfcc-400c-99a0-8a48f20371f4
+4   character_6069b983-c546-49e0-84af-ec461e3da6ee
+5   character_8073bff7-05e6-4f36-acfc-1a33e02ac82e
+6   character_43622a4a-5ace-4f58-b4c0-85cfc7b8baff
+7   character_9b42dfeb-e197-4a1f-84b5-c5cf050d2a11
+8   character_3a3446f0-bf7b-4be7-832e-b16ab086a8f8
+9   character_eab56ecd-3a8a-4abe-b885-5b22efd14d2a
+10  character_9af83515-86cc-4a6d-a0f8-3424cdecc700
+11  character_02c93f97-cdb5-4c88-816a-b03cc664e7ca
+12  character_af276a23-d4b1-4346-97ab-356256106f8b
+13  character_a0306e74-befb-4ad1-9a7a-172a535bc8ae
+14  character_3ef3ea8d-7c5f-4d7e-85f0-b77b7b610571
+15  character_df13f192-3362-404c-aefc-ec5fbefea85a
+16  character_4f268d0d-f123-4a95-8402-cb887686feb7
+17  character_e1324ef3-dc4b-4aa7-982b-4635e4eadf50
+18  character_fc47e3ea-949d-4cf7-81cd-bf7d77bdae28
+19  character_41d879af-9e6f-4939-8069-a8f2f30b098b
+20  character_b279b9c9-13a6-4136-bb91-f1e1a9cd740c
+21  character_6ce8f2f0-ffc4-4009-9898-d0b5875b4acd
+22  character_d2ae8381-a0ed-4b8b-bea3-f0852bce9d89
+23  character_5e75c0b2-a5d2-44fd-95ad-4b4f3fc59a95
+24  character_35f60780-40f7-4945-b550-50a62c8b9469
+25  character_922ae1fc-0697-427c-81fc-cccf92ed9f57
+26  character_536c5431-c1bc-432a-badf-7541ef55f8d8
+27  character_9675ed29-9e55-4a53-ae54-6ea9f515cece
+28  character_0e16d5c6-98a7-4723-bb2f-c6ebdb8cee91
+29  character_0933ef05-bcac-4367-83dc-458931bbcac6
+30  character_9ba8c437-4adc-4139-bf92-b8ddf87a43da
+31  character_dd1c6f7f-15d0-4587-b6b7-df14713a56fa
+32  character_b69e8688-19e0-44d3-8456-1c14721e0c79
+33  character_5b6b9aba-58c1-405b-abc6-d50741a16e50
+34  character_46198d03-887d-46e5-95fa-68951513a174
+35  character_baef9ead-381f-4174-891c-74353c95553f
+36  character_c07b462a-d547-403c-a334-eb8438593b4c
+37  character_97786771-9cd4-4407-8df3-c1bcecbc30fc
+38  character_5b4bc6db-f7cf-4b29-9b73-223defe7a190
+39  character_cce5e400-cb0f-4cf9-bccc-7f2d79fc608e
+40  character_96746579-60ec-4f08-86dc-6f728e87921a
+41  character_2c3c2160-83b4-4af1-a9cc-20178422f66e
+42  character_ecdd1160-208e-4cab-9bfa-fb89ca4bbb33
+43  character_28b07d91-5bb7-4862-8838-d06750e524b7
+44  character_2c1372b5-879f-4c60-b074-a3fef64d4fc4
+45  character_562f9d2b-d43a-4da3-8fb1-54542f8d5471
+46  character_01c96c88-4f7b-4dfc-9470-6221dc5aac87
+47  character_f73f6436-2e21-4330-94c8-bc4258a200e3
+48  character_a5dfc1e9-5215-4c53-ad57-5b152909bcef
+49  character_ad89340b-4446-4d25-a3f5-d495926ec900
+50  character_28812ce0-44e6-466b-a364-e81561e1f5dd
+51  character_4baa5bc4-97d8-4f79-8d82-56de97bf83e5
+52  character_db2bfdf4-69fc-4c42-a3b0-31fc9d3ef027
+53  character_0723ab03-3eac-4544-a6a1-844b04aea5cc
+54  character_d8543441-0c60-4f0c-99e9-af8569b8e6be
+55  character_f9b9dfae-dd6c-43cb-887f-974de2e11cb3
+56  character_c71bce3a-a5a9-4ff9-bd57-bc4c68751822
+57  character_83c9b858-d656-430a-b83b-14026640c2a9
+58  character_f85cb795-a975-4b80-953a-ca272493ad95
+59  character_31cf273d-7cf4-4b9e-ae07-7259dec2ffe3
+60  character_402e1033-51aa-48e4-a6be-1a5f7eb58985
+61  character_ead19015-6ef0-4ac3-8c24-b92aba4d9cbf
+62  character_e9320cf3-f5fb-4291-943d-4a8b0af5dc74
+63  character_98cf6fb2-38c6-42b0-8290-59b5ab0c2572
+64  character_e92ae675-6326-43e4-8fac-b73085264b7d
+65  character_323f4b00-69bc-48e1-b1db-0a308b2b1ff7
+66  character_93ed607b-afe8-4010-8c62-8ee19249d7fc
+67  character_fe24fd93-017d-4960-9677-04a9ac4437bd
+68  character_d1ad4664-3feb-4229-b261-5332b109b7d3
+69  character_edc80aa2-7229-4339-b555-4d5e655cb363
+70  character_01789030-85a8-420b-b5ee-db1329b7d5ff
+71  character_0dbaf93d-0d83-4318-9fa0-133938ab7f35
+72  character_cf1a1f73-fa05-463e-a21b-6019304978d6
+73  character_24739ee7-8f93-479b-ad5f-45d440c769d6
+74  character_1915acfb-a284-4ed5-9769-630195d0e43b
+75  character_886ed683-773d-410c-a618-d935e91a6711
+76  character_7c7da27c-a71f-4b39-ae0e-69733f3fbf53
+77  character_f9e659de-b58a-4d24-8ef1-9f20cc472c42
+78  character_3ef1f90a-a5ad-484d-b273-6c5d6f049780
+79  character_8dd836d1-31be-4289-a1b0-4c096578293d
+80  character_284aa414-5096-4d44-a76e-c38b83adfa53
+81  character_bf0859d6-9e4f-4f23-bce4-7aa20352555f
+82  character_0cd0a11e-8f5e-4cd7-80ba-10b7ba5cbbfa
+83  character_464b7382-465e-4b05-b8a9-865b7b92fae1
+84  character_7e9e06d3-df02-4d30-909b-757c89308c65
+85  character_f86197af-5ff6-4a34-9561-f1279dd36c05
+86  character_e90f32d5-55e1-4687-b3f7-115ced8b083d
+87  character_66cd1f93-57e8-4358-91d0-05a1b89ec92f
+88  character_7f7a7e1f-16c9-4e41-96ed-b2ca4e63b420
+89  character_3eac12ed-143a-4fa9-9979-01b19d7233af
+90  character_e7159705-2373-4c23-a576-eb3682da33ee
+91  character_c14d14f4-4ac7-4c17-b4e2-130fd088cf6a
+92  character_4c39f249-6128-487c-b0ba-f6f9a3f9b80d
+93  character_35fa060a-a491-4064-8af7-dbd246cd56bc
+94  character_defe8f2d-9f60-41e9-86d5-9a5cf405bc06
+95  character_3f3b8d8a-ddc5-47ac-b0af-c8b41cfcbae9
+96  character_071743bf-0430-46d3-bc83-bc50ab392952
+97  character_a23a271b-c059-4024-a3de-cac0e167c14f
+98  character_6eb2534f-e4c1-432e-b401-98c9d120aeab
+99  character_90852c89-9473-41ca-b9d4-22a9a756b6e8
+100 character_64348d8b-d185-46c1-96e5-c1306d14f8a7
+101 character_5126d2be-51bc-4682-8285-ab9619c8961f
+102 character_a5fba793-6323-42ce-b7a2-8ea4d3babdfe
+103 character_3d21c870-3b53-401c-b1b1-da599d6b428f
+104 character_6603a42f-1860-4c5a-8693-92fa7aa818f1
+105 character_a2659d07-0fc2-46b5-95c1-efa71cae7aec
+106 character_02a1743e-3486-44fd-825d-a3b1cff7385d
+107 character_4d47ad57-b66f-47e4-ad07-1259ac1d2d06
+108 character_c47cf090-7160-4695-b4c3-f5e9da64d602
+109 character_41f116b7-3c97-4eed-b709-974945088679
+110 character_779c5d66-6793-4edb-a1e4-49290fbf3b06
+111 character_0991e0e5-a495-4b13-ab08-efa3f7366e9b
+112 character_9c684d77-dea0-4d6c-9ada-9605aff315a8
+113 character_3b54569b-cf5a-495f-9ff4-1c8ba00aaf12
+114 character_72138bb3-1444-4330-ae4b-9a858d09626f
+115 character_3c94600b-e6ed-4553-b499-76dcae82a8af</code></pre>
 </div>
 <div id="obtain-other-data" class="section level2">
 <h2 class="hasAnchor">
@@ -524,66 +520,66 @@ study_metas[[<span class="dv">1</span>]]</code></pre></div>
 <a href="#subsetting-a-matrix" class="anchor"></a>Subsetting a Matrix</h3>
 <p>A matrix obtained from Phenoscape can be subsetted (filtered) by taxonomic subgroup or anatomical part. For example, using <code>pk_is_descendant</code> and <code>pk_is_ancestor</code> methods, a matrix can be subsetted to a taxonomic subgroup that is the descendants/ancestors of a given taxon.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m <span class="co"># original character matrix</span></code></pre></div>
-<pre><code>## # A tibble: 15 x 5
-##    taxa      otu     otus       `anterior dentation… `anterior distal serr…
-##    &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;                     &lt;int&gt; &lt;chr&gt;                 
-##  1 Ameiurus… VTO_00… td22893cc…                    1 1                     
-##  2 Ameiurus… VTO_00… td22893cc…                    1 1                     
-##  3 Ameiurus… VTO_00… td22893cc…                   NA 0 and 1               
-##  4 Ameiurus… VTO_00… td22893cc…                   NA 1                     
-##  5 Ameiurus… VTO_00… td22893cc…                    1 1                     
-##  6 Ameiurus… VTO_00… td22893cc…                    1 1                     
-##  7 Ameiurus… VTO_00… td22893cc…                    1 1                     
-##  8 Ictaluru… VTO_00… td22893cc…                    1 1                     
-##  9 Ictaluru… VTO_00… td22893cc…                    0 0 and 1               
-## 10 Ictaluru… VTO_00… td22893cc…                   NA 1                     
-## 11 Ictaluru… VTO_00… td22893cc…                    0 1                     
-## 12 Ictaluru… VTO_00… td22893cc…                    1 1                     
-## 13 Ictaluru… VTO_00… td22893cc…                   NA 1                     
-## 14 Ictaluru… VTO_00… td22893cc…                    1 1                     
-## 15 Ictaluru… VTO_00… td22893cc…                    1 1</code></pre>
+<pre><code># A tibble: 15 x 5
+   taxa      otu     otus       `anterior dentation… `anterior distal serr…
+   &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;                     &lt;int&gt; &lt;chr&gt;                 
+ 1 Ameiurus… VTO_00… t7b0e90eb…                    1 1                     
+ 2 Ameiurus… VTO_00… t7b0e90eb…                    1 1                     
+ 3 Ameiurus… VTO_00… t7b0e90eb…                   NA 1 and 0               
+ 4 Ameiurus… VTO_00… t7b0e90eb…                   NA 1                     
+ 5 Ameiurus… VTO_00… t7b0e90eb…                    1 1                     
+ 6 Ameiurus… VTO_00… t7b0e90eb…                    1 1                     
+ 7 Ameiurus… VTO_00… t7b0e90eb…                    1 1                     
+ 8 Ictaluru… VTO_00… t7b0e90eb…                    1 1                     
+ 9 Ictaluru… VTO_00… t7b0e90eb…                    0 1 and 0               
+10 Ictaluru… VTO_00… t7b0e90eb…                   NA 1                     
+11 Ictaluru… VTO_00… t7b0e90eb…                    0 1                     
+12 Ictaluru… VTO_00… t7b0e90eb…                    1 1                     
+13 Ictaluru… VTO_00… t7b0e90eb…                   NA 1                     
+14 Ictaluru… VTO_00… t7b0e90eb…                    1 1                     
+15 Ictaluru… VTO_00… t7b0e90eb…                    1 1                     </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(is_desc &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pk_is_descendant.html">pk_is_descendant</a></span>(<span class="st">'Ictalurus'</span>, m<span class="op">$</span>taxa))</code></pre></div>
-<pre><code>##  [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE
-## [12]  TRUE  TRUE  TRUE  TRUE</code></pre>
+<pre><code> [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE
+[12]  TRUE  TRUE  TRUE  TRUE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m[is_desc, ] <span class="co">#subsetting to the descendants of Ictalurus</span></code></pre></div>
-<pre><code>## # A tibble: 8 x 5
-##   taxa     otu     otus        `anterior dentation … `anterior distal serr…
-##   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;                       &lt;int&gt; &lt;chr&gt;                 
-## 1 Ictalur… VTO_00… td22893cc-…                     1 1                     
-## 2 Ictalur… VTO_00… td22893cc-…                     0 0 and 1               
-## 3 Ictalur… VTO_00… td22893cc-…                    NA 1                     
-## 4 Ictalur… VTO_00… td22893cc-…                     0 1                     
-## 5 Ictalur… VTO_00… td22893cc-…                     1 1                     
-## 6 Ictalur… VTO_00… td22893cc-…                    NA 1                     
-## 7 Ictalur… VTO_00… td22893cc-…                     1 1                     
-## 8 Ictalur… VTO_00… td22893cc-…                     1 1</code></pre>
+<pre><code># A tibble: 8 x 5
+  taxa     otu     otus        `anterior dentation … `anterior distal serr…
+  &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;                       &lt;int&gt; &lt;chr&gt;                 
+1 Ictalur… VTO_00… t7b0e90eb-…                     1 1                     
+2 Ictalur… VTO_00… t7b0e90eb-…                     0 1 and 0               
+3 Ictalur… VTO_00… t7b0e90eb-…                    NA 1                     
+4 Ictalur… VTO_00… t7b0e90eb-…                     0 1                     
+5 Ictalur… VTO_00… t7b0e90eb-…                     1 1                     
+6 Ictalur… VTO_00… t7b0e90eb-…                    NA 1                     
+7 Ictalur… VTO_00… t7b0e90eb-…                     1 1                     
+8 Ictalur… VTO_00… t7b0e90eb-…                     1 1                     </code></pre>
 </div>
 <div id="term-search" class="section level3">
 <h3 class="hasAnchor">
 <a href="#term-search" class="anchor"></a>Term Search</h3>
 <p>Search for details for a given taxon:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/pk_terms.html">pk_taxon_detail</a></span>(<span class="st">"Coralliozetus"</span>)</code></pre></div>
-<pre><code>## # A tibble: 1 x 5
-##   `@id`                label    extinct `rank.@id`               rank.label
-##   &lt;chr&gt;                &lt;chr&gt;    &lt;lgl&gt;   &lt;chr&gt;                    &lt;chr&gt;     
-## 1 http://purl.obolibr… Coralli… FALSE   http://purl.obolibrary.… genus</code></pre>
+<pre><code># A tibble: 1 x 5
+  `@id`                label    extinct `rank.@id`               rank.label
+  &lt;chr&gt;                &lt;chr&gt;    &lt;lgl&gt;   &lt;chr&gt;                    &lt;chr&gt;     
+1 http://purl.obolibr… Coralli… FALSE   http://purl.obolibrary.… genus     </code></pre>
 <p>Search for details for a given anatomical structure:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/pk_terms.html">pk_anatomical_detail</a></span>(<span class="st">"basihyal bone"</span>)</code></pre></div>
-<pre><code>## # A tibble: 1 x 3
-##   label     definition                              `@id`                  
-##   &lt;chr&gt;     &lt;chr&gt;                                   &lt;chr&gt;                  
-## 1 basihyal… Replacement bone that is median and is… http://purl.obolibrary…</code></pre>
+<pre><code># A tibble: 1 x 3
+  label     definition                              `@id`                  
+  &lt;chr&gt;     &lt;chr&gt;                                   &lt;chr&gt;                  
+1 basihyal… Replacement bone that is median and is… http://purl.obolibrary…</code></pre>
 <div id="miscellaneous-methods" class="section level4">
 <h4 class="hasAnchor">
 <a href="#miscellaneous-methods" class="anchor"></a>Miscellaneous methods:</h4>
 <p>Resolve a given term to its IRI:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/pk_get_iri.html">pk_get_iri</a></span>(<span class="st">"Coralliozetus"</span>, <span class="st">"vto"</span>)</code></pre></div>
-<pre><code>## [1] "http://purl.obolibrary.org/obo/VTO_0042955"</code></pre>
+<pre><code>[1] "http://purl.obolibrary.org/obo/VTO_0042955"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/pk_get_iri.html">pk_get_iri</a></span>(<span class="st">"basihyal bone"</span>, <span class="st">"uberon"</span>)</code></pre></div>
-<pre><code>## [1] "http://purl.obolibrary.org/obo/UBERON_0011618"</code></pre>
+<pre><code>[1] "http://purl.obolibrary.org/obo/UBERON_0011618"</code></pre>
 <p>Test if a taxon is extinct:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/pk_is_extinct.html">pk_is_extinct</a></span>(<span class="st">"Fisherichthys"</span>)</code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
+<pre><code>[1] TRUE</code></pre>
 </div>
 </div>
 </div>
