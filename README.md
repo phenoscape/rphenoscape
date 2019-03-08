@@ -24,9 +24,7 @@ The option `build_opts` ensures that the vignettes will be built and installed a
 Package Usage Information
 -------------------------
 
-The functionality and operations of the RPhenoscape package can be viewed on the dedicated package website:
-
-<http://kb.phenoscape.org/apidocs/>
+The functionality and operations of the RPhenoscape package can be viewed on the dedicated package website: <http://rphenoscape.phenoscape.org/>
 
 Use cases described there include the following:
 

@@ -53,9 +53,7 @@ needed for testing and for generating the help pages, which, if you don't
 develop packages yourself, may be much more than you need.
 
 ## Package Usage Information
-The functionality and operations of the RPhenoscape package can be viewed on the dedicated package website:
-
-http://kb.phenoscape.org/apidocs/
+The functionality and operations of the RPhenoscape package can be viewed on the dedicated package website: <http://rphenoscape.phenoscape.org/>
 
 Use cases described there include the following:
 
