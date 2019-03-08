@@ -28,7 +28,12 @@ The functionality and operations of the RPhenoscape package can be viewed on the
 
 <http://kb.phenoscape.org/apidocs/>
 
-*Among the functions described on the package website are:* Using Ontotrace to obtain a character matrix Obtaining the character matrices for studies published for a taxonomic clade Subsetting matricies by taxonomic subgroup or anatomical part Searching for details for a given taxon
+Use cases described there include the following:
+
+-   Using Ontotrace to obtain a character matrix
+-   Obtaining the character matrices for studies published for a taxonomic clade
+-   Subsetting matricies by taxonomic subgroup or anatomical part
+-   Searching for details for a given taxon
 
 ------------------------------------------------------------------------
 
