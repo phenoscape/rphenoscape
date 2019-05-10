@@ -72,7 +72,7 @@ Based off the study ids retained from previous step, get the evolutionary charac
 (nex_list <- pk_get_study_xml(slist$id))
 ```
 
-From the list of ReXML objects, retrieve the character matrices.
+From the list of NeXML objects, retrieve the character matrices.
 ```{r}
 study_matrix <- pk_get_study(nex_list)
 study_matrix[[1]][1:5, 1:5]
