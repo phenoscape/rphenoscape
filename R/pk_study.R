@@ -1,4 +1,4 @@
-#' Query the list of studies by taxa, anatomical entities, and quqlities.
+#' Query the list of studies by taxa, anatomical entities, and qualities.
 #' @param taxon character. The name of the taxon by which to filter, if any.
 #' @param entity character. The name of the anatomical entity by which to filter, if any.
 #' @param quality character. The name of the phenotypic quality by which to filter, if any.
