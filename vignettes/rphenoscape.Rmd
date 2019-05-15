@@ -1,5 +1,5 @@
 ---
-title: "rphenoscape Intro"
+title: "RPhenoscape Intro"
 author: "Hong Xu"
 output: rmarkdown::html_vignette
 vignette: >
@@ -11,8 +11,8 @@ vignette: >
 Most of the services provided with [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices. 
 
 
-## Getting Started
-The development version of rphenoscape is available on [Github](www.github.com/phenoscape/rphenoscape). With the `devtools` package installed on your system, rphenoscape can be installed using:
+## Installation
+The development version of RPhenoscape is available on [Github](www.github.com/phenoscape/rphenoscape). With the `devtools` package installed on your system, RPhenoscape can be installed using:
 
 
 ```{r compile-settings, include=FALSE}
