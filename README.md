@@ -7,12 +7,12 @@ rphenoscape: Semantically rich phenotypic traits from the Phenoscape Knowledgeba
 -   Maintainer: Hong Xu
 -   Author: Hong Xu, Hilmar Lapp
 
-Most of the services provided with [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices.
+Most of the services provided with [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.
 
 Getting Started
 ---------------
 
-The development version of rphenoscape is available on [Github](www.github.com/phenoscape/rphenoscape). With the `devtools` package installed on your system, rphenoscape can be installed using:
+The development version of RPhenoscape is available on [Github](www.github.com/phenoscape/rphenoscape). With the `devtools` package installed on your system, RPhenoscape can be installed using:
 
 ``` r
 devtools::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
@@ -30,7 +30,7 @@ Use cases described there include the following:
 
 -   Using Ontotrace to obtain a character matrix
 -   Obtaining the character matrices for studies published for a taxonomic clade
--   Subsetting matricies by taxonomic subgroup or anatomical part
+-   Subsetting matrices by taxonomic subgroup or anatomical part
 -   Searching for details for a given taxon
 
 ------------------------------------------------------------------------
