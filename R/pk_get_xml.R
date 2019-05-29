@@ -1,31 +1,69 @@
-#' Return the NeXML object
+#' Obtain a synthetic presence/absence matrix
+#' 
+#' Queries the Phenoscape KB for a synthetic presence/absence character matrix
+#' for the given taxa and anatomical entities, and returns the result as a
+#' `nexml` object (from the RNeXML package).
+#'
+#' The character matrix includes both asserted and logically inferred states. The
+#' query always includes all subclasses of both taxa and entities, and by default
+#' also includes all parts of the entities. See parameter `relation` for changing
+#' this. By default, only characters that are variable across the resulting taxa
+#' are included; use `variable_only` to change this.
+#' 
 #' @import RNeXML
 #' @import dplyr
-#' @param taxon character: Required. A single character string or a vector of taxa.
-#' @param entity characters: Required. A single character string or a vector of anatomical class expressions.
-#' @param relation character string: Optional. Has to be either "part of" or "develops from". Default is "part of".
-#' @param variable_only logical: Optional. Default is TRUE.
-#' @return RNeXML object
+#' @param taxon character, required. A vector of taxon names.
+#' @param entity character, required.
+#'   A single character string or a vector of anatomical class expressions.
+#' @param relation character string, optional.
+#'   The relationship to the entities to be included in the result. Must be
+#'   either "part of" or "develops from", or set to NA to disable.
+#'   Default is "part of".
+#' @param variable_only logical, optional.
+#'   Whether to only include characters that are variable across the selected
+#'   set of taxa. Default is TRUE.
+#' @return RNeXML::nexml object
 #' @examples
 #' \dontrun{
-#' nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus australis", entity = "fin")
-#' }
-#' \dontrun{
+#' # one taxon (including subclasses), one entity (including subclasses and 
+#' # by default its parts)
+#' nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
+#'
+#' # same as above, except do not include parts or other relationships (fin
+#' # presence/absence does not vary across Ictalurus, hence need to allow
+#' # non-variable characters)
+#' nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin",
+#'                             relation = NA, variable_only = FALSE)
+#'
+#' # instead of parts, include entities in develops_from relationship to the query entity
+#' nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "paired fin bud",
+#'                             relation = "develops from", variable_only = FALSE)
+#'
+#' # query with multiple taxa, and/or multiple entities:
 #' nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"),
-#'                             entity = "fin spine")
+#'                             entity = c("pectoral fin", "pelvic fin"))
+#'
+#' # Use the RNeXML API to obtain the character matrix etc:
+#' m <- RNeXML::get_characters(nex)
+#' dim(m)      # number of taxa and characters
+#' rownames(m) # taxon names
+#' colnames(m) # characters (entity names)
+#' 
 #' }
 #' @export
 pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_only = TRUE) {
 
-  tryCatch(
-    relation_type <- match.arg(tolower(relation), c("part of", "develops from")),
-    error = function(e) {
-      stop(conditionMessage(e), call. = FALSE)
-    })
-
-  relation_id <- switch(relation_type,
-                        "part of" = part_relation,
-                        "develops from" = develops_relation)
+  relation_id <- NA
+  if (! is.na(relation)) {
+    tryCatch(
+      relation_type <- match.arg(tolower(relation), c("part of", "develops from")),
+      error = function(e) {
+        stop(conditionMessage(e), call. = FALSE)
+      })
+    relation_id <- switch(relation_type,
+                          "part of" = part_relation,
+                          "develops from" = develops_relation)
+  }
 
   taxon_iris <- lapply(taxon, FUN = pk_get_iri, as = "vto", verbose = FALSE)
   entity_iris <- lapply(entity, FUN = pk_get_iri, as = "uberon", verbose = FALSE)
@@ -43,7 +81,15 @@ pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_o
 
   # insert necessary "<" and ">" before concatenating string
   taxon_iris <- lapply(taxon_iris, FUN = function(x) paste0("<", x, ">"))
-  entity_iris <- lapply(entity_iris, FUN = function(x) paste0("(", relation_id, quantifier, "<", x, ">)"))
+  entity_iris <- lapply(entity_iris, FUN = function(x) paste0("<", x, ">"))
+  if (! is.na(relation_id)) {
+    entity_iris <- lapply(entity_iris,
+                          FUN = function(x) sprintf("(%s or %s %s %s)",
+                                                    x,
+                                                    relation_id,
+                                                    quantifier,
+                                                    x))
+  }
 
   queryseq = list(taxon = paste(taxon_iris, collapse = " or "),
                   entity = paste(entity_iris, collapse = " or "),

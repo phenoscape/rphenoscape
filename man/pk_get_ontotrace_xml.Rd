@@ -2,32 +2,66 @@
 % Please edit documentation in R/pk_get_xml.R
 \name{pk_get_ontotrace_xml}
 \alias{pk_get_ontotrace_xml}
-\title{Return the NeXML object}
+\title{Obtain a synthetic presence/absence matrix}
 \usage{
 pk_get_ontotrace_xml(taxon, entity, relation = "part of",
   variable_only = TRUE)
 }
 \arguments{
-\item{taxon}{character: Required. A single character string or a vector of taxa.}
+\item{taxon}{character: Required. A vector of taxon names.}
 
-\item{entity}{characters: Required. A single character string or a vector of anatomical class expressions.}
+\item{entity}{characters: Required.
+A single character string or a vector of anatomical class expressions.}
 
-\item{relation}{character string: Optional. Has to be either "part of" or "develops from". Default is "part of".}
+\item{relation}{character string: Optional.
+The relationship to the entities to be included in the result. Must be
+either "part of" or "develops from", or set to NA to disable.
+Default is "part of".}
 
-\item{variable_only}{logical: Optional. Default is TRUE.}
+\item{variable_only}{logical: Optional.
+Whether to only include characters that are variable across the selected
+set of taxa. Default is TRUE.}
 }
 \value{
 RNeXML object
 }
 \description{
-Return the NeXML object
+Queries the Phenoscape KB for a synthetic presence/absence character matrix
+for the given taxa and anatomical entities, and returns the result as a
+\code{nexml} object (from the RNeXML package).
+}
+\details{
+The character matrix includes both asserted and logically inferred states. The
+query always includes all subclasses of both taxa and entities, and by default
+also includes all parts of the entities. See parameter \code{relation} for changing
+this. By default, only characters that are variable across the resulting taxa
+are included; use \code{variable_only} to change this.
 }
 \examples{
 \dontrun{
-nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus australis", entity = "fin")
-}
-\dontrun{
+# one taxon (including subclasses), one entity (including subclasses and 
+# by default its parts)
+nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
+
+# same as above, except do not include parts or other relationships (fin
+# presence/absence does not vary across Ictalurus, hence need to allow
+# non-variable characters)
+nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin",
+                            relation = NA, variable_only = FALSE)
+
+# instead of parts, include entities in develops_from relationship to the query entity
+nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "paired fin bud",
+                            relation = "develops from", variable_only = FALSE)
+
+# query with multiple taxa, and/or multiple entities:
 nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"),
-                            entity = "fin spine")
+                            entity = c("pectoral fin", "pelvic fin"))
+
+# Use the RNeXML API to obtain the character matrix etc:
+m <- RNeXML::get_characters(nex)
+dim(m)      # number of taxa and characters
+rownames(m) # taxon names
+colnames(m) # characters (entity names)
+
 }
 }

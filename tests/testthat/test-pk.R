@@ -72,35 +72,6 @@ test_that("Test Descendant/Ancestor", {
   expect_equal(tl, c(T, F, F))
 })
 
-test_that("Test OnToTrace", {
-  skip_on_cran()
-  single_nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
-  multi_nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = c("fin spine", "pelvic splint"))
-
-  expect_s4_class(single_nex, 'nexml')
-  expect_s4_class(multi_nex, 'nexml')
-
-  err1 <- function() pk_get_ontotrace_xml(taxon = "Ictalurus TT", entity = "fin", relation = "other relation")
-
-  f1 <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus XXX"), entity = c("fin", "spine"))
-  f2 <- pk_get_ontotrace_xml("Ictalurus TT", "fin")
-
-  expect_error(err1())
-  expect_equal(f1, FALSE)
-  expect_equal(f2, FALSE)
-
-  single_mat <- pk_get_ontotrace(single_nex)
-  multi_mat <- pk_get_ontotrace(multi_nex)
-
-  expect_is(single_mat, 'data.frame')
-  expect_is(multi_mat, 'data.frame')
-
-  single_met <- pk_get_ontotrace_meta(single_nex)
-
-  expect_is(single_met, 'list')
-
-})
-
 #
 test_that("Test getting study information", {
     skip_on_cran()
