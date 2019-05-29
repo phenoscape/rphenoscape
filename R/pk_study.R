@@ -1,4 +1,4 @@
-#' Query the list of studies by taxa, anatomical entities, and quqlities.
+#' Query the list of studies by taxa, anatomical entities, and qualities.
 #' @param taxon character. The name of the taxon by which to filter, if any.
 #' @param entity character. The name of the anatomical entity by which to filter, if any.
 #' @param quality character. The name of the phenotypic quality by which to filter, if any.
@@ -205,13 +205,13 @@ pk_get_study_by_one <- function(nex) {
 pk_get_study_meta_by_one <- function(nex) {
 
   # NULLing out : for the R CMD CHECK
-  rel <- label <- href <- otu <- otus.x <- char <- NULL
+  property <- label <- href <- otu <- otus.x <- char <- NULL
 
   id_taxa <- get_taxa(nex)
   id_taxa_meta <- get_metadata(nex, "otu")
 
   id_taxa <- (id_taxa_meta
-              %>% filter(rel == meta_attr_taxon)
+              %>% filter(property == meta_attr_taxon)
               %>% inner_join(id_taxa, by = c("otu" = "otu"))
               %>% select(label, href, otu, otus.x)
               %>% rename(otus = otus.x))

@@ -34,13 +34,13 @@ pk_get_ontotrace <- function(nex) {
 pk_get_ontotrace_meta <- function(nex) {
 
   # NULLing out : for the R CMD CHECK
-  rel <- label <- href <- otu <- otus.x <- char <- NULL
+  property <- label <- href <- otu <- otus.x <- char <- NULL
 
   id_taxa <- get_taxa(nex)
   id_taxa_meta <- get_metadata(nex, "otu")
 
   id_taxa <- (id_taxa_meta
-              %>% filter(rel == meta_attr_taxon)
+              %>% filter(property == meta_attr_taxon)
               %>% inner_join(id_taxa, by = c("otu" = "otu"))
               %>% select(label, href, otu, otus.x)
               %>% rename(otus = otus.x))
@@ -49,7 +49,7 @@ pk_get_ontotrace_meta <- function(nex) {
   id_entities_meta <- get_metadata(nex, level="characters/format/char")
 
   id_entities <- (id_entities_meta
-                  %>% filter(rel == meta_attr_entitiy)
+                  %>% filter(property == meta_attr_entity)
                   %>% inner_join(id_entities, by = c("char" = "char"))
                   %>% select(label, href, char))
 
@@ -61,7 +61,7 @@ pk_get_ontotrace_meta <- function(nex) {
 
 
 meta_attr_taxon <- "dwc:taxonID"
-meta_attr_entitiy <- "obo:IAO_0000219"
+meta_attr_entity <- "obo:IAO_0000219"
 
 #------------------------------#
 #      Tests for RNeXML        #

@@ -2,7 +2,7 @@
 % Please edit documentation in R/pk_study.R
 \name{pk_get_study_list}
 \alias{pk_get_study_list}
-\title{Query the list of studies by taxa, anatomical entities, and quqlities.}
+\title{Query the list of studies by taxa, anatomical entities, and qualities.}
 \usage{
 pk_get_study_list(taxon = NA, entity = NA, quality = NA,
   includeRels = NA, relation = "part of")

@@ -1,4 +1,4 @@
-#' Classificatoin
+#' Classification
 #'
 #' @param x character. Name of the term
 #' @param verbose logical: optional. If TRUE (default), informative messages printed.

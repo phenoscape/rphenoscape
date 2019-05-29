@@ -1,5 +1,5 @@
 ---
-title: "rphenoscape Intro"
+title: "RPhenoscape Intro"
 author: "Hong Xu"
 output: rmarkdown::html_vignette
 vignette: >
@@ -8,38 +8,38 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Most of the services provided with [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices. 
+Most of the services provided with the [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.
 
 
-## Getting Started
-The development version of rphenoscape is available on [Github](www.github.com/phenoscape/rphenoscape). With the `devtools` package installed on your system, rphenoscape can be installed using:
+## Installation
+The development version of RPhenoscape is available on [Github](www.github.com/phenoscape/rphenoscape). With the `devtools` package installed on your system, RPhenoscape can be installed using:
 
 
 ```{r compile-settings, include=FALSE}
 ## Set the paths for cache and figure
 library(methods)
 library(knitr)
-opts_chunk$set(cache = 1)
 basename <- gsub(".Rmd", "", knitr:::knit_concord$get('infile')) 
-opts_chunk$set(fig.path = paste("figure/", basename, "-", sep=""),
-               cache.path = paste("cache/", basename, "/", sep=""))
-```
-
-```{r, echo=FALSE}
-library(knitr)
+opts_chunk$set(fig.path = paste("figure/", basename, "-", sep=""))
 opts_knit$set(upload.fun = imgur_upload)
 opts_chunk$set(tidy=FALSE, warning=FALSE, message=FALSE, comment = NA, verbose = TRUE)
 ```
 
 
 ```{r, eval = FALSE}
-library(devtools)
-install_github("phenoscape/rphenoscape")
+devtools::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
 library(rphenoscape)
 ```
 ```{r, echo = FALSE}
 library(rphenoscape)
 ```
+
+The option `build_opts` ensures that the vignettes will be built and installed
+as well. This will require a recent version of the knitr and rmarkdown
+packages. You can install these beforehand, or include the option
+`dependencies=TRUE`. The latter will also install packages otherwise only
+needed for testing and for generating the help pages, which, if you don't
+develop packages yourself, may be much more than you need.
 
 ## Character Matrix via Ontotrace
 Use Ontotrace to obtain a character matrix for a taxonomic clade and anatomical region of interest. 
@@ -72,7 +72,7 @@ Based off the study ids retained from previous step, get the evolutionary charac
 (nex_list <- pk_get_study_xml(slist$id))
 ```
 
-From the list of ReXML objects, retrieve the character matrices.
+From the list of NeXML objects, retrieve the character matrices.
 ```{r}
 study_matrix <- pk_get_study(nex_list)
 study_matrix[[1]][1:5, 1:5]

@@ -5,3 +5,6 @@ README.rmd
 rphenoscape.*.tar.gz
 cache
 vignettes/cache
+^docs$
+^_pkgdown\.yml$
+
