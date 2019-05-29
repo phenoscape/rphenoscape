@@ -1,10 +1,16 @@
 #' Return the NeXML object
 #' @import RNeXML
 #' @import dplyr
-#' @param taxon character: Required. A single character string or a vector of taxa.
-#' @param entity characters: Required. A single character string or a vector of anatomical class expressions.
-#' @param relation character string: Optional. Has to be either "part of" or "develops from". Default is "part of".
-#' @param variable_only logical: Optional. Default is TRUE.
+#' @param taxon character: Required. One or a vector of taxon names.
+#' @param entity characters: Required.
+#'   A single character string or a vector of anatomical class expressions.
+#' @param relation character string: Optional.
+#'   The relationship to the entities to be included in the result. Must be
+#'   either "part of" or "develops from", or set to NA to disable.
+#'   Default is "part of".
+#' @param variable_only logical: Optional.
+#'   Whether to only include characters that are variable across the selected
+#'   set of taxa. Default is TRUE.
 #' @return RNeXML object
 #' @examples
 #' \dontrun{
@@ -17,15 +23,17 @@
 #' @export
 pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_only = TRUE) {
 
-  tryCatch(
-    relation_type <- match.arg(tolower(relation), c("part of", "develops from")),
-    error = function(e) {
-      stop(conditionMessage(e), call. = FALSE)
-    })
-
-  relation_id <- switch(relation_type,
-                        "part of" = part_relation,
-                        "develops from" = develops_relation)
+  relation_id <- NA
+  if (! is.na(relation)) {
+    tryCatch(
+      relation_type <- match.arg(tolower(relation), c("part of", "develops from")),
+      error = function(e) {
+        stop(conditionMessage(e), call. = FALSE)
+      })
+    relation_id <- switch(relation_type,
+                          "part of" = part_relation,
+                          "develops from" = develops_relation)
+  }
 
   taxon_iris <- lapply(taxon, FUN = pk_get_iri, as = "vto", verbose = FALSE)
   entity_iris <- lapply(entity, FUN = pk_get_iri, as = "uberon", verbose = FALSE)
@@ -43,7 +51,15 @@ pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_o
 
   # insert necessary "<" and ">" before concatenating string
   taxon_iris <- lapply(taxon_iris, FUN = function(x) paste0("<", x, ">"))
-  entity_iris <- lapply(entity_iris, FUN = function(x) paste0("(", relation_id, quantifier, "<", x, ">)"))
+  entity_iris <- lapply(entity_iris, FUN = function(x) paste0("<", x, ">"))
+  if (! is.na(relation_id)) {
+    entity_iris <- lapply(entity_iris,
+                          FUN = function(x) sprintf("(%s or %s %s %s)",
+                                                    x,
+                                                    relation_id,
+                                                    quantifier,
+                                                    x))
+  }
 
   queryseq = list(taxon = paste(taxon_iris, collapse = " or "),
                   entity = paste(entity_iris, collapse = " or "),

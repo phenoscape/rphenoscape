@@ -8,13 +8,19 @@ pk_get_ontotrace_xml(taxon, entity, relation = "part of",
   variable_only = TRUE)
 }
 \arguments{
-\item{taxon}{character: Required. A single character string or a vector of taxa.}
+\item{taxon}{character: Required. One or a vector of taxon names.}
 
-\item{entity}{characters: Required. A single character string or a vector of anatomical class expressions.}
+\item{entity}{characters: Required.
+A single character string or a vector of anatomical class expressions.}
 
-\item{relation}{character string: Optional. Has to be either "part of" or "develops from". Default is "part of".}
+\item{relation}{character string: Optional.
+The relationship to the entities to be included in the result. Must be
+either "part of" or "develops from", or set to NA to disable.
+Default is "part of".}
 
-\item{variable_only}{logical: Optional. Default is TRUE.}
+\item{variable_only}{logical: Optional.
+Whether to only include characters that are variable across the selected
+set of taxa. Default is TRUE.}
 }
 \value{
 RNeXML object
