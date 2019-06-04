@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Return the NeXML object — pk_get_ontotrace_xml • rphenoscape</title>
+<title>Obtain a synthetic presence/absence matrix — pk_get_ontotrace_xml • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="Return the NeXML object — pk_get_ontotrace_xml" />
+<meta property="og:title" content="Obtain a synthetic presence/absence matrix — pk_get_ontotrace_xml" />
 
-<meta property="og:description" content="Return the NeXML object" />
+<meta property="og:description" content="Queries the Phenoscape KB for a synthetic presence/absence character matrix
+for the given taxa and anatomical entities, and returns the result as a
+nexml object (from the RNeXML package)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -63,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
       </span>
     </div>
 
@@ -102,14 +104,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Return the NeXML object</h1>
+    <h1>Obtain a synthetic presence/absence matrix</h1>
     <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pk_get_xml.R'><code>R/pk_get_xml.R</code></a></small>
     <div class="hidden name"><code>pk_get_ontotrace_xml.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Return the NeXML object</p>
+    <p>Queries the Phenoscape KB for a synthetic presence/absence character matrix
+for the given taxa and anatomical entities, and returns the result as a
+<code>nexml</code> object (from the RNeXML package).</p>
     
     </div>
 
@@ -121,19 +125,25 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>taxon</th>
-      <td><p>character: Required. A single character string or a vector of taxa.</p></td>
+      <td><p>character: Required. A vector of taxon names.</p></td>
     </tr>
     <tr>
       <th>entity</th>
-      <td><p>characters: Required. A single character string or a vector of anatomical class expressions.</p></td>
+      <td><p>characters: Required.
+A single character string or a vector of anatomical class expressions.</p></td>
     </tr>
     <tr>
       <th>relation</th>
-      <td><p>character string: Optional. Has to be either "part of" or "develops from". Default is "part of".</p></td>
+      <td><p>character string: Optional.
+The relationship to the entities to be included in the result. Must be
+either "part of" or "develops from", or set to NA to disable.
+Default is "part of".</p></td>
     </tr>
     <tr>
       <th>variable_only</th>
-      <td><p>logical: Optional. Default is TRUE.</p></td>
+      <td><p>logical: Optional.
+Whether to only include characters that are variable across the selected
+set of taxa. Default is TRUE.</p></td>
     </tr>
     </table>
     
@@ -141,13 +151,41 @@
 
     <p>RNeXML object</p>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The character matrix includes both asserted and logically inferred states. The
+query always includes all subclasses of both taxa and entities, and by default
+also includes all parts of the entities. See parameter <code>relation</code> for changing
+this. By default, only characters that are variable across the resulting taxa
+are included; use <code>variable_only</code> to change this.</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>nex0</span> <span class='kw'>&lt;-</span> <span class='fu'>pk_get_ontotrace_xml</span>(<span class='kw'>taxon</span> <span class='kw'>=</span> <span class='st'>"Ictalurus australis"</span>, <span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"fin"</span>)
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
+<span class='co'># one taxon (including subclasses), one entity (including subclasses and </span>
+<span class='co'># by default its parts)</span>
+<span class='no'>nex</span> <span class='kw'>&lt;-</span> <span class='fu'>pk_get_ontotrace_xml</span>(<span class='kw'>taxon</span> <span class='kw'>=</span> <span class='st'>"Ictalurus"</span>, <span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"fin"</span>)
+
+<span class='co'># same as above, except do not include parts or other relationships (fin</span>
+<span class='co'># presence/absence does not vary across Ictalurus, hence need to allow</span>
+<span class='co'># non-variable characters)</span>
+<span class='no'>nex</span> <span class='kw'>&lt;-</span> <span class='fu'>pk_get_ontotrace_xml</span>(<span class='kw'>taxon</span> <span class='kw'>=</span> <span class='st'>"Ictalurus"</span>, <span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"fin"</span>,
+                            <span class='kw'>relation</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>variable_only</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='co'># instead of parts, include entities in develops_from relationship to the query entity</span>
+<span class='no'>nex</span> <span class='kw'>&lt;-</span> <span class='fu'>pk_get_ontotrace_xml</span>(<span class='kw'>taxon</span> <span class='kw'>=</span> <span class='st'>"Ictalurus"</span>, <span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"paired fin bud"</span>,
+                            <span class='kw'>relation</span> <span class='kw'>=</span> <span class='st'>"develops from"</span>, <span class='kw'>variable_only</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='co'># query with multiple taxa, and/or multiple entities:</span>
 <span class='no'>nex</span> <span class='kw'>&lt;-</span> <span class='fu'>pk_get_ontotrace_xml</span>(<span class='kw'>taxon</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Ictalurus"</span>, <span class='st'>"Ameiurus"</span>),
-                            <span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"fin spine"</span>)
+                            <span class='kw'>entity</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"pectoral fin"</span>, <span class='st'>"pelvic fin"</span>))
+
+<span class='co'># Use the RNeXML API to obtain the character matrix etc:</span>
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>RNeXML</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/RNeXML/topics/get_characters'>get_characters</a></span>(<span class='no'>nex</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/dim'>dim</a></span>(<span class='no'>m</span>)      <span class='co'># number of taxa and characters</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>rownames</a></span>(<span class='no'>m</span>) <span class='co'># taxon names</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>m</span>) <span class='co'># characters (entity names)</span>
+
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -156,6 +194,8 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
