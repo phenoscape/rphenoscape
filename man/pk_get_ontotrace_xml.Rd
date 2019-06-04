@@ -8,22 +8,22 @@ pk_get_ontotrace_xml(taxon, entity, relation = "part of",
   variable_only = TRUE)
 }
 \arguments{
-\item{taxon}{character: Required. A vector of taxon names.}
+\item{taxon}{character, required. A vector of taxon names.}
 
-\item{entity}{characters: Required.
+\item{entity}{character, required.
 A single character string or a vector of anatomical class expressions.}
 
-\item{relation}{character string: Optional.
+\item{relation}{character string, optional.
 The relationship to the entities to be included in the result. Must be
 either "part of" or "develops from", or set to NA to disable.
 Default is "part of".}
 
-\item{variable_only}{logical: Optional.
+\item{variable_only}{logical, optional.
 Whether to only include characters that are variable across the selected
 set of taxa. Default is TRUE.}
 }
 \value{
-RNeXML object
+RNeXML::nexml object
 }
 \description{
 Queries the Phenoscape KB for a synthetic presence/absence character matrix
