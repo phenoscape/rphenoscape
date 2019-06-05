@@ -12,12 +12,11 @@ Most of the services provided with the [Phenoscape Knowledgebase web API](http:/
 
 
 ## Installation
-The development version of RPhenoscape is available on [Github](www.github.com/phenoscape/rphenoscape). With the `devtools` package installed on your system, RPhenoscape can be installed using:
+The development version of RPhenoscape is available on [Github](http://www.github.com/phenoscape/rphenoscape). RPhenoscape can be installed with the `install_github()` function in the `remotes` package (which can be installed from CRAN using `install.packages()`):
 
 
 ```{r compile-settings, include=FALSE}
 ## Set the paths for cache and figure
-library(methods)
 library(knitr)
 basename <- gsub(".Rmd", "", knitr:::knit_concord$get('infile')) 
 opts_chunk$set(fig.path = paste("figure/", basename, "-", sep=""))
@@ -27,19 +26,16 @@ opts_chunk$set(tidy=FALSE, warning=FALSE, message=FALSE, comment = NA, verbose =
 
 
 ```{r, eval = FALSE}
-devtools::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
+# the default build_opts will skip building the vignettes.
+remotes::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
 library(rphenoscape)
 ```
 ```{r, echo = FALSE}
 library(rphenoscape)
 ```
 
-The option `build_opts` ensures that the vignettes will be built and installed
-as well. This will require a recent version of the knitr and rmarkdown
-packages. You can install these beforehand, or include the option
-`dependencies=TRUE`. The latter will also install packages otherwise only
-needed for testing and for generating the help pages, which, if you don't
-develop packages yourself, may be much more than you need.
+The custom `build_opts` parameter ensures that the vignette(s) (such as this document) will be built and installed as well. (The default for `build_opts` will skip building vignettes.)
+Building vignettes requires a recent version of the knitr and rmarkdown packages. You can install these beforehand, or include the parameter `dependencies=TRUE` in the above. Note that the latter will also result in packages being installed that otherwise are only needed for _testing_, and for generating the help pages. If you don't develop packages yourself, this may be much more than you need, and therefore installing knitr and rmarkdown beforehand is then the better option.
 
 ## Character Matrix via Ontotrace
 Use Ontotrace to obtain a character matrix for a taxonomic clade and anatomical region of interest. 
