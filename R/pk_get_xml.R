@@ -95,7 +95,7 @@ pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_o
                   entity = paste(entity_iris, collapse = " or "),
                   variable_only = variable_only)
 
-  res <- httr::GET(ontotrace_url, query = queryseq)
+  res <- httr::POST(ontotrace_url, body = queryseq, encode = "form")
   stop_for_pk_status(res)
   # if passing parsed XML to RNeXML, it needs to be in classes of the XML
   # package, but httr::content now uses the xml2 package for parsing text/xml
@@ -140,7 +140,7 @@ pk_get_study_xml <- function(study_ids) {
 }
 
 
-ontotrace_url <- "http://kb.phenoscape.org/api/ontotrace"
+ontotrace_url <- "https://kb.phenoscape.org/api/ontotrace"
 quantifier <- " some " # seperate quantifier
 part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050>" # "part of"
 develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202>" # "develops from"
