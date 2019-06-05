@@ -83,11 +83,12 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>The development version of RPhenoscape is available on <a href="http://www.github.com/phenoscape/rphenoscape">Github</a>. RPhenoscape can be installed with the <code>install_github()</code> function in the <code>remotes</code> package (which can be installed from CRAN using <code><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages()</a></code>):</p>
+<p>The development version of RPhenoscape is available on <a href="http://www.github.com/phenoscape/rphenoscape">Github</a>. It has not yet been released to [CRAN]. To install RPhenoscape from Github, use the <code>install_github()</code> function in the <code>remotes</code> package (which can be installed from CRAN using <code><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages()</a></code>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the default build_opts will skip building the vignettes.</span>
-remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"phenoscape/rphenoscape"</span>, <span class="dt">build_opts=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"--no-manual"</span>))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(rphenoscape)</code></pre></div>
+remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"phenoscape/rphenoscape"</span>, <span class="dt">build_opts=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"--no-manual"</span>))</code></pre></div>
 <p>The custom <code>build_opts</code> parameter ensures that the vignette(s) (such as this document) will be built and installed as well. (The default for <code>build_opts</code> will skip building vignettes.) Building vignettes requires a recent version of the knitr and rmarkdown packages. You can install these beforehand, or include the parameter <code>dependencies=TRUE</code> in the above. Note that the latter will also result in packages being installed that otherwise are only needed for <em>testing</em>, and for generating the help pages. If you don’t develop packages yourself, this may be much more than you need, and therefore installing knitr and rmarkdown beforehand is then the better option.</p>
+<p>Once installed, the package can be loaded (“attached”) as any other R package:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(rphenoscape)</code></pre></div>
 </div>
 <div id="character-matrix-via-ontotrace" class="section level2">
 <h2 class="hasAnchor">
@@ -109,21 +110,21 @@ Get character matrix:</p>
 <pre><code># A tibble: 15 x 5
    taxa      otu     otus       `anterior dentation… `anterior distal serr…
    &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;                     &lt;int&gt; &lt;chr&gt;                 
- 1 Ameiurus… VTO_00… tb618637b…                    1 1                     
- 2 Ameiurus… VTO_00… tb618637b…                    1 1                     
- 3 Ameiurus… VTO_00… tb618637b…                   NA 1 and 0               
- 4 Ameiurus… VTO_00… tb618637b…                   NA 1                     
- 5 Ameiurus… VTO_00… tb618637b…                    1 1                     
- 6 Ameiurus… VTO_00… tb618637b…                    1 1                     
- 7 Ameiurus… VTO_00… tb618637b…                    1 1                     
- 8 Ictaluru… VTO_00… tb618637b…                    1 1                     
- 9 Ictaluru… VTO_00… tb618637b…                    0 1 and 0               
-10 Ictaluru… VTO_00… tb618637b…                   NA 1                     
-11 Ictaluru… VTO_00… tb618637b…                    0 1                     
-12 Ictaluru… VTO_00… tb618637b…                    1 1                     
-13 Ictaluru… VTO_00… tb618637b…                   NA 1                     
-14 Ictaluru… VTO_00… tb618637b…                    1 1                     
-15 Ictaluru… VTO_00… tb618637b…                    1 1                     </code></pre>
+ 1 Ameiurus… VTO_00… t8f1a3dc2…                    1 1                     
+ 2 Ameiurus… VTO_00… t8f1a3dc2…                    1 1                     
+ 3 Ameiurus… VTO_00… t8f1a3dc2…                   NA 1 and 0               
+ 4 Ameiurus… VTO_00… t8f1a3dc2…                   NA 1                     
+ 5 Ameiurus… VTO_00… t8f1a3dc2…                    1 1                     
+ 6 Ameiurus… VTO_00… t8f1a3dc2…                    1 1                     
+ 7 Ameiurus… VTO_00… t8f1a3dc2…                    1 1                     
+ 8 Ictaluru… VTO_00… t8f1a3dc2…                    1 1                     
+ 9 Ictaluru… VTO_00… t8f1a3dc2…                    0 1 and 0               
+10 Ictaluru… VTO_00… t8f1a3dc2…                   NA 1                     
+11 Ictaluru… VTO_00… t8f1a3dc2…                    0 1                     
+12 Ictaluru… VTO_00… t8f1a3dc2…                    1 1                     
+13 Ictaluru… VTO_00… t8f1a3dc2…                   NA 1                     
+14 Ictaluru… VTO_00… t8f1a3dc2…                    1 1                     
+15 Ictaluru… VTO_00… t8f1a3dc2…                    1 1                     </code></pre>
 <p>The character matrix can be integrated with other data, such as meta data which include taxon identifiers, character identifiers, etc. Get meta data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(meta &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pk_ontotrace.html">pk_get_ontotrace_meta</a></span>(nex))</code></pre></div>
 <pre><code>$id_taxa
@@ -144,21 +145,21 @@ Get character matrix:</p>
 14     Ictalurus balsanus http://purl.obolibrary.org/obo/VTO_0036221
 15      Ictalurus dugesii http://purl.obolibrary.org/obo/VTO_0061497
            otu                                  otus
-1  VTO_0061498 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-2  VTO_0036220 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-3  VTO_0036275 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-4  VTO_0036276 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-5  VTO_0036278 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-6  VTO_0061495 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-7  VTO_0036218 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-8  VTO_0036225 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-9  VTO_0036277 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-10 VTO_0036272 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-11 VTO_0036274 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-12 VTO_0036223 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-13 VTO_0036273 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-14 VTO_0036221 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
-15 VTO_0061497 tb618637b-7911-40d0-b6ad-9bc6a4c29d3e
+1  VTO_0061498 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+2  VTO_0036220 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+3  VTO_0036275 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+4  VTO_0036276 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+5  VTO_0036278 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+6  VTO_0061495 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+7  VTO_0036218 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+8  VTO_0036225 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+9  VTO_0036277 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+10 VTO_0036272 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+11 VTO_0036274 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+12 VTO_0036223 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+13 VTO_0036273 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+14 VTO_0036221 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
+15 VTO_0061497 t8f1a3dc2-c14f-49cd-9820-60b8cb492f4f
 
 $id_entities
                                             label
@@ -532,21 +533,21 @@ $id_entities
 <pre><code># A tibble: 15 x 5
    taxa      otu     otus       `anterior dentation… `anterior distal serr…
    &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;                     &lt;int&gt; &lt;chr&gt;                 
- 1 Ameiurus… VTO_00… tb618637b…                    1 1                     
- 2 Ameiurus… VTO_00… tb618637b…                    1 1                     
- 3 Ameiurus… VTO_00… tb618637b…                   NA 1 and 0               
- 4 Ameiurus… VTO_00… tb618637b…                   NA 1                     
- 5 Ameiurus… VTO_00… tb618637b…                    1 1                     
- 6 Ameiurus… VTO_00… tb618637b…                    1 1                     
- 7 Ameiurus… VTO_00… tb618637b…                    1 1                     
- 8 Ictaluru… VTO_00… tb618637b…                    1 1                     
- 9 Ictaluru… VTO_00… tb618637b…                    0 1 and 0               
-10 Ictaluru… VTO_00… tb618637b…                   NA 1                     
-11 Ictaluru… VTO_00… tb618637b…                    0 1                     
-12 Ictaluru… VTO_00… tb618637b…                    1 1                     
-13 Ictaluru… VTO_00… tb618637b…                   NA 1                     
-14 Ictaluru… VTO_00… tb618637b…                    1 1                     
-15 Ictaluru… VTO_00… tb618637b…                    1 1                     </code></pre>
+ 1 Ameiurus… VTO_00… t8f1a3dc2…                    1 1                     
+ 2 Ameiurus… VTO_00… t8f1a3dc2…                    1 1                     
+ 3 Ameiurus… VTO_00… t8f1a3dc2…                   NA 1 and 0               
+ 4 Ameiurus… VTO_00… t8f1a3dc2…                   NA 1                     
+ 5 Ameiurus… VTO_00… t8f1a3dc2…                    1 1                     
+ 6 Ameiurus… VTO_00… t8f1a3dc2…                    1 1                     
+ 7 Ameiurus… VTO_00… t8f1a3dc2…                    1 1                     
+ 8 Ictaluru… VTO_00… t8f1a3dc2…                    1 1                     
+ 9 Ictaluru… VTO_00… t8f1a3dc2…                    0 1 and 0               
+10 Ictaluru… VTO_00… t8f1a3dc2…                   NA 1                     
+11 Ictaluru… VTO_00… t8f1a3dc2…                    0 1                     
+12 Ictaluru… VTO_00… t8f1a3dc2…                    1 1                     
+13 Ictaluru… VTO_00… t8f1a3dc2…                   NA 1                     
+14 Ictaluru… VTO_00… t8f1a3dc2…                    1 1                     
+15 Ictaluru… VTO_00… t8f1a3dc2…                    1 1                     </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(is_desc &lt;-<span class="st"> </span><span class="kw"><a href="../reference/pk_is_descendant.html">pk_is_descendant</a></span>(<span class="st">'Ictalurus'</span>, m<span class="op">$</span>taxa))</code></pre></div>
 <pre><code> [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE
 [12]  TRUE  TRUE  TRUE  TRUE</code></pre>
@@ -554,14 +555,14 @@ $id_entities
 <pre><code># A tibble: 8 x 5
   taxa     otu     otus        `anterior dentation … `anterior distal serr…
   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;                       &lt;int&gt; &lt;chr&gt;                 
-1 Ictalur… VTO_00… tb618637b-…                     1 1                     
-2 Ictalur… VTO_00… tb618637b-…                     0 1 and 0               
-3 Ictalur… VTO_00… tb618637b-…                    NA 1                     
-4 Ictalur… VTO_00… tb618637b-…                     0 1                     
-5 Ictalur… VTO_00… tb618637b-…                     1 1                     
-6 Ictalur… VTO_00… tb618637b-…                    NA 1                     
-7 Ictalur… VTO_00… tb618637b-…                     1 1                     
-8 Ictalur… VTO_00… tb618637b-…                     1 1                     </code></pre>
+1 Ictalur… VTO_00… t8f1a3dc2-…                     1 1                     
+2 Ictalur… VTO_00… t8f1a3dc2-…                     0 1 and 0               
+3 Ictalur… VTO_00… t8f1a3dc2-…                    NA 1                     
+4 Ictalur… VTO_00… t8f1a3dc2-…                     0 1                     
+5 Ictalur… VTO_00… t8f1a3dc2-…                     1 1                     
+6 Ictalur… VTO_00… t8f1a3dc2-…                    NA 1                     
+7 Ictalur… VTO_00… t8f1a3dc2-…                     1 1                     
+8 Ictalur… VTO_00… t8f1a3dc2-…                     1 1                     </code></pre>
 </div>
 <div id="term-search" class="section level3">
 <h3 class="hasAnchor">

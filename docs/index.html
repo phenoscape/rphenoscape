@@ -80,20 +80,21 @@
 <li>Author: Hong Xu, Hilmar Lapp</li>
 <li>Maintainer: Hilmar Lapp</li>
 </ul>
-<p>Most of the services provided with <a href="http://kb.phenoscape.org/apidocs/">Phenoscape Knowledgebase web API</a> return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices.</p>
+<p>Most of the services provided with the <a href="http://kb.phenoscape.org/apidocs/">Phenoscape Knowledgebase web API</a> return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>The development version of RPhenoscape is available on <a href="www.github.com/phenoscape/rphenoscape">Github</a>. With the <code>devtools</code> package installed on your system, rphenoscape can be installed using:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"phenoscape/rphenoscape"</span>, <span class="dt">build_opts=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"--no-manual"</span>))
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(rphenoscape)</code></pre></div>
-<p>The custom <code>build_opts</code> parameter ensures that the vignette(s) will be built and installed as well. (The default for <code>build_opts</code> will skip building vignettes.) Building vignettes requires a recent version of the knitr and rmarkdown packages.</p>
+<p>The development version of RPhenoscape is available on <a href="http://github.com/phenoscape/rphenoscape">Github</a>. It has not yet been released to <a href="https://cran.r-project.org">CRAN</a>. To install RPhenoscape from Github, use the <code>install_github()</code> function in the <code>remotes</code> package (which can be installed from CRAN using <code><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages()</a></code>):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"phenoscape/rphenoscape"</span>, <span class="dt">build_opts=</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"--no-manual"</span>))</code></pre></div>
+<p>The custom <code>build_opts</code> parameter ensures that the vignette(s) will be built and installed as well. (The default for <code>build_opts</code> will skip building vignettes.) Building vignettes requires recent versions of the <code>knitr</code> and <code>rmarkdown</code> packages to be installed.</p>
+<p>Once installed, the package can be loaded (“attached”) as any other R package:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(rphenoscape)</code></pre></div>
 </div>
 <div id="package-usage-information" class="section level2">
 <h2 class="hasAnchor">
 <a href="#package-usage-information" class="anchor"></a>Package Usage Information</h2>
 <p>The functionality and operations of the RPhenoscape package can be viewed on the dedicated package website: <a href="http://rphenoscape.phenoscape.org/" class="uri">http://rphenoscape.phenoscape.org/</a></p>
-<p>Use cases described there include the following:</p>
+<p><a href="https://github.com/phenoscape/rphenoscape/wiki/User-Stories">Use cases</a> described there include the following:</p>
 <ul>
 <li>Using Ontotrace to obtain a character matrix</li>
 <li>Obtaining the character matrices for studies published for a taxonomic clade</li>
