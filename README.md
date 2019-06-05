@@ -4,8 +4,8 @@ RPhenoscape: Semantically rich phenotypic traits from the Phenoscape Knowledgeba
 
 [![Build Status](https://travis-ci.org/phenoscape/rphenoscape.svg?branch=master)](https://travis-ci.org/phenoscape/rphenoscape)
 
-- Author: Hong Xu, Hilmar Lapp
-- Maintainer: Hilmar Lapp
+-   Author: Hong Xu, Hilmar Lapp
+-   Maintainer: Hilmar Lapp
 
 Most of the services provided with [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices.
 
@@ -15,11 +15,11 @@ Installation
 The development version of RPhenoscape is available on [Github](www.github.com/phenoscape/rphenoscape). With the `devtools` package installed on your system, rphenoscape can be installed using:
 
 ``` r
-devtools::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
+remotes::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
 library(rphenoscape)
 ```
 
-The option `build_opts` ensures that the vignettes will be built and installed as well. This will require a recent version of the knitr and rmarkdown packages. You can install these beforehand, or include the option `dependencies=TRUE`. The latter will also install packages otherwise only needed for testing and for generating the help pages, which, if you don't develop packages yourself, may be much more than you need.
+The custom `build_opts` parameter ensures that the vignette(s) will be built and installed as well. (The default for `build_opts` will skip building vignettes.) Building vignettes requires a recent version of the knitr and rmarkdown packages.
 
 Package Usage Information
 -------------------------
