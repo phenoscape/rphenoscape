@@ -12,11 +12,11 @@ output:
 - Author: Hong Xu, Hilmar Lapp
 - Maintainer: Hilmar Lapp
 
-Most of the services provided with [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices. 
+Most of the services provided with the [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.
 
 
 ## Installation
-The development version of RPhenoscape is available on [Github](www.github.com/phenoscape/rphenoscape). With the `devtools` package installed on your system, rphenoscape can be installed using:
+The development version of RPhenoscape is available on [Github](http://github.com/phenoscape/rphenoscape). It has not yet been released to [CRAN]. To install RPhenoscape from Github, use the `install_github()` function in the `remotes` package (which can be installed from CRAN using `install.packages()`):
 
 
 ```{r compile-settings, include=FALSE}
@@ -37,14 +37,15 @@ opts_chunk$set(tidy=FALSE, warning=FALSE, message=FALSE, comment = NA, verbose =
 
 ```{r, eval = FALSE}
 remotes::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
-library(rphenoscape)
-```
-```{r, echo = FALSE}
-library(rphenoscape)
 ```
 
 The custom `build_opts` parameter ensures that the vignette(s) will be built and installed as well. (The default for `build_opts` will skip building vignettes.)
-Building vignettes requires a recent version of the knitr and rmarkdown packages.
+Building vignettes requires recent versions of the `knitr` and `rmarkdown` packages to be installed.
+
+Once installed, the package can be loaded ("attached") as any other R package:
+```{r}
+library(rphenoscape)
+```
 
 ## Package Usage Information
 The functionality and operations of the RPhenoscape package can be viewed on the dedicated package website: <http://rphenoscape.phenoscape.org/>
@@ -60,3 +61,4 @@ The functionality and operations of the RPhenoscape package can be viewed on the
 [![Phenoscape Knowledgebase](https://wiki.phenoscape.org/wg/phenoscape/images/f/f6/Phenoscape_Logo.png)](http://kb.phenoscape.org)
 
 [Use cases]: https://github.com/phenoscape/rphenoscape/wiki/User-Stories
+[CRAN]: https://cran.r-project.org
