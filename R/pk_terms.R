@@ -1,4 +1,4 @@
-#' Get details about a given term
+#' Get term details (ID, label, definition)
 #'
 #' @name pk_terms
 #' @import httr
