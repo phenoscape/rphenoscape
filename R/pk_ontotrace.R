@@ -1,4 +1,4 @@
-#' Returns a NeXML-format evolutionary character matrix.
+#' Gets the matrix or matrix metadata as a data.frame from a NeXML object
 #'
 #' @name pk_ontotrace
 #' @import RNeXML
@@ -8,9 +8,8 @@
 #' @return data.frame: The OntoTrace matrix.
 #'
 #' @description
-#' Generate matrix of inferred presence/absence associations for anatomical structures
-#' subsumed by the provided entity class expression, for any taxa within the provided
-#' taxon class expression.
+#' Extracts the matrix (pk_get_ontrace) or character and taxon lists (pk_get_ontotrace_meta)
+#' as data.frame from an OntoTrace generated NeXML object.
 #' @examples
 #' \dontrun{
 #' nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
