@@ -6,7 +6,7 @@
 \alias{pk_anatomical_detail}
 \alias{pk_phenotype_detail}
 \alias{pk_gene_detail}
-\title{Get details about a given term}
+\title{Get term details (ID, label, definition)}
 \usage{
 pk_taxon_detail(term, verbose = FALSE)
 

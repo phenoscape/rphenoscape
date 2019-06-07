@@ -7,7 +7,10 @@
 pk_get_study_meta(nexmls)
 }
 \arguments{
-\item{nexmls, }{a list of NeXml object}
+\item{nexmls, }{a list of NeXML objects}
+}
+\value{
+A list of data.frames containing taxa and characters
 }
 \description{
 pk_get_study_meta

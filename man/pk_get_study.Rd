@@ -7,7 +7,10 @@
 pk_get_study(nexmls)
 }
 \arguments{
-\item{nexmls, }{a list of NeXml object}
+\item{nexmls, }{a list of \link[RNeXML:nexml-class]{nexml} objects}
+}
+\value{
+A list of data.frames containing matrices
 }
 \description{
 pk_get_study

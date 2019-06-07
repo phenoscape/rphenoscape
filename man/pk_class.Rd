@@ -5,7 +5,7 @@
 \alias{pk_taxon_class}
 \alias{pk_anatomical_class}
 \alias{pk_phenotype_class}
-\title{Classification}
+\title{Get term classification}
 \usage{
 pk_taxon_class(x, verbose = TRUE)
 

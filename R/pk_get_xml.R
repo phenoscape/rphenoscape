@@ -108,8 +108,8 @@ pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_o
 
 
 #' pk_get_study_xml
-#' @param study_ids, a list of study ids.
-#' @return a list of nexml objects
+#' @param study_ids, a list of study IDs.
+#' @return A list of [nexml][RNeXML::nexml-class] objects
 #' @examples
 #' \dontrun{
 #' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
