@@ -118,7 +118,8 @@ pk_get_study_list <- function(taxon = NA, entity = NA, quality = NA,
 }
 
 #' pk_get_study
-#' @param nexmls, a list of NeXml object
+#' @param nexmls, a list of NeXML objects
+#' @return A list of data.frames containing matrices
 #' @examples
 #' \dontrun{
 #' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
@@ -142,7 +143,8 @@ pk_get_study <- function(nexmls) {
 }
 
 #' pk_get_study_meta
-#' @param nexmls, a list of NeXml object
+#' @param nexmls, a list of NeXML objects
+#' @return A list of data.frames containing taxa and characters
 #' @examples
 #' \dontrun{
 #' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
