@@ -110,11 +110,8 @@ pk_get_study_list <- function(taxon = NA, entity = NA, quality = NA,
     mssg(T, paste("No study found in database."))
     return(invisible(FALSE))
   }
-  # NULLing out : for the R CMD CHECK
-  `@id` <- NULL
 
-  d <- dplyr::as_data_frame(d)
-  d %>% dplyr::rename(id = `@id`)
+  d %>% dplyr::rename(id = "@id")
 }
 
 #' pk_get_study

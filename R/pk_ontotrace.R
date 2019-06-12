@@ -25,8 +25,7 @@ pk_get_ontotrace <- function(nex) {
 
   m <- get_characters(nex, rownames_as_col = TRUE,
                       otu_id = TRUE, otus_id = TRUE)
-  m_re <- dplyr::as_data_frame(m)
-  return(m_re)
+  return(m)
 }
 
 #' @export

@@ -23,9 +23,9 @@ pk_taxon_detail <- function(term, verbose=FALSE) {
   mssg(verbose, "Retrieving term details")
 
   queryseq <- list(iri = iri)
-  lst <- pk_GET(pk_taxon_url, queryseq)
-  det <- dplyr::as_data_frame(as.list(unlist(lst)))
-  det$extinct <- as.logical(det$extinct)
+  lst <- unlist(pk_GET(pk_taxon_url, queryseq))
+  det <- as.data.frame(t(lst))
+  colnames(det) <- sub("@", "", names(lst))
   det
 }
 
@@ -73,7 +73,8 @@ pk_details <- function(term, as, verbose=FALSE) {
 
   queryseq <- list(iri = iri)
   lst <- pk_GET("http://kb.phenoscape.org/api/term", queryseq)
-  dplyr::as_data_frame(Filter(function(x) !is.list(x), lst))
+  names(lst) <- sub("@", "", names(lst))
+  as.data.frame(Filter(function(x) !is.list(x), lst))
 }
 
 pk_taxon_url <- "http://kb.phenoscape.org/api/taxon"
