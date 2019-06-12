@@ -45,12 +45,8 @@ pk_phenotype_detail <- function(term, verbose=FALSE) {
 pk_gene_detail <- function(term, verbose=FALSE) {
   # TODO: resolve taxon to NCBI IRI
   queryseq <- list(text = term)
-  res <- httr::GET("http://kb.phenoscape.org/api/gene/search",
-                   query = queryseq,
-                   add_headers(Accept = "application/json")) # explicitly ask for json
-  stop_for_pk_status(res)
-  out <- httr::content(res, as = "text")
-  jsonlite::fromJSON(out, simplifyVector = TRUE, flatten = TRUE)$results
+  res <- pk_GET("http://kb.phenoscape.org/api/gene/search", query = queryseq)
+  res$results
 }
 
 #' Test if a taxon is extinct.
