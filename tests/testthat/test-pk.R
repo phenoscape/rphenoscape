@@ -25,7 +25,7 @@ test_that("Test term search", {
   expect_is(gg, "data.frame")
 })
 
-test_that("Test retriving IRI", {
+test_that("Test retrieving IRI", {
   skip_on_cran()
 
   i <- pk_get_iri("Coralliozetus", "vto")
@@ -34,6 +34,19 @@ test_that("Test retriving IRI", {
   expect_warning(iii <- pk_get_iri("Coralliozetus", "pato"))
   expect_true(is.na(ii))
   expect_true(is.na(iii))
+
+  tiris <- find_term("pelvic fin", definedBy = NA, matchTypes = c("exact"))
+  expect_gt(nrow(tiris), 1)
+  expect_silent(tiri <- pk_get_iri("pelvic fin", as = NA, exactOnly = TRUE))
+  expect_equal(tiri, "http://purl.obolibrary.org/obo/UBERON_0000152")
+
+  tiris <- find_term("part_of", definedBy = NA)
+  expect_true("isDefinedBy" %in% colnames(tiris))
+  expect_true(all(is.na(tiris$isDefinedBy)))
+
+  expect_warning(tiri <- pk_get_iri("anatomical structure", as = NA, exactOnly = TRUE))
+  expect_is(tiri, "character")
+  expect_true(startsWith(tiri, "http://purl.obolibrary.org/obo/"))
 })
 
 

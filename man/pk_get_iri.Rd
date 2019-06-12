@@ -12,8 +12,9 @@ pk_get_iri(text, as, exactOnly = FALSE, nomatch = NA,
 
 \item{as}{character. The ontology or ontologies as which to find the term.
 Can be provided in several ways: (1) IRI of the ontology; (2) the ID space
-for OBO ontologies; (3) \code{"anatomy"} and \code{"taxon"} as shorthand for all
-anatomy and taxon ontologies, respectively. Options (1) and (2 can be
+for OBO ontologies such as UBERON, VTO, etc; (3) \code{"anatomy"} and \code{"taxon"}
+as shorthand for all anatomy and taxon ontologies, respectively; (4) NA to
+disable any filtering by defining ontology. Options (1) and (2) can be
 combined. There is no default.}
 
 \item{exactOnly}{logical. Whether to require an exact match. If TRUE, only

@@ -78,6 +78,11 @@ find_term <- function(query,
   res <- res$results
 
   if (length(res) > 0 && nrow(res) > 0) {
+    # it's possible that no matching term is defined in an ontology, in which
+    # case that column will be missing altogether
+    if (! ("isDefinedBy" %in% colnames(res)))
+      res <- cbind(res, isDefinedBy = rep(NA, times = nrow(res)))
+
     # filter by where matches are defined, if not already part of the query
     if (is.call(definedBy)) {
       res <- dplyr::filter_at(res, "isDefinedBy", all_vars(!!definedBy))
@@ -109,8 +114,9 @@ find_term <- function(query,
 #' @param text character. The search text to be resolved.
 #' @param as character. The ontology or ontologies as which to find the term.
 #'   Can be provided in several ways: (1) IRI of the ontology; (2) the ID space
-#'   for OBO ontologies; (3) `"anatomy"` and `"taxon"` as shorthand for all
-#'   anatomy and taxon ontologies, respectively. Options (1) and (2 can be
+#'   for OBO ontologies such as UBERON, VTO, etc; (3) `"anatomy"` and `"taxon"`
+#'   as shorthand for all anatomy and taxon ontologies, respectively; (4) NA to
+#'   disable any filtering by defining ontology. Options (1) and (2) can be
 #'   combined. There is no default.
 #' @param exactOnly logical. Whether to require an exact match. If TRUE, only
 #'   the first exact match is returned. Default is FALSE.
@@ -126,7 +132,7 @@ pk_get_iri <- function(text, as,
   if (startsWith(text, "http://") || startsWith(text, "https://")) return(text)
 
   mssg(verbose, paste("Querying the IRI for", text, sep = " "))
-  if (length(as) == 1) {
+  if (length(as) == 1 && is.character(as)) {
     if (as == "taxon")
       as <- taxon_ontology_iris()
     else if (startsWith(as, "anatom"))
@@ -149,7 +155,24 @@ pk_get_iri <- function(text, as,
     return(invisible(nomatch))
   }
   if ('exact' %in% iri_df$matchType) {
-    id <- iri_df$id[iri_df$matchType == 'exact']
+    iri_df <- iri_df[iri_df$matchType == 'exact',]
+    # if there are multiple exact matches, favor those defined in an ontology,
+    # and then those with an exact label match
+    if (nrow(iri_df) > 1) {
+      isDefOnto <- !is.na(iri_df$isDefinedBy)
+      if (any(isDefOnto)) iri_df <- iri_df[isDefOnto,]
+    }
+    if (nrow(iri_df) > 1) {
+      matchLabel <- iri_df$label == text
+      if (any(matchLabel)) iri_df <- iri_df[matchLabel,]
+      if (nrow(iri_df) > 1) {
+        warning("Multiple exact matches for \"", text, "\", returning first one:\n\t",
+                paste0(iri_df$id, collapse = "\n\t"),
+                call. = FALSE)
+        iri_df <- iri_df[1,]
+      }
+    }
+    id <- iri_df$id
   } else {
     if ('partial' %in% iri_df$matchType) {
       match_type <- 'partial'
