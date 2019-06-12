@@ -2,20 +2,37 @@
 % Please edit documentation in R/pk_get_IRI.R
 \name{pk_get_iri}
 \alias{pk_get_iri}
-\title{Resolve a text term into IRI}
+\title{Resolve a text query to IRI}
 \usage{
-pk_get_iri(text, as, verbose = FALSE)
+pk_get_iri(text, as, exactOnly = FALSE, nomatch = NA,
+  verbose = FALSE)
 }
 \arguments{
-\item{text}{character. The term to be resolved.}
+\item{text}{character. The search text to be resolved.}
 
-\item{as}{character. Ontology type. For a taxon, use "vto", anatomical structure, "uberon", phenotype, "pato".}
+\item{as}{character. The ontology or ontologies as which to find the term.
+Can be provided in several ways: (1) IRI of the ontology; (2) the ID space
+for OBO ontologies; (3) \code{"anatomy"} and \code{"taxon"} as shorthand for all
+anatomy and taxon ontologies, respectively. Options (1) and (2 can be
+combined. There is no default.}
+
+\item{exactOnly}{logical. Whether to require an exact match. If TRUE, only
+the first exact match is returned. Default is FALSE.}
+
+\item{nomatch}{the value to return if there is no match, by default NA.}
 
 \item{verbose}{logical: optional. If TRUE (default), informative messages printed.}
 }
 \value{
-character. The resolved IRI, or the unmodified input \code{text} if it was already an HTTP URI.
+The IRI if a match is found.
 }
 \description{
-Resolve a text term into IRI
+Finds the term matching the query text, and returns its IRI. If the query
+text is already a IRI, it is returned as is.
+}
+\details{
+This uses \link{find_term} to find matches, and assumes that the term of interest
+is a class. If there is an exact match, its IRI will be returned. If there
+isn't, by default partial, and as a last resort broad, matches will also be
+considered, although this will result in a warning.
 }

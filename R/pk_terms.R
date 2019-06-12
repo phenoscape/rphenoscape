@@ -18,8 +18,8 @@
 pk_taxon_detail <- function(term, verbose=FALSE) {
   #pk_details(term, as = "vto", verbose)
   # update to a verbose version of taxon search
-  iri <- pk_get_iri(term, as = "vto")
-  if (iri == FALSE) return(invisible(FALSE))
+  iri <- pk_get_iri(term, as = "taxon", nomatch = FALSE)
+  if (iri == FALSE) return(invisible(NA))
   mssg(verbose, "Retrieving term details")
 
   queryseq <- list(iri = iri)
@@ -32,12 +32,12 @@ pk_taxon_detail <- function(term, verbose=FALSE) {
 #' @export
 #' @rdname pk_terms
 pk_anatomical_detail <- function(term, verbose=FALSE) {
-  pk_details(term, as = "uberon", verbose)
+  pk_details(term, as = "anatomy", verbose = verbose)
 }
 #' @export
 #' @rdname pk_terms
 pk_phenotype_detail <- function(term, verbose=FALSE) {
-  pk_details(term, as = "pato", verbose)
+  pk_details(term, as = "pato", verbose = verbose)
 }
 
 #' @export
@@ -60,14 +60,14 @@ pk_gene_detail <- function(term, verbose=FALSE) {
 #' @export
 pk_is_extinct <- function(taxon) {
   det <- pk_taxon_detail(taxon)
-  if (is.logical(det)) return(invisible(FALSE))
+  if (is.na(det)) return(invisible(NA))
   det$extinct
 }
 
 
 pk_details <- function(term, as, verbose=FALSE) {
-  iri <- pk_get_iri(term, as)
-  if (iri == FALSE) return(invisible(FALSE))
+  iri <- pk_get_iri(term, as, verbose = verbose)
+  if (is.na(iri)) return(invisible(NA))
 
   mssg(verbose, "Retrieving term details")
 

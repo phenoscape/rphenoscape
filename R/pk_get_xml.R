@@ -65,18 +65,13 @@ pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_o
                           "develops from" = develops_relation)
   }
 
-  taxon_iris <- lapply(taxon, FUN = pk_get_iri, as = "vto", verbose = FALSE)
-  entity_iris <- lapply(entity, FUN = pk_get_iri, as = "uberon", verbose = FALSE)
+  taxon_iris <- lapply(taxon,
+                       FUN = pk_get_iri, as = "taxon", exactOnly = TRUE)
+  entity_iris <- lapply(entity, FUN = pk_get_iri, as = "anatomy")
 
-  # FALSE will be returned by pk_get_iri if there's no match in database
-  if (FALSE %in% taxon_iris || FALSE %in% entity_iris) {
-#     stop(paste(c("Could not find",
-#                  taxon[which(taxon_iris == FALSE)],
-#                  entity[which(entity_iris == FALSE)],
-#                  "in the database."),
-#                collapse = " * "),
-#          call. = FALSE)
-    return(invisible(FALSE))
+  # check for successful resolution of all search terms
+  if (any(is.na(taxon_iris)) || any(is.na(entity_iris))) {
+    return(invisible(nexml()))
   }
 
   # insert necessary "<" and ">" before concatenating string
