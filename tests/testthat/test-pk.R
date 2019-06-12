@@ -75,11 +75,24 @@ test_that("Test getting classification information", {
 
 test_that("Test Descendant/Ancestor", {
   skip_on_cran()
-  fl <- pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
-  tl <- pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
 
-  expect_equal(fl, c(F, F, T))
-  expect_equal(tl, c(T, F, F))
+  # taxon terms:
+  expect_equal(pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae")),
+               c(FALSE, FALSE, TRUE))
+  expect_equal(pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae")),
+               c(TRUE, FALSE, FALSE))
+
+  # anatomical entities:
+  expect_equal(pk_is_descendant("paired fin", c("pectoral fin", "pelvic fin", "dorsal fin")),
+               c(TRUE, TRUE, FALSE))
+  expect_equal(pk_is_ancestor("pelvic fin", c("paired fin", "hindlimb", "fin")),
+               c(TRUE, FALSE, TRUE))
+
+  # phenotypic quality
+  expect_equal(pk_is_ancestor("triangular", c("shape", "color", "amount")),
+               c(TRUE, FALSE, FALSE))
+  expect_equal(pk_is_descendant("shape", c("T-shaped", "star shaped", "yellow")),
+               c(TRUE, TRUE, FALSE))
 })
 
 #

@@ -3,26 +3,45 @@
 \name{pk_is_descendant}
 \alias{pk_is_descendant}
 \alias{pk_is_ancestor}
-\title{Test if a list of taxa is descendant/ancestor of a given term}
+\title{Test which candidate terms are ancestors or descendants of a term}
 \usage{
-pk_is_descendant(taxon, candidates)
+pk_is_descendant(term, candidates)
 
-pk_is_ancestor(taxon, candidates)
+pk_is_ancestor(term, candidates)
 }
 \arguments{
-\item{taxon}{character. The taxon name}
+\item{term}{character, the label (name) or IRI of the query term}
 
-\item{candidates}{a list of taxa}
+\item{candidates}{character, the list of candidate term names or IRIs}
 }
 \value{
-a list of TRUE/FALSE, indicating if the corresponding taxon in the candidate list is descendant/ancestor or not.
+A logical vector indicating which candidate terms are ancestors and
+descendants, respectively, of the query term.
 }
 \description{
-Test if a list of taxa is descendant/ancestor of a given term
+Tests which in a list of candidate terms are ancestors to or descendants of
+the query term. Note that terms are notconsidered ancestors and descendants
+of themselves.
+}
+\details{
+Any of both the query term and the list of candidate terms can be supplied
+as labels (names), or as IRIs. The function will first resolve any labels
+to IRIs, allowing any ontology as the target. If labels aren't unique enough
+across ontologies, it is advisable to do the resolution before calling these
+functions, using \link{pk_get_iri} with the appropriate ontology set.
 }
 \examples{
 \dontrun{
+# taxa:
 pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
 pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
+
+# anatomical entities:
+pk_is_descendant("paired fin", c("pectoral fin", "pelvic fin", "dorsal fin"))
+pk_is_ancestor("pelvic fin", c("paired fin", "hindlimb", "fin"))
+
+# phenotypic quality
+pk_is_ancestor("triangular", c("shape", "color", "amount"))
+pk_is_descendant("shape", c("T-shaped", "star shaped", "yellow"))
 }
 }
