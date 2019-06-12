@@ -6,11 +6,6 @@ test_that("Test term search", {
   b <- pk_phenotype_detail("shape")
   c <- pk_anatomical_detail("basihyal bone")
 
-  aa <- pk_taxon_detail("coral tt")
-  bb <- pk_phenotype_detail("shape tt")
-  cc <- pk_anatomical_detail("fin tt")
-
-
   g <- pk_gene_detail("socs5")
   gg <- pk_gene_detail("socs5", "Danio rerio")
 
@@ -19,9 +14,12 @@ test_that("Test term search", {
   expect_is(c, 'data.frame')
 
 
-  expect_equal(aa, FALSE)
-  expect_equal(bb, FALSE)
-  expect_equal(cc, FALSE)
+  expect_warning(aa <- pk_taxon_detail("coral tt"))
+  expect_warning(bb <- pk_phenotype_detail("shape tt"))
+  expect_warning(cc <- pk_anatomical_detail("fin tt"))
+  expect_true(is.na(aa))
+  expect_true(is.na(bb))
+  expect_true(is.na(cc))
 
   expect_is(g, "data.frame")
   expect_is(gg, "data.frame")
@@ -29,13 +27,13 @@ test_that("Test term search", {
 
 test_that("Test retriving IRI", {
   skip_on_cran()
-  i <- pk_get_iri("Coralliozetus", "vto")
-  ii <- pk_get_iri("Coralliozetus TT", "vto")
-  iii <- pk_get_iri("Coralliozetus", "pato")
 
+  i <- pk_get_iri("Coralliozetus", "vto")
   expect_equal(i, "http://purl.obolibrary.org/obo/VTO_0042955")
-  expect_equal(ii, FALSE)
-  expect_equal(iii, FALSE)
+  expect_warning(ii <- pk_get_iri("Coralliozetus TT", "vto"))
+  expect_warning(iii <- pk_get_iri("Coralliozetus", "pato"))
+  expect_true(is.na(ii))
+  expect_true(is.na(iii))
 })
 
 
@@ -43,23 +41,22 @@ test_that("Test getting classification information", {
   skip_on_cran()
   t <- pk_taxon_class("Fisherichthys")
   tt <- pk_taxon_class("Fisherichthys folmeri")
-  ttt <- pk_taxon_class("Fisherichthys TT")
 
   a <- pk_anatomical_class("fin")
-  aa <- pk_anatomical_class("fin FF")
-
   p <- pk_phenotype_class("shape")
-  pp <- pk_phenotype_class("shape SS")
 
   expect_output(str(t), 'List of 5')
   expect_output(str(tt), 'List of 5')
-  expect_equal(ttt, FALSE)
+  expect_warning(ttt <- pk_taxon_class("Fisherichthys TT"))
+  expect_true(is.na(ttt))
 
   expect_output(str(a), 'List of 5')
-  expect_equal(aa, FALSE)
+  expect_warning(aa <- pk_anatomical_class("fin FF"))
+  expect_true(is.na(aa))
 
   expect_output(str(p), 'List of 5')
-  expect_equal(pp, FALSE)
+  expect_warning(pp <- pk_phenotype_class("shape SS"))
+  expect_true(is.na(pp))
 
 })
 

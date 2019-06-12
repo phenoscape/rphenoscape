@@ -11,12 +11,12 @@
 #' @export
 #' @rdname pk_class
 pk_taxon_class <- function(x, verbose=TRUE) {
-  pk_class(x, as = "vto", verbose)
+  pk_class(x, as = "taxon", verbose)
 }
 #' @export
 #' @rdname pk_class
 pk_anatomical_class <- function(x, verbose=TRUE) {
-  pk_class(x, as = "uberon", verbose)
+  pk_class(x, as = "anatomy", verbose)
 }
 #' @export
 #' @rdname pk_class
@@ -25,8 +25,8 @@ pk_phenotype_class <- function(x, verbose=TRUE) {
 }
 
 pk_class <- function(x, as, verbose=TRUE) {
-  iri <- pk_get_iri(x, as = as)
-  if (iri == FALSE) return(invisible(FALSE))
+  iri <- pk_get_iri(x, as = as, verbose = verbose)
+  if (is.na(iri)) return(invisible(NA))
 
   mssg(verbose, "Retrieving classification information")
 
