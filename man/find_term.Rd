@@ -21,7 +21,7 @@ etc), which will be expanded to full IRIs using the OBO ontology IRI
 pattern. Alternatively, a call expression returning a logical vector, with
 a dot in the position where the \code{isDefinedBy} value is to be passed.
 The default is an expression that filters out rows with no \code{isDefinedBy}
-value.}
+value. Can also be set to NA to suppress any filtering by ontology.}
 
 \item{matchBy}{character, the term's (metadata) properties against which
 to match. Provide as IRIs or using common namespace prefixes. The default

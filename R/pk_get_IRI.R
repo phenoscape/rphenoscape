@@ -16,7 +16,7 @@
 #'   pattern. Alternatively, a call expression returning a logical vector, with
 #'   a dot in the position where the `isDefinedBy` value is to be passed.
 #'   The default is an expression that filters out rows with no `isDefinedBy`
-#'   value. 
+#'   value. Can also be set to NA to suppress any filtering by ontology.
 #' @param matchBy character, the term's (metadata) properties against which
 #'   to match. Provide as IRIs or using common namespace prefixes. The default
 #'   is NA, which will use the remote API's default, currently "rdfs:label",
@@ -56,11 +56,7 @@ find_term <- function(query,
   if (is.character(definedBy)) {
     # if definedBy is a list, convert to IRIs those provided as abbreviations
     definedBy <- ontology_iri(definedBy)
-    if (length(definedBy) == 1) {
-      queryseq <- c(queryseq, definedBy = definedBy)
-    } else {
-      definedBy <- rlang::expr(. %in% !!definedBy)
-    }
+    queryseq <- c(queryseq, definedBy = as.character(jsonlite::toJSON(definedBy)))
   }
 
   # if matchBy isn't already an IRI or a list thereof, convert it to one
