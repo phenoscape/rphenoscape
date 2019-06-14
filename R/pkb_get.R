@@ -21,7 +21,10 @@ pk_GET <- get_json_data
 #' @importFrom httr GET content
 #' @importFrom utils read.csv
 get_csv_data <- function(url, query, ..., verbose = FALSE) {
-  res <- httr::GET(url, httr::accept("text/csv, text/plain"), query = query)
+  if (nchar(jsonlite::toJSON(query)) >= 2048)
+    res <- httr::POST(url, httr::accept("text/csv, text/plain"), body = query, encode = "form")
+  else
+    res <- httr::GET(url, httr::accept("text/csv, text/plain"), query = query)
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")
 
@@ -33,7 +36,7 @@ get_csv_data <- function(url, query, ..., verbose = FALSE) {
 #' @importFrom httr GET POST content
 #' @importFrom RNeXML nexml_read
 get_nexml_data <- function(url, query, verbose = FALSE) {
-  if (nchar(jsonlite::toJSON(query)) >= 512)
+  if (nchar(jsonlite::toJSON(query)) >= 2048)
     res <- httr::POST(url, body = query, encode = "form")
   else
     res <- httr::GET(url, query = query)
