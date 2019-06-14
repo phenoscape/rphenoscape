@@ -37,7 +37,7 @@ order as \code{terms}. The default is not to preserve the order.}
 potentially time-consuming operations.}
 }
 \value{
-A data.fram M with M(i,j) = 1 iff the presence of term \emph{i} implies the
+A data.fram M with M[i,j] = 1 iff the presence of term \emph{i} implies the
 presence of term \emph{j}, and 0 otherwise.
 
 The matrix will have additional attributes depending on the choice of how to
@@ -50,10 +50,10 @@ matrix.
 }
 \description{
 Obtains a presence-absence dependency matrix for the given set of terms. The
-resulting matrix M will have values 1 and 0, where M(i,j) = 1 iff the presence
-if term \emph{i} implies the presence of term \emph{j}. Note that it follows that
-M(i,j) = 1 iff the absence of term \emph{j} implies the absence of term \emph{i}.
-Note also that the matrix is asymmetric; that is, M(i,j) = 1 does not imply
-M(j,i) = 1 for i ≠ j. Terms \emph{i} and \emph{j} (i ≠ j) for which M(i,j) = M(j,i) = 1 are
-sometimes referred to as \emph{super-dependent}.
+resulting matrix M will have values 1 and 0, where M[i,j] = 1 iff the
+presence if term \emph{i} implies the presence of term \emph{j}. Note that it follows that
+M[i,j] = 1 iff the absence of term \emph{j} implies the absence of term \emph{i}.
+Note also that the matrix is asymmetric; that is, M[i,j] = 1 does not imply
+M[j,i] = 1 for \eqn{i\neq j}{i != j}. Terms \emph{i} and \emph{j} (\eqn{i\neq j}{i != j})
+for which M[i,j] = M[j,i] = 1 are sometimes referred to as \emph{super-dependent}.
 }

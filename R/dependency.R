@@ -1,12 +1,12 @@
 #' Obtains a presence-absence dependency matrix
 #'
 #' Obtains a presence-absence dependency matrix for the given set of terms. The
-#' resulting matrix M will have values 1 and 0, where M(i,j) = 1 iff the presence
-#' if term _i_ implies the presence of term _j_. Note that it follows that
-#' M(i,j) = 1 iff the absence of term _j_ implies the absence of term _i_.
-#' Note also that the matrix is asymmetric; that is, M(i,j) = 1 does not imply
-#' M(j,i) = 1 for i ≠ j. Terms _i_ and _j_ (i ≠ j) for which M(i,j) = M(j,i) = 1 are
-#' sometimes referred to as _super-dependent_.
+#' resulting matrix M will have values 1 and 0, where M\[i,j\] = 1 iff the
+#' presence if term _i_ implies the presence of term _j_. Note that it follows that
+#' M\[i,j\] = 1 iff the absence of term _j_ implies the absence of term _i_.
+#' Note also that the matrix is asymmetric; that is, M\[i,j\] = 1 does not imply
+#' M\[j,i\] = 1 for \eqn{i\neq j}{i != j}. Terms _i_ and _j_ (\eqn{i\neq j}{i != j})
+#' for which M\[i,j\] = M\[j,i\] = 1 are sometimes referred to as _super-dependent_.
 #' @param terms character, the list of terms for which to compute the dependency
 #'   matrix. Can be given as term IRIs or term labels, and the list can contain
 #'   both. Terms given as labels will first be resolved to IRIs, assuming they
@@ -28,7 +28,7 @@
 #'   order as `terms`. The default is not to preserve the order.
 #' @param verbose logical, whether to print informative messages about certain
 #'   potentially time-consuming operations.
-#' @return A data.fram M with M(i,j) = 1 iff the presence of term _i_ implies the
+#' @return A data.fram M with M\[i,j\] = 1 iff the presence of term _i_ implies the
 #'   presence of term _j_, and 0 otherwise.
 #'
 #'   The matrix will have additional attributes depending on the choice of how to
