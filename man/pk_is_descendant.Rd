@@ -20,7 +20,7 @@ descendants, respectively, of the query term.
 }
 \description{
 Tests which in a list of candidate terms are ancestors to or descendants of
-the query term. Note that terms are notconsidered ancestors and descendants
+the query term. Note that terms are not considered ancestors and descendants
 of themselves.
 }
 \details{

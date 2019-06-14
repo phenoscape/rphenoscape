@@ -1,7 +1,7 @@
 #' Test which candidate terms are ancestors or descendants of a term
 #'
 #' Tests which in a list of candidate terms are ancestors to or descendants of
-#' the query term. Note that terms are notconsidered ancestors and descendants
+#' the query term. Note that terms are not considered ancestors and descendants
 #' of themselves.
 #'
 #' Any of both the query term and the list of candidate terms can be supplied
