@@ -73,6 +73,46 @@ pk_details <- function(term, as, verbose=FALSE) {
   as.data.frame(Filter(function(x) !is.list(x), lst))
 }
 
+#' Obtains the labels for a list of terms
+#'
+#' Attempts to obtain the label for each term, identified by IRI, in the input
+#' list. Terms for which no label is found in the database will have NA as the
+#' label in the result (see Value).
+#' @param term_iris character, a list of term IRIs
+#' @param preserveOrder logical, whether the resulting data frame (see Value)
+#'   is to be in the same row order as `termIRIs`. The default is not to preserve
+#'   order.
+#' @param verbose logical, whether to print information about possibly
+#'   time-consuming operations.
+#' @return A data.frame with columns "id" and "label".
+#' @export
+get_term_label <- function(term_iris, preserveOrder = FALSE, verbose = FALSE) {
+  queryseq <- list(iris = paste0(term_iris, collapse = ","))
+  res <- get_json_data(pkb_api("/term/labels"), query = queryseq)
+  res <- res$results
+  if (length(res) == 0) {
+    warning("No labels were found for any of the query terms", call. = FALSE)
+    res <- data.frame(id = term_iris, label = rep(NA, times = length(term_iris)))
+  } else {
+    names(res) <- sub("@", "", names(res))
+    if (nrow(res) < length(term_iris)) {
+      iriMap <- match(term_iris, res$id)
+      warning("No label was found for the following input IRIs, substituting NA:\n\t",
+              paste0(term_iris[is.na(iriMap)], collapse = "\n\t"),
+              call. = FALSE)
+      unmatched <- data.frame(id = term_iris[is.na(iriMap)],
+                              label = rep(NA, times = length(term_iris) - nrow(res)))
+      res <- rbind(res, unmatched)
+    }
+    if (preserveOrder && nrow(res) > 0) {
+      reordering <- match(term_iris, res$id)
+      res <- res[reordering,]
+    }
+  }
+
+  res
+}
+
 pk_taxon_url <- "http://kb.phenoscape.org/api/taxon"
 
 

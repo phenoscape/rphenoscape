@@ -266,22 +266,5 @@ taxon_id <- function() ontology_iri('VTO')
 anatomical_id <- function() ontology_iri('UBERON')
 phenotype_id <- function() ontology_iri('PATO')
 
-pk_GET <- function(url, query) {
-  res <- httr::GET(url, httr::accept_json(), query = query)
-  stop_for_pk_status(res)
-  # if content-type is application/json, httr:content() doesn't assume UTF-8
-  # encoding if charset isn't provided by the server, arguably erroneously
-  # (because specifying a different charset would violate the spec)
-  enc <- NULL
-  if (startsWith(res$headers$`content-type`, "application/json") &&
-      length(grep("charset", res$headers$`content-type`, fixed = TRUE)) == 0) {
-    enc = "UTF-8"
-  }
-  out <- httr::content(res, as = "text", encoding = enc)
-
-  jsonlite::fromJSON(out, simplifyVector = TRUE, flatten = TRUE)
-
-}
-
 # to silence R CMD check
 . <- NULL
