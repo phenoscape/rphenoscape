@@ -1,4 +1,4 @@
-context("rphenoscape test")
+context("term finding and info APIs")
 
 test_that("Test term search", {
   skip_on_cran()
@@ -49,6 +49,23 @@ test_that("Test retrieving IRI", {
   expect_true(startsWith(tiri, "http://purl.obolibrary.org/obo/"))
 })
 
+test_that("Test getting labels", {
+  tt <- c("http://purl.obolibrary.org/obo/UBERON_0000981",
+          "http://purl.obolibrary.org/obo/UBERON_0002103",
+          "http://purl.obolibrary.org/obo/UBERON_0000976",
+          "http://purl.obolibrary.org/obo/UBERON_0002102")
+  lbls <- get_term_label(tt)
+  testthat::expect_equal(length(tt), nrow(lbls))
+  testthat::expect_false(any(is.na(lbls$label)))
+  testthat::expect_setequal(tt, lbls$id)
+
+  lbls <- get_term_label(tt, preserveOrder = TRUE)
+  testthat::expect_equal(tt, lbls$id)
+
+  testthat::expect_warning(lbls <- get_term_label(c(tt, "http://foo")))
+  testthat::expect_equal(sum(is.na(lbls$label)), 1)
+  testthat::expect_equal(lbls$id[is.na(lbls$label)], "http://foo")
+})
 
 test_that("Test getting classification information", {
   skip_on_cran()
