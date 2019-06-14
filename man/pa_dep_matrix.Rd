@@ -65,8 +65,12 @@ tl <- c("http://purl.obolibrary.org/obo/UBERON_0000981",
         "http://purl.obolibrary.org/obo/UBERON_0002102")
 m <- pa_dep_matrix(tl)
 m # term IDs as row and column names
+id_prefixes <- attr(m, "prefixes")
+id_prefixes # 4x "http://purl.obolibrary.org/obo/"
 
 m <- pa_dep_matrix(tl, .names = "label")
 m # term labels as row and column names
+mat_terms <- attr(m, "term.iris")
+mat_terms # term IRIs in the same order as rows (and columns)
 }
 }
