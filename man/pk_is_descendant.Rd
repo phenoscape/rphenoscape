@@ -5,14 +5,20 @@
 \alias{pk_is_ancestor}
 \title{Test which candidate terms are ancestors or descendants of a term}
 \usage{
-pk_is_descendant(term, candidates)
+pk_is_descendant(term, candidates, includeRels = c("none", "part_of"))
 
-pk_is_ancestor(term, candidates)
+pk_is_ancestor(term, candidates, includeRels = c("none", "part_of"))
 }
 \arguments{
 \item{term}{character, the label (name) or IRI of the query term}
 
 \item{candidates}{character, the list of candidate term names or IRIs}
+
+\item{includeRels}{character, the relationships R for which to include
+subclasses of expressions "R \emph{some} T", where for \code{is_descendant} T is the
+query term, and for \code{is_ancestor} it is a candidate term.
+At present, the only option is \code{"part_of"}, which will typically only make
+sense for anatomy terms. The default is not to include these.}
 }
 \value{
 A logical vector indicating which candidate terms are ancestors and
@@ -38,7 +44,12 @@ pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
 
 # anatomical entities:
 pk_is_descendant("paired fin", c("pectoral fin", "pelvic fin", "dorsal fin"))
+pk_is_descendant("paired fin", c("pelvic fin", "pelvic fin ray")) 
+pk_is_descendant("paired fin", c("pelvic fin", "pelvic fin ray"), includeRels = "part_of")
+
 pk_is_ancestor("pelvic fin", c("paired fin", "hindlimb", "fin"))
+pk_is_ancestor("pelvic fin ray", c("paired fin", "fin"))
+pk_is_ancestor("pelvic fin ray", c("paired fin", "fin"), includeRels = "part_of")
 
 # phenotypic quality
 pk_is_ancestor("triangular", c("shape", "color", "amount"))
