@@ -38,6 +38,18 @@
 #'   have attribute `term.iris`, giving the term IRIs for the rows (and columns).
 #'   Note that these extra attributes will be lost upon subsetting the returned
 #'   matrix.
+#' @examples
+#' \dontrun{
+#' tl <- c("http://purl.obolibrary.org/obo/UBERON_0000981",
+#'         "http://purl.obolibrary.org/obo/UBERON_0002103",
+#'         "http://purl.obolibrary.org/obo/UBERON_0000976",
+#'         "http://purl.obolibrary.org/obo/UBERON_0002102")
+#' m <- pa_dep_matrix(tl)
+#' m # term IDs as row and column names
+#'
+#' m <- pa_dep_matrix(tl, .names = "label")
+#' m # term labels as row and column names
+#' }
 #' @importFrom stringi stri_match_first_regex
 #' @export
 pa_dep_matrix <- function(terms,
