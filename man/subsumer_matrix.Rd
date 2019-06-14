@@ -54,7 +54,7 @@ otherwise. Therefore, it will have \emph{n} columns, one for each term.
 }
 \details{
 In this implementation, for each row \emph{i}
-\eqn{\sum_{j=1}^{n}M_{i,j} \gt 0}{sum(M[i, 1:n] > 0}. That is, each row
+\eqn{\sum_{j=1}^{n}M_{i,j} > 0}{sum(M[i, 1:n] > 0}. That is, each row
 will have at least one non-zero value, which means that the number of classes
 \emph{not} not subsuming a term will be highly incomplete, because the (usually
 very many) classes not subsuming any of the terms will not be included. This

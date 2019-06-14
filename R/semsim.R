@@ -5,7 +5,7 @@
 #' otherwise. Therefore, it will have _n_ columns, one for each term.
 #'
 #' In this implementation, for each row _i_
-#' \eqn{\sum_{j=1}^{n}M_{i,j} \gt 0}{sum(M[i, 1:n] > 0}. That is, each row
+#' \eqn{\sum_{j=1}^{n}M_{i,j} > 0}{sum(M[i, 1:n] > 0}. That is, each row
 #' will have at least one non-zero value, which means that the number of classes
 #' _not_ not subsuming a term will be highly incomplete, because the (usually
 #' very many) classes not subsuming any of the terms will not be included. This
