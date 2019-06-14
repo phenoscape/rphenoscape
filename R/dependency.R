@@ -19,11 +19,11 @@
 #'     `:`, `/`, and some other characters replaced with `.` (dot).
 #'   - `"label"`: use the terms' labels (see `.labels` parameter).
 #' @param .labels character, the labels for terms where known. Only used if
-#'   `.names = "label"`. If NA (the default), labels will be looked up if `terms`
+#'   `.names = "label"`. If NULL (the default), labels will be looked up if `terms`
 #'   are provided as IRIs; elements of the `terms` list that are not in IRI form
 #'   are assumed to be the label. If a list, must have the same length and ordering
 #'   as `terms`; any NA elements will be looked up (from the corresponding term
-#'   IRI). 
+#'   IRI).
 #' @param preserveOrder logical, whether to return rows (and columns) in the same
 #'   order as `terms`. The default is not to preserve the order.
 #' @param verbose logical, whether to print informative messages about certain
@@ -41,11 +41,11 @@
 #' @importFrom stringi stri_match_first_regex
 #' @export
 pa_dep_matrix <- function(terms,
-                          .names = c("ID", "IRI", "label"), .labels = NA,
+                          .names = c("ID", "IRI", "label"), .labels = NULL,
                           preserveOrder = FALSE,
                           verbose = FALSE) {
   .names <- match.arg(.names)
-  if (.names == "label" && is.na(.labels)) {
+  if (.names == "label" && is.null(.labels)) {
     .labels <- ifelse(startsWith(terms, "http://") | startsWith(terms, "https://"),
                       NA,
                       terms)

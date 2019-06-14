@@ -4,7 +4,7 @@
 \alias{pa_dep_matrix}
 \title{Obtains a presence-absence dependency matrix}
 \usage{
-pa_dep_matrix(terms, .names = c("ID", "IRI", "label"), .labels = NA,
+pa_dep_matrix(terms, .names = c("ID", "IRI", "label"), .labels = NULL,
   preserveOrder = FALSE, verbose = FALSE)
 }
 \arguments{
@@ -24,7 +24,7 @@ term IRIs).
 }}
 
 \item{.labels}{character, the labels for terms where known. Only used if
-\code{.names = "label"}. If NA (the default), labels will be looked up if \code{terms}
+\code{.names = "label"}. If NULL (the default), labels will be looked up if \code{terms}
 are provided as IRIs; elements of the \code{terms} list that are not in IRI form
 are assumed to be the label. If a list, must have the same length and ordering
 as \code{terms}; any NA elements will be looked up (from the corresponding term
