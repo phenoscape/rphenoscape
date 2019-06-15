@@ -44,7 +44,7 @@ pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
 
 # anatomical entities:
 pk_is_descendant("paired fin", c("pectoral fin", "pelvic fin", "dorsal fin"))
-pk_is_descendant("paired fin", c("pelvic fin", "pelvic fin ray")) 
+pk_is_descendant("paired fin", c("pelvic fin", "pelvic fin ray"))
 pk_is_descendant("paired fin", c("pelvic fin", "pelvic fin ray"), includeRels = "part_of")
 
 pk_is_ancestor("pelvic fin", c("paired fin", "hindlimb", "fin"))
