@@ -49,3 +49,15 @@ The metric is valid for any term vectors (columns of the subsumer matrix), i.e.,
 1 - \emph{SC} is not a proper distance metric, because it violates the triangle
 inequality. First convert to angle to obtain a distance metric.
 }
+\examples{
+\dontrun{
+sm <- jaccard_similarity(terms = c("pelvic fin", "pectoral fin",
+                                   "forelimb", "hindlimb",
+                                   "dorsal fin", "caudal fin"),
+                         .colnames = "label")
+sm
+
+# e.g., turn into distance matrix, cluster, and plot
+plot(hclust(as.dist(1-sm)))
+}
+}
