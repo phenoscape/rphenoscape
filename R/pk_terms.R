@@ -87,30 +87,51 @@ pk_details <- function(term, as, verbose=FALSE) {
 #' @return A data.frame with columns "id" and "label".
 #' @export
 get_term_label <- function(term_iris, preserveOrder = FALSE, verbose = FALSE) {
-  queryseq <- list(iris = paste0(term_iris, collapse = ","))
-  res <- get_json_data(pkb_api("/term/labels"), query = queryseq)
-  res <- res$results
-  if (length(res) == 0) {
-    warning("No labels were found for any of the query terms", call. = FALSE)
-    res <- data.frame(id = term_iris, label = rep(NA, times = length(term_iris)))
+  if (length(term_iris) == 1) {
+    queryseq <- list(iri = term_iris[[1]])
+    res <- get_json_data(pkb_api("/term/label"), query = queryseq)
+    if (identical(res$`@id`, res$label))
+      res <- data.frame(id = term_iris, label = c(NA), stringsAsFactors = FALSE)
+    else
+      res <- as.data.frame(res, check.names = FALSE, stringsAsFactors = FALSE)
   } else {
+    queryseq <- list(iris = paste0(term_iris, collapse = ","))
+    res <- get_json_data(pkb_api("/term/labels"), query = queryseq)
+    res <- res$results
+  }
+  if (length(res) > 0) {
     names(res) <- sub("@", "", names(res))
-    if (nrow(res) < length(term_iris)) {
+  }
+  # /term/labels fails to produce a label for some terms where /term/label can,
+  # so try to fill in labels not previously provided, and warn where that fails
+  if (length(term_iris) > 1 &&
+      (length(res) == 0 || nrow(res) < length(term_iris))) {
+    if (length(res) == 0)
+      iriMap <- rep(NA, times = length(term_iris))
+    else
       iriMap <- match(term_iris, res$id)
-      warning("No label was found for the following input IRIs, substituting NA:\n\t",
-              paste0(term_iris[is.na(iriMap)], collapse = "\n\t"),
+    unmatched <- data.frame(id = term_iris[is.na(iriMap)])
+    unmatched <- cbind(unmatched, label = sapply(unmatched$id, term_label))
+    if (any(is.na(unmatched)))
+      warning("Failed to find label for following input IRIs, substituting NA:\n\t",
+              paste0(unmatched$id[is.na(unmatched$label)], collapse = "\n\t"),
               call. = FALSE)
-      unmatched <- data.frame(id = term_iris[is.na(iriMap)],
-                              label = rep(NA, times = length(term_iris) - nrow(res)))
-      res <- rbind(res, unmatched)
-    }
-    if (preserveOrder && nrow(res) > 0) {
-      reordering <- match(term_iris, res$id)
-      res <- res[reordering,]
-    }
+    res <- rbind(res, unmatched)
+  }
+  if (preserveOrder && nrow(res) > 0) {
+    reordering <- match(term_iris, res$id)
+    res <- res[reordering,]
   }
 
   res
+}
+
+term_label <- function(term_iri) {
+  res <- get_json_data(pkb_api("/term/label"), query = list(iri = term_iri))
+  if (identical(res$`@id`, res$label))
+    NA
+  else
+    res$label
 }
 
 pk_taxon_url <- "http://kb.phenoscape.org/api/taxon"

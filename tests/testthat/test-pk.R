@@ -65,6 +65,21 @@ test_that("Test getting labels", {
   testthat::expect_warning(lbls <- get_term_label(c(tt, "http://foo")))
   testthat::expect_equal(sum(is.na(lbls$label)), 1)
   testthat::expect_equal(lbls$id[is.na(lbls$label)], "http://foo")
+
+  lbls <- get_term_label(tt[1])
+  testthat::expect_equal(nrow(lbls), 1)
+  testthat::expect_false(is.na(lbls$label))
+
+  lbls <- get_term_label("foobar")
+  testthat::expect_equal(nrow(lbls), 1)
+  testthat::expect_equal(lbls$id, "foobar")
+  testthat::expect_true(is.na(lbls$label))
+
+  # can retrieve labels that /term/labels can't
+  lbls <- get_term_label(c(tt[1], "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_0001062%3E"),
+                         preserveOrder = TRUE)
+  testthat::expect_equal(nrow(lbls), 2)
+  testthat::expect_false(any(is.na(lbls$label)))
 })
 
 test_that("Test getting study information", {
