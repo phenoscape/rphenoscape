@@ -72,7 +72,7 @@ pa_dep_matrix <- function(terms,
                                          exactOnly = TRUE, verbose = verbose)))
   queryseq <- list(terms = as.character(jsonlite::toJSON(term_iris)))
   m <- get_csv_data(pkb_api("/entity/dependency"), query = queryseq,
-                    row.names = 1, header = TRUE,
+                    row.names = 1, header = TRUE, check.names = FALSE,
                     verbose = verbose)
   if (preserveOrder) {
     reordering <- match(term_iris, row.names(m))

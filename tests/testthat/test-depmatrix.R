@@ -19,6 +19,10 @@ test_that("presence-absence dependency matrix", {
   testthat::expect_setequal(attr(m, "term.iris"), tt)
   testthat::expect_setequal(row.names(m), tl)
 
+  m <- pa_dep_matrix(tt, .names = "IRI")
+  testthat::expect_equal(row.names(m), colnames(m))
+  testthat::expect_setequal(colnames(m), tt)
+
   tl1 <- sub("limb", "", tl)
   tl1[3] <- NA
   m <- pa_dep_matrix(tt, .names = "label", .labels = tl1, preserveOrder = TRUE)
