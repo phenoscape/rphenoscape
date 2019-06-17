@@ -57,7 +57,10 @@
 get_phenotypes <- function(entity = NA, quality = NA, taxon = NA, study = NA,
                            includeRels = c("part of"),
                            verbose = FALSE) {
-  queryseq <- do.call(pkb_args_to_query, as.list(match.call())[-1])
+  argsInCall <-  as.list(match.call())[-1]
+  # need to make sure to apply our defaults where they differ
+  argsInCall$includeRels <- includeRels
+  queryseq <- do.call(pkb_args_to_query, argsInCall)
   queryseq <- c(queryseq, limit = "1000000")
 
   mssg(verbose, "Querying for phenotypes ...")
