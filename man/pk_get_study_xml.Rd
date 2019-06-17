@@ -10,7 +10,7 @@ pk_get_study_xml(study_ids)
 \item{study_ids, }{a list of study IDs.}
 }
 \value{
-A list of \link[RNeXML:nexml-class]{nexml} objects
+A list of \link[RNeXML:nexml]{nexml} objects
 }
 \description{
 pk_get_study_xml

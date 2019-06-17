@@ -2,7 +2,7 @@
 #' 
 #' Queries the Phenoscape KB for a synthetic presence/absence character matrix
 #' for the given taxa and anatomical entities, and returns the result as a
-#' `nexml` object (from the RNeXML package).
+#' [nexml][RNeXML::nexml] object (from the RNeXML package).
 #'
 #' The character matrix includes both asserted and logically inferred states. The
 #' query always includes all subclasses of both taxa and entities, and by default
@@ -22,7 +22,7 @@
 #' @param variable_only logical, optional.
 #'   Whether to only include characters that are variable across the selected
 #'   set of taxa. Default is TRUE.
-#' @return RNeXML::nexml object
+#' @return [RNeXML::nexml] object
 #' @examples
 #' \dontrun{
 #' # one taxon (including subclasses), one entity (including subclasses and 
@@ -97,7 +97,7 @@ pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_o
 
 #' pk_get_study_xml
 #' @param study_ids, a list of study IDs.
-#' @return A list of [nexml][RNeXML::nexml-class] objects
+#' @return A list of [nexml][RNeXML::nexml] objects
 #' @examples
 #' \dontrun{
 #' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")

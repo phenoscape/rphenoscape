@@ -15,8 +15,7 @@
 #'   matrix.
 #'   - `"ID"` (the default): use the term IDs (the last component of the
 #'     term IRIs).
-#'   - `"IRI"`: use the term IRIs as names. Note that the column names will have
-#'     `:`, `/`, and some other characters replaced with `.` (dot).
+#'   - `"IRI"`: use the term IRIs as names.
 #'   - `"label"`: use the terms' labels (see `.labels` parameter).
 #' @param .labels character, the labels for terms where known. Only used if
 #'   `.names = "label"`. If NULL (the default), labels will be looked up if `terms`

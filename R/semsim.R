@@ -1,13 +1,13 @@
 #' Obtains a subsumer matrix
 #'
-#' A subsumer matrix M for terms \eqn{j \in {1, \dots, n}}{j in {1, ..., n}}
-#' has value M\[i,j\] = 1 iff class _i_ (which can be an anonymous class expression) subsumes term _j_, and zero
+#' A subsumer matrix M for terms \eqn{j \in \{1, \dots, n\}}{j in {1, ..., n}}
+#' has value \eqn{M_{i,j}=1}{M[i,j] = 1} iff class _i_ (which can be an anonymous class expression) subsumes term _j_, and zero
 #' otherwise. Therefore, it will have _n_ columns, one for each term.
 #'
 #' In this implementation, for each row _i_
 #' \eqn{\sum_{j=1}^{n}M_{i,j} > 0}{sum(M[i, 1:n] > 0}. That is, each row
 #' will have at least one non-zero value, which means that the number of classes
-#' _not_ not subsuming a term will be highly incomplete, because the (usually
+#' _not_ subsuming a term will be highly incomplete, because the (usually
 #' very many) classes not subsuming any of the terms will not be included. This
 #' subsumer matrix is thus only useful for similarity metrics for which
 #' non-subsuming terms can be ignored.
@@ -20,8 +20,7 @@
 #'   matrix.
 #'   - `"ID"` (the default): use the term IDs (the last component of the
 #'     term IRIs).
-#'   - `"IRI"`: use the term IRIs as names. Note that the column names will have
-#'     `:`, `/`, and some other characters replaced with `.` (dot).
+#'   - `"IRI"`: use the term IRIs.
 #'   - `"label"`: use the terms' labels (see `.labels` parameter).
 #' @param .labels character, the labels for terms where known. Only used if
 #'   `.colnames = "label"`. If NULL (the default), labels will be looked up if `terms`
@@ -110,19 +109,20 @@ subsumer_matrix <- function(terms,
 #' @description
 #' The Tanimoto similarity ST is computed according to the definition for bit vectors
 #' (see [Jaccard index at Wikipedia](https://en.wikipedia.org/wiki/Jaccard_index#Tanimoto's_definitions_of_similarity_and_distance)).
-#' For weights W\[i\] in {0, 1} it is the same as the Jaccard similarity. The
-#' Tanimoto similarity can be computed for any term vectors, but for 1 - ST to be
-#' a proper distance metric satisfying the triangle inequality, M\[i,j\] in {0, W\[i\]}
-#' must hold. 
+#' For weights \eqn{W_i \in \{0, 1\}}{W[i] in {0, 1}} it is the same as the
+#' Jaccard similarity.
+#' The Tanimoto similarity can be computed for any term vectors, but for 1 - ST
+#' to be a proper distance metric satisfying the triangle inequality,
+#' \eqn{M_{i,j} \in \{0, W_i\}}{M[i,j] in {0, W[i]}} must hold.
 #'
 #' @param subsumer_mat  matrix or data.frame, the vector-encoded matrix M of
-#'   subsumers for which M\[i,j\] = W\[i\], with W\[i\] > 0 (weight of class _i_),
+#'   subsumers for which \eqn{M_{i,j} = W_i, W_i > 0}{M[i,j] = W[i], with W[i] > 0} (W = weights),
 #'   if class _i_ subsumes term j, and 0 otherwise. A binary
-#'   (\eqn{M_{i,j} \in {0, 1}}{M\[i,j\] in {0, 1}}) encoding (i.e., W\[_i_\] = 1)
-#'   can be obtained from [subsumer_matrix()][subsumer_matrix].
+#'   (\eqn{M_{i,j} \in \{0, 1\}}{M[i,j] in {0, 1}}) encoding (i.e., W\[_i_\] = 1)
+#'   can be obtained from [subsumer_matrix()].
 #' @param terms character, optionally the list of terms (as IRIs and/or labels)
 #'   for which to generate a properly encoded subsumer matrix on the fly.
-#' @param ... parameters to be passed on to [subsumer_matrix()[subsumer_matrix]
+#' @param ... parameters to be passed on to [subsumer_matrix()]
 #'   if a subsumer matrix is to be generated on the fly.
 #' @return A matrix with M\[i,j\] = similarity of terms _i_ and _j_.
 #' @examples
@@ -181,7 +181,7 @@ jaccard_similarity <- function(subsumer_mat = NA, terms = NULL, ...) {
 #' The Cosine similarity _SC_ is computed using the Euclidean dot product formula.
 #' See [Cosine similarity on Wikipedia](https://en.wikipedia.org/wiki/Cosine_similarity#Definition).
 #' The metric is valid for any term vectors (columns of the subsumer matrix), i.e.,
-#' \eqn{M_{i,j} \in {0, W_i}}{M[i,j] in {0, W[i]}} is not required. Note that
+#' \eqn{M_{i,j} \in \{0, W_i\}}{M[i,j] in {0, W[i]}} is not required. Note that
 #' 1 - _SC_ is not a proper distance metric, because it violates the triangle
 #' inequality. First convert to angle to obtain a distance metric.
 #'

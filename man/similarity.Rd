@@ -14,15 +14,15 @@ cosine_similarity(subsumer_mat = NA, terms = NULL, ...)
 }
 \arguments{
 \item{subsumer_mat}{matrix or data.frame, the vector-encoded matrix M of
-subsumers for which M[i,j] = W[i], with W[i] > 0 (weight of class \emph{i}),
+subsumers for which \eqn{M_{i,j} = W_i, W_i > 0}{M[i,j] = W[i], with W[i] > 0} (W = weights),
 if class \emph{i} subsumes term j, and 0 otherwise. A binary
-(\eqn{M_{i,j} \in {0, 1}}{M\[i,j\] in {0, 1}}) encoding (i.e., W[\emph{i}] = 1)
-can be obtained from \link[=subsumer_matrix]{subsumer_matrix()}.}
+(\eqn{M_{i,j} \in \{0, 1\}}{M[i,j] in {0, 1}}) encoding (i.e., W[\emph{i}] = 1)
+can be obtained from \code{\link[=subsumer_matrix]{subsumer_matrix()}}.}
 
 \item{terms}{character, optionally the list of terms (as IRIs and/or labels)
 for which to generate a properly encoded subsumer matrix on the fly.}
 
-\item{...}{parameters to be passed on to [subsumer_matrix()\link{subsumer_matrix}
+\item{...}{parameters to be passed on to \code{\link[=subsumer_matrix]{subsumer_matrix()}}
 if a subsumer matrix is to be generated on the fly.}
 }
 \value{
@@ -31,10 +31,11 @@ A matrix with M[i,j] = similarity of terms \emph{i} and \emph{j}.
 \description{
 The Tanimoto similarity ST is computed according to the definition for bit vectors
 (see \href{https://en.wikipedia.org/wiki/Jaccard_index#Tanimoto's_definitions_of_similarity_and_distance}{Jaccard index at Wikipedia}).
-For weights W[i] in {0, 1} it is the same as the Jaccard similarity. The
-Tanimoto similarity can be computed for any term vectors, but for 1 - ST to be
-a proper distance metric satisfying the triangle inequality, M[i,j] in {0, W[i]}
-must hold.
+For weights \eqn{W_i \in \{0, 1\}}{W[i] in {0, 1}} it is the same as the
+Jaccard similarity.
+The Tanimoto similarity can be computed for any term vectors, but for 1 - ST
+to be a proper distance metric satisfying the triangle inequality,
+\eqn{M_{i,j} \in \{0, W_i\}}{M[i,j] in {0, W[i]}} must hold.
 
 The Jaccard similarity is computed using the Tanimoto similarity definition
 for bit vectors
@@ -45,7 +46,7 @@ one. If any weights are different, a warning is issued.
 The Cosine similarity \emph{SC} is computed using the Euclidean dot product formula.
 See \href{https://en.wikipedia.org/wiki/Cosine_similarity#Definition}{Cosine similarity on Wikipedia}.
 The metric is valid for any term vectors (columns of the subsumer matrix), i.e.,
-\eqn{M_{i,j} \in {0, W_i}}{M[i,j] in {0, W[i]}} is not required. Note that
+\eqn{M_{i,j} \in \{0, W_i\}}{M[i,j] in {0, W[i]}} is not required. Note that
 1 - \emph{SC} is not a proper distance metric, because it violates the triangle
 inequality. First convert to angle to obtain a distance metric.
 }

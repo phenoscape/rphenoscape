@@ -18,8 +18,7 @@ matrix.
 \itemize{
 \item \code{"ID"} (the default): use the term IDs (the last component of the
 term IRIs).
-\item \code{"IRI"}: use the term IRIs as names. Note that the column names will have
-\code{:}, \code{/}, and some other characters replaced with \code{.} (dot).
+\item \code{"IRI"}: use the term IRIs.
 \item \code{"label"}: use the terms' labels (see \code{.labels} parameter).
 }}
 
@@ -48,15 +47,15 @@ Note that these extra attributes will be lost upon subsetting the returned
 matrix.
 }
 \description{
-A subsumer matrix M for terms \eqn{j \in {1, \dots, n}}{j in {1, ..., n}}
-has value M[i,j] = 1 iff class \emph{i} (which can be an anonymous class expression) subsumes term \emph{j}, and zero
+A subsumer matrix M for terms \eqn{j \in \{1, \dots, n\}}{j in {1, ..., n}}
+has value \eqn{M_{i,j}=1}{M[i,j] = 1} iff class \emph{i} (which can be an anonymous class expression) subsumes term \emph{j}, and zero
 otherwise. Therefore, it will have \emph{n} columns, one for each term.
 }
 \details{
 In this implementation, for each row \emph{i}
 \eqn{\sum_{j=1}^{n}M_{i,j} > 0}{sum(M[i, 1:n] > 0}. That is, each row
 will have at least one non-zero value, which means that the number of classes
-\emph{not} not subsuming a term will be highly incomplete, because the (usually
+\emph{not} subsuming a term will be highly incomplete, because the (usually
 very many) classes not subsuming any of the terms will not be included. This
 subsumer matrix is thus only useful for similarity metrics for which
 non-subsuming terms can be ignored.

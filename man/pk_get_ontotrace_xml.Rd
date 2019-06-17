@@ -23,12 +23,12 @@ Whether to only include characters that are variable across the selected
 set of taxa. Default is TRUE.}
 }
 \value{
-RNeXML::nexml object
+\link[RNeXML:nexml]{RNeXML::nexml} object
 }
 \description{
 Queries the Phenoscape KB for a synthetic presence/absence character matrix
 for the given taxa and anatomical entities, and returns the result as a
-\code{nexml} object (from the RNeXML package).
+\link[RNeXML:nexml]{nexml} object (from the RNeXML package).
 }
 \details{
 The character matrix includes both asserted and logically inferred states. The

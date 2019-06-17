@@ -18,8 +18,7 @@ matrix.
 \itemize{
 \item \code{"ID"} (the default): use the term IDs (the last component of the
 term IRIs).
-\item \code{"IRI"}: use the term IRIs as names. Note that the column names will have
-\code{:}, \code{/}, and some other characters replaced with \code{.} (dot).
+\item \code{"IRI"}: use the term IRIs as names.
 \item \code{"label"}: use the terms' labels (see \code{.labels} parameter).
 }}
 
