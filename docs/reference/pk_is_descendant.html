@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Test if a list of taxa is descendant/ancestor of a given term — pk_is_descendant • rphenoscape</title>
+<title>Test which candidate terms are ancestors or descendants of a term — pk_is_descendant • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="Test if a list of taxa is descendant/ancestor of a given term — pk_is_descendant" />
+<meta property="og:title" content="Test which candidate terms are ancestors or descendants of a term — pk_is_descendant" />
 
-<meta property="og:description" content="Test if a list of taxa is descendant/ancestor of a given term" />
+<meta property="og:description" content="Tests which in a list of candidate terms are ancestors to or descendants of
+the query term. Note that terms are not considered ancestors and descendants
+of themselves." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -63,7 +65,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.7</span>
       </span>
     </div>
 
@@ -102,43 +104,76 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Test if a list of taxa is descendant/ancestor of a given term</h1>
+    <h1>Test which candidate terms are ancestors or descendants of a term</h1>
     <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pk_is_descendant.R'><code>R/pk_is_descendant.R</code></a></small>
     <div class="hidden name"><code>pk_is_descendant.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Test if a list of taxa is descendant/ancestor of a given term</p>
+    <p>Tests which in a list of candidate terms are ancestors to or descendants of
+the query term. Note that terms are not considered ancestors and descendants
+of themselves.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pk_is_descendant</span>(<span class='no'>taxon</span>, <span class='no'>candidates</span>)
+    <pre class="usage"><span class='fu'>pk_is_descendant</span>(<span class='no'>term</span>, <span class='no'>candidates</span>, <span class='kw'>includeRels</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"none"</span>, <span class='st'>"part_of"</span>))
 
-<span class='fu'>pk_is_ancestor</span>(<span class='no'>taxon</span>, <span class='no'>candidates</span>)</pre>
+<span class='fu'>pk_is_ancestor</span>(<span class='no'>term</span>, <span class='no'>candidates</span>, <span class='kw'>includeRels</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"none"</span>, <span class='st'>"part_of"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>taxon</th>
-      <td><p>character. The taxon name</p></td>
+      <th>term</th>
+      <td><p>character, the label (name) or IRI of the query term</p></td>
     </tr>
     <tr>
       <th>candidates</th>
-      <td><p>a list of taxa</p></td>
+      <td><p>character, the list of candidate term names or IRIs</p></td>
+    </tr>
+    <tr>
+      <th>includeRels</th>
+      <td><p>character, the relationships R for which to include
+subclasses of expressions "R <em>some</em> T", where for <code>is_descendant</code> T is the
+query term, and for <code>is_ancestor</code> it is a candidate term.
+At present, the only option is <code>"part_of"</code>, which will typically only make
+sense for anatomy terms. The default is not to include these.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list of TRUE/FALSE, indicating if the corresponding taxon in the candidate list is descendant/ancestor or not.</p>
+    <p>A logical vector indicating which candidate terms are ancestors and
+descendants, respectively, of the query term.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Any of both the query term and the list of candidate terms can be supplied
+as labels (names), or as IRIs. The function will first resolve any labels
+to IRIs, allowing any ontology as the target. If labels aren't unique enough
+across ontologies, it is advisable to do the resolution before calling these
+functions, using <a href='pk_get_iri.html'>pk_get_iri</a> with the appropriate ontology set.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># taxa:</span>
 <span class='fu'>pk_is_descendant</span>(<span class='st'>"Halecostomi"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Halecostomi"</span>, <span class='st'>"Icteria"</span>, <span class='st'>"Sciaenidae"</span>))
 <span class='fu'>pk_is_ancestor</span>(<span class='st'>"Sciaenidae"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Halecostomi"</span>, <span class='st'>"Abeomelomys"</span>, <span class='st'>"Sciaenidae"</span>))
+
+<span class='co'># anatomical entities:</span>
+<span class='fu'>pk_is_descendant</span>(<span class='st'>"paired fin"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"pectoral fin"</span>, <span class='st'>"pelvic fin"</span>, <span class='st'>"dorsal fin"</span>))
+<span class='fu'>pk_is_descendant</span>(<span class='st'>"paired fin"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"pelvic fin"</span>, <span class='st'>"pelvic fin ray"</span>))
+<span class='fu'>pk_is_descendant</span>(<span class='st'>"paired fin"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"pelvic fin"</span>, <span class='st'>"pelvic fin ray"</span>), <span class='kw'>includeRels</span> <span class='kw'>=</span> <span class='st'>"part_of"</span>)
+
+<span class='fu'>pk_is_ancestor</span>(<span class='st'>"pelvic fin"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"paired fin"</span>, <span class='st'>"hindlimb"</span>, <span class='st'>"fin"</span>))
+<span class='fu'>pk_is_ancestor</span>(<span class='st'>"pelvic fin ray"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"paired fin"</span>, <span class='st'>"fin"</span>))
+<span class='fu'>pk_is_ancestor</span>(<span class='st'>"pelvic fin ray"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"paired fin"</span>, <span class='st'>"fin"</span>), <span class='kw'>includeRels</span> <span class='kw'>=</span> <span class='st'>"part_of"</span>)
+
+<span class='co'># phenotypic quality</span>
+<span class='fu'>pk_is_ancestor</span>(<span class='st'>"triangular"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"shape"</span>, <span class='st'>"color"</span>, <span class='st'>"amount"</span>))
+<span class='fu'>pk_is_descendant</span>(<span class='st'>"shape"</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"T-shaped"</span>, <span class='st'>"star shaped"</span>, <span class='st'>"yellow"</span>))
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -147,6 +182,8 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

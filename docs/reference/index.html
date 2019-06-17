@@ -60,7 +60,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.7</span>
       </span>
     </div>
 
@@ -120,15 +120,45 @@
       <tr>
         
         <td>
+          <p><code><a href="anatomy_ontology_iris.html">anatomy_ontology_iris()</a></code> </p>
+        </td>
+        <td><p>Get IRIs of ontologies with anatomy terms</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="find_term.html">find_term()</a></code> </p>
+        </td>
+        <td><p>Find terms matching a query text</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_phenotypes.html">get_phenotypes()</a></code> </p>
+        </td>
+        <td><p>Retrieve phenotypes by entity, quality, taxon, and study</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_term_label.html">get_term_label()</a></code> </p>
+        </td>
+        <td><p>Obtains the labels for a list of terms</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pa_dep_matrix.html">pa_dep_matrix()</a></code> </p>
+        </td>
+        <td><p>Obtains a presence-absence dependency matrix</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="pk_class.html">pk_taxon_class()</a></code> <code><a href="pk_class.html">pk_anatomical_class()</a></code> <code><a href="pk_class.html">pk_phenotype_class()</a></code> </p>
         </td>
-        <td><p>Classification</p></td>
+        <td><p>Get term classification</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="pk_get_iri.html">pk_get_iri()</a></code> </p>
         </td>
-        <td><p>Resolve a text term into IRI</p></td>
+        <td><p>Resolve a text query to IRI</p></td>
       </tr><tr>
         
         <td>
@@ -164,7 +194,7 @@
         <td>
           <p><code><a href="pk_is_descendant.html">pk_is_descendant()</a></code> <code><a href="pk_is_descendant.html">pk_is_ancestor()</a></code> </p>
         </td>
-        <td><p>Test if a list of taxa is descendant/ancestor of a given term</p></td>
+        <td><p>Test which candidate terms are ancestors or descendants of a term</p></td>
       </tr><tr>
         
         <td>
@@ -182,7 +212,31 @@
         <td>
           <p><code><a href="pk_terms.html">pk_taxon_detail()</a></code> <code><a href="pk_terms.html">pk_anatomical_detail()</a></code> <code><a href="pk_terms.html">pk_phenotype_detail()</a></code> <code><a href="pk_terms.html">pk_gene_detail()</a></code> </p>
         </td>
-        <td><p>Get details about a given term</p></td>
+        <td><p>Get term details (ID, label, definition)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pkb_args_to_query.html">pkb_args_to_query()</a></code> </p>
+        </td>
+        <td><p>Creates a list of named query parameters</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="similarity.html">tanimoto_similarity()</a></code> <code><a href="similarity.html">jaccard_similarity()</a></code> <code><a href="similarity.html">cosine_similarity()</a></code> </p>
+        </td>
+        <td><p>Compute semantic similarity metrics between terms</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="subsumer_matrix.html">subsumer_matrix()</a></code> </p>
+        </td>
+        <td><p>Obtains a subsumer matrix</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="taxon_ontology_iris.html">taxon_ontology_iris()</a></code> </p>
+        </td>
+        <td><p>Get IRIs of ontologies with taxonomy terms</p></td>
       </tr>
     </tbody>
     </table>

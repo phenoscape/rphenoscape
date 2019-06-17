@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>pk_get_study — pk_get_study • rphenoscape</title>
+<title>Obtains the labels for a list of terms — get_term_label • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,11 @@
 
 
 
-<meta property="og:title" content="pk_get_study — pk_get_study" />
+<meta property="og:title" content="Obtains the labels for a list of terms — get_term_label" />
 
-<meta property="og:description" content="pk_get_study" />
+<meta property="og:description" content="Attempts to obtain the label for each term, identified by IRI, in the input
+list. Terms for which no label is found in the database will have NA as the
+label in the result (see Value)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -102,40 +104,46 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>pk_get_study</h1>
-    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pk_study.R'><code>R/pk_study.R</code></a></small>
-    <div class="hidden name"><code>pk_get_study.Rd</code></div>
+    <h1>Obtains the labels for a list of terms</h1>
+    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pk_terms.R'><code>R/pk_terms.R</code></a></small>
+    <div class="hidden name"><code>get_term_label.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>pk_get_study</p>
+    <p>Attempts to obtain the label for each term, identified by IRI, in the input
+list. Terms for which no label is found in the database will have NA as the
+label in the result (see Value).</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pk_get_study</span>(<span class='no'>nexmls</span>)</pre>
+    <pre class="usage"><span class='fu'>get_term_label</span>(<span class='no'>term_iris</span>, <span class='kw'>preserveOrder</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>nexmls, </th>
-      <td><p>a list of <a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a> objects</p></td>
+      <th>term_iris</th>
+      <td><p>character, a list of term IRIs</p></td>
+    </tr>
+    <tr>
+      <th>preserveOrder</th>
+      <td><p>logical, whether the resulting data frame (see Value)
+is to be in the same row order as <code>termIRIs</code>. The default is not to preserve
+order.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical, whether to print information about possibly
+time-consuming operations.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of data.frames containing matrices</p>
+    <p>A data.frame with columns "id" and "label".</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>slist</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='pk_get_study_list.html'>pk_get_study_list</a></span>(<span class='kw'>taxon</span> <span class='kw'>=</span> <span class='st'>"Ameiurus"</span>, <span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"pelvic splint"</span>)
-<span class='no'>nex_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='pk_get_study_xml.html'>pk_get_study_xml</a></span>(<span class='no'>slist</span>$<span class='no'>id</span>) <span class='co'># get the list of NeXML objects for the studies</span>
-<span class='fu'>pk_get_study</span>(<span class='no'>nex_list</span>) <span class='co'># retrieve the study matrices</span>
-<span class='fu'><a href='pk_get_study_meta.html'>pk_get_study_meta</a></span>(<span class='no'>nex_list</span>) <span class='co'># retrieve the meta data for the studies</span>
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -143,9 +151,7 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>

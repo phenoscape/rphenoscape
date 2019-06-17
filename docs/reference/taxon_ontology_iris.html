@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>pk_get_study — pk_get_study • rphenoscape</title>
+<title>Get IRIs of ontologies with taxonomy terms — taxon_ontology_iris • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="pk_get_study — pk_get_study" />
+<meta property="og:title" content="Get IRIs of ontologies with taxonomy terms — taxon_ontology_iris" />
 
-<meta property="og:description" content="pk_get_study" />
+<meta property="og:description" content="Obtains the IRIs of taxon ontologies in the Phenoscape KB." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -102,50 +102,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>pk_get_study</h1>
-    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pk_study.R'><code>R/pk_study.R</code></a></small>
-    <div class="hidden name"><code>pk_get_study.Rd</code></div>
+    <h1>Get IRIs of ontologies with taxonomy terms</h1>
+    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pk_get_IRI.R'><code>R/pk_get_IRI.R</code></a></small>
+    <div class="hidden name"><code>taxon_ontology_iris.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>pk_get_study</p>
+    <p>Obtains the IRIs of taxon ontologies in the Phenoscape KB.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pk_get_study</span>(<span class='no'>nexmls</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>nexmls, </th>
-      <td><p>a list of <a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a> objects</p></td>
-    </tr>
-    </table>
-    
+    <pre class="usage"><span class='fu'>taxon_ontology_iris</span>()</pre>
+        
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of data.frames containing matrices</p>
+    <p>A character vector</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>slist</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='pk_get_study_list.html'>pk_get_study_list</a></span>(<span class='kw'>taxon</span> <span class='kw'>=</span> <span class='st'>"Ameiurus"</span>, <span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"pelvic splint"</span>)
-<span class='no'>nex_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='pk_get_study_xml.html'>pk_get_study_xml</a></span>(<span class='no'>slist</span>$<span class='no'>id</span>) <span class='co'># get the list of NeXML objects for the studies</span>
-<span class='fu'>pk_get_study</span>(<span class='no'>nex_list</span>) <span class='co'># retrieve the study matrices</span>
-<span class='fu'><a href='pk_get_study_meta.html'>pk_get_study_meta</a></span>(<span class='no'>nex_list</span>) <span class='co'># retrieve the meta data for the studies</span>
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>

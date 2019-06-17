@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>pk_get_study — pk_get_study • rphenoscape</title>
+<title>Find terms matching a query text — find_term • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="pk_get_study — pk_get_study" />
+<meta property="og:title" content="Find terms matching a query text — find_term" />
 
-<meta property="og:description" content="pk_get_study" />
+<meta property="og:description" content="Searches the KB for terms matching the given text, and returns the result(s)
+as a data frame (see Value)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -102,40 +103,87 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>pk_get_study</h1>
-    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pk_study.R'><code>R/pk_study.R</code></a></small>
-    <div class="hidden name"><code>pk_get_study.Rd</code></div>
+    <h1>Find terms matching a query text</h1>
+    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pk_get_IRI.R'><code>R/pk_get_IRI.R</code></a></small>
+    <div class="hidden name"><code>find_term.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>pk_get_study</p>
+    <p>Searches the KB for terms matching the given text, and returns the result(s)
+as a data frame (see Value).</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pk_get_study</span>(<span class='no'>nexmls</span>)</pre>
+    <pre class="usage"><span class='fu'>find_term</span>(<span class='no'>query</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>definedBy</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/substitute'>quote</a></span>(!<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/NA'>is.na</a></span>(<span class='no'>.</span>)),
+  <span class='kw'>matchBy</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>matchTypes</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>nomatch</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>limit</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>nexmls, </th>
-      <td><p>a list of <a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a> objects</p></td>
+      <th>query</th>
+      <td><p>character, the search text</p></td>
+    </tr>
+    <tr>
+      <th>type</th>
+      <td><p>character, the type of term to find, as a IRI or using common
+namespace prefixes such as "owl", "rdf", etc. The default is NA, which
+will use the remote API's default, currently "owl:Class".</p></td>
+    </tr>
+    <tr>
+      <th>definedBy</th>
+      <td><p>character, the ontology in which a class has to be defined.
+Either IRIs, or a list of OBO ontology ID spaces (such as "UBERON", "ZFA",
+etc), which will be expanded to full IRIs using the OBO ontology IRI
+pattern. Alternatively, a call expression returning a logical vector, with
+a dot in the position where the <code>isDefinedBy</code> value is to be passed.
+The default is an expression that filters out rows with no <code>isDefinedBy</code>
+value. Can also be set to NA to suppress any filtering by ontology.</p></td>
+    </tr>
+    <tr>
+      <th>matchBy</th>
+      <td><p>character, the term's (metadata) properties against which
+to match. Provide as IRIs or using common namespace prefixes. The default
+is NA, which will use the remote API's default, currently "rdfs:label",
+"oboInOwl:hasExactSynonym", "oboInOwl:NarrowSynonym", and
+"oboInOwl:hasBroadSynonym". To match only against label, use <code><a href='https://www.rdocumentation.org/packages/base/topics/c'>c("rdfs:label")</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>matchTypes</th>
+      <td><p>character, the types of matches (exact, partial, broad) to
+accept. By default (value NA), no filtering by match type is performed.
+Use <code><a href='https://www.rdocumentation.org/packages/base/topics/c'>c("exact")</a></code> to accept exact matches only.</p></td>
+    </tr>
+    <tr>
+      <th>nomatch</th>
+      <td><p>the value to return if there is no match returned by the
+remote API, or left after filtering.</p></td>
+    </tr>
+    <tr>
+      <th>limit</th>
+      <td><p>the maximum number of matches to process. Set to NA for
+(virtually) no limit.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical; whether to issue a message if no matches found</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of data.frames containing matrices</p>
+    <p>A data frame with columns "id", "label", "isDefinedBy", and
+"matchType" and one row for each term match.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Matches can be filtered by type of term (class, property, etc), ontology in
+which the term is defined, and by type of match (exact, partial, etc). The
+term properties considered for matching can also be controlled.</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>slist</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='pk_get_study_list.html'>pk_get_study_list</a></span>(<span class='kw'>taxon</span> <span class='kw'>=</span> <span class='st'>"Ameiurus"</span>, <span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"pelvic splint"</span>)
-<span class='no'>nex_list</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='pk_get_study_xml.html'>pk_get_study_xml</a></span>(<span class='no'>slist</span>$<span class='no'>id</span>) <span class='co'># get the list of NeXML objects for the studies</span>
-<span class='fu'>pk_get_study</span>(<span class='no'>nex_list</span>) <span class='co'># retrieve the study matrices</span>
-<span class='fu'><a href='pk_get_study_meta.html'>pk_get_study_meta</a></span>(<span class='no'>nex_list</span>) <span class='co'># retrieve the meta data for the studies</span>
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -143,9 +191,9 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+
+      <li><a href="#details">Details</a></li>
+          </ul>
 
   </div>
 </div>
