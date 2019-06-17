@@ -3,6 +3,7 @@
 export(anatomy_ontology_iris)
 export(cosine_similarity)
 export(find_term)
+export(get_phenotypes)
 export(get_term_label)
 export(jaccard_similarity)
 export(pa_dep_matrix)
