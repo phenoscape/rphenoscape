@@ -54,3 +54,71 @@ pkb_api <- function(...) {
   if (! startsWith(path, "/")) path <- paste0("/", path)
   paste0("https://kb.phenoscape.org/api", path)
 }
+
+#' Creates a list of named query parameters
+#'
+#' Several Phenoscape KB API endpoints use a form-like parameter list for
+#' filtering (limiting), or, in the case of relationships, expanding, the
+#' query result. This function aids in preparing the query string for these
+#' endpoints. It is internal to the package.
+#' @param ... any combination of zero or more parameters from `entity`,
+#'   `quality`, `taxon`, and `study`. Any provided with value `NA` will be
+#'   ignored. Entity, quality, and taxon will be resolved to IRI if not
+#'   already provided as such.
+#' @param includeRels character, in which case it is the relationship(s) for
+#'   entities to be included ("part of", "historical homologous to",
+#'   "serially homologous to"; unambiguous prefix strings are acceptable); or
+#'   logical, in which case `FALSE` means no relationships, and `TRUE` means
+#'   all available relationships. For legacy reasons, `NA` is treated synonymous
+#'   with `FALSE`. The default is `FALSE`.
+#' @param verbose logical, whether to print messages when potentially time consuming
+#'   operations are run.
+#' @return A list of named query parameters suitatoble for several form-like
+#'   query endpoints in the Phenoscape KB API.
+pkb_args_to_query <- function(...,
+                              includeRels = FALSE,
+                              verbose = FALSE) {
+  relChoices <- c("part of", "historical homologous to", "serially homologous to")
+  paramNames <- c("part of" = "parts",
+                  "historical homologous to" = "historical_homologs",
+                  "serially homologous to" = "serial_homologs",
+                  "entity" = "entity",
+                  "quality" = "quality",
+                  "taxon" = "in_taxon",
+                  "study" = "publication")
+  ont_lookups <- c("entity" = "anatomy",
+                   "quality" = "PATO",
+                   "taxon" = "taxon")
+  # determine relationships and set corresponding query parameters
+  if (all(is.na(includeRels))) includeRels <- FALSE # treat NA the same as FALSE
+  if (is.logical(includeRels)) {
+    if (includeRels)
+      includeRels <- relChoices
+    else
+      includeRels <- c()
+  } else {
+    includeRels <- match.arg(includeRels, relChoices, several.ok = TRUE)
+  }
+  queryseq <- as.list(rep("true", times = length(includeRels)))
+  if (length(includeRels) > 0) {
+    names(queryseq) <- unname(paramNames[match(includeRels, names(paramNames))])
+  }
+
+  # entity, quality, taxon, study etc
+  argList <- list(...)
+  queryseq <- c(queryseq,
+                sapply(names(argList[!is.na(argList)]),
+                       function(x) {
+                         # parameter name
+                         param <- unname(paramNames[x])
+                         # parameter value, IRI lookup if necessary
+                         paramVal <- argList[[x]]
+                         ont <- ont_lookups[x]
+                         if (! is.na(ont))
+                           paramVal <- pk_get_iri(paramVal, as = ont, verbose = verbose)
+                         names(paramVal) <- param
+                         paramVal
+                       },
+                       USE.NAMES = FALSE))
+  queryseq
+}
