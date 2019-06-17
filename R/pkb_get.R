@@ -55,6 +55,26 @@ pkb_api <- function(...) {
   paste0("https://kb.phenoscape.org/api", path)
 }
 
+#' Creates a list of named query parameters
+#'
+#' Several Phenoscape KB API endpoints use a form-like parameter list for
+#' filtering (limiting), or, in the case of relationships, expanding, the
+#' query result. This function aids in preparing the query string for these
+#' endpoints. It is internal to the package.
+#' @param ... any combination of zero or more parameters from `entity`,
+#'   `quality`, `taxon`, and `study`. Any provided with value `NA` will be
+#'   ignored. Entity, quality, and taxon will be resolved to IRI if not
+#'   already provided as such.
+#' @param includeRels character, in which case it is the relationship(s) for
+#'   entities to be included ("part of", "historical homologous to",
+#'   "serially homologous to"; unambiguous prefix strings are acceptable); or
+#'   logical, in which case `FALSE` means no relationships, and `TRUE` means
+#'   all available relationships. For legacy reasons, `NA` is treated synonymous
+#'   with `FALSE`. The default is `FALSE`.
+#' @param verbose logical, whether to print messages when potentially time consuming
+#'   operations are run.
+#' @return A list of named query parameters suitatoble for several form-like
+#'   query endpoints in the Phenoscape KB API.
 pkb_args_to_query <- function(...,
                               includeRels = FALSE,
                               verbose = FALSE) {
