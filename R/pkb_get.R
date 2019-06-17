@@ -22,9 +22,9 @@ pk_GET <- get_json_data
 #' @importFrom utils read.csv
 get_csv_data <- function(url, query, ..., verbose = FALSE) {
   if (nchar(jsonlite::toJSON(query)) >= 2048)
-    res <- httr::POST(url, httr::accept("text/csv, text/plain"), body = query, encode = "form")
+    res <- httr::POST(url, httr::accept("text/csv"), body = query, encode = "form")
   else
-    res <- httr::GET(url, httr::accept("text/csv, text/plain"), query = query)
+    res <- httr::GET(url, httr::accept("text/csv"), query = query)
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")
 
