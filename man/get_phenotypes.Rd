@@ -44,8 +44,32 @@ a partial match can be found. The study must be given as IRI.
 }
 \examples{
 \dontrun{
-# by default, parts are included
-phens <- get_phenotypes(entity = "kinethmoid bone")
-phens
+phens1 <- get_phenotypes(entity = "pelvic fin")
+head(phens1)
+
+# by default, parts are already included
+phens2 <- get_phenotypes(entity = "pelvic fin", includeRels = c("part"))
+nrow(phens1) == nrow(phens2)
+table(phens2$id \%in\% phens1$id)
+
+# but historical homologues are not
+phens2 <- get_phenotypes(entity = "pelvic fin", includeRels = c("part", "hist"))
+table(phens2$id \%in\% phens1$id)
+
+# neither are serially homologous
+phens2 <- get_phenotypes(entity = "pelvic fin", includeRels = TRUE)
+table(phens2$id \%in\% phens1$id)
+
+# filter by quality
+phens2 <- get_phenotypes(entity = "pelvic fin", quality = "shape")
+table(phens1$id \%in\% phens2$id)
+
+# filter by quality and taxon
+phens2 <- get_phenotypes(entity = "pelvic fin", quality = "shape", taxon = "Siluriformes")
+table(phens1$id \%in\% phens2$id)
+
+# can compute and visualize similarity
+sm <- jaccard_similarity(terms = phens2$id, .labels = phens2$label, .colnames = "label")
+plot(hclust(as.dist(1-sm)))
 }
 }
