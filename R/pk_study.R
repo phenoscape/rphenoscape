@@ -11,8 +11,6 @@
 #' @param relation character. Deprecated, for backwards compatibility defaults to
 #'  `part of`. Only used if `includeRels` is left at its default value.
 #'
-#' @import RNeXML
-#' @import dplyr
 #' @return data.frame
 #'
 #' @description

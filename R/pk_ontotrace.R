@@ -1,8 +1,6 @@
 #' Returns a NeXML-format evolutionary character matrix.
 #'
 #' @name pk_ontotrace
-#' @import RNeXML
-#' @import dplyr
 #' @param nex, a nexml object
 #'
 #' @return data.frame: The OntoTrace matrix.
@@ -19,6 +17,7 @@
 #' pk_get_ontotrace(nex)
 #' pk_get_ontotrace_meta(nex)
 #' }
+#' @importFrom RNeXML get_characters
 #' @export
 #' @rdname pk_ontotrace
 pk_get_ontotrace <- function(nex) {
@@ -28,6 +27,8 @@ pk_get_ontotrace <- function(nex) {
   return(m)
 }
 
+#' @importFrom RNeXML get_taxa get_metadata get_level
+#' @importFrom dplyr filter inner_join select rename "%>%"
 #' @export
 #' @rdname pk_ontotrace
 pk_get_ontotrace_meta <- function(nex) {

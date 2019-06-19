@@ -10,8 +10,6 @@
 #' this. By default, only characters that are variable across the resulting taxa
 #' are included; use `variable_only` to change this.
 #' 
-#' @import RNeXML
-#' @import dplyr
 #' @param taxon character, required. A vector of taxon names.
 #' @param entity character, required.
 #'   A single character string or a vector of anatomical class expressions.
@@ -50,6 +48,7 @@
 #' colnames(m) # characters (entity names)
 #' 
 #' }
+#' @importFrom RNeXML nexml
 #' @export
 pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_only = TRUE) {
 

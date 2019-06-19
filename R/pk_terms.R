@@ -1,7 +1,6 @@
 #' Get term details (ID, label, definition)
 #'
 #' @name pk_terms
-#' @import httr
 #' @param term character. The term to be searched.
 #' @param verbose logical: optional. If TRUE (default), informative messages printed.
 #' @return A data.frame with term id, label, and definition
