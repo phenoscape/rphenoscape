@@ -50,6 +50,8 @@
 #'   block(s), or, unless `ignoreTrees = TRUE`, for a node of a tree, and FALSE
 #'   otherwise.
 #' @rdname nexml_drop
+#' @importFrom methods new slot
+#' @importClassesFrom RNeXML nexml
 #' @export
 nexml_drop_otu <- function(nexml, filter, at = NA, block = 1, ...) {
   if (length(nexml@otus) < block) {
@@ -154,6 +156,7 @@ nexml_drop_char <- function(nexml, filter, at = NA, block = 1, ...,
   nexml
 }
 
+#' @importFrom methods slotNames slot
 nexml_filter_items <- function(nexml, items, filter, at = NA, ...) {
   if (is.function(filter)) {
     if (is.character(at)) {
@@ -184,6 +187,8 @@ nexml_filter_items <- function(nexml, items, filter, at = NA, ...) {
 #' @param charList a list of `char` objects. This will be passed as the values
 #'   to filter on.
 #' @rdname nexml_drop
+#' @importFrom methods is slot
+#' @importClassesFrom RNeXML nexml
 #' @export
 is_unused_char <- function(charList, ...) {
   argList <- list(...)
