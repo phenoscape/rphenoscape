@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get IRIs of ontologies with taxonomy terms — taxon_ontology_iris • rphenoscape</title>
+<title>Generate and add provenance record to nexml — add_provenance_record • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,12 @@
 
 
 
-<meta property="og:title" content="Get IRIs of ontologies with taxonomy terms — taxon_ontology_iris" />
+<meta property="og:title" content="Generate and add provenance record to nexml — add_provenance_record" />
 
-<meta property="og:description" content="Obtains the IRIs of taxon ontologies in the Phenoscape KB." />
+<meta property="og:description" content="If the content of a nexml object is modified, this
+function can add a provenance record documenting the modification.
+The provenance documentation is added to the toplevel metadata (i.e.,
+at the &quot;nexml&quot; level)." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -102,30 +105,89 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get IRIs of ontologies with taxonomy terms</h1>
-    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pk_get_IRI.R'><code>R/pk_get_IRI.R</code></a></small>
-    <div class="hidden name"><code>taxon_ontology_iris.Rd</code></div>
+    <h1>Generate and add provenance record to nexml</h1>
+    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/nexml.R'><code>R/nexml.R</code></a></small>
+    <div class="hidden name"><code>add_provenance_record.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Obtains the IRIs of taxon ontologies in the Phenoscape KB.</p>
+    <p>If the content of a <a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a> object is modified, this
+function can add a provenance record documenting the modification.
+The provenance documentation is added to the toplevel metadata (i.e.,
+at the <a href='https://www.rdocumentation.org/packages/RNeXML/topics/get_metadata'>"nexml" level</a>).</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>taxon_ontology_iris</span>()</pre>
-        
+    <pre class="usage"><span class='fu'>add_provenance_record</span>(<span class='no'>nexml</span>, <span class='kw'>cmd</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>creator</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Sys.getenv'>Sys.getenv</a></span>(<span class='st'>"USER"</span>))</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>nexml</th>
+      <td><p>the <a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a> object to which to add provenance
+documentation</p></td>
+    </tr>
+    <tr>
+      <th>cmd</th>
+      <td><p>character, the command (such as a function invocation) to document
+in the provenance record. If <code>NA</code> (the default), the invocation of the
+function calling this one will be used as the command.</p></td>
+    </tr>
+    <tr>
+      <th>creator</th>
+      <td><p>character, a value identifying the person running the
+software. The default is the system's <code>USER</code> environment variable.</p></td>
+    </tr>
+    </table>
+    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A character vector</p>
+    <p>A <a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a> object with provenance records added.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>At present, for each invocation this implementation will do the following:</p><ol>
+<li><p>If the top-level metadata for the nexml object contains
+<code>dc:description</code> annotations(s), they are moved to being nested
+within a <code>dcterms:provenance</code> annotation, and prefixed with
+"Original description:".</p></li>
+<li><p>A <code>dcterms:provenance</code> annotation is added, with nested properties
+<code>dc:creator</code> (see parameter <code>creator</code>), <code>dcterms:modified</code> (current
+time), and <code>dc:description</code>. The latter gives the command to document,
+see parameter <code>cmd</code>.</p></li>
+<li><p>A provenance record using <a href='https://www.w3.org/TR/prov-o/'>Prov-O</a>
+(a W3C recommendation) nested within <code>prov:wasGeneratedBy</code> is added.
+In RDF Turtle representation, the record would have the following structure
+(cf. <a href='http://purl.obolibrary.org/obo/IAO_0000591'>obo:IAO_0000591</a>):</p><pre>:nexml prov:wasGeneratedBy [
+  prov:endedAtTime "2019-06-20 15:09:08 GMT" ;
+  prov:wasAssociatedWith [
+    a obo:IAO_0000591 ;
+    dc:title "rphenoscape" ;
+    dcterms:hasVersion "&lt;rphenoscape version&gt;" ;
+  ] ;
+  prov:wasAssociatedWith [
+    a prov:Person ;
+    foaf:name "&lt;creator&gt;" ;
+  ] ;
+  prov:used [
+    prov:value "&lt;modifying command&gt;" ;
+  ] ;
+] .
+</pre></li>
+</ol>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
           </ul>
 
   </div>
