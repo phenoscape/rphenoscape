@@ -125,6 +125,7 @@ nexml_drop_char <- function(nexml, filter, at = NA, block = 1, ...,
   
   chars <- nexml@characters[[block]]@format@char
   rows <- nexml@characters[[block]]@matrix@row
+  isMod <- FALSE # track whether the object gets modified
   if (length(chars) > 0) {
     toDrop <- nexml_filter_items(nexml, chars, filter, at, ...)
     ids_to_rm <- sapply(chars, slot, name = "id")[toDrop]
@@ -139,6 +140,7 @@ nexml_drop_char <- function(nexml, filter, at = NA, block = 1, ...,
         })
       # drop the characters from the characters block
       nexml@characters[[block]]@format@char <- new("ListOfchar", chars[!toDrop])
+      isMod <- TRUE
     }
   }
   # prune unused states if requested
@@ -147,17 +149,26 @@ nexml_drop_char <- function(nexml, filter, at = NA, block = 1, ...,
     statesIds <- sapply(states, slot, name = "id")
     statesUsed <- lapply(nexml@characters[[block]]@format@char, slot, name = "states")
     statesUsed <- unique(unlist(statesUsed))
-    nexml@characters[[block]]@format@states <-
-      new("ListOfstates", states[! (statesIds %in% statesUsed)])
+    toKeep <- statesIds %in% statesUsed
+    if (! all(toKeep)) {
+      nexml@characters[[block]]@format@states <- new("ListOfstates", states[toKeep])
+      isMod <- TRUE
+    }
   }
   # prune rows with no cells if requested
   if (pruneRows && length(rows) > 0) {
-    rows <- rows[sapply(rows, function(x) length(x@cell)) > 0]
+    toKeep <- sapply(rows, function(x) length(x@cell)) > 0
+    if (! all(toKeep)) {
+      rows <- rows[toKeep]
+      isMod <- TRUE
+    }
   }
-  nexml@characters[[block]]@matrix@row <- new("ListOfrow", rows)
-
-  # record a provenance chain
-  nexml <- add_provenance_record(nexml)
+  # replace list of rows if there is a change
+  if (isMod) {
+    nexml@characters[[block]]@matrix@row <- new("ListOfrow", rows)
+    # record a provenance chain
+    nexml <- add_provenance_record(nexml)
+  }
 
   nexml
 }
