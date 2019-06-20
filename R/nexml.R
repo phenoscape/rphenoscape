@@ -162,6 +162,7 @@ nexml_drop_char <- function(nexml, filter, at = NA, block = 1, ...,
   nexml
 }
 
+#' @importFrom RNeXML get_metadata_values
 #' @importFrom methods slotNames slot
 nexml_filter_items <- function(nexml, items, filter, at = NA, ...) {
   if (is.function(filter)) {
@@ -173,8 +174,7 @@ nexml_filter_items <- function(nexml, items, filter, at = NA, ...) {
         # treat as a metadata property
         at <- sapply(items,
                      function(x) {
-                       vals <- RNeXML::get_metadata_values(nexml, annotated = x,
-                                                           props = at)
+                       vals <- get_metadata_values(nexml, annotated = x, props = at)
                        vals[1]
                      })
       }
