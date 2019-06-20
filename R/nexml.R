@@ -94,6 +94,9 @@ nexml_drop_otu <- function(nexml, filter, at = NA, block = 1, ...) {
       }
       # drop the otus from the otus block
       nexml@otus[[block]]@otu <- new("ListOfotu", otus[!toDrop])
+
+      # record a provenance chain
+      nexml <- add_provenance_record(nexml)
     }
   }
   nexml
@@ -152,6 +155,9 @@ nexml_drop_char <- function(nexml, filter, at = NA, block = 1, ...,
     rows <- rows[sapply(rows, function(x) length(x@cell)) > 0]
   }
   nexml@characters[[block]]@matrix@row <- new("ListOfrow", rows)
+
+  # record a provenance chain
+  nexml <- add_provenance_record(nexml)
 
   nexml
 }
@@ -279,4 +285,108 @@ is_unused_otu <- function(otuList, ...) {
 
   otus_used <- unique(otus_used)
   ! (otuids %in% otus_used)
+}
+
+#' Generate and add provenance record to nexml
+#'
+#' If the content of a [nexml][RNeXML::nexml] object is modified, this
+#' function can add a provenance record documenting the modification.
+#' The provenance documentation is added to the toplevel metadata (i.e.,
+#' at the ["nexml" level][RNeXML::get_metadata]).
+#'
+#' At present, for each invocation this implementation will do the following:
+#' 1. If the top-level metadata for the nexml object contains
+#'    `dc:description` annotations(s), they are moved to being nested
+#'    within a `dcterms:provenance` annotation, and prefixed with
+#'    "Original description:".
+#' 2. A `dcterms:provenance` annotation is added, with nested properties
+#'    `dc:creator` (see parameter `creator`), `dcterms:modified` (current
+#'    time), and `dc:description`. The latter gives the command to document,
+#'    see parameter `cmd`.
+#' 3. A provenance record using [Prov-O](https://www.w3.org/TR/prov-o/)
+#'    (a W3C recommendation) nested within `prov:wasGeneratedBy` is added.
+#'    In RDF Turtle representation, the record would have the following structure
+#'    (cf. [obo:IAO_0000591](http://purl.obolibrary.org/obo/IAO_0000591)):
+#'    ```ttl
+#'    :nexml prov:wasGeneratedBy [
+#'      prov:endedAtTime "2019-06-20 15:09:08 GMT" ;
+#'      prov:wasAssociatedWith [
+#'        a obo:IAO_0000591 ;
+#'        dc:title "rphenoscape" ;
+#'        dcterms:hasVersion "<rphenoscape version>" ;
+#'      ] ;
+#'      prov:wasAssociatedWith [
+#'        a prov:Person ;
+#'        foaf:name "<creator>" ;
+#'      ] ;
+#'      prov:used [
+#'        prov:value "<modifying command>" ;
+#'      ] ;
+#'    ] .
+#'    ```
+#' @param nexml the [nexml][RNeXML::nexml] object to which to add provenance
+#'    documentation
+#' @param cmd character, the command (such as a function invocation) to document
+#'    in the provenance record. If `NA` (the default), the invocation of the
+#'    function calling this one will be used as the command.
+#' @param creator character, a value identifying the person running the
+#'    software. The default is the system's `USER` environment variable.
+#' @return A [nexml][RNeXML::nexml] object with provenance records added.
+#' @importFrom utils packageName packageVersion
+#' @importFrom RNeXML meta add_meta get_namespaces expand_prefix
+#' @importClassesFrom RNeXML nexml
+#' @export
+add_provenance_record <- function(nexml, cmd = NA, creator = Sys.getenv("USER")) {
+  now <- format(Sys.time(), tz = "GMT", usetz = TRUE)
+  # if present, move original description to a provenance record
+  metaProps <- sapply(nexml@meta, RNeXML::slot, name = "property")
+  ns = get_namespaces(nexml)
+  isDescr <- sapply(
+    metaProps,
+    function(x) expand_prefix(x, ns) == expand_prefix("dc:description", ns))
+  if (any(isDescr)) {
+    provRecs <- lapply(
+      nexml@meta[isDescr],
+      function(descr) {
+        meta("dcterms:provenance",
+             children = c(
+               meta("dc:description",
+                    paste("Original description:", descr@content))))
+      })
+    nexml@meta <- new("ListOfmeta", nexml@meta[! isDescr])
+    nexml@meta <- c(nexml@meta, provRecs)
+  }
+  # generate a representation of the modifying operation if not provided
+  if (is.na(cmd)) cmd <- paste0(format(sys.call(-1)), collapse = "\n")
+  # we create two provenance records documenting the modification, one
+  # using only Dublin Core vocabulary, and one using W3C's Prov-O vocabulary
+  prov <- meta("dcterms:provenance",
+               children = c(
+                 meta("dcterms:modified", now),
+                 meta("dc:creator", creator),
+                 meta("dc:description", paste("Modified with:", cmd))))
+  provO <- meta("prov:wasGeneratedBy",
+                children = c(
+                  meta("prov:endedAtTime", now),
+                  meta("prov:wasAssociatedWith",
+                       children = c(
+                         meta(rel = "rdf:type", href = "obo:IAO_0000591"),
+                         meta("dc:title", packageName()),
+                         meta("dcterms:hasVersion",
+                              as.character(packageVersion(packageName())))
+                       )),
+                  meta("prov:used", children = c(meta("prov:value", cmd))),
+                  meta("prov:wasStartedBy",
+                       children = c(
+                         meta(rel = "rdf:type", href = "prov:Person"),
+                         meta("foaf:name", creator)
+                       ))
+                ))
+  nexml <- add_meta(c(prov, provO),
+                    nexml = nexml,
+                    namespaces = c(prov = "http://www.w3.org/ns/prov#",
+                                   foaf = "http://xmlns.com/foaf/0.1/",
+                                   obo = "http://purl.obolibrary.org/obo/",
+                                   rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
+  nexml
 }
