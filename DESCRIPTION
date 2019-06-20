@@ -19,6 +19,7 @@ Imports:
     httr,
     dplyr,
     rlang,
+    methods,
     stringi,
     RNeXML (>= 2.3.0)
 Suggests: 
