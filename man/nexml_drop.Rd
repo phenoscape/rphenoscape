@@ -11,7 +11,7 @@
 nexml_drop_otu(nexml, filter, at = NA, block = 1, ...)
 
 nexml_drop_char(nexml, filter, at = NA, block = 1, ...,
-  pruneStates = TRUE, pruneRows = FALSE)
+  pruneStates = TRUE, pruneRows = TRUE)
 
 is_unused_char(charList, ...)
 
@@ -56,7 +56,7 @@ TRUE.}
 
 \item{pruneRows}{logical, whether to also prune (i.e., drop) matrix rows
 that have become empty (i.e., have no cells left) after dropping the
-selected characters. The default is FALSE.}
+selected characters. The default is TRUE.}
 
 \item{charList}{a list of \code{char} objects. This will be passed as the values
 to filter on.}
@@ -89,8 +89,8 @@ to drop unused characters afterwards.
 
 \code{nexml_drop_char} drops characters from a \link[RNeXML:nexml]{nexml} object. Note
 that dropping characters may make some OTUs unused if they result in empty
-rows, and pruning empty rows (see parameter \code{pruneRows} is requested). In
-this case, it is recommended to drop unused OTUs afterwards.
+rows and empty rows are pruned (see parameter \code{pruneRows}). It is therefore
+recommended to drop unused OTUs afterwards.
 
 \code{is_unused_char} is a filter function for \code{nexml_drop_char} for dropping
 unused characters.

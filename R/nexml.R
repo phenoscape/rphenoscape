@@ -105,19 +105,19 @@ nexml_drop_otu <- function(nexml, filter, at = NA, block = 1, ...) {
 #' @description
 #' `nexml_drop_char` drops characters from a [nexml][RNeXML::nexml] object. Note
 #' that dropping characters may make some OTUs unused if they result in empty
-#' rows, and pruning empty rows (see parameter `pruneRows` is requested). In
-#' this case, it is recommended to drop unused OTUs afterwards.
+#' rows and empty rows are pruned (see parameter `pruneRows`). It is therefore
+#' recommended to drop unused OTUs afterwards.
 #'
 #' @param pruneStates logical, whether to also prune (i.e., drop) states that
 #'   are no longer used after dropping the selected characters. The default is
 #'   TRUE.
 #' @param pruneRows logical, whether to also prune (i.e., drop) matrix rows
 #'   that have become empty (i.e., have no cells left) after dropping the
-#'   selected characters. The default is FALSE.
+#'   selected characters. The default is TRUE.
 #' @rdname nexml_drop
 #' @export
 nexml_drop_char <- function(nexml, filter, at = NA, block = 1, ...,
-                            pruneStates = TRUE, pruneRows = FALSE) {
+                            pruneStates = TRUE, pruneRows = TRUE) {
   if (length(nexml@characters) < block) {
     warning("nexml object does not have characters block ", block, call. = FALSE)
     return(nexml)
