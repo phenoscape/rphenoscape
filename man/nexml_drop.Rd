@@ -98,3 +98,29 @@ unused characters.
 \code{is_unused_otu} is a filter function for \code{nexml_drop_otu} for dropping
 unused OTUs.
 }
+\examples{
+nex <- RNeXML::nexml_read(system.file("examples", "ontotrace-result.xml", package = "rphenoscape"))
+# drop by label matching
+nexml_drop_otu(nex, filter = function(x) grepl(" sp.", x), at = "label")
+
+# can pipe dropping and then removing potentially unused characters or OTUs:
+library(dplyr)
+nexml_drop_char(nex, filter = function(x) grepl("pelvic", x), at = "label") \%>\%
+  nexml_drop_otu(filter = is_unused_otu)
+
+\dontrun{
+nex <- pk_get_ontotrace_xml(taxon = "Ictaluridae",
+                            entity = "fin", variable_only = FALSE)
+# ontotrace results store VTO IRIs in dwc:taxonID annotations:
+nexml_drop_otu(nex,
+               filter = function(x) !pk_is_descendant("Ictalurus", x),
+               at = "dwc:taxonID") \%>\%
+  nexml_drop_char(filter = is_unused_char)
+# anatomy IRIs are in obo:IAO_0000219 ("denotes") annotations:
+nexml_drop_char(nex,
+               filter = function(x)
+                 !pk_is_descendant("paired fin", x, includeRels = "part_of"),
+               at = "obo:IAO_0000219") \%>\%
+  nexml_drop_otu(filter = is_unused_otu)
+}
+}
