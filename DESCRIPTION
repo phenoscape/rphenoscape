@@ -8,7 +8,7 @@ Authors@R: c(person("Hong", "Xu", email = "xuhong713@gmail.com", role = "aut"),
 Description: This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices.
 License: MIT + file LICENSE
 LazyData: TRUE
-URL: https://github.com/phenoscape/rphenoscape
+URL: https://github.com/phenoscape/rphenoscape, http://rphenoscape.phenoscape.org
 BugReports: https://github.com/phenoscape/rphenoscape/issues
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
