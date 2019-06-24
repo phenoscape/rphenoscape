@@ -5,7 +5,16 @@ Version: 0.2.8
 Authors@R: c(person("Hong", "Xu", email = "xuhong713@gmail.com", role = "aut"),
   person("Hilmar", "Lapp", email = "hilmar.lapp@duke.edu", role = c("cre", "aut"),
          comment = c(ORCID="0000-0001-9107-0714")))
-Description: This package facilitates the interfacing to the Phenoscape Knowledge for searching ontology terms, retrieving term info, and querying data matrices.
+Description: Provides convenient access to the data, ontologies, and semantics-based
+  analytics offered by the Phenoscape Knowledgebase (KB) API. The KB integrates
+  morphological trait data curated from phylogenetic systematics studies with
+  morphological phenotypes of model organism gene knock-outs, all linked to the
+  same shared ontologies in the Entity-Quality (EQ) formalism. The available
+  capabilities include finding ontology terms; finding studies by taxon and anatomical
+  concepts, and obtaining their trait matrices; finding ontological phenotype
+  expressions; generating synthetic presence-absence trait matrices; obtaining
+  anatomical presence-absence dependency matrices; and computing semantic similarity
+  metrics between traits.
 License: MIT + file LICENSE
 LazyData: TRUE
 URL: https://github.com/phenoscape/rphenoscape, http://rphenoscape.phenoscape.org
