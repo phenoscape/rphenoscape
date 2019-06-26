@@ -2,16 +2,24 @@
 % Please edit documentation in R/pk_terms.R
 \name{pk_is_extinct}
 \alias{pk_is_extinct}
-\title{Test if a taxon is extinct.}
+\title{Determine which taxa are extinct}
 \usage{
-pk_is_extinct(taxon)
+pk_is_extinct(taxon, verbose = FALSE)
 }
 \arguments{
-\item{taxon}{character, the taxon name to be tested.}
+\item{taxon}{character, the taxa or list of taxa, as names or IRIs. Names
+will first be looked up, and a warning will be issued for names that fail
+to be found as a taxon name. Names and IRIs can be intermixed.}
+
+\item{verbose}{logical, whether or not to print informative messages for
+possibly time-consuming operations. The default is \code{FALSE}.}
 }
 \value{
-logical, TRUE if extinct, FALSE if not
+A logical named vector with value \code{TRUE} if the corresponding input
+taxon is marked as extinct, and FALSE otherwise. For taxon names that failed
+to be looked up, the value will be NA. Names will be the input taxa where
+there were given as names, and the label of the respective taxon otherwise.
 }
 \description{
-Test if a taxon is extinct.
+This is simply a convenience function on top of \code{\link[=pk_taxon_detail]{pk_taxon_detail()}}.
 }
