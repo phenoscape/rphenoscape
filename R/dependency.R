@@ -69,6 +69,10 @@ pa_dep_matrix <- function(terms,
     unname(sapply(terms,
                   function(x) pk_get_iri(x, as = "anatomy",
                                          exactOnly = TRUE, verbose = verbose)))
+  if (any(is.na(term_iris))) {
+    warnings("Removing unresolved terms")
+    term_iris <- term_iris[! is.na(term_iris)]
+  }
   queryseq <- list(terms = as.character(jsonlite::toJSON(term_iris)))
   m <- get_csv_data(pkb_api("/entity/dependency"), query = queryseq,
                     row.names = 1, header = TRUE, check.names = FALSE,
