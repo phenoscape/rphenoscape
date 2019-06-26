@@ -14,18 +14,38 @@ pk_anatomical_detail(term, verbose = FALSE)
 
 pk_phenotype_detail(term, verbose = FALSE)
 
-pk_gene_detail(term, verbose = FALSE)
+pk_gene_detail(term, taxon = NA, verbose = FALSE)
 }
 \arguments{
-\item{term}{character. The term to be searched.}
+\item{term}{character, the query term, either as name or IRI. Names are looked
+up against taxonomies, anatomy ontologies, and PATO for \code{pk_taxon_detail},
+\code{pk_anatomical_detail}, and \code{pk_phenotype_detail}, respectively.
 
-\item{verbose}{logical: optional. If TRUE (default), informative messages printed.}
+For \code{pk_taxon_detail} this can also be a list (or vector) of terms (taxa).}
+
+\item{verbose}{logical, whether informative messages should be printed. The
+default is \code{FALSE}.}
+
+\item{taxon}{character, the NCBI taxon name or corresponding NCBITaxon
+ontology IRI for which to match the gene name.}
 }
 \value{
-A data.frame with term id, label, and definition
+A data.frame, with at least columns "id" and "label".
+
+For \code{pk_taxon_detail}, additional columns are "extinct" (logical),
+"rank.id", "rank.label", and where available "common_name". The rows
+corresponding to taxon names that failed to be resolved to IRIs will be NA.
+
+For \code{pk_anatomical_detail} and \code{pk_phenotype_detail}, the additional
+column is "definition".
+
+For \code{pk_gene_detail}, the additional columns are "taxon.id" and "taxon.label"
+for the corresponding NCBI Taxonomy ID and name, and "matchType" ('exact'
+or 'partial').
 }
 \description{
-Retrieve details about a taxon, an anatomical structure, a gene, or a phenotype.
+Retrieve details about a taxon, an anatomical structure, a gene, or a phenotypic
+quality.
 }
 \examples{
 pk_taxon_detail("Coralliozetus")

@@ -1,28 +1,72 @@
 context("term finding and info APIs")
 
-test_that("Test term search", {
+test_that("Test term details", {
   skip_on_cran()
-  a <- pk_taxon_detail("Coralliozetus")
   b <- pk_phenotype_detail("shape")
   c <- pk_anatomical_detail("basihyal bone")
 
   g <- pk_gene_detail("socs5")
   gg <- pk_gene_detail("socs5", "Danio rerio")
 
-  expect_is(a, 'data.frame')
   expect_is(b, 'data.frame')
+  expect_equal(nrow(b), 1)
+  expect_false(any(is.na(b)))
   expect_is(c, 'data.frame')
+  expect_equal(nrow(c), 1)
+  expect_false(any(is.na(c)))
+  
 
-
-  expect_warning(aa <- pk_taxon_detail("coral tt"))
   expect_warning(bb <- pk_phenotype_detail("shape tt"))
   expect_warning(cc <- pk_anatomical_detail("fin tt"))
-  expect_true(is.na(aa))
   expect_true(is.na(bb))
   expect_true(is.na(cc))
 
   expect_is(g, "data.frame")
+  expect_gt(length(unique(g$taxon.label)), 2)
+  expect_setequal(unique(g$matchType), c("exact", "partial"))
   expect_is(gg, "data.frame")
+  expect_length(unique(gg$taxon.label), 1)
+  expect_length(unique(gg$label), 2)
+})
+
+test_that("taxon details works", {
+  skip_on_cran()
+  a <- pk_taxon_detail("Coralliozetus")
+
+  expect_is(a, 'data.frame')
+  expect_gt(nrow(a), 0)
+  expect_setequal(colnames(a),
+                  c("id", "label", "extinct", "rank.id", "rank.label", "common_name"))
+
+  expect_warning(aa <- pk_taxon_detail("coral tt"))
+  expect_warning(bb <- pk_taxon_detail("http://foobar.com/taxon"))
+  expect_warning(cc <- pk_taxon_detail(c("coral tt", "Danio rerio")))
+  expect_true(is.na(aa))
+  expect_true(is.na(bb))
+  expect_true(any(is.na(cc)))
+  expect_false(all(is.na(cc)))
+  expect_equal(nrow(cc), 2)
+  expect_true(all(is.na(cc[1,])))
+
+  dd <- pk_taxon_detail(c("Danio", "Danio rerio"))
+  expect_equal(nrow(dd), 2)
+  expect_true(any(is.na(dd$common_name)))
+  expect_false(all(is.na(dd$common_name)))
+})
+
+test_that("is_extinct works", {
+  skip_on_cran()
+
+  ext <- pk_is_extinct("Fisherichthys")
+  expect_is(ext, "logical")
+  expect_equal(names(ext), c("Fisherichthys"))
+  # make one an unresolvable typo
+  expect_warning(ext <- pk_is_extinct(c("Fisheririchthys", "Tiktaalik")))
+  expect_is(ext, "logical")
+  expect_length(ext, 2)
+  expect_true(any(is.na(ext)))
+  expect_false(all(is.na(ext)))
+  expect_equal(names(ext), c("Fisheririchthys", "Tiktaalik"))
 })
 
 test_that("Test retrieving IRI", {

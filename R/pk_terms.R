@@ -1,12 +1,29 @@
 #' Get term details (ID, label, definition)
 #'
+#' Retrieve details about a taxon, an anatomical structure, a gene, or a phenotypic
+#' quality.
 #' @name pk_terms
-#' @param term character. The term to be searched.
-#' @param verbose logical: optional. If TRUE (default), informative messages printed.
-#' @return A data.frame with term id, label, and definition
-#' @description
-#' Retrieve details about a taxon, an anatomical structure, a gene, or a phenotype.
+#' @param term character, the query term, either as name or IRI. Names are looked
+#'   up against taxonomies, anatomy ontologies, and PATO for `pk_taxon_detail`,
+#'   `pk_anatomical_detail`, and `pk_phenotype_detail`, respectively.
 #'
+#'   For `pk_taxon_detail` this can also be a list (or vector) of terms (taxa).
+#' @param taxon character, the NCBI taxon name or corresponding NCBITaxon
+#'   ontology IRI for which to match the gene name.
+#' @param verbose logical, whether informative messages should be printed. The
+#'   default is `FALSE`.
+#' @return A data.frame, with at least columns "id" and "label".
+#'
+#'   For `pk_taxon_detail`, additional columns are "extinct" (logical),
+#'   "rank.id", "rank.label", and where available "common_name". The rows
+#'   corresponding to taxon names that failed to be resolved to IRIs will be NA.
+#'
+#'   For `pk_anatomical_detail` and `pk_phenotype_detail`, the additional
+#'   column is "definition".
+#'
+#'   For `pk_gene_detail`, the additional columns are "taxon.id" and "taxon.label"
+#'   for the corresponding NCBI Taxonomy ID and name, and "matchType" ('exact'
+#'   or 'partial').
 #' @examples
 #' pk_taxon_detail("Coralliozetus")
 #' pk_anatomical_detail("basihyal bone")
@@ -15,17 +32,35 @@
 #' @export
 #' @rdname pk_terms
 pk_taxon_detail <- function(term, verbose=FALSE) {
-  #pk_details(term, as = "vto", verbose)
-  # update to a verbose version of taxon search
-  iri <- pk_get_iri(term, as = "taxon", nomatch = FALSE)
-  if (iri == FALSE) return(invisible(NA))
-  mssg(verbose, "Retrieving term details")
+  iriList <- sapply(term,
+                    pk_get_iri, as = "taxon",  verbose = verbose,
+                    USE.NAMES = FALSE)
+  if (length(iriList) == 1 && is.na(iriList)) return(invisible(NA))
 
-  queryseq <- list(iri = iri)
-  lst <- unlist(pk_GET(pk_taxon_url, queryseq))
-  det <- as.data.frame(t(lst))
-  colnames(det) <- sub("@", "", names(lst))
-  det
+  mssg(verbose, "Retrieving term details")
+  det <- sapply(iriList[! is.na(iriList)],
+                function(iri)
+                  as.data.frame(get_json_data(pkb_api("/taxon"), list(iri = iri),
+                                              ensureNames = "common_name"),
+                                check.names = FALSE, stringsAsFactors = FALSE),
+                USE.NAMES = FALSE)
+  if (any(is.na(iriList))) {
+    res <- matrix(nrow = length(iriList), ncol = nrow(det))
+    colnames(res) <- row.names(det)
+    res[is.na(iriList),] <- rep(NA, times = nrow(det))
+    if (! all(is.na(iriList)))
+      res[! is.na(iriList),] <- apply(det, 1, as.character)
+  } else if (is.null(dim(det))) {
+    warning("Failed to find term details for any of the input terms:\n\t",
+            paste0(term, collapse = "\n\t"), call. = FALSE)
+    return(invisible(NA))
+  } else
+    res <- apply(det, 1, function(x) ifelse(is.na(x), NA, as.character(x)))
+  if (! is.matrix(res)) res <- t(res)
+  res <- as.data.frame(res, stringsAsFactors = FALSE)
+  colnames(res) <- sub("@", "", names(res))
+  res[, "extinct"] <- as.logical(res[, "extinct"])
+  res
 }
 
 #' @export
@@ -41,22 +76,38 @@ pk_phenotype_detail <- function(term, verbose=FALSE) {
 
 #' @export
 #' @rdname pk_terms
-pk_gene_detail <- function(term, verbose=FALSE) {
-  # TODO: resolve taxon to NCBI IRI
+pk_gene_detail <- function(term, taxon = NA, verbose=FALSE) {
   queryseq <- list(text = term)
-  res <- pk_GET("http://kb.phenoscape.org/api/gene/search", query = queryseq)
-  res$results
+  res <- get_json_data(pkb_api("/gene/search"), query = queryseq)
+  res <- res$results
+  colnames(res) <- sub("@", "", names(res))
+  if (! is.na(taxon)) {
+    taxcol <- "taxon.label"
+    if (startsWith(taxon, "http")) taxcol <- "taxon.id"
+    res <- res[res[, taxcol] == taxon,]
+  }
+  res
 }
 
-#' Test if a taxon is extinct.
+#' Determine which taxa are extinct
 #'
-#' @param taxon character, the taxon name to be tested.
-#' @return logical, TRUE if extinct, FALSE if not
+#' This is simply a convenience function on top of [pk_taxon_detail()].
+#' @param taxon character, the taxa or list of taxa, as names or IRIs. Names
+#'   will first be looked up, and a warning will be issued for names that fail
+#'   to be found as a taxon name. Names and IRIs can be intermixed.
+#' @param verbose logical, whether or not to print informative messages for
+#'   possibly time-consuming operations. The default is `FALSE`.
+#' @return A logical named vector with value `TRUE` if the corresponding input
+#'   taxon is marked as extinct, and FALSE otherwise. For taxon names that failed
+#'   to be looked up, the value will be NA. Names will be the input taxa where
+#'   there were given as names, and the label of the respective taxon otherwise.
 #' @export
-pk_is_extinct <- function(taxon) {
-  det <- pk_taxon_detail(taxon)
-  if (is.na(det)) return(invisible(NA))
-  det$extinct
+pk_is_extinct <- function(taxon, verbose = FALSE) {
+  det <- pk_taxon_detail(taxon, verbose = verbose)
+  if (all(is.na(det))) return(invisible(NA))
+  res <- det$extinct
+  names(res) <- ifelse(startsWith(taxon, "http"), det$label, taxon)
+  res
 }
 
 
