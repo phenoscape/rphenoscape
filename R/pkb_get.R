@@ -27,6 +27,9 @@
 get_json_data <- function(url, query, verbose = FALSE, ensureNames = NULL) {
   res <- httr::GET(url, httr::accept_json(), query = query)
   stop_for_pk_status(res)
+  # some endpoints return zero content for failure to find data
+  if (res$headers$`content-length` == 0) return(NULL)
+
   # if content-type is application/json, httr:content() doesn't assume UTF-8
   # encoding if charset isn't provided by the server, arguably erroneously
   # (because specifying a different charset would violate the spec)
