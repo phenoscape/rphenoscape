@@ -1,6 +1,6 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr GET content
-get_json_data <- function(url, query, verbose = FALSE) {
+get_json_data <- function(url, query, verbose = FALSE, ensureNames = NULL) {
   res <- httr::GET(url, httr::accept_json(), query = query)
   stop_for_pk_status(res)
   # if content-type is application/json, httr:content() doesn't assume UTF-8
@@ -14,7 +14,26 @@ get_json_data <- function(url, query, verbose = FALSE) {
   out <- httr::content(res, as = "text", encoding = enc)
 
   mssg(verbose, "Parse JSON ...")
-  jsonlite::fromJSON(out, simplifyVector = TRUE, flatten = TRUE)
+  res <- jsonlite::fromJSON(out, simplifyVector = TRUE, flatten = TRUE)
+  if (is.list(res) && ! is.null(ensureNames)) {
+    resList <- res
+    if (! is.null(res$results)) resList <- res$results
+    currNames <- names(resList)
+    missNames <- ensureNames[! (ensureNames %in% currNames)]
+    if (length(missNames) > 0) {
+      # note that if resList is a data frame, this turns it into a list
+      resFixed <- c(resList, rep(NA, times = length(missNames)))
+      names(resFixed) <- c(currNames, missNames)
+      # restore data frame if it was one originally
+      if (is.data.frame(resList)) resFixed <- as.data.frame(resFixed)
+      # restore return value
+      if (is.null(res$results))
+        res <- resFixed
+      else
+        res$results <- resFixed
+    }
+  }
+  res
 }
 pk_GET <- get_json_data
 
