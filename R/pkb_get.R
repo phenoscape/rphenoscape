@@ -1,3 +1,27 @@
+#' Get data from an API endpoint
+#'
+#' Obtains and parses data from JSON, CSV, and NeXML-returning API endpoints,
+#' respectively.
+#'
+#' These are package-internal functions.
+#' @param url character, the URL of the API endpoint to query
+#' @param query list, the query parameters and values in the form of a named list
+#' @param verbose logical, whether to print message when parsing results
+#' @param ensureNames character, which column or list names to ensure are included
+#'   in the result to be returned. If result returned by the API endpoint does
+#'   not include them, they will be added, with NA values.
+#' @param ... for `get_csv_data`, additional parameters to be passed on to
+#'   [read.csv()][utils::read.csv()]
+#' @return
+#'   For `get_json_data`, a data frame or list, depending on the result of
+#'   [jsonlite::fromJSON()].
+#'
+#'   For `get_csv_data`, a data frame.
+#'
+#'   For `get_nexml_data`, a [nexml][RNeXML::nexml] object.
+#' @rdname get_data
+#' @name get_data
+#' @aliases pk_GET
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr GET content
 get_json_data <- function(url, query, verbose = FALSE, ensureNames = NULL) {
@@ -37,6 +61,7 @@ get_json_data <- function(url, query, verbose = FALSE, ensureNames = NULL) {
 }
 pk_GET <- get_json_data
 
+#' @rdname get_data
 #' @importFrom httr GET content
 #' @importFrom utils read.csv
 get_csv_data <- function(url, query, ..., verbose = FALSE) {
@@ -51,6 +76,7 @@ get_csv_data <- function(url, query, ..., verbose = FALSE) {
   read.csv(textConnection(out), ...)
 }
 
+#' @rdname get_data
 #' @importFrom jsonlite toJSON
 #' @importFrom httr GET POST content
 #' @importFrom RNeXML nexml_read
