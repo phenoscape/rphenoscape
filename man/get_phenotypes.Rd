@@ -5,7 +5,7 @@
 \title{Retrieve phenotypes by entity, quality, taxon, and study}
 \usage{
 get_phenotypes(entity = NA, quality = NA, taxon = NA, study = NA,
-  includeRels = c("part of"), verbose = FALSE)
+  includeRels = c("part of"), .withTaxon = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{entity}{character, the anatomical entity by which to filter, if any.}
@@ -23,11 +23,24 @@ Otherwise one or more of \code{"part of"}, \code{"historical homologous to"}, an
 \code{"serially homologous to"}, or set to \code{TRUE} to include all possible ones. It
 is acceptable to use unambiguous prefixes, for example \code{"historical"}.}
 
+\item{.withTaxon}{logical, whether to include taxa in the result if \code{taxon} is
+provided. If TRUE, only the combination of phenotype and taxon will be
+unique in the returned data frame. Default is FALSE, meaning by default
+providing a value for \code{taxon} only acts as another filter but does not
+change format or redundancy of the result. Ignored if \code{taxon} is
+not provided as a character value.}
+
 \item{verbose}{logical, whether to print messages informing about potentially
 time-consuming operations. Default is FALSE.}
 }
 \value{
 A data frame with columns "id" and "label".
+
+If a character value for \code{taxon} was provided, and \code{.withTaxon} is TRUE’,
+columns "taxon.id" and "taxon.label" will be returned as well. While
+(phenotypes, taxon) tuples will be unique, both phenotypes and taxa
+individually will then be redundant in the returned data frame (the
+association is n:n).
 }
 \description{
 Retrieves "semantic phenotypes", i.e., phenotypes encodes as ontological
@@ -60,13 +73,21 @@ table(phens2$id \%in\% phens1$id)
 phens2 <- get_phenotypes(entity = "pelvic fin", includeRels = TRUE)
 table(phens2$id \%in\% phens1$id)
 
-# filter by quality
+# filter also by quality
 phens2 <- get_phenotypes(entity = "pelvic fin", quality = "shape")
 table(phens1$id \%in\% phens2$id)
 
-# filter by quality and taxon
+# filter also by quality and taxon
 phens2 <- get_phenotypes(entity = "pelvic fin", quality = "shape", taxon = "Siluriformes")
 table(phens1$id \%in\% phens2$id)
+
+# filter by entity, quality and taxon, and return taxa as well (resulting in
+# (phenotype, taxon) "tuples")
+phens2a <- get_phenotypes(entity = "pelvic fin", quality = "shape", taxon = "Siluriformes",
+                          .withTaxon = TRUE)
+head(phens2a)
+nrow(phens2a) - nrow(phens2) # lots of redundancy due to n:n relationship
+nrow(unique(phens2a[,c("id", "label")])) == nrow(phens2) # but some #phenotypes
 
 # can compute and visualize similarity
 sm <- jaccard_similarity(terms = phens2$id, .labels = phens2$label, .colnames = "label")

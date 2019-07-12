@@ -154,6 +154,8 @@ pkb_args_to_query <- function(...,
 
   # entity, quality, taxon, study etc
   argList <- list(...)
+  # remove parameters not meant for us
+  argList <- argList[! startsWith(names(argList), ".")]
   queryseq <- c(queryseq,
                 sapply(names(argList[!is.na(argList)]),
                        function(x) {
