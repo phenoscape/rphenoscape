@@ -87,10 +87,8 @@ get_phenotypes <- function(entity = NA, quality = NA, taxon = NA, study = NA,
   mssg(verbose, "Querying for phenotypes ...")
   if (is.na(taxon) || ! .withTaxon)
     endp <- "/phenotype/query"
-  else {
+  else
     endp <- "/taxon/annotations"
-    queryseq$limit = "999" # temporary hack due to KB API bug
-  }
   out <- get_json_data(pkb_api(endp), queryseq)
   res <- out$results
   if (length(res) > 0) {
