@@ -1,7 +1,7 @@
 Package: rphenoscape
 Type: Package
 Title: Semantically rich phenotypic traits from the Phenoscape Knowledgebase
-Version: 0.2.9
+Version: 0.2.10
 Authors@R: c(person("Hong", "Xu", email = "xuhong713@gmail.com", role = "aut"),
   person("Hilmar", "Lapp", email = "hilmar.lapp@duke.edu", role = c("cre", "aut"),
          comment = c(ORCID="0000-0001-9107-0714")))
