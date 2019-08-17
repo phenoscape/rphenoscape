@@ -21,13 +21,35 @@ test_that("retrieval of phenotypes works", {
                                           includeRels = c("part", "hist", "serial"))),
                       nrow(phens2))
 
-  # filter by quality
+  # filter also by quality
   phens2 <- get_phenotypes(entity = "pelvic fin", quality = "shape")
   testthat::expect_gt(nrow(phens2), 0)
   testthat::expect_lt(nrow(phens2), nrow(phens1))
 
-  # filter by quality and taxon
+  # filter also by quality and taxon
   phens3 <- get_phenotypes(entity = "pelvic fin", quality = "shape", taxon = "Siluriformes")
   testthat::expect_gt(nrow(phens3), 0)
   testthat::expect_lt(nrow(phens3), nrow(phens2))
+})
+
+test_that("requesting taxon phenotype associations works", {
+  # filter by entity, quality and taxon
+  phens <- get_phenotypes(entity = "pelvic fin", quality = "shape", taxon = "Siluriformes")
+  # same but request (phenotype, taxon) tuples instead
+  phens.tpl <- get_phenotypes(entity = "pelvic fin", quality = "shape", taxon = "Siluriformes",
+                              .withTaxon = TRUE)
+  # additional columns
+  testthat::expect_gt(ncol(phens.tpl), ncol(phens))
+  testthat::expect_true(all(c("id", "label") %in% colnames(phens.tpl)))
+  testthat::expect_true(all(c("taxon.id", "taxon.label") %in% colnames(phens.tpl)))
+  i <- seq(1, ncol(phens.tpl))
+  # additional columns come last
+  testthat::expect_gt(min(i[startsWith(colnames(phens.tpl), "taxon")]),
+                      max(i[! startsWith(colnames(phens.tpl), "taxon")]))
+  # should see many more tuples than phenotypes
+  testthat::expect_gt(nrow(phens.tpl), 10 * nrow(phens))
+  # but same number of phenotypes
+  testthat::expect_equal(nrow(unique(phens.tpl[, c("id", "label")])), nrow(phens))
+  # taxa are redundant as well
+  testthat::expect_lt(length(unique(phens.tpl[, c("taxon.id")])), nrow(phens.tpl))
 })
