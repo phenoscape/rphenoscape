@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Test if a taxon is extinct. — pk_is_extinct • rphenoscape</title>
+<title>Determine which taxa are extinct — pk_is_extinct • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Test if a taxon is extinct. — pk_is_extinct" />
+<meta property="og:title" content="Determine which taxa are extinct — pk_is_extinct" />
 
-<meta property="og:description" content="Test if a taxon is extinct." />
+<meta property="og:description" content="This is simply a convenience function on top of pk_taxon_detail()." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.10</span>
       </span>
     </div>
 
@@ -102,31 +102,41 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Test if a taxon is extinct.</h1>
+    <h1>Determine which taxa are extinct</h1>
     <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pk_terms.R'><code>R/pk_terms.R</code></a></small>
     <div class="hidden name"><code>pk_is_extinct.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Test if a taxon is extinct.</p>
+    <p>This is simply a convenience function on top of <code><a href='pk_terms.html'>pk_taxon_detail()</a></code>.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pk_is_extinct</span>(<span class='no'>taxon</span>)</pre>
+    <pre class="usage"><span class='fu'>pk_is_extinct</span>(<span class='no'>taxon</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>taxon</th>
-      <td><p>character, the taxon name to be tested.</p></td>
+      <td><p>character, the taxa or list of taxa, as names or IRIs. Names
+will first be looked up, and a warning will be issued for names that fail
+to be found as a taxon name. Names and IRIs can be intermixed.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical, whether or not to print informative messages for
+possibly time-consuming operations. The default is <code>FALSE</code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>logical, TRUE if extinct, FALSE if not</p>
+    <p>A logical named vector with value <code>TRUE</code> if the corresponding input
+taxon is marked as extinct, and FALSE otherwise. For taxon names that failed
+to be looked up, the value will be NA. Names will be the input taxa where
+there were given as names, and the label of the respective taxon otherwise.</p>
     
 
   </div>

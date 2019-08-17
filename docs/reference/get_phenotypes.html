@@ -67,7 +67,7 @@ quality, taxonomic group where the phenotypes have been recorded, and study
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.10</span>
       </span>
     </div>
 
@@ -122,7 +122,7 @@ quality, taxonomic group where the phenotypes have been recorded, and study
     </div>
 
     <pre class="usage"><span class='fu'>get_phenotypes</span>(<span class='kw'>entity</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>quality</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>taxon</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>study</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>includeRels</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"part of"</span>), <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>includeRels</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"part of"</span>), <span class='kw'>.withTaxon</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,6 +153,15 @@ Otherwise one or more of <code>"part of"</code>, <code>"historical homologous to
 is acceptable to use unambiguous prefixes, for example <code>"historical"</code>.</p></td>
     </tr>
     <tr>
+      <th>.withTaxon</th>
+      <td><p>logical, whether to include taxa in the result if <code>taxon</code> is
+provided. If TRUE, only the combination of phenotype and taxon will be
+unique in the returned data frame. Default is FALSE, meaning by default
+providing a value for <code>taxon</code> only acts as another filter but does not
+change format or redundancy of the result. Ignored if <code>taxon</code> is
+not provided as a character value.</p></td>
+    </tr>
+    <tr>
       <th>verbose</th>
       <td><p>logical, whether to print messages informing about potentially
 time-consuming operations. Default is FALSE.</p></td>
@@ -162,6 +171,11 @@ time-consuming operations. Default is FALSE.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A data frame with columns "id" and "label".</p>
+<p>If a character value for <code>taxon</code> was provided, and <code>.withTaxon</code> is TRUE’,
+columns "taxon.id" and "taxon.label" will be returned as well. While
+(phenotypes, taxon) tuples will be unique, both phenotypes and taxa
+individually will then be redundant in the returned data frame (the
+association is n:n).</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -189,13 +203,21 @@ a partial match can be found. The study must be given as IRI.</p>
 <span class='no'>phens2</span> <span class='kw'>&lt;-</span> <span class='fu'>get_phenotypes</span>(<span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"pelvic fin"</span>, <span class='kw'>includeRels</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/table'>table</a></span>(<span class='no'>phens2</span>$<span class='no'>id</span> <span class='kw'>%in%</span> <span class='no'>phens1</span>$<span class='no'>id</span>)
 
-<span class='co'># filter by quality</span>
+<span class='co'># filter also by quality</span>
 <span class='no'>phens2</span> <span class='kw'>&lt;-</span> <span class='fu'>get_phenotypes</span>(<span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"pelvic fin"</span>, <span class='kw'>quality</span> <span class='kw'>=</span> <span class='st'>"shape"</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/table'>table</a></span>(<span class='no'>phens1</span>$<span class='no'>id</span> <span class='kw'>%in%</span> <span class='no'>phens2</span>$<span class='no'>id</span>)
 
-<span class='co'># filter by quality and taxon</span>
+<span class='co'># filter also by quality and taxon</span>
 <span class='no'>phens2</span> <span class='kw'>&lt;-</span> <span class='fu'>get_phenotypes</span>(<span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"pelvic fin"</span>, <span class='kw'>quality</span> <span class='kw'>=</span> <span class='st'>"shape"</span>, <span class='kw'>taxon</span> <span class='kw'>=</span> <span class='st'>"Siluriformes"</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/table'>table</a></span>(<span class='no'>phens1</span>$<span class='no'>id</span> <span class='kw'>%in%</span> <span class='no'>phens2</span>$<span class='no'>id</span>)
+
+<span class='co'># filter by entity, quality and taxon, and return taxa as well (resulting in</span>
+<span class='co'># (phenotype, taxon) "tuples")</span>
+<span class='no'>phens2a</span> <span class='kw'>&lt;-</span> <span class='fu'>get_phenotypes</span>(<span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"pelvic fin"</span>, <span class='kw'>quality</span> <span class='kw'>=</span> <span class='st'>"shape"</span>, <span class='kw'>taxon</span> <span class='kw'>=</span> <span class='st'>"Siluriformes"</span>,
+                          <span class='kw'>.withTaxon</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/head'>head</a></span>(<span class='no'>phens2a</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow</a></span>(<span class='no'>phens2a</span>) - <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow</a></span>(<span class='no'>phens2</span>) <span class='co'># lots of redundancy due to n:n relationship</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unique'>unique</a></span>(<span class='no'>phens2a</span>[,<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"id"</span>, <span class='st'>"label"</span>)])) <span class='kw'>==</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow</a></span>(<span class='no'>phens2</span>) <span class='co'># but same #phenotypes</span>
 
 <span class='co'># can compute and visualize similarity</span>
 <span class='no'>sm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='similarity.html'>jaccard_similarity</a></span>(<span class='kw'>terms</span> <span class='kw'>=</span> <span class='no'>phens2</span>$<span class='no'>id</span>, <span class='kw'>.labels</span> <span class='kw'>=</span> <span class='no'>phens2</span>$<span class='no'>label</span>, <span class='kw'>.colnames</span> <span class='kw'>=</span> <span class='st'>"label"</span>)

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Creates a list of named query parameters — pkb_args_to_query • rphenoscape</title>
+<title>Get data from an API endpoint — get_data • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,12 +30,10 @@
 
 
 
-<meta property="og:title" content="Creates a list of named query parameters — pkb_args_to_query" />
+<meta property="og:title" content="Get data from an API endpoint — get_data" />
 
-<meta property="og:description" content="Several Phenoscape KB API endpoints use a form-like parameter list for
-filtering (limiting), or, in the case of relationships, expanding, the
-query result. This function aids in preparing the query string for these
-endpoints. It is internal to the package." />
+<meta property="og:description" content="Obtains and parses data from JSON, CSV, and NeXML-returning API endpoints,
+respectively." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -105,52 +103,62 @@ endpoints. It is internal to the package." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Creates a list of named query parameters</h1>
+    <h1>Get data from an API endpoint</h1>
     <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pkb_get.R'><code>R/pkb_get.R</code></a></small>
-    <div class="hidden name"><code>pkb_args_to_query.Rd</code></div>
+    <div class="hidden name"><code>get_data.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Several Phenoscape KB API endpoints use a form-like parameter list for
-filtering (limiting), or, in the case of relationships, expanding, the
-query result. This function aids in preparing the query string for these
-endpoints. It is internal to the package.</p>
+    <p>Obtains and parses data from JSON, CSV, and NeXML-returning API endpoints,
+respectively.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pkb_args_to_query</span>(<span class='no'>...</span>, <span class='kw'>includeRels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>get_json_data</span>(<span class='no'>url</span>, <span class='no'>query</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ensureNames</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+
+<span class='fu'>get_csv_data</span>(<span class='no'>url</span>, <span class='no'>query</span>, <span class='no'>...</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>get_nexml_data</span>(<span class='no'>url</span>, <span class='no'>query</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>...</th>
-      <td><p>any combination of zero or more parameters from <code>entity</code>,
-<code>quality</code>, <code>taxon</code>, and <code>study</code>. Any provided with value <code>NA</code> will be
-ignored. Entity, quality, and taxon will be resolved to IRI if not
-already provided as such.</p></td>
+      <th>url</th>
+      <td><p>character, the URL of the API endpoint to query</p></td>
     </tr>
     <tr>
-      <th>includeRels</th>
-      <td><p>character, in which case it is the relationship(s) for
-entities to be included ("part of", "historical homologous to",
-"serially homologous to"; unambiguous prefix strings are acceptable); or
-logical, in which case <code>FALSE</code> means no relationships, and <code>TRUE</code> means
-all available relationships. For legacy reasons, <code>NA</code> is treated synonymous
-with <code>FALSE</code>. The default is <code>FALSE</code>.</p></td>
+      <th>query</th>
+      <td><p>list, the query parameters and values in the form of a named list</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>logical, whether to print messages when potentially time consuming
-operations are run.</p></td>
+      <td><p>logical, whether to print message when parsing results</p></td>
+    </tr>
+    <tr>
+      <th>ensureNames</th>
+      <td><p>character, which column or list names to ensure are included
+in the result to be returned. If result returned by the API endpoint does
+not include them, they will be added, with NA values.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>for <code>get_csv_data</code>, additional parameters to be passed on to
+<a href='https://www.rdocumentation.org/packages/utils/topics/read.table'>read.csv()</a></p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of named query parameters suitatoble for several form-like
-query endpoints in the Phenoscape KB API.</p>
+    <p>For <code>get_json_data</code>, a data frame or list, depending on the result of
+<code><a href='https://www.rdocumentation.org/packages/jsonlite/topics/fromJSON'>jsonlite::fromJSON()</a></code>.</p>
+<p>For <code>get_csv_data</code>, a data frame.</p>
+<p>For <code>get_nexml_data</code>, a <a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a> object.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>These are package-internal functions.</p>
     
 
   </div>
@@ -160,6 +168,8 @@ query endpoints in the Phenoscape KB API.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
           </ul>
 
   </div>

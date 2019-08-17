@@ -32,7 +32,8 @@
 
 <meta property="og:title" content="Get term details (ID, label, definition) — pk_terms" />
 
-<meta property="og:description" content="Retrieve details about a taxon, an anatomical structure, a gene, or a phenotype." />
+<meta property="og:description" content="Retrieve details about a taxon, an anatomical structure, a gene, or a phenotypic
+quality." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -63,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.10</span>
       </span>
     </div>
 
@@ -109,7 +110,8 @@
 
     <div class="ref-description">
     
-    <p>Retrieve details about a taxon, an anatomical structure, a gene, or a phenotype.</p>
+    <p>Retrieve details about a taxon, an anatomical structure, a gene, or a phenotypic
+quality.</p>
     
     </div>
 
@@ -119,41 +121,58 @@
 
 <span class='fu'>pk_phenotype_detail</span>(<span class='no'>term</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
-<span class='fu'>pk_gene_detail</span>(<span class='no'>term</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>pk_gene_detail</span>(<span class='no'>term</span>, <span class='kw'>taxon</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>term</th>
-      <td><p>character. The term to be searched.</p></td>
+      <td><p>character, the query term, either as name or IRI. Names are looked
+up against taxonomies, anatomy ontologies, and PATO for <code>pk_taxon_detail</code>,
+<code>pk_anatomical_detail</code>, and <code>pk_phenotype_detail</code>, respectively.</p>
+<p>For <code>pk_taxon_detail</code> this can also be a list (or vector) of terms (taxa).</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>logical: optional. If TRUE (default), informative messages printed.</p></td>
+      <td><p>logical, whether informative messages should be printed. The
+default is <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>taxon</th>
+      <td><p>character, the NCBI taxon name or corresponding NCBITaxon
+ontology IRI for which to match the gene name.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data.frame with term id, label, and definition</p>
+    <p>A data.frame, with at least columns "id" and "label".</p>
+<p>For <code>pk_taxon_detail</code>, additional columns are "extinct" (logical),
+"rank.id", "rank.label", and where available "common_name". The rows
+corresponding to taxon names that failed to be resolved to IRIs will be NA.</p>
+<p>For <code>pk_anatomical_detail</code> and <code>pk_phenotype_detail</code>, the additional
+column is "definition".</p>
+<p>For <code>pk_gene_detail</code>, the additional columns are "taxon.id" and "taxon.label"
+for the corresponding NCBI Taxonomy ID and name, and "matchType" ('exact'
+or 'partial').</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>pk_taxon_detail</span>(<span class='st'>"Coralliozetus"</span>)</div><div class='output co'>#&gt;                                           id         label extinct
 #&gt; 1 http://purl.obolibrary.org/obo/VTO_0042955 Coralliozetus   FALSE
-#&gt;                                          rank.id rank.label
-#&gt; 1 http://purl.obolibrary.org/obo/TAXRANK_0000005      genus</div><div class='input'><span class='fu'>pk_anatomical_detail</span>(<span class='st'>"basihyal bone"</span>)</div><div class='output co'>#&gt;           label
+#&gt;                                          rank.id rank.label common_name
+#&gt; 1 http://purl.obolibrary.org/obo/TAXRANK_0000005      genus        &lt;NA&gt;</div><div class='input'><span class='fu'>pk_anatomical_detail</span>(<span class='st'>"basihyal bone"</span>)</div><div class='output co'>#&gt;           label
 #&gt; 1 basihyal bone
 #&gt;                                                                                 definition
 #&gt; 1 Replacement bone that is median and is the anterior-most bone of the ventral hyoid arch.
 #&gt;                                              id
-#&gt; 1 http://purl.obolibrary.org/obo/UBERON_0011618</div><div class='input'><span class='fu'>pk_gene_detail</span>(<span class='st'>"socs5"</span>)</div><div class='output co'>#&gt;                                                 @id  label matchType
+#&gt; 1 http://purl.obolibrary.org/obo/UBERON_0011618</div><div class='input'><span class='fu'>pk_gene_detail</span>(<span class='st'>"socs5"</span>)</div><div class='output co'>#&gt;                                                  id  label matchType
 #&gt; 1             http://xenbase.org/XB-GENEPAGE-479592  socs5     exact
 #&gt; 2 http://www.informatics.jax.org/marker/MGI:2385459  Socs5     exact
 #&gt; 3               http://zfin.org/ZDB-GENE-061013-408 socs5a   partial
 #&gt; 4                http://zfin.org/ZDB-GENE-080722-18 socs5b   partial
-#&gt;                                        taxon.@id  taxon.label
+#&gt;                                         taxon.id  taxon.label
 #&gt; 1  http://purl.obolibrary.org/obo/NCBITaxon_8353      Xenopus
 #&gt; 2 http://purl.obolibrary.org/obo/NCBITaxon_10090 Mus musculus
 #&gt; 3  http://purl.obolibrary.org/obo/NCBITaxon_7955  Danio rerio
