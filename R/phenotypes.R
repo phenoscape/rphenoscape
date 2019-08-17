@@ -60,7 +60,7 @@
 #'                           .withTaxon = TRUE)
 #' head(phens2a)
 #' nrow(phens2a) - nrow(phens2) # lots of redundancy due to n:n relationship
-#' nrow(unique(phens2a[,c("id", "label")])) == nrow(phens2) # but some #phenotypes
+#' nrow(unique(phens2a[,c("id", "label")])) == nrow(phens2) # but same #phenotypes
 #'
 #' # can compute and visualize similarity
 #' sm <- jaccard_similarity(terms = phens2$id, .labels = phens2$label, .colnames = "label")
