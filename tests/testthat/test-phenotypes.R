@@ -32,6 +32,18 @@ test_that("retrieval of phenotypes works", {
   testthat::expect_lt(nrow(phens3), nrow(phens2))
 })
 
+test_that("get_phenotypes() in apply() works", {
+  tt <- c("pelvic fin", "antorbital")
+  qual <- "shape"
+
+  testthat::expect_silent(res <- lapply(tt, get_phenotypes))
+  testthat::expect_is(res, "list")
+  testthat::expect_length(res, 2)
+  testthat::expect_silent(res <- lapply(tt, get_phenotypes, quality = qual))
+  testthat::expect_is(res, "list")
+  testthat::expect_length(res, 2)
+})
+
 test_that("requesting taxon phenotype associations works", {
   # filter by entity, quality and taxon
   phens <- get_phenotypes(entity = "pelvic fin", quality = "shape", taxon = "Siluriformes")
