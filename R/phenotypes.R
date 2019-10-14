@@ -81,7 +81,9 @@ get_phenotypes <- function(entity = NA, quality = NA, taxon = NA, study = NA,
   argsInCall <-  as.list(match.call())[-1]
   # need to make sure to apply our defaults where they differ
   argsInCall$includeRels <- includeRels
-  queryseq <- do.call(pkb_args_to_query, argsInCall)
+  # note that evaluation needs to be in this function's parent frame, or
+  # otherwise using it in apply() and friends won't work
+  queryseq <- do.call(pkb_args_to_query, argsInCall, envir = parent.frame())
   queryseq <- c(queryseq, limit = "1000000")
 
   mssg(verbose, "Querying for phenotypes ...")
