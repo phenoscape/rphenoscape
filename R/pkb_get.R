@@ -25,7 +25,10 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr GET content
 get_json_data <- function(url, query, verbose = FALSE, ensureNames = NULL) {
-  res <- httr::GET(url, httr::accept_json(), query = query)
+  if (nchar(jsonlite::toJSON(query)) >= 2048)
+    res <- httr::POST(url, httr::accept_json(), body = query, encode = "form")
+  else
+    res <- httr::GET(url, httr::accept_json(), query = query)
   stop_for_pk_status(res)
   # some endpoints return zero content for failure to find data
   contLen <- res$headers$`content-length`
