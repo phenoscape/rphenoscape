@@ -6,3 +6,4 @@ rphenoscape.Rproj
 cache
 rphenoscape*.tar.gz
 *.Rcheck
+.DS_Store
