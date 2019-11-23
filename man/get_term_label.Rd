@@ -17,7 +17,9 @@ order.}
 time-consuming operations.}
 }
 \value{
-A data.frame with columns "id" and "label".
+A data.frame with columns "id" and "label". The "id" column contains
+the IRIs. The label will be \code{NA} for term IRIs that are not present in the
+KB, or for which the KB cannot produce a label.
 }
 \description{
 Attempts to obtain the label for each term, identified by IRI, in the input
