@@ -20,6 +20,12 @@
 #' @param variable_only logical, optional.
 #'   Whether to only include characters that are variable across the selected
 #'   set of taxa. Default is TRUE.
+#' @param strict logical, optional. Whether or not to treat any failure to resolve
+#'   any taxon or entity names to IRI as input error. Resolution by partial or
+#'   other inexact match results in a warning, but is not considered a failure.
+#'   If FALSE, query execution will continue with the taxon and entity terms
+#'   that did resolve to IRI. Default is TRUE, meaning any resolution failure will
+#'   result in an error.
 #' @return [RNeXML::nexml] object
 #' @examples
 #' \dontrun{
@@ -50,7 +56,10 @@
 #' }
 #' @importFrom RNeXML nexml
 #' @export
-pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_only = TRUE) {
+pk_get_ontotrace_xml <- function(taxon, entity,
+                                 relation = 'part of',
+                                 variable_only = TRUE,
+                                 strict = TRUE) {
 
   relation_id <- NA
   if (! is.na(relation)) {
@@ -69,9 +78,18 @@ pk_get_ontotrace_xml <- function(taxon, entity, relation = 'part of', variable_o
   entity_iris <- lapply(entity, FUN = pk_get_iri, as = "anatomy")
 
   # check for successful resolution of all search terms
-  if (any(is.na(taxon_iris)) || any(is.na(entity_iris))) {
-    return(invisible(nexml()))
+  kinds <- c()
+  if (any(is.na(taxon_iris))) {
+    kinds <- c("taxon")
+    taxon_iris <- taxon_iris[! is.na(taxon_iris)]
   }
+  if (any(is.na(entity_iris))) {
+    kinds <- c(kinds, "entity")
+    entity_iris <- entity_iris[! is.na(entity_iris)]
+  }
+  if (length(kinds) > 0 && strict)
+    stop("One or more ", paste(kinds, collapse = " and "),
+         " names failed to resolve to IRI, unable to continue", call. = FALSE)
 
   # insert necessary "<" and ">" before concatenating string
   taxon_iris <- lapply(taxon_iris, FUN = function(x) paste0("<", x, ">"))

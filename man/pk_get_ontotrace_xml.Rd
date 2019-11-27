@@ -5,7 +5,7 @@
 \title{Obtain a synthetic presence/absence matrix}
 \usage{
 pk_get_ontotrace_xml(taxon, entity, relation = "part of",
-  variable_only = TRUE)
+  variable_only = TRUE, strict = TRUE)
 }
 \arguments{
 \item{taxon}{character, required. A vector of taxon names.}
@@ -21,6 +21,13 @@ Default is "part of".}
 \item{variable_only}{logical, optional.
 Whether to only include characters that are variable across the selected
 set of taxa. Default is TRUE.}
+
+\item{strict}{logical, optional. Whether or not to treat any failure to resolve
+any taxon or entity names to IRI as input error. Resolution by partial or
+other inexact match results in a warning, but is not considered a failure.
+If FALSE, query execution will continue with the taxon and entity terms
+that did resolve to IRI. Default is TRUE, meaning any resolution failure will
+result in an error.}
 }
 \value{
 \link[RNeXML:nexml]{RNeXML::nexml} object
