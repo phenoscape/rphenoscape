@@ -117,7 +117,8 @@ find_term <- function(query,
 #' @param exactOnly logical. Whether to require an exact match. If TRUE, only
 #'   the first exact match is returned. Default is FALSE.
 #' @param nomatch the value to return if there is no match, by default NA.
-#' @param verbose logical: optional. If TRUE (default), informative messages printed.
+#' @param verbose logical: optional. If TRUE, prints messages prior to potentially
+#'   time-consuming operations. Default is FALSE.
 #' @return The IRI if a match is found.
 #' @export
 pk_get_iri <- function(text, as, 

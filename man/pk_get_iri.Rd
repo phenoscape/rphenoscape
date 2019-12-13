@@ -22,7 +22,8 @@ the first exact match is returned. Default is FALSE.}
 
 \item{nomatch}{the value to return if there is no match, by default NA.}
 
-\item{verbose}{logical: optional. If TRUE (default), informative messages printed.}
+\item{verbose}{logical: optional. If TRUE, prints messages prior to potentially
+time-consuming operations. Default is FALSE.}
 }
 \value{
 The IRI if a match is found.
