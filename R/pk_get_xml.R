@@ -74,8 +74,8 @@ pk_get_ontotrace_xml <- function(taxon, entity,
   }
 
   taxon_iris <- lapply(taxon,
-                       FUN = pk_get_iri, as = "taxon", exactOnly = TRUE)
-  entity_iris <- lapply(entity, FUN = pk_get_iri, as = "anatomy")
+                       FUN = get_term_iri, as = "taxon", exactOnly = TRUE)
+  entity_iris <- lapply(entity, FUN = get_term_iri, as = "anatomy")
 
   # check for successful resolution of all search terms
   kinds <- c()

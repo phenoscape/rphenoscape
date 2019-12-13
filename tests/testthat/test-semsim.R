@@ -37,7 +37,7 @@ test_that("obtaining subsumer matrix works", {
 
 test_that("edge-based similarity metrics work", {
   tl <- c("pelvic fin", "pectoral fin", "forelimb", "hindlimb", "dorsal fin", "caudal fin")
-  tt <- sapply(tl, pk_get_iri, as = "anatomy", exactOnly = TRUE)
+  tt <- sapply(tl, get_term_iri, as = "anatomy", exactOnly = TRUE)
 
   sim.jc <- jaccard_similarity(terms = tt, .colnames = "label", .labels = tl)
   testthat::expect_equal(row.names(sim.jc), colnames(sim.jc))

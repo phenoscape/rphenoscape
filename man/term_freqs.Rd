@@ -78,7 +78,7 @@ category using \code{as}.
 }
 \examples{
 terms <- c("pectoral fin", "pelvic fin", "dorsal fin", "paired fin")
-IRIs <- sapply(terms, pk_get_iri, as = "anatomy")
+IRIs <- sapply(terms, get_term_iri, as = "anatomy")
 term_freqs(IRIs)
 
 phens <- get_phenotypes(entity = "basihyal bone")

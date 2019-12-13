@@ -58,7 +58,7 @@ test_that("determining term categories", {
 })
 
 test_that("success rate for entity subsumer terms", {
-  tt <- sapply(c("fin ray", "dorsal fin", "caudal fin"), pk_get_iri, as = "anatomy")
+  tt <- sapply(c("fin ray", "dorsal fin", "caudal fin"), get_term_iri, as = "anatomy")
   subs.mat <- subsumer_matrix(tt)
   tt.types <- term_category(rownames(subs.mat))
   type.fracs <- table(tt.types)/nrow(subs.mat)
@@ -88,7 +88,7 @@ test_that("obtaining corpus size", {
 
 test_that("obtaining/calculating term frequencies", {
   tl <- c("pelvic fin", "pectoral fin", "forelimb", "hindlimb", "dorsal fin", "caudal fin")
-  tt <- sapply(tl, pk_get_iri, as = "anatomy", exactOnly = TRUE)
+  tt <- sapply(tl, get_term_iri, as = "anatomy", exactOnly = TRUE)
 
   wt <- term_freqs(tt, corpus = "taxon_annotations")
   testthat::expect_is(wt, "numeric")
@@ -132,7 +132,7 @@ test_that("obtaining/calculating term frequencies", {
 })
 
 test_that("term frequencies for post-comp subsumers of entities", {
-  tt <- sapply(c("fin ray", "dorsal fin", "caudal fin"), pk_get_iri, as = "anatomy")
+  tt <- sapply(c("fin ray", "dorsal fin", "caudal fin"), get_term_iri, as = "anatomy")
   subs <- rownames(subsumer_matrix(tt))
   # reduce to post-comps and test a handful
   onts <- obo_prefix(subs)
