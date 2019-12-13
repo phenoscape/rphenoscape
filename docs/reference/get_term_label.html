@@ -65,7 +65,7 @@ label in the result (see Value)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.12</span>
       </span>
     </div>
 
@@ -141,7 +141,9 @@ time-consuming operations.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data.frame with columns "id" and "label".</p>
+    <p>A data.frame with columns "id" and "label". The "id" column contains
+the IRIs. The label will be <code>NA</code> for term IRIs that are not present in the
+KB, or for which the KB cannot produce a label.</p>
     
 
   </div>

@@ -65,7 +65,7 @@ nexml object (from the RNeXML package)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.12</span>
       </span>
     </div>
 
@@ -113,12 +113,12 @@ nexml object (from the RNeXML package)." />
     
     <p>Queries the Phenoscape KB for a synthetic presence/absence character matrix
 for the given taxa and anatomical entities, and returns the result as a
-<a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a> object (from the RNeXML package).</p>
+<a href='https://docs.ropensci.org/RNeXML/reference/nexml-class.html'>nexml</a> object (from the RNeXML package).</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>pk_get_ontotrace_xml</span>(<span class='no'>taxon</span>, <span class='no'>entity</span>, <span class='kw'>relation</span> <span class='kw'>=</span> <span class='st'>"part of"</span>,
-  <span class='kw'>variable_only</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+  <span class='kw'>variable_only</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>strict</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,11 +145,20 @@ Default is "part of".</p></td>
 Whether to only include characters that are variable across the selected
 set of taxa. Default is TRUE.</p></td>
     </tr>
+    <tr>
+      <th>strict</th>
+      <td><p>logical, optional. Whether or not to treat any failure to resolve
+any taxon or entity names to IRI as input error. Resolution by partial or
+other inexact match results in a warning, but is not considered a failure.
+If FALSE, query execution will continue with the taxon and entity terms
+that did resolve to IRI. Default is TRUE, meaning any resolution failure will
+result in an error.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>RNeXML::nexml</a> object</p>
+    <p><a href='https://docs.ropensci.org/RNeXML/reference/nexml-class.html'>RNeXML::nexml</a> object</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -181,7 +190,7 @@ are included; use <code>variable_only</code> to change this.</p>
                             <span class='kw'>entity</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"pectoral fin"</span>, <span class='st'>"pelvic fin"</span>))
 
 <span class='co'># Use the RNeXML API to obtain the character matrix etc:</span>
-<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>RNeXML</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/RNeXML/topics/get_characters'>get_characters</a></span>(<span class='no'>nex</span>)
+<span class='no'>m</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>RNeXML</span><span class='kw ns'>::</span><span class='fu'><a href='https://docs.ropensci.org/RNeXML/reference/get_characters.html'>get_characters</a></span>(<span class='no'>nex</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/dim'>dim</a></span>(<span class='no'>m</span>)      <span class='co'># number of taxa and characters</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>rownames</a></span>(<span class='no'>m</span>) <span class='co'># taxon names</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>m</span>) <span class='co'># characters (entity names)</span>

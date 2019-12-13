@@ -78,7 +78,7 @@ unused OTUs." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.12</span>
       </span>
     </div>
 
@@ -124,7 +124,7 @@ unused OTUs." />
 
     <div class="ref-description">
     
-    <p><code>nexml_drop_otu</code> drops OTUs (taxa) from a <a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a> object.
+    <p><code>nexml_drop_otu</code> drops OTUs (taxa) from a <a href='https://docs.ropensci.org/RNeXML/reference/nexml-class.html'>nexml</a> object.
 Currently none of the OTUs to be dropped can be used in a tree that's part
 of the <code>nexml</code> object. If they are, first drop the OTUs from the tree(s)
 (for example, using <a href='https://www.rdocumentation.org/packages/ape/topics/drop.tip'>drop.tip()</a> from package "ape"), then
@@ -132,7 +132,7 @@ replace the tree(s). Dropping OTUs will not only drop them from the OTUs
 block, but will also drop matrix rows that referenced the OTUs to be dropped.
 This may in turn leave some characters unused. Therefore, it is recommended
 to drop unused characters afterwards.</p>
-<p><code>nexml_drop_char</code> drops characters from a <a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a> object. Note
+<p><code>nexml_drop_char</code> drops characters from a <a href='https://docs.ropensci.org/RNeXML/reference/nexml-class.html'>nexml</a> object. Note
 that dropping characters may make some OTUs unused if they result in empty
 rows and empty rows are pruned (see parameter <code>pruneRows</code>). It is therefore
 recommended to drop unused OTUs afterwards.</p>
@@ -157,7 +157,7 @@ unused OTUs.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>nexml</th>
-      <td><p>the <a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a> object from which to drop parts</p></td>
+      <td><p>the <a href='https://docs.ropensci.org/RNeXML/reference/nexml-class.html'>nexml</a> object from which to drop parts</p></td>
     </tr>
     <tr>
       <th>filter</th>
@@ -221,7 +221,7 @@ to filter on.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The functions for dropping components return a <a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml-class'>nexml</a>
+    <p>The functions for dropping components return a <a href='https://docs.ropensci.org/RNeXML/reference/nexml-class.html'>nexml</a>
 object with the filtered components dropped.</p>
 <p><code>is_unused_char</code> returns a logical vector with TRUE for each <code>char</code>
 (character) object that is not used in the matrix (or matrices) of the
@@ -233,7 +233,7 @@ otherwise.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>nex</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>RNeXML</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/RNeXML/topics/nexml_read'>nexml_read</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"examples"</span>, <span class='st'>"ontotrace-result.xml"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"rphenoscape"</span>))
+    <pre class="examples"><div class='input'><span class='no'>nex</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>RNeXML</span><span class='kw ns'>::</span><span class='fu'><a href='https://docs.ropensci.org/RNeXML/reference/nexml_read.html'>nexml_read</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/system.file'>system.file</a></span>(<span class='st'>"examples"</span>, <span class='st'>"ontotrace-result.xml"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"rphenoscape"</span>))
 <span class='co'># drop by label matching</span>
 <span class='fu'>nexml_drop_otu</span>(<span class='no'>nex</span>, <span class='kw'>filter</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/grep'>grepl</a></span>(<span class='st'>" sp."</span>, <span class='no'>x</span>), <span class='kw'>at</span> <span class='kw'>=</span> <span class='st'>"label"</span>)</div><div class='output co'>#&gt; A nexml object representing:
 #&gt;  	 1 phylogenetic tree block(s), where:
