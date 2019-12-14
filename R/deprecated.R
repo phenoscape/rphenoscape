@@ -18,3 +18,19 @@ pk_get_iri <- function(...) {
   get_term_iri(...)
 }
 
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_get_study_list}:
+#' For `pk_get_study_list()` use [get_studies()] instead. Note that `get_studies()`
+#' returns an empty result set if nothing was found, in contrast to `pk_get_study_list`,
+#' which returns FALSE in that case (and prints a message).
+#' @keywords internal
+#' @export
+pk_get_study_list <- function(...) {
+  .Deprecated("get_studies")
+  res <- get_studies(...)
+  if (length(res) == 0) {
+    mssg(T, "No study found in database.")
+    invisible(FALSE)
+  } else
+    res
+}
