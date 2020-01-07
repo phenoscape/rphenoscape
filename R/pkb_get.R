@@ -26,9 +26,11 @@
 #' @importFrom httr GET content
 get_json_data <- function(url, query, verbose = FALSE, ensureNames = NULL) {
   if (nchar(jsonlite::toJSON(query)) >= 2048)
-    res <- httr::POST(url, httr::accept_json(), body = query, encode = "form")
+    res <- httr::POST(url, httr::accept_json(), httr::user_agent(ua()),
+                      body = query, encode = "form")
   else
-    res <- httr::GET(url, httr::accept_json(), query = query)
+    res <- httr::GET(url, httr::accept_json(), httr::user_agent(ua()),
+                     query = query)
   stop_for_pk_status(res)
   # some endpoints return zero content for failure to find data
   contLen <- res$headers$`content-length`
@@ -73,9 +75,11 @@ pk_GET <- get_json_data
 #' @importFrom utils read.csv
 get_csv_data <- function(url, query, ..., verbose = FALSE) {
   if (nchar(jsonlite::toJSON(query)) >= 2048)
-    res <- httr::POST(url, httr::accept("text/csv"), body = query, encode = "form")
+    res <- httr::POST(url, httr::accept("text/csv"), httr::user_agent(ua()),
+                      body = query, encode = "form")
   else
-    res <- httr::GET(url, httr::accept("text/csv"), query = query)
+    res <- httr::GET(url, httr::accept("text/csv"), httr::user_agent(ua()),
+                     query = query)
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")
 
@@ -89,9 +93,9 @@ get_csv_data <- function(url, query, ..., verbose = FALSE) {
 #' @importFrom RNeXML nexml_read
 get_nexml_data <- function(url, query, verbose = FALSE) {
   if (nchar(jsonlite::toJSON(query)) >= 2048)
-    res <- httr::POST(url, body = query, encode = "form")
+    res <- httr::POST(url, httr::user_agent(ua()), body = query, encode = "form")
   else
-    res <- httr::GET(url, query = query)
+    res <- httr::GET(url, httr::user_agent(ua()), query = query)
   stop_for_pk_status(res)
   # if passing parsed XML to RNeXML, it needs to be in classes of the XML
   # package, but httr::content now uses the xml2 package for parsing text/xml
@@ -176,3 +180,19 @@ pkb_args_to_query <- function(...,
                        USE.NAMES = FALSE))
   queryseq
 }
+
+#' @importFrom utils packageName
+#' @importFrom utils packageVersion
+ua <- local({
+  .ua <- NA;
+  function() {
+    if (is.na(.ua)) {
+      pkg <- utils::packageName()
+      versions <- c(paste0("r-curl/", utils::packageVersion("curl")),
+                    paste0("httr/", utils::packageVersion("httr")),
+                    paste0(pkg, "/", utils::packageVersion(pkg)))
+      .ua <<- paste0(versions, collapse = " ")
+    }
+    .ua
+  }
+})
