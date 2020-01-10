@@ -1,0 +1,64 @@
+---
+title: "Mutually Exclusive Phenotypes"
+author: "Amandeep Rathee"
+date: "1/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+The goal is to establish mutual exclusion in phenotypes. This vignette provides a pseudo code of a function that takes any two phenotypes and outputs whether they are mutually exclusive based on the phenoscape knowledgebase.
+
+```{r include=TRUE, echo=TRUE, warning=FALSE, render=FALSE}
+
+are_mutually_exclusive <- function(phenotype.a, phenotype.b){
+  
+  # by default, phenotypes are mutually exclusive until proven otherwise by the data
+  mutually_exclusive <- TRUE
+  
+  # we're only interested in taxons which have phenotype.a or phenotype.b
+  taxons <- get_taxons(phenotype = c(phenotype.a, phenotype.b))
+  
+  
+  # for each taxon, see if phenotype.a and phenotype.b occur simultaneously
+  for(taxon in taxons){
+  
+    # store all the character and their states that belong to phenotype.a in an array
+    studies.a <- get_studies(taxon, phenotype.a)
+    
+    char_state.a <- vector()
+    
+    for(study in studies.a){
+      char.a <- get_char(get_entity(phenotype.a))
+      state.a <- get_state(char.a)
+      char_state.a <- c(char_state.a, paste(char.a, state.a, sep="_"))
+    }
+  
+  
+    # store all the character and their states that belong to phenotype.a in an array
+    studies.b <- get_studies(taxon, phenotype.b)
+    
+    char_state.b <- vector()
+    
+    for(study in studies.b){
+      char.b <- get_char(get_entity(phenotype.b))
+      state.b <- get_state(char.b)
+      char_state.b <- c(char_state.b, paste(char.b, state.b, sep="_"))
+    }
+  
+    # compare the two characters state vectors, if no two values are same implies mutual exclusivity
+    for(a in char_state.a){
+      for(b in char_state.b)
+        if(a == b) mutually_exclusive <- FALSE
+    }
+    
+  }
+
+  return(mutually_exclusive)
+}
+
+
+```
