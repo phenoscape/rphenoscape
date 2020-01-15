@@ -372,47 +372,97 @@ summary {
 <p>The goal is to establish mutual exclusion in phenotypes. This vignette provides a pseudo code of a function that takes any two phenotypes and outputs whether they are mutually exclusive based on the phenoscape knowledgebase.</p>
 <pre class="r"><code>are_mutually_exclusive &lt;- function(phenotype.a, phenotype.b){
   
-  # by default, phenotypes are mutually exclusive until proven otherwise by the data
-  mutually_exclusive &lt;- TRUE
+  # mutually_exclusive takes three values:
+      # -1: default; we assume that before checking mutual exclusion, phenotypes are neither mutually exclusive nor mutually compatible
+      #  0: data suggests mutual compatibility
+      #  1: data suggests mutual exclusion
+  mutually_exclusive &lt;- -1
   
-  # we're only interested in taxons which have phenotype.a or phenotype.b
-  taxons &lt;- get_taxons(phenotype = c(phenotype.a, phenotype.b))
-  
-  
-  # for each taxon, see if phenotype.a and phenotype.b occur simultaneously
-  for(taxon in taxons){
-  
-    # store all the character and their states that belong to phenotype.a in an array
-    studies.a &lt;- get_studies(taxon, phenotype.a)
+  # for each phenotype, store all the characters in one array, and all character_state sequences in another array
+  studies.a &lt;- get_studies(taxon, phenotype.a)
+  char_states.a &lt;- vector()    # all chracter_state sequences of A
+  chars.a &lt;- vector()          # all characters of A
     
-    char_state.a &lt;- vector()
-    
-    for(study in studies.a){
+  for(study in studies.a){
       char.a &lt;- get_char(get_entity(phenotype.a))
       state.a &lt;- get_state(char.a)
-      char_state.a &lt;- c(char_state.a, paste(char.a, state.a, sep=&quot;_&quot;))
-    }
+      
+      chars.a &lt;- c(chars.a, char.a)
+      char_states.a &lt;- c(char_states.a, paste(char.a, state.a, sep=&quot;_&quot;))
+  }
   
-  
-    # store all the character and their states that belong to phenotype.a in an array
-    studies.b &lt;- get_studies(taxon, phenotype.b)
+  studies.b &lt;- get_studies(taxon, phenotype.b)
+  char_states.b &lt;- vector()    # all chracter_state sequences of B
+  chars.b &lt;- vector()          # all characters of B
     
-    char_state.b &lt;- vector()
-    
-    for(study in studies.b){
+  for(study in studies.b){
       char.b &lt;- get_char(get_entity(phenotype.b))
       state.b &lt;- get_state(char.b)
-      char_state.b &lt;- c(char_state.b, paste(char.b, state.b, sep=&quot;_&quot;))
-    }
-  
-    # compare the two characters state vectors, if no two values are same implies mutual exclusivity
-    for(a in char_state.a){
-      for(b in char_state.b)
-        if(a == b) mutually_exclusive &lt;- FALSE
-    }
-    
+      
+      chars.b &lt;- c(chars.b, char.b)
+      char_states.b &lt;- c(char_states.b, paste(char.b, state.b, sep=&quot;_&quot;))
   }
+  
+  
+  # determine if any two characters match
+  char_match &lt;- FALSE
+  for (a in chars.a){
+    for (b in chars.b){
+      if(a == b){
+        char_match &lt;- TRUE
+      }
+    }
+  }
+    
 
+  if(char_match == FALSE){
+    # CASE 1: if no characters match --&gt; mutually compatible
+    mutually_exclusive &lt;- 0
+    print(&quot;Phenotypes are mutually compatible.&quot;)
+  
+  # CASE 2: if characters match, look whether ALL states are different (mutually exclusive), or if any two states are same (mutually comptabile)
+  } else {
+    
+    
+      # CASE 2A: check whether ALL states are different wherever characters are same; if this is true --&gt; mutually exclusive
+      
+      # for mutual exclusion, ALL wherever there's a character match, we should have a different state
+      char_match_count = 0
+      state_different_count = 0
+      
+      for(char_state.a in char_states.a){
+        for (char_state.b in char_states.b){
+          char.a &lt;- get_char(char_state.a)    # use regex to get character from character_state value
+          state.a &lt;- get_state(char_state.a)  # use regex to get state from character_state value
+          
+          char.b &lt;- get_char(char_state.b)
+          state.b &lt;- get_state(char_state.b)
+          
+          if(char.a == char.b){
+            char_match_count = char_match_count + 1
+            if(state.a != state.b){
+              state_different_count = state_different_count + 1
+            }
+          }
+        }
+      }
+      
+      if(char_match_count == state_different_count){
+        mutually_exclusive &lt;- 1
+        print(&quot;Phenotypes are mutually exclusive.&quot;)
+      } else {
+        # CASE 2B:check whether any two states match where characters are same --&gt; mutually compatible
+        for(a in char_state.a){
+          for(b in char_state.b){
+            if(a == b){
+              mutually_exclusive &lt;- 0
+              print(&quot;Phenotypes are mutually compatible.&quot;)
+            }
+          }
+        }
+      }
+  }
+    
   return(mutually_exclusive)
 }</code></pre>
 
