@@ -180,6 +180,13 @@ test_that("Test getting study information", {
     expect_gt(nrow(slist8.1), nrow(slist8.2))
     expect_gt(nrow(slist8.3), nrow(slist8.2))
 
+    # can also filter by phenotype
+    phens <- get_phenotypes(entity = "pelvic fin")
+    slist8.4 <- pk_get_study_list(phenotype = phens$id[1])
+    expect_is(slist8.4, "data.frame")
+    expect_gt(nrow(slist8.4), 0)
+    expect_lt(nrow(slist8.4), nrow(slist8.1))
+
     # can also obtain all studies by leaving off all filters
     slist9 <- pk_get_study_list()
     expect_is(slist9, "data.frame")

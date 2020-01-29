@@ -15,10 +15,28 @@ Installation
 The development version of RPhenoscape is available on [Github](http://github.com/phenoscape/rphenoscape). It has not yet been released to [CRAN](https://cran.r-project.org). To install RPhenoscape from Github, use the `install_github()` function in the `remotes` package (which can be installed from CRAN using `install.packages()`):
 
 ``` r
-remotes::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
+remotes::install_github("phenoscape/rphenoscape")
 ```
 
-The custom `build_opts` parameter ensures that the vignette(s) will be built and installed as well. (The default for `build_opts` will skip building vignettes.) Building vignettes requires recent versions of the `knitr` and `rmarkdown` packages to be installed.
+By default, this will skip building the package vignettes. To build and install package vignettes as well, you must have recent versions of the `knitr` and `rmarkdown` packages installed, and use additional parameters, depending on the version of the `remotes` package you have installed, to request building vignettes.
+
+``` r
+packageVersion("remotes")
+```
+
+    ## [1] '2.0.4'
+
+If the version is 2.1.0 or higher, use the `build_vignettes` parameter (which by default is FALSE):
+
+``` r
+remotes::install_github("phenoscape/rphenoscape", build_vignettes = TRUE)
+```
+
+If the version of `remotes` is lower, use the `build_opts` parameter:
+
+``` r
+remotes::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
+```
 
 Once installed, the package can be loaded ("attached") as any other R package:
 
@@ -33,7 +51,7 @@ The functionality and operations of the RPhenoscape package can be viewed on the
 
 [Use cases](https://github.com/phenoscape/rphenoscape/wiki/User-Stories) described there include the following:
 
--   Using Ontotrace to obtain a character matrix
+-   Using OntoTrace to obtain a character matrix
 -   Obtaining the character matrices for studies published for a taxonomic clade
 -   Subsetting matrices by taxonomic subgroup or anatomical part
 -   Searching for details for a given taxon
