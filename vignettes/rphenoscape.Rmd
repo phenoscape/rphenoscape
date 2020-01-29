@@ -11,10 +11,6 @@ vignette: >
 Most of the services provided with the [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.
 
 
-## Installation
-The development version of RPhenoscape is available on [Github](http://www.github.com/phenoscape/rphenoscape). It has not yet been released to [CRAN]. To install RPhenoscape from Github, use the `install_github()` function in the `remotes` package (which can be installed from CRAN using `install.packages()`):
-
-
 ```{r compile-settings, include=FALSE}
 ## Set the paths for cache and figure
 library(knitr)
@@ -24,13 +20,9 @@ opts_knit$set(upload.fun = imgur_upload)
 opts_chunk$set(tidy=FALSE, warning=FALSE, message=FALSE, comment = NA, verbose = TRUE)
 ```
 
-```{r, eval = FALSE}
-# the default build_opts will skip building the vignettes.
-remotes::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
-```
+## Installation
 
-The custom `build_opts` parameter ensures that the vignette(s) (such as this document) will be built and installed as well. (The default for `build_opts` will skip building vignettes.)
-Building vignettes requires a recent version of the knitr and rmarkdown packages. You can install these beforehand, or include the parameter `dependencies=TRUE` in the above. Note that the latter will also result in packages being installed that otherwise are only needed for _testing_, and for generating the help pages. If you don't develop packages yourself, this may be much more than you need, and therefore installing knitr and rmarkdown beforehand is then the better option.
+The development version of RPhenoscape is available on [Github](http://www.github.com/phenoscape/rphenoscape). It has not yet been released to [CRAN]. To install RPhenoscape from Github, use the `install_github()` function in the `remotes` package (which can be installed from CRAN using `install.packages()`). See the [package README](https://rphenoscape.phenoscape.org) for details.
 
 Once installed, the package can be loaded ("attached") as any other R package:
 ```{r}

@@ -34,13 +34,24 @@ opts_knit$set(upload.fun = imgur_upload)
 opts_chunk$set(tidy=FALSE, warning=FALSE, message=FALSE, comment = NA, verbose = TRUE)
 ```
 
+```{r eval = FALSE}
+remotes::install_github("phenoscape/rphenoscape")
+```
 
+By default, this will skip building the package vignettes. To build and install package vignettes as well, you must have recent versions of the `knitr` and `rmarkdown` packages installed, and use additional parameters, depending on the version of the `remotes` package you have installed, to request building vignettes.
+
+```{r}
+packageVersion("remotes")
+```
+
+If the version is 2.1.0 or higher, use the `build_vignettes` parameter (which by default is FALSE):
+```{r, eval = FALSE}
+remotes::install_github("phenoscape/rphenoscape", build_vignettes = TRUE)
+```
+If the version of `remotes` is lower, use the `build_opts` parameter:
 ```{r, eval = FALSE}
 remotes::install_github("phenoscape/rphenoscape", build_opts=c("--no-manual"))
 ```
-
-The custom `build_opts` parameter ensures that the vignette(s) will be built and installed as well. (The default for `build_opts` will skip building vignettes.)
-Building vignettes requires recent versions of the `knitr` and `rmarkdown` packages to be installed.
 
 Once installed, the package can be loaded ("attached") as any other R package:
 ```{r}
