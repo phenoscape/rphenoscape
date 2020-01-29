@@ -378,101 +378,91 @@ summary {
       #  1: data suggests mutual exclusion
   mutually_exclusive &lt;- -1
   
-  
-  
   # get states for each phenotype
   states.a &lt;- get_state(phenotype.a)
   states.b &lt;- get_state(phenotype.b)
   
-  # filter studies that contain phenotype.a and phenotype.b
-  studies.a &lt;- sapply(states.a, is_phenotype_present(phenotype.a))
-  studies.b &lt;- sapply(states.b, is_phenotype_present(phenotype.b))
+  # filter states based on studies
+  states.a &lt;- sapply(states.a, filter_states(studies))
+  states.b &lt;- sapply(states.b, filter_states(studies))
   
-  # check mutually exclusive only if both phenotypes are part of at least one studies each.
-  if((length(studies.a) == 0) | (length(studies.b) == 0)){
-    print(&quot;At least one of the phenotypes is not part of any studies.&quot;)
-    return(mutually_exclusive)  # return -1
+  # get studies -- #todo
+  studies.a 
+  studies.b
   
-  }else{ # CHECK MUTUAL EXCLUSIVITY
+  # determine mutual exclusivity
+  if((length(studies.a) &gt; 0) &amp; (length(studies.b) &gt; 0)){ # determine mutual exclusivity only if both studies are non-empty
+    # get character vectors
+    chars.a &lt;- sapply(states.a, get_chars)
+    chars.b &lt;- sapply(states.b, get_chars)
     
-    # get character and character_state vectors
-    chars.a &lt;- vector()
-    char_states.a &lt;- vector()
-    chars.b &lt;- vector()
-    char_states.b &lt;- vector()
+    # get character_state vectors
+    char_states.a &lt;- vector(states.a, get_char_states)
+    char_states.b &lt;- vector(states.b, get_char_states)
     
-    for(study in studies.a){
-      for(state in states.a){
-      char &lt;- get_chars(state, study)  # is this correct? If not, how to get characters from states and studies?
-      chars.a &lt;- c(chars.a, char)
-      char_states.a &lt;- c(char_states.a, paste(char, state, sep=&quot;_&quot;))
-      }
-    }
-    
-    for(study in studies.b){
-      for(state in states.b){
-      char &lt;- get_chars(state, study)
-      chars.b &lt;- c(chars.b, char)
-      char_states.b &lt;- c(char_states.b, paste(char, state, sep=&quot;_&quot;))
-      }
-    }
-    
-    
-    
-    # determine if any two characters match
+    # check intersection of character vectors
     char_matches &lt;- sum(chars.a %in% chars.b)
-  
-    # CASE 1: if no characters match --&gt; mutually compatible
-    if(char_matches == 0){
-      mutually_exclusive &lt;- 0
-      print(&quot;Phenotypes are mutually compatible.&quot;)
     
-    # CASE 2: if characters match, look whether ALL states are different (mutually exclusive), or if any two states are same (mutually comptabile)
-    } else {
+    
+    if(char_matches == 0){ # CASE 1: if no characters match --&gt; phenotypes are mutually compatible
+      mutually_exclusive &lt;- 0
+    
+    } else { # CASE 2: if one or more characters match
       
       
-        # CASE 2A: check whether ALL states are different wherever characters are same; if this is true --&gt; mutually exclusive
-        
-        # for mutual exclusion, ALL wherever there's a character match, we should have a different state
-        char_match_count = 0
-        state_different_count = 0
-        
-        for(char_state.a in char_states.a){
-          for (char_state.b in char_states.b){
-            char.a &lt;- get_char(char_state.a)    # use regex to get character from character_state value
-            state.a &lt;- get_state(char_state.a)  # use regex to get state from character_state value
-            
-            char.b &lt;- get_char(char_state.b)
-            state.b &lt;- get_state(char_state.b)
-            
-            if(char.a == char.b){
-              char_match_count = char_match_count + 1
-              if(state.a != state.b){
-                state_different_count = state_different_count + 1
-              }
-            }
-          }
-        }
+        # CASE 2-I: for matched characters, if no states are common among the matched characters --&gt; phenotypes are mutually exclusive
+        char_match_count = get_char_state_match_count(char_states.a, char_states.b, state_count=FALSE)
+        state_different_count = get_char_state_match_count(char_states.a, char_states.b, state_count=TRUE)
         
         if(char_match_count == state_different_count){
           mutually_exclusive &lt;- 1
-          print(&quot;Phenotypes are mutually exclusive.&quot;)
         } else {
-          # CASE 2B:check whether any two states match where characters are same --&gt; mutually compatible
-          compatibility_score &lt;- sum(char_state.a %in% char_state.b)
-          if(compatibility_score &gt; 0){
+          # CASE 2-II: check, for any matched characters, whether any two states match --&gt; phenotypes are mutually compatible
+          char_state_match_count &lt;- sum(char_state.a %in% char_state.b)
+          if(char_state_match_count &gt; 0){
             mutually_exclusive &lt;- 0
-            print(&quot;Phenotypes are mutually compatible.&quot;)
           }
           
         }
     }
       
     return(mutually_exclusive)
+    
+  } else {
+    error(&quot;At least one of the phenotypes is not part of any studies.&quot;)
+    return(mutually_exclusive)  # returns -1
   }
   
   
   
+}
+
+
+
+get_char_state_match_count &lt;- function(char_states.a, char_states.b, state_count=FALSE){
+    
+    char_match_count = 0        # number of common characters among char_states.a and char_states.b
+    state_different_count = 0   # number of states that are different among the common characters in char.a and char.b
+        
+        
+    for(char_state.a in char_states.a){
+    for (char_state.b in char_states.b){
+        char.a &lt;- get_char(char_state.a)    # use regex to get character from character_state value
+        state.a &lt;- get_state(char_state.a)  # use regex to get state from character_state value
+        
+        char.b &lt;- get_char(char_state.b)
+        state.b &lt;- get_state(char_state.b)
+        
+        if(char.a == char.b){
+          char_match_count = char_match_count + 1
+          if(state.a != state.b){
+            state_different_count = state_different_count + 1
+          }
+        }
+      }
+    }
+    
+    if(state_count){return(state_different_count)} else {return(char_match_count)}
 }</code></pre>
 
 
