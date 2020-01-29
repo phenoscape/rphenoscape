@@ -1,6 +1,6 @@
 #' Retrieve phenotypes by entity, quality, taxon, and study
 #'
-#' Retrieves "semantic phenotypes", i.e., phenotypes encodes as ontological
+#' Retrieves "semantic phenotypes", i.e., phenotypes encoded as ontological
 #' expressions. Filtering is possible by anatomical entity (optionally including
 #' entities related by certain properties, see `includeRels`), phenotypic
 #' quality, taxonomic group where the phenotypes have been recorded, and study
