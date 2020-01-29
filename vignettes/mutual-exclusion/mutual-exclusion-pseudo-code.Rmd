@@ -29,20 +29,8 @@ are_mutually_exclusive <- function(phenotype.a, phenotype.b, studies){
   states.b <- get_state(phenotype.b)
   
   # filter studies that contain phenotype.a and phenotype.b
-  studies.a <- vector()
-  studies.b <- vector()
-  
-  for(study in studies){
-    if(is_phenotype_present(study, phenotype.a)){
-      studies.a <- c(studies.a, study)
-    }
-    
-    if(is_phenotype_present(study, phenotype.b)){
-      studies.b <- c(studies.b, study)
-    }
-  }
-  
-  
+  studies.a <- sapply(states.a, is_phenotype_present(phenotype.a))
+  studies.b <- sapply(states.b, is_phenotype_present(phenotype.b))
   
   # check mutually exclusive only if both phenotypes are part of at least one studies each.
   if((length(studies.a) == 0) | (length(studies.b) == 0)){
