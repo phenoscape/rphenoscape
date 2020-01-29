@@ -2,6 +2,10 @@
 #' @param taxon character. The name of the taxon by which to filter, if any.
 #' @param entity character. The name of the anatomical entity by which to filter, if any.
 #' @param quality character. The name of the phenotypic quality by which to filter, if any.
+#' @param phenotype character. The phenotype (as its identifier) by which to filter, if any.
+#'   If provided, matching studies (through its one or more of its character states)
+#'   must be linked to the given phenotype, or one subsumed by it. This must be provided
+#'   as identifier, no text search will be performed for resolution.
 #' @param includeRels character or vector of characters. The names of relationships
 #'  for anatomical entities to include in addition to subtype (`is_a`, `rdfs:subClassOf`).
 #'  Defaults to `"part_of"`. Set to `FALSE` to not include any additional relationships.
@@ -53,6 +57,7 @@
 #' }
 #' @export
 pk_get_study_list <- function(taxon = NA, entity = NA, quality = NA,
+                              phenotype = NA,
                               includeRels = NA, relation = "part of") {
 
   if (all(is.na(includeRels)))
@@ -100,6 +105,8 @@ pk_get_study_list <- function(taxon = NA, entity = NA, quality = NA,
                 iriQueryParam(entity, "uberon", "entity"),
                 iriQueryParam(quality, "pato", "quality"),
                 limit = "100000")
+
+  if (! is.na(phenotype)) queryseq <- c(queryseq, phenotype = phenotype)
 
   out <- pk_GET(pk_study_url, queryseq)
   d <- out$results

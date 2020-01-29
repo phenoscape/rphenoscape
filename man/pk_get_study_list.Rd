@@ -5,7 +5,7 @@
 \title{Query the list of studies by taxa, anatomical entities, and qualities.}
 \usage{
 pk_get_study_list(taxon = NA, entity = NA, quality = NA,
-  includeRels = NA, relation = "part of")
+  phenotype = NA, includeRels = NA, relation = "part of")
 }
 \arguments{
 \item{taxon}{character. The name of the taxon by which to filter, if any.}
@@ -13,6 +13,11 @@ pk_get_study_list(taxon = NA, entity = NA, quality = NA,
 \item{entity}{character. The name of the anatomical entity by which to filter, if any.}
 
 \item{quality}{character. The name of the phenotypic quality by which to filter, if any.}
+
+\item{phenotype}{character. The phenotype (as its identifier) by which to filter, if any.
+If provided, matching studies (through its one or more of its character states)
+must be linked to the given phenotype, or one subsumed by it. This must be provided
+as identifier, no text search will be performed for resolution.}
 
 \item{includeRels}{character or vector of characters. The names of relationships
 for anatomical entities to include in addition to subtype (\code{is_a}, \code{rdfs:subClassOf}).
