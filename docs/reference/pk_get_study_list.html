@@ -65,7 +65,7 @@ terms." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.13</span>
       </span>
     </div>
 
@@ -118,7 +118,7 @@ terms.</p>
     </div>
 
     <pre class="usage"><span class='fu'>pk_get_study_list</span>(<span class='kw'>taxon</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>entity</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>quality</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
-  <span class='kw'>includeRels</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>relation</span> <span class='kw'>=</span> <span class='st'>"part of"</span>)</pre>
+  <span class='kw'>phenotype</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>includeRels</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>relation</span> <span class='kw'>=</span> <span class='st'>"part of"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,6 +134,13 @@ terms.</p>
     <tr>
       <th>quality</th>
       <td><p>character. The name of the phenotypic quality by which to filter, if any.</p></td>
+    </tr>
+    <tr>
+      <th>phenotype</th>
+      <td><p>character. The phenotype (as its identifier) by which to filter, if any.
+If provided, matching studies (through its one or more of its character states)
+must be linked to the given phenotype, or one subsumed by it. This must be provided
+as identifier, no text search will be performed for resolution.</p></td>
     </tr>
     <tr>
       <th>includeRels</th>
