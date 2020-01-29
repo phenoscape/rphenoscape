@@ -385,20 +385,8 @@ summary {
   states.b &lt;- get_state(phenotype.b)
   
   # filter studies that contain phenotype.a and phenotype.b
-  studies.a &lt;- vector()
-  studies.b &lt;- vector()
-  
-  for(study in studies){
-    if(is_phenotype_present(study, phenotype.a)){
-      studies.a &lt;- c(studies.a, study)
-    }
-    
-    if(is_phenotype_present(study, phenotype.b)){
-      studies.b &lt;- c(studies.b, study)
-    }
-  }
-  
-  
+  studies.a &lt;- sapply(states.a, is_phenotype_present(phenotype.a))
+  studies.b &lt;- sapply(states.b, is_phenotype_present(phenotype.b))
   
   # check mutually exclusive only if both phenotypes are part of at least one studies each.
   if((length(studies.a) == 0) | (length(studies.b) == 0)){
