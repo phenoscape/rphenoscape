@@ -65,3 +65,44 @@ test_that("requesting taxon phenotype associations works", {
   # taxa are redundant as well
   testthat::expect_lt(length(unique(phens.tpl[, c("taxon.id")])), nrow(phens.tpl))
 })
+
+test_that("matching phenotypes against study filter", {
+  # pelvic fin phenotypes
+  phens <- get_phenotypes(entity = "basihyal bone")
+  # studies for pelvic fin
+  studies <- pk_get_study_list(entity = "basihyal bone")
+
+  # match one against one study
+  phens.match <- phenotype_matches(phens$id[1], studies = studies$id[1])
+  testthat::expect_is(phens.match, "logical")
+  testthat::expect_length(phens.match, 1)
+  # match one against many studies
+  phens.match <- phenotype_matches(phens$id[1], studies = studies$id)
+  testthat::expect_is(phens.match, "logical")
+  testthat::expect_length(phens.match, 1)
+  testthat::expect_true(phens.match)
+  # match many phenotypes against many studies
+  phens.match <- phenotype_matches(phens$id, studies = studies$id)
+  testthat::expect_is(phens.match, "logical")
+  testthat::expect_length(phens.match, length(phens$id))
+  testthat::expect_true(all(phens.match))
+  phens.match <- phenotype_matches(phens$id, studies = studies$id[1:2])
+  testthat::expect_is(phens.match, "logical")
+  testthat::expect_length(phens.match, length(phens$id))
+  testthat::expect_true(any(phens.match))
+  testthat::expect_false(all(phens.match))
+
+  # also accepts data.frame instead of vector for convenience
+  phens.match <- phenotype_matches(phens, studies = studies)
+  testthat::expect_is(phens.match, "logical")
+  testthat::expect_length(phens.match, length(phens$id))
+  testthat::expect_true(all(phens.match))
+
+  # tolerates phenotype IDs that aren't found
+  testthat::expect_warning(
+    phens.match <- phenotype_matches(c("foobar", phens$id), studies = studies$id))
+  testthat::expect_is(phens.match, "logical")
+  testthat::expect_length(phens.match, length(phens$id) + 1)
+  testthat::expect_false(all(phens.match))
+  testthat::expect_true(all(phens.match[-1]))
+})

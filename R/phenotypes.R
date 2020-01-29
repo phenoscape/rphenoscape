@@ -110,3 +110,40 @@ get_phenotypes <- function(entity = NA, quality = NA, taxon = NA, study = NA,
   }
   res
 }
+
+#' Which phenotypes match filter
+#'
+#' Determines which of one or more phenotype IDs match the given filter.
+#'
+#' At present, the only supported query filter is a list of studies (as their
+#' IDs). A phenotype matches if it is linked to at least one of the studies. 
+#' @param x character, vector of phenotype IDs to test. A data.frame is
+#'   allowed if it has a column labeled "id".
+#' @param studies character, vector of study IDs for which to test. A data.frame
+#'   is allowed if it has a column labeled "id".
+#' @return a logical vector of the same length as the vector of phenotypes, with
+#'   TRUE as element if the corresponding phenotype matches, and FALSE otherwise.
+#' @examples
+#' x <- get_phenotypes(entity = "basihyal bone")
+#' nrow(x)
+#' # which of these are in the same study or studies as the first one?
+#' phenotype_matches(x, pk_get_study_list(phenotype = x$id[1]))
+#' @export
+phenotype_matches <- function(x, studies) {
+  if ("id" %in% colnames(x)) x <- x$id
+  if ("id" %in% colnames(studies)) studies <- studies$id
+
+  if (! is.character(x))
+    stop("x is not a vector of phenotype IDs", call. = FALSE)
+
+  if (length(studies) == 0)
+    rep(FALSE, times = length(x))
+  else
+    sapply(x, function(phen) {
+      phen.studies <- pk_get_study_list(phenotype = phen)
+      if (is.logical(phen.studies))
+        FALSE
+      else
+        any(phen.studies$id %in% studies)
+    }, USE.NAMES = FALSE)
+}

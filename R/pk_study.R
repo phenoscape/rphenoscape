@@ -112,7 +112,7 @@ pk_get_study_list <- function(taxon = NA, entity = NA, quality = NA,
   d <- out$results
 
   if (length(d) == 0) {
-    mssg(T, paste("No study found in database."))
+    warning("No study found in database.", call. = FALSE)
     return(invisible(FALSE))
   }
 
