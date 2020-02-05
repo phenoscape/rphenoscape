@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -331,6 +330,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -383,8 +383,8 @@ summary {
   states.b &lt;- get_state(phenotype.b)
   
   # filter states based on studies
-  states.a &lt;- sapply(states.a, filter_states(studies))
-  states.b &lt;- sapply(states.b, filter_states(studies))
+  states.a &lt;- sapply(states.a, function(x) filter_states(studies, x))
+  states.b &lt;- sapply(states.b, function(x) filter_states(studies, x))
   
   # get studies -- #todo
   studies.a 
@@ -397,8 +397,8 @@ summary {
     chars.b &lt;- sapply(states.b, get_chars)
     
     # get character_state vectors
-    char_states.a &lt;- vector(states.a, get_char_states)
-    char_states.b &lt;- vector(states.b, get_char_states)
+    char_states.a &lt;- sapply(states.a, get_char_states)
+    char_states.b &lt;- sapply(states.b, get_char_states)
     
     # check intersection of character vectors
     char_matches &lt;- sum(chars.a %in% chars.b)
@@ -429,14 +429,11 @@ summary {
     return(mutually_exclusive)
     
   } else {
-    error(&quot;At least one of the phenotypes is not part of any studies.&quot;)
+    stop(&quot;At least one of the phenotypes is not part of any studies.&quot;)
     return(mutually_exclusive)  # returns -1
   }
-  
-  
-  
-}
 
+}
 
 
 get_char_state_match_count &lt;- function(char_states.a, char_states.b, state_count=FALSE){
@@ -462,7 +459,11 @@ get_char_state_match_count &lt;- function(char_states.a, char_states.b, state_co
       }
     }
     
-    if(state_count){return(state_different_count)} else {return(char_match_count)}
+    if(state_count){
+      state_different_count
+    } else {
+      char_match_count
+    }
 }</code></pre>
 
 

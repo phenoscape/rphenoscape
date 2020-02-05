@@ -27,8 +27,8 @@ are_mutually_exclusive <- function(phenotype.a, phenotype.b, studies){
   states.b <- get_state(phenotype.b)
   
   # filter states based on studies
-  states.a <- sapply(states.a, filter_states(studies))
-  states.b <- sapply(states.b, filter_states(studies))
+  states.a <- sapply(states.a, function(x) filter_states(studies, x))
+  states.b <- sapply(states.b, function(x) filter_states(studies, x))
   
   # get studies -- #todo
   studies.a 
@@ -41,8 +41,8 @@ are_mutually_exclusive <- function(phenotype.a, phenotype.b, studies){
     chars.b <- sapply(states.b, get_chars)
     
     # get character_state vectors
-    char_states.a <- vector(states.a, get_char_states)
-    char_states.b <- vector(states.b, get_char_states)
+    char_states.a <- sapply(states.a, get_char_states)
+    char_states.b <- sapply(states.b, get_char_states)
     
     # check intersection of character vectors
     char_matches <- sum(chars.a %in% chars.b)
@@ -73,14 +73,11 @@ are_mutually_exclusive <- function(phenotype.a, phenotype.b, studies){
     return(mutually_exclusive)
     
   } else {
-    error("At least one of the phenotypes is not part of any studies.")
+    stop("At least one of the phenotypes is not part of any studies.")
     return(mutually_exclusive)  # returns -1
   }
-  
-  
-  
-}
 
+}
 
 
 get_char_state_match_count <- function(char_states.a, char_states.b, state_count=FALSE){
@@ -106,7 +103,11 @@ get_char_state_match_count <- function(char_states.a, char_states.b, state_count
       }
     }
     
-    if(state_count){return(state_different_count)} else {return(char_match_count)}
+    if(state_count){
+      state_different_count
+    } else {
+      char_match_count
+    }
 }
 
 ```
