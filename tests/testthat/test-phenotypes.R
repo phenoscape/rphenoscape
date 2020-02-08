@@ -149,7 +149,8 @@ test_that("creating phenotype objects and extracting properties", {
 
 test_that("extracting properties from phenotype objects", {
   # basihyal bone phenotypes
-  phens <- get_phenotypes(entity = "basihyal bone")[1,]
+  phens.all <- get_phenotypes(entity = "basihyal bone")
+  phens <- phens.all[1,]
 
   # create one phenotype object
   obj <- as.phenotype(phens$id)
@@ -161,6 +162,20 @@ test_that("extracting properties from phenotype objects", {
   testthat::expect_is(chs, "data.frame")
   testthat::expect_lte(nrow(chs), nrow(states))
   testthat::expect_true(all(chs[, "character.id"] %in% states[, "character.id"]))
+
+  # charstates() also can aggregate over a list
+  states.all <- charstates(phens.all)
+  testthat::expect_equal(nrow(states.all),
+                         sum(sapply(phens.all$id,
+                                    function(id) {
+                                      p <- as.phenotype(id)
+                                      nrow(p$states)
+                                    })))
+  testthat::expect_length(unique(states.all[,"phenotype.id"]), nrow(phens.all))
+  states.p1 <- states.all[states.all[,"phenotype.id"] == phens$id, c(-1,-2)]
+  testthat::expect_length(colnames(states.p1), length(colnames(states)))
+  colnames(states.p1) <- colnames(states)
+  testthat::expect_equivalent(states.p1, states)
 })
 
 test_that("pretty-printing phenotype objects", {

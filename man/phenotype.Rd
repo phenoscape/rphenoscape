@@ -47,10 +47,15 @@ otherwise.
 array of objects, with TRUE for those objects in the list that are of type
 "phenotype" and correspond to a phenotype in the database.
 
-\code{charstates} returns a data.frame with columns "id" and "label" (for the
+\code{charstates} returns a data.frame. If called with a single phenotype object
+(or an object that coerces to one), the data.frame has columns "id" and "label" (for the
 character state), "character.id" and "character.label" (IRI and label
 of the character), and "study.id" and "study.label" (IRI and short label for
-the study to which the character and state belong).
+the study to which the character and state belong). If called with a list of
+phenotype objects (or objects that coerce to such a list), the data.frame will
+include the character states from all phenotypes in the list. In this case,
+the character state columns will be "state.id" and "state.label", respectively,
+and there will be two additional columns, "phenotype.id" and "phenotype.label".
 
 \code{chars} returns  a data.frame with collumns "character.id" and "character.label"
 (IRI and label of the character), and "study.id" and "study.label" (IRI and
@@ -72,7 +77,7 @@ ID has been found in the database.
 \code{charstates} extracts the character states from the phenotype object (or an
 object coercible to phenotype)
 
-\code{chars} extracts the characters from the phenotype object (or an object
+\code{chars} extracts the (non-redundant) characters from the phenotype object (or an object
 coercible to phenotype).
 
 \code{print} pretty-prints objects of type "phenotype"

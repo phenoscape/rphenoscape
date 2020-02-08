@@ -2,6 +2,10 @@
 
 S3method(as.phenotype,data.frame)
 S3method(as.phenotype,default)
+S3method(charstates,data.frame)
+S3method(charstates,default)
+S3method(charstates,list)
+S3method(charstates,phenotype)
 S3method(print,KBinfo)
 S3method(print,phenotype)
 export(add_provenance_record)
