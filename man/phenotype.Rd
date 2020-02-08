@@ -3,6 +3,7 @@
 \name{phenotype}
 \alias{phenotype}
 \alias{as.phenotype}
+\alias{as.phenotype.data.frame}
 \alias{is.phenotype}
 \alias{is_valid_phenotype}
 \alias{charstates}
@@ -11,6 +12,8 @@
 \title{Phenotype Objects}
 \usage{
 as.phenotype(x, ...)
+
+\method{as.phenotype}{data.frame}(x, ...)
 
 is.phenotype(x)
 
@@ -26,12 +29,7 @@ chars(x)
 \item{x}{an object of type "phenotype" or coercible to it, or to be tested
 for being of type "phenotype"}
 
-\item{...}{additional parameters where applicable}
-
-\item{x}{the object of class "phenotype" to be printed}
-
-\item{...}{additional paramaters that might be passed to print methods,
-ignored here}
+\item{...}{additional parameters where applicable; ignored for printing}
 }
 \value{
 \code{as.phenotype} returns and object of type "phenotype", or a list of such objects
@@ -41,6 +39,13 @@ phenotype), "label" (label of the phenotype if one exists), "states" (a
 data.frame of the character states to which the phenotype is linked, see value
 for \code{charstates}), and "eqs" (the EQ expression components as a list with keys
 "entities", "qualities", and "related_entities").
+
+\code{is.phenotype} returns TRUE if the object is of type "phenotype" and FALSE
+otherwise.
+
+\code{is_valid_phenotype} returns a logical vector of the same length as the input
+array of objects, with TRUE for those objects in the list that are of type
+"phenotype" and correspond to a phenotype in the database.
 
 \code{charstates} returns a data.frame with columns "id" and "label" (for the
 character state), "character.id" and "character.label" (IRI and label

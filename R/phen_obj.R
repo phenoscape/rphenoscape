@@ -10,7 +10,7 @@
 #'
 #' @param x an object of type "phenotype" or coercible to it, or to be tested
 #'  for being of type "phenotype"
-#' @param ... additional parameters where applicable
+#' @param ... additional parameters where applicable; ignored for printing
 #'
 #' @return
 #' `as.phenotype` returns and object of type "phenotype", or a list of such objects
@@ -20,6 +20,13 @@
 #'    data.frame of the character states to which the phenotype is linked, see value
 #'    for `charstates`), and "eqs" (the EQ expression components as a list with keys
 #'    "entities", "qualities", and "related_entities").
+#'
+#' `is.phenotype` returns TRUE if the object is of type "phenotype" and FALSE
+#'    otherwise.
+#'
+#' `is_valid_phenotype` returns a logical vector of the same length as the input
+#'    array of objects, with TRUE for those objects in the list that are of type
+#'    "phenotype" and correspond to a phenotype in the database.
 #'
 #' `charstates` returns a data.frame with columns "id" and "label" (for the
 #'    character state), "character.id" and "character.label" (IRI and label
@@ -82,6 +89,7 @@ as.phenotype.default <- function(x, ...) {
     res
 }
 
+#' @rdname phenotype
 #' @export
 as.phenotype.data.frame <- function(x, ...) {
   if (is.null(x$id)) stop("data frame must have 'id' column containing IRI", call. = FALSE)
