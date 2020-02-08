@@ -162,3 +162,23 @@ test_that("extracting properties from phenotype objects", {
   testthat::expect_lte(nrow(chs), nrow(states))
   testthat::expect_true(all(chs[, "character.id"] %in% states[, "character.id"]))
 })
+
+test_that("pretty-printing phenotype objects", {
+  # basihyal bone phenotypes
+  phens <- get_phenotypes(entity = "basihyal bone")[1,]
+
+  # create one phenotype object
+  obj <- as.phenotype(phens$id)
+
+  testthat::expect_output(print(obj), "basihyal bone")
+  testthat::expect_output(print(obj),
+                          paste("<", obj$eqs$entities[1], ">", sep = ""))
+  testthat::expect_output(print(obj),
+                          paste("<", obj$eqs$qualities[1], ">", sep = ""))
+
+  # does not bomb for an invalid phenotype object
+  testthat::expect_warning(foo <- as.phenotype("http://foo"))
+  testthat::expect_output(print(foo), "'http://foo'")
+  testthat::expect_output(print(foo), "No states")
+  testthat::expect_output(print(foo), "No EQs")
+})

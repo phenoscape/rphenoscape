@@ -7,6 +7,7 @@
 \alias{is_valid_phenotype}
 \alias{charstates}
 \alias{chars}
+\alias{print.phenotype}
 \title{Phenotype Objects}
 \usage{
 as.phenotype(x, ...)
@@ -18,12 +19,19 @@ is_valid_phenotype(x)
 charstates(x)
 
 chars(x)
+
+\method{print}{phenotype}(x, ...)
 }
 \arguments{
 \item{x}{an object of type "phenotype" or coercible to it, or to be tested
 for being of type "phenotype"}
 
 \item{...}{additional parameters where applicable}
+
+\item{x}{the object of class "phenotype" to be printed}
+
+\item{...}{additional paramaters that might be passed to print methods,
+ignored here}
 }
 \value{
 \code{as.phenotype} returns and object of type "phenotype", or a list of such objects
@@ -61,6 +69,8 @@ object coercible to phenotype)
 
 \code{chars} extracts the characters from the phenotype object (or an object
 coercible to phenotype).
+
+\code{print} pretty-prints objects of type "phenotype"
 }
 \details{
 Create and test objects of type "phenotype", and extract properties from them.

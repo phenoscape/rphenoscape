@@ -150,3 +150,34 @@ chars <- function(x) {
   else
     states
 }
+
+#' @description
+#' `print` pretty-prints objects of type "phenotype"
+#'
+#' @rdname phenotype
+#' @export
+print.phenotype <- function(x, ...) {
+  isValid <- is_valid_phenotype(x)
+  cat("Phenotype '", if (is.na(x$label)) x$id else x$label, "'\n", sep = "")
+  if (isValid) {
+    cat("Linked to states:\n")
+    print(x$states[, c("label", "character.label", "study.label")])
+    l_e <- get_term_label(x$eqs$entities, preserveOrder = TRUE)
+    l_q <- get_term_label(x$eqs$qualities, preserveOrder = TRUE)
+    cat("\nEntities:\n    ",
+        paste(l_e$label, " <", l_e$id, ">", collapse = "\n    ", sep = ""),
+        "\nQualities:\n    ",
+        paste(l_q$label, " <", l_q$id, ">", collapse = "\n    ", sep = ""),
+        "\n",
+        sep = "")
+    if (length(x$eqs$related_entities) > 0) {
+      l_r <- get_term_label(x$eqs$related_entities, preserveOrder = TRUE)
+      cat("Towards:\n    ",
+          paste(l_r$label, " <", l_r$id, ">", collapse = "\n    ", sep = ""),
+          "\n", sep = "")
+    } else
+      cat("No related entities.\n")
+  } else
+    cat("No states.\nNo EQs.\n")
+  invisible(x)
+}

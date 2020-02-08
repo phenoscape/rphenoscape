@@ -3,6 +3,7 @@
 S3method(as.phenotype,data.frame)
 S3method(as.phenotype,default)
 S3method(print,KBinfo)
+S3method(print,phenotype)
 export(add_provenance_record)
 export(anatomy_ontology_iris)
 export(as.phenotype)
