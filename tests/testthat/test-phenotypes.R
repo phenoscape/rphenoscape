@@ -67,9 +67,9 @@ test_that("requesting taxon phenotype associations works", {
 })
 
 test_that("matching phenotypes against study filter", {
-  # pelvic fin phenotypes
+  # basihyal bone phenotypes
   phens <- get_phenotypes(entity = "basihyal bone")
-  # studies for pelvic fin
+  # studies for basihyal bone
   studies <- pk_get_study_list(entity = "basihyal bone")
 
   # match one against one study
@@ -105,4 +105,60 @@ test_that("matching phenotypes against study filter", {
   testthat::expect_length(phens.match, length(phens$id) + 1)
   testthat::expect_false(all(phens.match))
   testthat::expect_true(all(phens.match[-1]))
+})
+
+test_that("creating phenotype objects and extracting properties", {
+  # basihyal bone phenotypes
+  phens <- get_phenotypes(entity = "basihyal bone")
+
+  # not a phenotype object
+  testthat::expect_false(is.phenotype(phens))
+  testthat::expect_false(is.phenotype(phens[1,]))
+  testthat::expect_false(is.phenotype(phens$id[1]))
+
+  # create one phenotype object
+  obj <- as.phenotype(phens[1, "id"])
+  testthat::expect_is(obj, "phenotype")
+  testthat::expect_true(is.phenotype(obj))
+  testthat::expect_true(is_valid_phenotype(obj))
+
+  # robust to unresolving IDs
+  testthat::expect_warning(obj <- as.phenotype("foo"))
+  testthat::expect_is(obj, "phenotype")
+  testthat::expect_true(is.phenotype(obj))
+  testthat::expect_false(is_valid_phenotype(obj))
+
+  # also works with data.frame as input
+  obj <- as.phenotype(phens[1,])
+  testthat::expect_is(obj, "phenotype")
+  testthat::expect_true(is_valid_phenotype(obj))
+
+  # can run vectorized
+  objs <- as.phenotype(phens$id)
+  testthat::expect_length(objs, nrow(phens))
+  testthat::expect_is(objs, "list")
+  testthat::expect_true(all(sapply(objs, is.phenotype)))
+  testthat::expect_length(is_valid_phenotype(objs), length(objs))
+  testthat::expect_true(all(is_valid_phenotype(objs)))
+  l <- sapply(objs, function(p) p$label)
+  testthat::expect_true(all(l == phens$label))
+  testthat::expect_true(all(sapply(objs, function(p) nrow(p$states)) > 0))
+  testthat::expect_true(all(sapply(objs, function(p) length(p$eqs$entities)) > 0))
+  testthat::expect_true(all(sapply(objs, function(p) length(p$eqs$qualities)) > 0))
+})
+
+test_that("extracting properties from phenotype objects", {
+  # basihyal bone phenotypes
+  phens <- get_phenotypes(entity = "basihyal bone")[1,]
+
+  # create one phenotype object
+  obj <- as.phenotype(phens$id)
+
+  # obtain character states using ID
+  states <- charstates(phens)
+  testthat::expect_equivalent(states, obj$states)
+  chs <- chars(phens)
+  testthat::expect_is(chs, "data.frame")
+  testthat::expect_lte(nrow(chs), nrow(states))
+  testthat::expect_true(all(chs[, "character.id"] %in% states[, "character.id"]))
 })
