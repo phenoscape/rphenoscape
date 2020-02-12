@@ -122,6 +122,14 @@ test_that("creating phenotype objects and extracting properties", {
   testthat::expect_true(is.phenotype(obj))
   testthat::expect_true(is_valid_phenotype(obj))
 
+  # optionally include taxa
+  testthat::expect_false("taxa" %in% names(obj))
+  obj <- as.phenotype(phens[1, "id"], withTaxa = TRUE)
+  testthat::expect_true(is.phenotype(obj))
+  testthat::expect_true(is_valid_phenotype(obj))
+  testthat::expect_true("taxa" %in% names(obj))
+  testthat::expect_gt(nrow(obj$taxa), 1)
+
   # robust to unresolving IDs
   testthat::expect_warning(obj <- as.phenotype("foo"))
   testthat::expect_is(obj, "phenotype")

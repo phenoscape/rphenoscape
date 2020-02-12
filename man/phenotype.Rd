@@ -11,7 +11,7 @@
 \alias{print.phenotype}
 \title{Phenotype Objects}
 \usage{
-as.phenotype(x, ...)
+as.phenotype(x, withTaxa = FALSE, ...)
 
 \method{as.phenotype}{data.frame}(x, ...)
 
@@ -29,6 +29,10 @@ chars(x)
 \item{x}{an object of type "phenotype" or coercible to it, or to be tested
 for being of type "phenotype"}
 
+\item{withTaxa}{logical. If TRUE taxa exhibiting the phenotype will be
+available through the phenotype object at key "taxa". Default is FALSE, because
+obtaining taxa requires an additional query per object.}
+
 \item{...}{additional parameters where applicable; ignored for printing}
 }
 \value{
@@ -38,7 +42,8 @@ data.frame). A phenotype object has properties "id" (ID, i.e., IRI of the
 phenotype), "label" (label of the phenotype if one exists), "states" (a
 data.frame of the character states to which the phenotype is linked, see value
 for \code{charstates}), and "eqs" (the EQ expression components as a list with keys
-"entities", "qualities", and "related_entities").
+"entities", "qualities", and "related_entities"). If \code{withTaxa} is TRUE,
+there will also be a key "taxa" (a data.frame with columns "id" and "label").
 
 \code{is.phenotype} returns TRUE if the object is of type "phenotype" and FALSE
 otherwise.
@@ -93,6 +98,11 @@ nrow(phens)
 obj <- as.phenotype(phens[3, "id"])
 class(obj)
 obj
+
+# optionally include taxa exhibiting the phenotype
+as.phenotype(phens[3,], withTaxa = TRUE)
+# full list of taxa:
+as.phenotype(phens[3,], withTaxa = TRUE)$taxa
 
 # can also coerce entire list at once
 objs <- as.phenotype(phens)

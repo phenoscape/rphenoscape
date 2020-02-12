@@ -10,6 +10,9 @@
 #'
 #' @param x an object of type "phenotype" or coercible to it, or to be tested
 #'  for being of type "phenotype"
+#' @param withTaxa logical. If TRUE taxa exhibiting the phenotype will be
+#'  available through the phenotype object at key "taxa". Default is FALSE, because
+#'  obtaining taxa requires an additional query per object.
 #' @param ... additional parameters where applicable; ignored for printing
 #'
 #' @return
@@ -19,7 +22,8 @@
 #'    phenotype), "label" (label of the phenotype if one exists), "states" (a
 #'    data.frame of the character states to which the phenotype is linked, see value
 #'    for `charstates`), and "eqs" (the EQ expression components as a list with keys
-#'    "entities", "qualities", and "related_entities").
+#'    "entities", "qualities", and "related_entities"). If `withTaxa` is TRUE,
+#'    there will also be a key "taxa" (a data.frame with columns "id" and "label").
 #'
 #' @examples
 #' # query for a set of phenotypes (IDs and their labels)
@@ -29,6 +33,11 @@
 #' obj <- as.phenotype(phens[3, "id"])
 #' class(obj)
 #' obj
+#'
+#' # optionally include taxa exhibiting the phenotype
+#' as.phenotype(phens[3,], withTaxa = TRUE)
+#' # full list of taxa:
+#' as.phenotype(phens[3,], withTaxa = TRUE)$taxa
 #'
 #' # can also coerce entire list at once
 #' objs <- as.phenotype(phens)
@@ -50,7 +59,7 @@
 #' @name phenotype
 #' @rdname phenotype
 #' @export
-as.phenotype <- function(x, ...) {
+as.phenotype <- function(x, withTaxa = FALSE, ...) {
   UseMethod("as.phenotype", x)
 }
 
@@ -60,7 +69,7 @@ as.phenotype.default <- function(x, ...) {
     if (is.phenotype(elem))
       elem
     else {
-      p <- Phenotype(elem)
+      p <- Phenotype(elem, ...)
       if (! is_valid_phenotype(p)) {
         p$label <- NA
         warning("Failed to retrieve phenotype for ID ", elem, call. = FALSE)
@@ -81,12 +90,19 @@ as.phenotype.data.frame <- function(x, ...) {
   as.phenotype(x$id, ...)
 }
 
-Phenotype <- function(iri) {
+Phenotype <- function(iri, withTaxa = FALSE) {
   stopifnot(is.character(iri))
   res <- get_json_data(pkb_api("/phenotype/info"), query = list(iri = iri))
   names(res) <- sub("@", "", x = names(res))
   if (! is.null(res$states))
     names(res$states) <- sub("@", "", x = names(res$states))
+  if (withTaxa) {
+    taxa <- get_json_data(pkb_api("/taxon/with_phenotype"),
+                          query = list(phenotype = iri, limit = 0))
+    taxa <- taxa$results
+    colnames(taxa) <- sub("@", "", colnames(taxa))
+    res$taxa <- taxa
+  }
   structure(res, class = c("phenotype", class(res)))
 }
 
@@ -224,6 +240,11 @@ print.phenotype <- function(x, ...) {
           "\n", sep = "")
     } else
       cat("No related entities.\n")
+    if ("taxa" %in% names(x)) {
+      cat("Exhibited by taxa:\n")
+      print(x$taxa, max = 10)
+    } else
+      cat("\nNo information about taxa exhibiting this phenotype.\n")
   } else
     cat("No states.\nNo EQs.\n")
   invisible(x)
