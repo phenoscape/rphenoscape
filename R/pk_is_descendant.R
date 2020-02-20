@@ -78,11 +78,10 @@ pk_is <- function(term, candidates,
   res <- pk_GET(apiURL, queryseq)
   res <- res$results
 
-  if (length(res) == 0) {
-    warning("Could not find the ", mode, "s of ", term, " in the database.")
-    return(invisible(NA))
-  }
-  term_iris[-1] %in% res$`@id`
+  if (length(res) == 0)
+    rep(FALSE, times = length(term_iris) - 1)
+  else
+    term_iris[-1] %in% res$`@id`
 }
 
 pk_subsumer_url <- "http://kb.phenoscape.org/api/term/least_common_subsumers"

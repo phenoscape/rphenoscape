@@ -247,8 +247,7 @@ taxon_ontology_iris <- local({
     if (length(.iris) == 0) {
       res <- find_term("Vertebrata",
                        matchBy = c("rdfs:label"),
-                       matchTypes = c("exact"),
-                       limit = 1)
+                       matchTypes = c("exact"))
       .iris <<- unique(res$isDefinedBy)
     }
     .iris
@@ -266,6 +265,80 @@ ontology_iri <- function(abbr) {
 taxon_id <- function() ontology_iri('VTO')
 anatomical_id <- function() ontology_iri('UBERON')
 phenotype_id <- function() ontology_iri('PATO')
+
+#' @description
+#' `partOf_iri` returns the IRI ofthe canonical "part_of" relationship in the
+#'     database.
+#' @rdname term_iri
+#' @export
+partOf_iri <- function() {
+  term_iri("part_of",
+           type = "owl:ObjectProperty", preferOntologies = c("BFO", "RO"))
+}
+
+#' @description
+#' `hasPart_iri` returns the IRI ofthe canonical "has_part" relationship in the
+#'     database.
+#' @rdname term_iri
+#' @export
+hasPart_iri <- function() {
+  term_iri("has_part", type = "owl:ObjectProperty", preferOntologies = c("BFO", "RO"))
+}
+
+#' Obtain IRI(s) for canonical terms and properties
+#'
+#' Provides cached access to IRIs of terms and properties that are frequently used.
+#'
+#' Requested IRIs are not hard-coded. Instead, they are dynamically retrieved from
+#' the API when first queried, and (depending on parameters) are subsequently held
+#' in cache in the session. Hence, if they were to change in the database, the R
+#' session would need to be restarted for this change to be reflected in the result.
+#'
+#' For the frequently needed properties "part of", "has part" etc, one should use
+#' the predefined functions ([partOf_iri()], [hasPart_iri()]), so that the correct
+#' matches are cached and used internally by the package.
+#' @param label character, the label of the term for which to obtain the IRI
+#' @param type character, the type of the term, as a IRI or using common
+#'   namespace prefixes such as "owl", "rdf", etc. For example, "owl:Class",
+#'   or "owl:ObjectProperty". The default is "owl:Class".
+#' @param preferOntologies character, an array of ontologies to use for preference.
+#'   In the case of multiple matches, matches will be reordered in the order given,
+#'   and if matches are from preferred and other ontologies, those from ontologies
+#'   not in the preference list will be discarded. If provided and only matches
+#'   from ontologies not in the preference list are found, they will not be cached.
+#'   Can be provided as OBO ontology prefixes, or full ontology IRIs. The default
+#'   is no preferences.
+#' @param firstOnly boolean, whether to return only the first match in case of
+#'   multiple matches. The default is TRUE.
+#' @return Character, the IRI(s) for the requested term or property.
+#' @examples
+#' term_iri("part of", type = "owl:ObjectProperty", preferOntologies = c("RO", "BFO"))
+#' term_iri("develops from", type = "owl:ObjectProperty", preferOntologies = c("RO"))
+#' term_iri("anatomical structure", firstOnly = FALSE)
+#' @export
+term_iri <- local({
+  .iris <- list();
+  function(label, type = "owl:Class", preferOntologies = NULL, firstOnly = TRUE) {
+    if (is.null(.iris[[label]])) {
+      res <- find_term(label, type = type,
+                       matchBy = c("rdfs:label"), matchTypes = c("exact"))
+      if (nrow(res) > 1 && ! is.null(preferOntologies)) {
+        # prioritize by ontology by reordering by ontology preference
+        reordering <- match(ontology_iri(preferOntologies), res$isDefinedBy)
+        if (any(! is.na(reordering))) {
+          res <- res[reordering[! is.na(reordering)],]
+        }
+        if (firstOnly) res <- res[1,]
+      }
+      # cache only if either matches what was desired, or no preferences stated
+      if (is.null(preferOntologies) ||
+          res[1, "isDefinedBy"] %in% ontology_iri(preferOntologies))
+        .iris[[label]] <<- res$id
+      res$id
+    } else
+      .iris[[label]]
+  }
+})
 
 # to silence R CMD check
 . <- NULL

@@ -17,7 +17,10 @@
 #' @examples
 #' term_category(c("http://purl.obolibrary.org/obo/UBERON_0011618",
 #'                 "http://purl.obolibrary.org/obo/PATO_0002279",
-#'                 "http://purl.obolibrary.org/obo/VTO_0071642"))
+#'                 "http://purl.obolibrary.org/obo/VTO_0071642",
+#'                 "http://purl.obolibrary.org/obo/MP_0030825"))
+#' phens <- get_phenotypes("basihyal bone")
+#' term_category(phens$id[1:3])
 #' @export
 term_category <- function(x) {
   if (is.phenotype(x)) return("phenotype")
@@ -34,38 +37,47 @@ term_category <- function(x) {
   terms <- x[is.na(types)]
   if (length(terms) > 0) {
     types[is.na(types)] <- sapply(terms, function(term) {
-      EorQ <- pk_is_ancestor(term, candidates = c(entity_root(), quality_root()))
-      if (EorQ[1])
+      if (term %in% entity_roots())
         "entity"
-      else if (EorQ[2])
+      else if (term %in% quality_roots())
         "quality"
-      else
-        "phenotype"
+      else if (any(startsWith(term, semweb_ns())))
+        "entity"
+      else {
+        isE <- pk_is_ancestor(term, candidates = entity_roots(), includeRels = "part_of")
+        if (all(isE))
+          "entity"
+        else if (any(pk_is_ancestor(term, candidates = quality_roots())))
+          "quality"
+        else if (any(isE))
+          "entity"
+        else {
+          subClasses <- pk_class(term, as = NA, verbose = FALSE)$superClassOf
+          if (length(subClasses) > 0)
+            term_category(subClasses[1,"@id"])
+          else {
+            comps <- decode_entity_postcomp(term)[[1]]
+            if (length(comps$rels) > 0 &&
+                any(c(hasPart_iri(), partOf_iri()) %in% comps$rels))
+              term_category(comps$entities[1])
+            else
+              "phenotype"
+          }
+        }
+      }
     })
   }
   types
 }
 
-entity_root <- local({
-  .term <- NULL
-  function() {
-    if (is.null(.term)) {
-      .term <<- find_term("independent continuant",
-                          definedBy = "bfo", matchTypes = "exact")$id
-    }
-    .term
-  }
-})
+entity_roots <- function() {
+  c(term_iri("independent continuant", preferOntologies = c("BFO")),
+    term_iri("anatomical structure", firstOnly = FALSE))
+}
 
-quality_root <- local({
-  .term <- NULL
-  function() {
-    if (is.null(.term)) {
-      .term <<- find_term("quality", definedBy = "bfo", matchTypes = "exact")$id
-    }
-    .term
-  }
-})
+quality_roots <- function() {
+  term_iri("quality", preferOntologies = c("BFO", "PATO"), firstOnly = FALSE)
+}
 
 obo_ont_type <- function(ont) {
   ont[is.na(ont)] <- ""
@@ -86,13 +98,20 @@ obo_ont_type <- function(ont) {
                 })))
 }
 
-#' @description
-#' `obo_prefix` extracts the OBO ontology prefix from IRIs
+#' Extract the OBO ontology prefix from IRIs
+#'
+#' @param x a list or vector of IRIs, and/or objects that have an "id" key.
 #' @return
-#' `obo_prefix` returns a character vector of the same length as the input
+#'   A character vector of the same length as the input
 #'   vector or list, with NA in the positions where extracting the OBO
 #'   ontology prefix failed.
-#' @rdname term_category
+#' @examples
+#' tt <- c("http://purl.obolibrary.org/obo/UBERON_0011618",
+#'         "http://purl.obolibrary.org/obo/PATO_0002279",
+#'         "http://purl.obolibrary.org/obo/VTO_0071642",
+#'         "http://purl.obolibrary.org/obo/MP_0030825",
+#'         "http://purl.obolibrary.org/obo/NCBITaxon_7955")
+#' obo_prefix(tt)
 #' @importFrom stringi stri_match_first_regex
 #' @export
 obo_prefix <- function(x) {

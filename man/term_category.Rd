@@ -2,12 +2,9 @@
 % Please edit documentation in R/term-type.R
 \name{term_category}
 \alias{term_category}
-\alias{obo_prefix}
 \title{Determine the general category of terms}
 \usage{
 term_category(x)
-
-obo_prefix(x)
 }
 \arguments{
 \item{x}{a vector of one or more term IRIs, or a list of such IRIs or term
@@ -16,18 +13,12 @@ objects (such as phenotype objects)}
 \value{
 A character vector with the term categories ("entity", "quality",
 "phenotype", or "taxon") of the terms in the input list.
-
-\code{obo_prefix} returns a character vector of the same length as the input
-vector or list, with NA in the positions where extracting the OBO
-ontology prefix failed.
 }
 \description{
 Terms in the Phenoscape KB fall into different general categories: entity,
 quality, phenotype (which typically are entity-quality compositions), and
 taxon. The category is sometimes needed to plug a term IRI into the right
 parameter for a function or API call.
-
-\code{obo_prefix} extracts the OBO ontology prefix from IRIs
 }
 \details{
 The implementation will first try infer the category from the object type
@@ -39,5 +30,8 @@ the BFO terms "independent continuant" (for entity terms) and "quality"
 \examples{
 term_category(c("http://purl.obolibrary.org/obo/UBERON_0011618",
                 "http://purl.obolibrary.org/obo/PATO_0002279",
-                "http://purl.obolibrary.org/obo/VTO_0071642"))
+                "http://purl.obolibrary.org/obo/VTO_0071642",
+                "http://purl.obolibrary.org/obo/MP_0030825"))
+phens <- get_phenotypes("basihyal bone")
+term_category(phens$id[1:3])
 }
