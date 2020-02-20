@@ -57,6 +57,17 @@ test_that("determining term categories", {
   testthat::expect_equal(tcat, "entity")
 })
 
+test_that("success rate for entity subsumer terms", {
+  tt <- sapply(c("fin ray", "dorsal fin", "caudal fin"), pk_get_iri, as = "anatomy")
+  subs.mat <- subsumer_matrix(tt)
+  tt.types <- term_category(rownames(subs.mat))
+  type.fracs <- table(tt.types)/nrow(subs.mat)
+  testthat::expect_lte(length(names(type.fracs)), 3)
+  testthat::expect_gt(max(type.fracs), 0.9)
+  testthat::expect_equal(names(type.fracs)[type.fracs == max(type.fracs)], "entity")
+  testthat::expect_true(min(type.fracs) == max(type.fracs) || min(type.fracs) < 0.1)
+})
+
 test_that("obtaining corpus size", {
   s <- corpus_size("taxa")
   testthat::expect_gt(s, 100)
