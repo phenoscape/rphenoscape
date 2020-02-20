@@ -70,6 +70,19 @@ term_freqs <- function(x,
   unname(freqs)
 }
 
+#' @importFrom utils URLdecode
+decode_entity_postcomp <- function(x) {
+  res <- stringi::stri_match_all_regex(
+    URLdecode(x),
+    pattern = "<(https?://[A-Za-z0-9-_/.]+)>[ +]+some[ +]+<(https?://[A-Za-z0-9-_/.]+)>")
+  lapply(res, function(m) {
+    if (all(is.na(m[1,])))
+      list(rels=c(), entities=c())
+    else
+      list(rels=m[,2], entities=m[,3])
+  })
+}
+
 #' Obtain the size of different corpora
 #'
 #' Obtains the size of a certain number of predefined corpora. The total size
