@@ -125,17 +125,7 @@ subsumer_matrix <- function(terms,
 #' @param ... parameters to be passed on to [subsumer_matrix()]
 #'   if a subsumer matrix is to be generated on the fly.
 #' @return A matrix with M\[i,j\] = similarity of terms _i_ and _j_.
-#' @examples
-#' \dontrun{
-#' sm <- jaccard_similarity(terms = c("pelvic fin", "pectoral fin",
-#'                                    "forelimb", "hindlimb",
-#'                                    "dorsal fin", "caudal fin"),
-#'                          .colnames = "label")
-#' sm
-#'
-#' # e.g., turn into distance matrix, cluster, and plot
-#' plot(hclust(as.dist(1-sm)))
-#' }
+#' @name similarity
 #' @rdname similarity
 #' @export
 tanimoto_similarity <- function(subsumer_mat = NA, terms = NULL, ...) {
@@ -160,6 +150,17 @@ tanimoto_similarity <- function(subsumer_mat = NA, terms = NULL, ...) {
 #' For the results to be a valid Jaccard similarity, weights must be zero and
 #' one. If any weights are different, a warning is issued. 
 #'
+#' @examples
+#' \dontrun{
+#' sm <- jaccard_similarity(terms = c("pelvic fin", "pectoral fin",
+#'                                    "forelimb", "hindlimb",
+#'                                    "dorsal fin", "caudal fin"),
+#'                          .colnames = "label")
+#' sm
+#'
+#' # e.g., turn into distance matrix, cluster, and plot
+#' plot(hclust(as.dist(1-sm)))
+#' }
 #' @export
 #' @rdname similarity
 jaccard_similarity <- function(subsumer_mat = NA, terms = NULL, ...) {
