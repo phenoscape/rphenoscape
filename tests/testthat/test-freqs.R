@@ -118,8 +118,8 @@ test_that("obtaining/calculating term frequencies", {
   testthat::expect_true(all(wt1 <= 1))
   testthat::expect_true(all(wt < wt1))
   # can use defaults
-  wt1 <- term_freqs(phens$id)
-  testthat::expect_identical(wt1, wt)
+  wt1 <- term_freqs(phens$id[1:3])
+  testthat::expect_identical(wt1, wt[1:3])
 
   # checking of error conditions
   testthat::expect_error(term_freqs(phens$id, as = "foobar"))
@@ -130,3 +130,15 @@ test_that("obtaining/calculating term frequencies", {
                                                      "auto")))
   testthat::expect_error(term_freqs(phens$id, as = "entity", corpus = "taxa"))
 })
+
+test_that("term frequencies for post-comp subsumers of entities", {
+  tt <- sapply(c("fin ray", "dorsal fin", "caudal fin"), pk_get_iri, as = "anatomy")
+  subs <- rownames(subsumer_matrix(tt))
+  # reduce to post-comps and test a handful
+  onts <- obo_prefix(subs)
+  subs <- subs[is.na(onts)]
+  if (length(subs) > 5) subs <- subs[1:5]
+  freqs <- term_freqs(subs, as = "entity", corpus = "taxon_annotations")
+  testthat::expect_true(any(freqs > 0))
+})
+
