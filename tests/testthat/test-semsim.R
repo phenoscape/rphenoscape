@@ -35,7 +35,7 @@ test_that("obtaining subsumer matrix works", {
   testthat::expect_equal(colnames(m)[3], "humerus")
 })
 
-test_that("similarity metrics work", {
+test_that("edge-based similarity metrics work", {
   tl <- c("pelvic fin", "pectoral fin", "forelimb", "hindlimb", "dorsal fin", "caudal fin")
   tt <- sapply(tl, pk_get_iri, as = "anatomy", exactOnly = TRUE)
 
@@ -55,4 +55,32 @@ test_that("similarity metrics work", {
   testthat::expect_equivalent(diag(sim.cos), rep(1.0, times = length(tl)))
   testthat::expect_equal(max(sim.cos), 1.0)
   testthat::expect_gt(sim.cos["pectoral fin", "forelimb"], sim.jc["pectoral fin", "dorsal fin"])
+})
+
+test_that("Resnik similarity", {
+  phens <- get_phenotypes("basihyal bone", taxon = "Cyprinidae")
+  subs.mat <- subsumer_matrix(phens$id, .colnames = "label", .labels = phens$label,
+                              preserveOrder = TRUE)
+  s <- c(sample(1:nrow(subs.mat), size = 10),
+         match(phens$id, rownames(subs.mat)))
+  subs1 <- rownames(subs.mat)[s]
+  subs.mat1 <- subs.mat[s,]
+  rownames(subs.mat1) <- subs1
+  sm.ic <- resnik_similarity(subs.mat1,
+                             wt_args = list(as = "phenotype", corpus = "taxon_annotations"))
+  testthat::expect_equal(dim(sm.ic), c(nrow(phens), nrow(phens)))
+  testthat::expect_true(all(sm.ic > 0))
+  testthat::expect_true(all(sm.ic <= -log10(1 / corpus_size("taxon_annotations"))))
+  testthat::expect_equivalent(diag(sm.ic),
+                              -log10(term_freqs(phens$id,
+                                                as = "phenotype", corpus = "taxon_annotations")))
+
+  sm.ic <- resnik_similarity(subs.mat,
+                             wt_args = list(as = "phenotype", corpus = "taxa"))
+  testthat::expect_equal(dim(sm.ic), c(nrow(phens), nrow(phens)))
+  testthat::expect_true(all(sm.ic > 0))
+  testthat::expect_true(all(sm.ic <= -log10(1 / corpus_size("taxa"))))
+  testthat::expect_equivalent(diag(sm.ic),
+                              -log10(term_freqs(phens$id,
+                                                as = "phenotype", corpus = "taxa")))
 })
