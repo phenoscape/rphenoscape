@@ -200,3 +200,61 @@ cosine_similarity <- function(subsumer_mat = NA, terms = NULL, ...) {
   res <- t(t(res) / vecmag) # divide as rows
   res
 }
+
+#' @description
+#' The Resnik similarity between two terms is the information content (IC) of
+#' their most informative common ancestor (MICA), which is the common subsumer
+#' with the greatest information content.
+#' @param wt numeric or a function. If numeric, weights for the subsumer terms.
+#'   For `resnik_similarity`, these are expected to be information content (IC)
+#'   scores, though any score will work for which a higher value means higher
+#'   information content, and where a term will always have a score equal to or
+#'   greater than any of its superclasses. If a function, it must accept parameter
+#'   `x` as the vector of term IRIs and return a vector of frequencies (_not_
+#'   IC scores) for the terms. The default is to use function [term_freqs()].
+#' @param wt_args list, named parameters for the function calculating term
+#'   frequencies. Ignored if `wt` is not a function. For the default `wt`
+#'   function [term_freqs()], the main parameters are `as` and `corpus`. 
+#' @param base integer, the base of the logarithm for calculating information
+#'   content from term frequency. The default is 10.
+#' @references
+#' Philip Resnik (1995). "Using information content to evaluate semantic
+#' similarity in a taxonomy". Proceedings of the 14th International Joint
+#' Conference on Artificial Intelligence (IJCAI'95). **1**: 448–453
+#' @examples
+#' \dontrun{
+#' phens <- get_phenotypes("basihyal bone", taxon = "Cyprinidae")
+#' sm.ic <- resnik_similarity(terms = phens$id,
+#'                            .colnames = "label", .labels = phens$label,
+#'                            wt_args = list(as = "phenotype",
+#'                                           corpus = "taxa"))
+#' maxIC <- -log10(1 / corpus_size("taxa"))
+#' # normalize by max IC, turn into distance matrix, cluster, and plot
+#' plot(hclust(as.dist(1-sm.ic/maxIC)))
+#' }
+#' @rdname similarity
+#' @export
+resnik_similarity <- function(subsumer_mat = NA, terms = NULL, ...,
+                              wt = term_freqs, wt_args = list(),
+                              base = 10) {
+  if (missing(subsumer_mat)) {
+    subsumer_mat <- subsumer_matrix(terms = terms, ...)
+    if ((! missing(wt)) && length(wt) != nrow(subsumer_mat))
+      stop("vector of term weights or ICs is incompatible with subsumer matrix", call. = FALSE)
+  }
+
+  # do we need to calculate term weights?
+  if (missing(wt) || is.function(wt)) {
+    wt_args$x <- rownames(subsumer_mat)
+    wt <- do.call(wt, wt_args)
+    wt[wt == 0] <- 1
+    # we assume we got frequencies, turn into IC
+    wt <- -log(wt, base = base)
+  }
+
+  res <- apply(subsumer_mat, 2,
+               function(x) {
+                 apply(subsumer_mat, 2, function(y) max(x * y * wt, na.rm = TRUE))
+               })
+  res
+}
