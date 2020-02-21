@@ -5,7 +5,8 @@
 \title{Obtains term frequencies for the Phenoscape KB}
 \usage{
 term_freqs(x, as = c("auto", "entity", "quality", "phenotype"),
-  corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes"))
+  corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes"),
+  decodeIRI = TRUE, ...)
 }
 \arguments{
 \item{x}{a vector or list of one or more terms, either as IRIs or as term
@@ -21,6 +22,24 @@ category of each term is automatically determined. The default is "auto".}
 Supported values are "taxon_annotations", "taxa", "gene_annotations", and
 "genes". (At present, support for "gene_annotations" is pending support in
 the Phenoscape API.) The default is "taxon_annotations".}
+
+\item{decodeIRI}{boolean. If TRUE (the default), attempt to decode
+post-composed entity IRIs, and under certain circumstances rewrite the
+count query according to the results. At present, this is used only for
+entity IRIs detected as "part_of some X" post-compositions, and only for
+the "taxon_annotations" corpus. In those cases, the count query will be
+rewritten to first query for X, then for X including parts, and the resulting
+count is the result of the latter minus that of the former.
+
+The decoding algorithm may be imprecise, so one may want to turn this off,
+the result of which will usually be a frequency of zero for those IRIs, due
+to limitations in the Phenoscape KB API.}
+
+\item{...}{additional query parameters to be passed to the function querying
+for counts, see \code{\link[=pkb_args_to_query]{pkb_args_to_query()}}. Currently this is only used for
+corpus "taxon_annotations", and the only useful parameter is \code{includeRels},
+which can be used to include historical and serial homologues in the counts.
+It can also be used to always include parts for entity terms.}
 }
 \value{
 a vector of frequencies as floating point numbers (between zero
@@ -32,9 +51,30 @@ the selected corpus.
 }
 \details{
 Depending on the corpus selected, the frequencies are queried directly
-from the Phenoscape API, or calculated based on query results. Currently,
-the Phenoscape KB has precomputed frequencies for corpora "taxa" and
-"genes".
+from pre-computed counts through the KB API, or are calculated based on
+matching row counts obtained from query results. Currently, the Phenoscape KB
+has precomputed counts for corpora "taxa" and "genes". Calculated counts for
+the "taxon_annotations" corpus are most reliable for phenotype terms and their
+subsumers. For entity terms, subsumers can include many generated
+post-composed terms (such as "part_of some X", where X is, for example, an
+anatomy term), and at least currently these aren't handled correctly by the
+Phenoscape KB, resulting in counts of zero for such terms. For some of these
+the implementation here will try to rewrite the query (see parameter
+\code{decodeIRI}), but this only works to a limited extent.
+}
+\note{
+Term categories being accurate is vital for obtaining correct counts and
+thus frequencies. Auto-determining term categories yields reasonably accurate
+results, but with caveats. One, it can be time-consuming, and two, especially
+for entity terms and their subsumers it is often not 100% accurate. This
+function will try to correct for that by assuming that if not all terms
+are determined to be of the same category, but one category holds for more
+than 90% of the terms, that it must be the correct category for all terms.
+If the list of terms is legitimately of different categories, it is best to
+determine (and possibly correct) categories beforehand, and then pass the
+result as \code{as}. If all terms are of the same category and the category is
+known beforehand, it saves time and prevents potential errors to supply this
+category using \code{as}.
 }
 \examples{
 terms <- c("pectoral fin", "pelvic fin", "dorsal fin", "paired fin")

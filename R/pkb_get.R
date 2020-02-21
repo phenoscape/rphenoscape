@@ -163,21 +163,24 @@ pkb_args_to_query <- function(...,
   # entity, quality, taxon, study etc
   argList <- list(...)
   # remove parameters not meant for us
-  argList <- argList[! startsWith(names(argList), ".")]
-  queryseq <- c(queryseq,
-                sapply(names(argList[!is.na(argList)]),
-                       function(x) {
-                         # parameter name
-                         param <- unname(paramNames[x])
-                         # parameter value, IRI lookup if necessary
-                         paramVal <- argList[[x]]
-                         ont <- ont_lookups[x]
-                         if (! is.na(ont))
-                           paramVal <- pk_get_iri(paramVal, as = ont, verbose = verbose)
-                         names(paramVal) <- param
-                         paramVal
-                       },
-                       USE.NAMES = FALSE))
+  if (length(argList) > 0) {
+    argList <- argList[! startsWith(names(argList), ".")]
+    queryseq <- c(queryseq,
+                  sapply(names(argList[!is.na(argList)]),
+                         function(x) {
+                           # parameter name
+                           param <- unname(paramNames[x])
+                           # parameter value, IRI lookup if necessary
+                           paramVal <- argList[[x]]
+                           ont <- ont_lookups[x]
+                           if (! is.na(ont))
+                             paramVal <- pk_get_iri(paramVal, as = ont,
+                                                    verbose = verbose)
+                           names(paramVal) <- param
+                           paramVal
+                         },
+                         USE.NAMES = FALSE))
+  }
   queryseq
 }
 
