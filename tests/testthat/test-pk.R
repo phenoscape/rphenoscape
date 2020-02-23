@@ -114,11 +114,21 @@ test_that("Test getting labels", {
   testthat::expect_equal(nrow(lbls), 1)
   testthat::expect_false(is.na(lbls$label))
 
-  lbls <- get_term_label("urn:foobar")
+  lbls <- get_term_label("http://foobar")
   testthat::expect_equal(nrow(lbls), 1)
-  testthat::expect_equal(lbls$id, "urn:foobar")
+  testthat::expect_equal(lbls$id, "http://foobar")
   testthat::expect_true(is.na(lbls$label))
+})
 
+test_that("labels for pre-generated post-comps", {
+  phen <- sample(get_phenotypes("basihyal bone")$id, size = 1)
+  subs <- sample(rownames(subsumer_matrix(phen)), size = 30)
+  subs.l <- get_term_label(subs, preserveOrder = TRUE)
+  testthat::expect_lte(sum(is.na(subs.l$label)), 1)
+
+  subs <- sample(rownames(subsumer_matrix(c("femur"))), 30)
+  subs.l <- get_term_label(subs, preserveOrder = TRUE)
+  testthat::expect_lte(sum(is.na(subs.l$label)), 1)
 })
 
 test_that("Test getting study information", {

@@ -150,9 +150,22 @@ get_term_label <- function(term_iris, preserveOrder = FALSE, verbose = FALSE) {
   if (length(res) > 0) {
     names(res) <- sub("@", "", names(res))
   }
-  if (preserveOrder && nrow(res) > 0) {
-    reordering <- match(term_iris, res$id)
-    res <- res[reordering,]
+  if (nrow(res) > 0) {
+    noLabel <- is.na(res$label)
+    if (any(noLabel)) {
+      res[noLabel, "label"] <- sapply(res$id[noLabel], function(iri) {
+        clInfo <- pk_class(iri, as = NA, verbose = verbose)
+        if (length(clInfo) <= 1 || clInfo$label == iri)
+          NA
+        else
+          clInfo$label
+      },
+      USE.NAMES = FALSE)
+    }
+    if (preserveOrder) {
+      reordering <- match(term_iris, res$id)
+      res <- res[reordering,]
+    }
   }
 
   res
