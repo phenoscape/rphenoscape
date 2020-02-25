@@ -58,6 +58,8 @@ test_that("edge-based similarity metrics work", {
 })
 
 test_that("Resnik similarity", {
+  skip_on_cran()
+
   phens <- get_phenotypes("basihyal bone", taxon = "Cyprinidae")
   subs.mat <- subsumer_matrix(phens$id, .colnames = "label", .labels = phens$label,
                               preserveOrder = TRUE)
@@ -71,16 +73,93 @@ test_that("Resnik similarity", {
   testthat::expect_equal(dim(sm.ic), c(nrow(phens), nrow(phens)))
   testthat::expect_true(all(sm.ic > 0))
   testthat::expect_true(all(sm.ic <= -log10(1 / corpus_size("taxon_annotations"))))
-  testthat::expect_equivalent(diag(sm.ic),
-                              -log10(term_freqs(phens$id,
-                                                as = "phenotype", corpus = "taxon_annotations")))
+  termICs <- -log10(term_freqs(phens$id, as = "phenotype", corpus = "taxon_annotations"))
+  testthat::expect_equivalent(diag(sm.ic), termICs)
 
   sm.ic <- resnik_similarity(subs.mat,
                              wt_args = list(as = "phenotype", corpus = "taxa"))
   testthat::expect_equal(dim(sm.ic), c(nrow(phens), nrow(phens)))
   testthat::expect_true(all(sm.ic > 0))
   testthat::expect_true(all(sm.ic <= -log10(1 / corpus_size("taxa"))))
-  testthat::expect_equivalent(diag(sm.ic),
-                              -log10(term_freqs(phens$id,
-                                                as = "phenotype", corpus = "taxa")))
+  termICs <- -log10(term_freqs(phens$id, as = "phenotype", corpus = "taxa"))
+  testthat::expect_equivalent(diag(sm.ic), termICs)
+
+  subs.ics <- -log10(term_freqs(rownames(subs.mat),
+                                as = "phenotype", corpus = "taxa"))
+  sm.ic2 <- resnik_similarity(subs.mat, wt = subs.ics)
+  testthat::expect_equal(sm.ic, sm.ic2)
+})
+
+test_that("profile similarity with Jaccard", {
+  tl <- c("pelvic fin", "pectoral fin", "forelimb", "hindlimb", "dorsal fin", "caudal fin")
+  tt <- sapply(tl, pk_get_iri, as = "anatomy", exactOnly = TRUE)
+
+  tt.f1 <- c(rep("paired", times = 4), rep("unpaired", times = 2))
+  tt.f2 <- c("fins", "fins", "limbs", "limbs", "fins", "fins")
+  tt.f3 <- interaction(as.factor(tt.f1), as.factor(tt.f2))
+  subs.mat <- subsumer_matrix(tt, .colnames = "label", .labels = names(tt),
+                              preserveOrder = TRUE)
+
+  sm <- profile_similarity(jaccard_similarity, subs.mat, f = tt.f1)
+  testthat::expect_equal(colnames(sm), levels(as.factor(tt.f1)))
+  testthat::expect_equal(rownames(sm), levels(as.factor(tt.f1)))
+  testthat::expect_gt(min(sm), 0)
+  testthat::expect_equal(max(sm), 1)
+  testthat::expect_equivalent(diag(sm), rep(1.0, times = nlevels(as.factor(tt.f1))))
+
+  sm <- profile_similarity(jaccard_similarity, subs.mat, f = tt.f3)
+  testthat::expect_equal(colnames(sm), levels(tt.f3)[1:3])
+  testthat::expect_equal(rownames(sm), levels(tt.f3)[1:3])
+  testthat::expect_gt(min(sm), 0)
+  testthat::expect_equal(max(sm), 1)
+  testthat::expect_equivalent(diag(sm), rep(1.0, times = nlevels(tt.f3)-1))
+
+  sm1 <- profile_similarity(jaccard_similarity, subs.mat, f = tt.f3, reduce = mean)
+  testthat::expect_equal(colnames(sm1), levels(tt.f3)[1:3])
+  testthat::expect_equal(rownames(sm1), levels(tt.f3)[1:3])
+  testthat::expect_gt(min(sm1), 0)
+  testthat::expect_lt(max(sm1), 1)
+  testthat::expect_true(all(diag(sm) - diag(sm1) > 0))
+  testthat::expect_gt(sum(sm - sm1), 0)
+
+  sm2 <- profile_similarity(jaccard_similarity, subs.mat, f = tt.f3,
+                            reduce = reduce.ignoringDiag)
+  # ignoring within-group self matches should decrease the diagonal
+  sm12 <- sm1 - sm2
+  testthat::expect_true(all(diag(sm12) > 0))
+  # and should decrease _only_ the diagonal
+  diag(sm12) <- NA
+  testthat::expect_equal(sum(sm12, na.rm = TRUE), 0)
+
+  sm <- profile_similarity(jaccard_similarity, subs.mat, f = tt.f1,
+                           reduce = bestPairs)
+  # resulting matrix is asymmetric
+  sm.diff <- sm - t(sm)
+  testthat::expect_equivalent(diag(sm.diff), rep(0, times = nlevels(as.factor(tt.f1))))
+  testthat::expect_false(all(sm.diff[upper.tri(sm.diff)] == 0))
+  testthat::expect_false(all(sm.diff[lower.tri(sm.diff)] == 0))
+})
+
+test_that("profile similarity with Resnik", {
+  skip_on_cran()
+
+  phens <- get_phenotypes("maxilla", taxon = "Cyprinidae")
+  subs.mat <- subsumer_matrix(phens$id, .colnames = "label", .labels = phens$label,
+                              preserveOrder = TRUE)
+  phens.f <- as.factor(sapply(as.phenotype(phens$id), function(phen) {
+    if (length(phen$eqs$related_entities) > 0) "relational" else "monadic"
+  }))
+
+  freqs <- term_freqs(rownames(subs.mat), as = "phenotype", corpus = "taxa")
+  sm <- profile_similarity(resnik_similarity, subs.mat, wt = -log10(freqs),
+                           f = phens.f)
+  testthat::expect_equal(colnames(sm), levels(phens.f))
+  testthat::expect_equal(rownames(sm), levels(phens.f))
+  testthat::expect_gt(min(sm), 0)
+  testthat::expect_lte(max(sm), -log10(1 / corpus_size("taxa")))
+
+  # for Resnik as metric, group-wise is the same as pair-wise with maxIC
+  sm1 <- profile_similarity(resnik_similarity, subs.mat, wt = -log10(freqs),
+                            f = phens.f, reduce = max)
+  testthat::expect_equal(sm, sm1)
 })
