@@ -93,7 +93,6 @@ tt <- sapply(c("pelvic fin", "pectoral fin",
 pairedUnpaired <- c(rep("paired", times = 4), rep("unpaired", times = 2))
 finsLimbs <- c("fins", "fins", "limbs", "limbs", "fins", "fins")
 pairedFinLimb <- interaction(as.factor(pairedUnpaired), as.factor(finsLimbs))
-levels(pairedFinLimb)[4] <- NA # no unpaired limbs, so remove it
 
 # compute subsumer matrix
 subs.mat <- subsumer_matrix(tt, .colnames = "label", .labels = names(tt),

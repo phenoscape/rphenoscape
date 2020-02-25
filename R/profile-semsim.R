@@ -48,7 +48,6 @@
 #' pairedUnpaired <- c(rep("paired", times = 4), rep("unpaired", times = 2))
 #' finsLimbs <- c("fins", "fins", "limbs", "limbs", "fins", "fins")
 #' pairedFinLimb <- interaction(as.factor(pairedUnpaired), as.factor(finsLimbs))
-#' levels(pairedFinLimb)[4] <- NA # no unpaired limbs, so remove it
 #'
 #' # compute subsumer matrix
 #' subs.mat <- subsumer_matrix(tt, .colnames = "label", .labels = names(tt),
@@ -79,6 +78,10 @@ profile_similarity <- function(pairwise, subsumer_mat, ..., f, reduce = NA) {
             is.data.frame(subsumer_mat),
             ncol(subsumer_mat) == length(f))
   if (! is.factor(f)) f <- as.factor(f)
+
+  # remove empty levels so they don't create any trouble
+  group.sizes <- tapply(f, f, length)
+  if (any(is.na(group.sizes))) levels(f)[is.na(group.sizes)] <- NA
 
   if (! is.function(reduce)) {
     # by default combine terms (and their subsumers) into group-wise subgraphs
