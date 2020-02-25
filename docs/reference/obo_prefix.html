@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Which phenotypes match filter — phenotype_matches • rphenoscape</title>
+<title>Extract the OBO ontology prefix from IRIs — obo_prefix • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Which phenotypes match filter — phenotype_matches" />
+<meta property="og:title" content="Extract the OBO ontology prefix from IRIs — obo_prefix" />
 
-<meta property="og:description" content="Determines which of one or more phenotype IDs match the given filter." />
+<meta property="og:description" content="Extract the OBO ontology prefix from IRIs" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -102,50 +102,42 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Which phenotypes match filter</h1>
-    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/phenotypes.R'><code>R/phenotypes.R</code></a></small>
-    <div class="hidden name"><code>phenotype_matches.Rd</code></div>
+    <h1>Extract the OBO ontology prefix from IRIs</h1>
+    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/term-type.R'><code>R/term-type.R</code></a></small>
+    <div class="hidden name"><code>obo_prefix.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Determines which of one or more phenotype IDs match the given filter.</p>
+    <p>Extract the OBO ontology prefix from IRIs</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>phenotype_matches</span>(<span class='no'>x</span>, <span class='no'>studies</span>)</pre>
+    <pre class="usage"><span class='fu'>obo_prefix</span>(<span class='no'>x</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>character, vector of phenotype IDs to test. A data.frame is
-allowed if it has a column labeled "id".</p></td>
-    </tr>
-    <tr>
-      <th>studies</th>
-      <td><p>character, vector of study IDs for which to test. A data.frame
-is allowed if it has a column labeled "id".</p></td>
+      <td><p>a list or vector of IRIs, and/or objects that have an "id" key.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a logical vector of the same length as the vector of phenotypes, with
-TRUE as element if the corresponding phenotype matches, and FALSE otherwise.</p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>At present, the only supported query filter is a list of studies (as their
-IDs). A phenotype matches if it is linked to at least one of the studies.</p>
+    <p>A character vector of the same length as the input
+vector or list, with NA in the positions where extracting the OBO
+ontology prefix failed.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_phenotypes.html'>get_phenotypes</a></span>(<span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"basihyal bone"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow</a></span>(<span class='no'>x</span>)</div><div class='output co'>#&gt; [1] 19</div><div class='input'><span class='co'># which of these are in the same study or studies as the first one?</span>
-<span class='fu'>phenotype_matches</span>(<span class='no'>x</span>, <span class='fu'><a href='pk_get_study_list.html'>pk_get_study_list</a></span>(<span class='kw'>phenotype</span> <span class='kw'>=</span> <span class='no'>x</span>$<span class='no'>id</span>[<span class='fl'>1</span>]))</div><div class='output co'>#&gt;  [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>tt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"http://purl.obolibrary.org/obo/UBERON_0011618"</span>,
+        <span class='st'>"http://purl.obolibrary.org/obo/PATO_0002279"</span>,
+        <span class='st'>"http://purl.obolibrary.org/obo/VTO_0071642"</span>,
+        <span class='st'>"http://purl.obolibrary.org/obo/MP_0030825"</span>,
+        <span class='st'>"http://purl.obolibrary.org/obo/NCBITaxon_7955"</span>)
+<span class='fu'>obo_prefix</span>(<span class='no'>tt</span>)</div><div class='output co'>#&gt; [1] "UBERON"    "PATO"      "VTO"       "MP"        "NCBITaxon"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -153,8 +145,6 @@ IDs). A phenotype matches if it is linked to at least one of the studies.</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

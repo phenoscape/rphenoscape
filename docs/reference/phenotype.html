@@ -76,7 +76,7 @@ print pretty-prints objects of type &quot;phenotype&quot;" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.15</span>
       </span>
     </div>
 
@@ -139,7 +139,7 @@ coercible to phenotype).</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>as.phenotype</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>as.phenotype</span>(<span class='no'>x</span>, <span class='kw'>withTaxa</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for data.frame</span>
 <span class='fu'>as.phenotype</span>(<span class='no'>x</span>, <span class='no'>...</span>)
@@ -164,6 +164,12 @@ coercible to phenotype).</p>
 for being of type "phenotype"</p></td>
     </tr>
     <tr>
+      <th>withTaxa</th>
+      <td><p>logical. If TRUE taxa exhibiting the phenotype will be
+available through the phenotype object at key "taxa". Default is FALSE, because
+obtaining taxa requires an additional query per object.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>additional parameters where applicable; ignored for printing</p></td>
     </tr>
@@ -177,7 +183,8 @@ data.frame). A phenotype object has properties "id" (ID, i.e., IRI of the
 phenotype), "label" (label of the phenotype if one exists), "states" (a
 data.frame of the character states to which the phenotype is linked, see value
 for <code>charstates</code>), and "eqs" (the EQ expression components as a list with keys
-"entities", "qualities", and "related_entities").</p>
+"entities", "qualities", and "related_entities"). If <code>withTaxa</code> is TRUE,
+there will also be a key "taxa" (a data.frame with columns "id" and "label").</p>
 <p><code>is.phenotype</code> returns TRUE if the object is of type "phenotype" and FALSE
 otherwise.</p>
 <p><code>is_valid_phenotype</code> returns a logical vector of the same length as the input
@@ -219,7 +226,44 @@ short label for the study to which the character and state belong).</p>
 #&gt; Qualities:
 #&gt;     lacks all parts of type &lt;http://purl.obolibrary.org/obo/PATO_0002000&gt;
 #&gt; Towards:
-#&gt;     basihyal bone &lt;http://purl.obolibrary.org/obo/UBERON_0011618&gt;</div><div class='input'>
+#&gt;     basihyal bone &lt;http://purl.obolibrary.org/obo/UBERON_0011618&gt;
+#&gt; 
+#&gt; No information about taxa exhibiting this phenotype.</div><div class='input'>
+<span class='co'># optionally include taxa exhibiting the phenotype</span>
+<span class='fu'>as.phenotype</span>(<span class='no'>phens</span>[<span class='fl'>3</span>,], <span class='kw'>withTaxa</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; Phenotype 'basihyal bone absent'
+#&gt; Linked to states:
+#&gt;                label character.label           study.label
+#&gt; 1  states 0, 1 and 2        Basihyal Imamura et al. (2005)
+#&gt; 2 absent (unordered)        Basihyal Imamura et al. (2005)
+#&gt; 3             Absent   Basihyal bone  Mabee et al.  (2011)
+#&gt; 4    basihyal absent        Basihyal       De Pinna (1993)
+#&gt; 
+#&gt; Entities:
+#&gt;     multicellular organism &lt;http://purl.obolibrary.org/obo/UBERON_0000468&gt;
+#&gt; Qualities:
+#&gt;     lacks all parts of type &lt;http://purl.obolibrary.org/obo/PATO_0002000&gt;
+#&gt; Towards:
+#&gt;     basihyal bone &lt;http://purl.obolibrary.org/obo/UBERON_0011618&gt;
+#&gt; Exhibited by taxa:
+#&gt;                                           id                    label
+#&gt; 1 http://purl.obolibrary.org/obo/VTO_0035423        Corydoras rabauti
+#&gt; 2 http://purl.obolibrary.org/obo/VTO_0052870        Enophrys diceraus
+#&gt; 3 http://purl.obolibrary.org/obo/VTO_0071753 Eumicrotremus asperrimus
+#&gt; 4 http://purl.obolibrary.org/obo/VTO_0052740   Hemitripterus villosus
+#&gt; 5 http://purl.obolibrary.org/obo/VTO_0052539        Liparis agassizii
+#&gt;  [ reached 'max' / getOption("max.print") -- omitted 6 rows ]</div><div class='input'><span class='co'># full list of taxa:</span>
+<span class='fu'>as.phenotype</span>(<span class='no'>phens</span>[<span class='fl'>3</span>,], <span class='kw'>withTaxa</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)$<span class='no'>taxa</span></div><div class='output co'>#&gt;                                            id                      label
+#&gt; 1  http://purl.obolibrary.org/obo/VTO_0035423          Corydoras rabauti
+#&gt; 2  http://purl.obolibrary.org/obo/VTO_0052870          Enophrys diceraus
+#&gt; 3  http://purl.obolibrary.org/obo/VTO_0071753   Eumicrotremus asperrimus
+#&gt; 4  http://purl.obolibrary.org/obo/VTO_0052740     Hemitripterus villosus
+#&gt; 5  http://purl.obolibrary.org/obo/VTO_0052539          Liparis agassizii
+#&gt; 6  http://purl.obolibrary.org/obo/VTO_0052645       Malacocottus zonurus
+#&gt; 7  http://purl.obolibrary.org/obo/VTO_0052708   Marukawichthys ambulator
+#&gt; 8  http://purl.obolibrary.org/obo/VTO_0035095     Pseudobagrus tokiensis
+#&gt; 9  http://purl.obolibrary.org/obo/VTO_0052614 Rhamphocottus richardsonii
+#&gt; 10 http://purl.obolibrary.org/obo/VTO_0034991               Siluriformes
+#&gt; 11 http://purl.obolibrary.org/obo/VTO_0036124             Silurus glanis</div><div class='input'>
 <span class='co'># can also coerce entire list at once</span>
 <span class='no'>objs</span> <span class='kw'>&lt;-</span> <span class='fu'>as.phenotype</span>(<span class='no'>phens</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/class'>class</a></span>(<span class='no'>objs</span>)</div><div class='output co'>#&gt; [1] "list"</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/length'>length</a></span>(<span class='no'>objs</span>)</div><div class='output co'>#&gt; [1] 19</div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/all'>all</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>sapply</a></span>(<span class='no'>objs</span>, <span class='no'>is.phenotype</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='no'>objs</span><span class='kw'>[[</span><span class='fl'>3</span>]]</div><div class='output co'>#&gt; Phenotype 'basihyal bone absent'
@@ -235,7 +279,9 @@ short label for the study to which the character and state belong).</p>
 #&gt; Qualities:
 #&gt;     lacks all parts of type &lt;http://purl.obolibrary.org/obo/PATO_0002000&gt;
 #&gt; Towards:
-#&gt;     basihyal bone &lt;http://purl.obolibrary.org/obo/UBERON_0011618&gt;</div><div class='input'>
+#&gt;     basihyal bone &lt;http://purl.obolibrary.org/obo/UBERON_0011618&gt;
+#&gt; 
+#&gt; No information about taxa exhibiting this phenotype.</div><div class='input'>
 <span class='co'># extract character states and (non-redundant) characters</span>
 <span class='fu'>charstates</span>(<span class='no'>obj</span>)</div><div class='output co'>#&gt;                                                                     id
 #&gt; 1 http://purl.org/phenoscape/uuid/aad2b9ab-d755-41c3-b0d4-07828af709bd

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Which phenotypes match filter — phenotype_matches • rphenoscape</title>
+<title>Obtain the size of different corpora — corpus_size • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Which phenotypes match filter — phenotype_matches" />
+<meta property="og:title" content="Obtain the size of different corpora — corpus_size" />
 
-<meta property="og:description" content="Determines which of one or more phenotype IDs match the given filter." />
+<meta property="og:description" content="Obtains the size of a certain number of predefined corpora. The total size
+of a corpus is important for calculating term frequencies." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -102,50 +103,46 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Which phenotypes match filter</h1>
-    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/phenotypes.R'><code>R/phenotypes.R</code></a></small>
-    <div class="hidden name"><code>phenotype_matches.Rd</code></div>
+    <h1>Obtain the size of different corpora</h1>
+    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/term-weights.R'><code>R/term-weights.R</code></a></small>
+    <div class="hidden name"><code>corpus_size.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Determines which of one or more phenotype IDs match the given filter.</p>
+    <p>Obtains the size of a certain number of predefined corpora. The total size
+of a corpus is important for calculating term frequencies.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>phenotype_matches</span>(<span class='no'>x</span>, <span class='no'>studies</span>)</pre>
+    <pre class="usage"><span class='fu'>corpus_size</span>(<span class='kw'>corpus</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"taxon_annotations"</span>, <span class='st'>"taxa"</span>, <span class='st'>"gene_annotations"</span>,
+  <span class='st'>"genes"</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>character, vector of phenotype IDs to test. A data.frame is
-allowed if it has a column labeled "id".</p></td>
-    </tr>
-    <tr>
-      <th>studies</th>
-      <td><p>character, vector of study IDs for which to test. A data.frame
-is allowed if it has a column labeled "id".</p></td>
+      <th>corpus</th>
+      <td><p>the name of the corpus, currently one of "taxon_annotations",
+"taxa", "gene_annotations", and "genes". (At present "gene_annotations" is
+pending support by the Phenoscape API.) Unambiguous abbreviations are
+acceptable.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a logical vector of the same length as the vector of phenotypes, with
-TRUE as element if the corresponding phenotype matches, and FALSE otherwise.</p>
+    <p>the size of the specified corpus as an integer number.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>At present, the only supported query filter is a list of studies (as their
-IDs). A phenotype matches if it is linked to at least one of the studies.</p>
+    <p>Corpus sizes are cached per session after they have first been obtained.
+Thus, if the Phenoscape KB changes, a session needs to be restarted to
+have those changes be reflected.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_phenotypes.html'>get_phenotypes</a></span>(<span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"basihyal bone"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow</a></span>(<span class='no'>x</span>)</div><div class='output co'>#&gt; [1] 19</div><div class='input'><span class='co'># which of these are in the same study or studies as the first one?</span>
-<span class='fu'>phenotype_matches</span>(<span class='no'>x</span>, <span class='fu'><a href='pk_get_study_list.html'>pk_get_study_list</a></span>(<span class='kw'>phenotype</span> <span class='kw'>=</span> <span class='no'>x</span>$<span class='no'>id</span>[<span class='fl'>1</span>]))</div><div class='output co'>#&gt;  [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>corpus_size</span>(<span class='st'>"taxa"</span>)</div><div class='output co'>#&gt; [1] 752</div><div class='input'><span class='fu'>corpus_size</span>(<span class='st'>"taxon_annotations"</span>)</div><div class='output co'>#&gt; [1] 805354</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

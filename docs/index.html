@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.15</span>
       </span>
     </div>
 
@@ -97,7 +97,7 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"phenoscape/rphenoscape"</span>)</code></pre></div>
 <p>By default, this will skip building the package vignettes. To build and install package vignettes as well, you must have recent versions of the <code>knitr</code> and <code>rmarkdown</code> packages installed, and use additional parameters, depending on the version of the <code>remotes</code> package you have installed, to request building vignettes.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/packageDescription">packageVersion</a></span>(<span class="st">"remotes"</span>)</code></pre></div>
-<pre><code>## [1] '2.0.4'</code></pre>
+<pre><code>[1] '2.0.4'</code></pre>
 <p>If the version is 2.1.0 or higher, use the <code>build_vignettes</code> parameter (which by default is FALSE):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"phenoscape/rphenoscape"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p>If the version of <code>remotes</code> is lower, use the <code>build_opts</code> parameter:</p>

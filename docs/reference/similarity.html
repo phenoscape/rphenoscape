@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute semantic similarity metrics between terms — tanimoto_similarity • rphenoscape</title>
+<title>Compute semantic similarity metrics between terms — similarity • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Compute semantic similarity metrics between terms — tanimoto_similarity" />
+<meta property="og:title" content="Compute semantic similarity metrics between terms — similarity" />
 
 <meta property="og:description" content="The Tanimoto similarity ST is computed according to the definition for bit vectors
 (see Jaccard index at Wikipedia).
@@ -49,7 +49,10 @@ See Cosine similarity on Wikipedia.
 The metric is valid for any term vectors (columns of the subsumer matrix), i.e.,
 \(M_{i,j} \in \{0, W_i\}\) is not required. Note that
 1 - SC is not a proper distance metric, because it violates the triangle
-inequality. First convert to angle to obtain a distance metric." />
+inequality. First convert to angle to obtain a distance metric.
+The Resnik similarity between two terms is the information content (IC) of
+their most informative common ancestor (MICA), which is the common subsumer
+with the greatest information content." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -80,7 +83,7 @@ inequality. First convert to angle to obtain a distance metric." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.15</span>
       </span>
     </div>
 
@@ -144,6 +147,9 @@ The metric is valid for any term vectors (columns of the subsumer matrix), i.e.,
 \(M_{i,j} \in \{0, W_i\}\) is not required. Note that
 1 - <em>SC</em> is not a proper distance metric, because it violates the triangle
 inequality. First convert to angle to obtain a distance metric.</p>
+<p>The Resnik similarity between two terms is the information content (IC) of
+their most informative common ancestor (MICA), which is the common subsumer
+with the greatest information content.</p>
     
     </div>
 
@@ -151,7 +157,10 @@ inequality. First convert to angle to obtain a distance metric.</p>
 
 <span class='fu'>jaccard_similarity</span>(<span class='kw'>subsumer_mat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>terms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
-<span class='fu'>cosine_similarity</span>(<span class='kw'>subsumer_mat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>terms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>cosine_similarity</span>(<span class='kw'>subsumer_mat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>terms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+
+<span class='fu'>resnik_similarity</span>(<span class='kw'>subsumer_mat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>terms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>,
+  <span class='kw'>wt</span> <span class='kw'>=</span> <span class='no'>term_freqs</span>, <span class='kw'>wt_args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(), <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -174,11 +183,38 @@ for which to generate a properly encoded subsumer matrix on the fly.</p></td>
       <td><p>parameters to be passed on to <code><a href='subsumer_matrix.html'>subsumer_matrix()</a></code>
 if a subsumer matrix is to be generated on the fly.</p></td>
     </tr>
+    <tr>
+      <th>wt</th>
+      <td><p>numeric or a function. If numeric, weights for the subsumer terms.
+For <code>resnik_similarity</code>, these are expected to be information content (IC)
+scores, though any score will work for which a higher value means higher
+information content, and where a term will always have a score equal to or
+greater than any of its superclasses. If a function, it must accept parameter
+<code>x</code> as the vector of term IRIs and return a vector of frequencies (<em>not</em>
+IC scores) for the terms. The default is to use function <code><a href='term_freqs.html'>term_freqs()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>wt_args</th>
+      <td><p>list, named parameters for the function calculating term
+frequencies. Ignored if <code>wt</code> is not a function. For the default <code>wt</code>
+function <code><a href='term_freqs.html'>term_freqs()</a></code>, the main parameters are <code>as</code> and <code>corpus</code>.</p></td>
+    </tr>
+    <tr>
+      <th>base</th>
+      <td><p>integer, the base of the logarithm for calculating information
+content from term frequency. The default is 10.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A matrix with M[i,j] = similarity of terms <em>i</em> and <em>j</em>.</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Philip Resnik (1995). "Using information content to evaluate semantic
+similarity in a taxonomy". Proceedings of the 14th International Joint
+Conference on Artificial Intelligence (IJCAI'95). <strong>1</strong>: 448–453</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -191,6 +227,15 @@ if a subsumer matrix is to be generated on the fly.</p></td>
 
 <span class='co'># e.g., turn into distance matrix, cluster, and plot</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/hclust'>hclust</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/dist'>as.dist</a></span>(<span class='fl'>1</span>-<span class='no'>sm</span>)))
+<span class='co'># }</span><span class='co'># NOT RUN {</span>
+<span class='no'>phens</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_phenotypes.html'>get_phenotypes</a></span>(<span class='st'>"basihyal bone"</span>, <span class='kw'>taxon</span> <span class='kw'>=</span> <span class='st'>"Cyprinidae"</span>)
+<span class='no'>sm.ic</span> <span class='kw'>&lt;-</span> <span class='fu'>resnik_similarity</span>(<span class='kw'>terms</span> <span class='kw'>=</span> <span class='no'>phens</span>$<span class='no'>id</span>,
+                           <span class='kw'>.colnames</span> <span class='kw'>=</span> <span class='st'>"label"</span>, <span class='kw'>.labels</span> <span class='kw'>=</span> <span class='no'>phens</span>$<span class='no'>label</span>,
+                           <span class='kw'>wt_args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>as</span> <span class='kw'>=</span> <span class='st'>"phenotype"</span>,
+                                          <span class='kw'>corpus</span> <span class='kw'>=</span> <span class='st'>"taxa"</span>))
+<span class='no'>maxIC</span> <span class='kw'>&lt;-</span> -<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log10</a></span>(<span class='fl'>1</span> / <span class='fu'><a href='corpus_size.html'>corpus_size</a></span>(<span class='st'>"taxa"</span>))
+<span class='co'># normalize by max IC, turn into distance matrix, cluster, and plot</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/hclust'>hclust</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/dist'>as.dist</a></span>(<span class='fl'>1</span>-<span class='no'>sm.ic</span>/<span class='no'>maxIC</span>)))
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -199,6 +244,8 @@ if a subsumer matrix is to be generated on the fly.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#references">References</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

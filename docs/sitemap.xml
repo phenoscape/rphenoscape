@@ -10,6 +10,9 @@
     <loc>http://rphenoscape.phenoscape.org/reference/anatomy_ontology_iris.html</loc>
   </url>
   <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/corpus_size.html</loc>
+  </url>
+  <url>
     <loc>http://rphenoscape.phenoscape.org/reference/find_term.html</loc>
   </url>
   <url>
@@ -26,6 +29,9 @@
   </url>
   <url>
     <loc>http://rphenoscape.phenoscape.org/reference/nexml_drop.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/obo_prefix.html</loc>
   </url>
   <url>
     <loc>http://rphenoscape.phenoscape.org/reference/pa_dep_matrix.html</loc>
@@ -73,6 +79,9 @@
     <loc>http://rphenoscape.phenoscape.org/reference/pkb_args_to_query.html</loc>
   </url>
   <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/profile_similarity.html</loc>
+  </url>
+  <url>
     <loc>http://rphenoscape.phenoscape.org/reference/similarity.html</loc>
   </url>
   <url>
@@ -80,6 +89,15 @@
   </url>
   <url>
     <loc>http://rphenoscape.phenoscape.org/reference/taxon_ontology_iris.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/term_category.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/term_freqs.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/term_iri.html</loc>
   </url>
   <url>
     <loc>http://rphenoscape.phenoscape.org/articles/rphenoscape.html</loc>

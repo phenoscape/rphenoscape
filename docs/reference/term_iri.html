@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Which phenotypes match filter — phenotype_matches • rphenoscape</title>
+<title>Obtain IRI(s) for canonical terms and properties — partOf_iri • rphenoscape</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,13 @@
 
 
 
-<meta property="og:title" content="Which phenotypes match filter — phenotype_matches" />
+<meta property="og:title" content="Obtain IRI(s) for canonical terms and properties — partOf_iri" />
 
-<meta property="og:description" content="Determines which of one or more phenotype IDs match the given filter." />
+<meta property="og:description" content="partOf_iri returns the IRI ofthe canonical &quot;part_of&quot; relationship in the
+database.
+hasPart_iri returns the IRI ofthe canonical &quot;has_part&quot; relationship in the
+database.
+Provides cached access to IRIs of terms and properties that are frequently used." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -102,50 +106,76 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Which phenotypes match filter</h1>
-    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/phenotypes.R'><code>R/phenotypes.R</code></a></small>
-    <div class="hidden name"><code>phenotype_matches.Rd</code></div>
+    <h1>Obtain IRI(s) for canonical terms and properties</h1>
+    <small class="dont-index">Source: <a href='https://github.com/phenoscape/rphenoscape/blob/master/R/pk_get_IRI.R'><code>R/pk_get_IRI.R</code></a></small>
+    <div class="hidden name"><code>term_iri.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Determines which of one or more phenotype IDs match the given filter.</p>
+    <p><code>partOf_iri</code> returns the IRI ofthe canonical "part_of" relationship in the
+database.</p>
+<p><code>hasPart_iri</code> returns the IRI ofthe canonical "has_part" relationship in the
+database.</p>
+<p>Provides cached access to IRIs of terms and properties that are frequently used.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>phenotype_matches</span>(<span class='no'>x</span>, <span class='no'>studies</span>)</pre>
+    <pre class="usage"><span class='fu'>partOf_iri</span>()
+
+<span class='fu'>hasPart_iri</span>()
+
+<span class='fu'>term_iri</span>(<span class='no'>label</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"owl:Class"</span>, <span class='kw'>preferOntologies</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>firstOnly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>character, vector of phenotype IDs to test. A data.frame is
-allowed if it has a column labeled "id".</p></td>
+      <th>label</th>
+      <td><p>character, the label of the term for which to obtain the IRI</p></td>
     </tr>
     <tr>
-      <th>studies</th>
-      <td><p>character, vector of study IDs for which to test. A data.frame
-is allowed if it has a column labeled "id".</p></td>
+      <th>type</th>
+      <td><p>character, the type of the term, as a IRI or using common
+namespace prefixes such as "owl", "rdf", etc. For example, "owl:Class",
+or "owl:ObjectProperty". The default is "owl:Class".</p></td>
+    </tr>
+    <tr>
+      <th>preferOntologies</th>
+      <td><p>character, an array of ontologies to use for preference.
+In the case of multiple matches, matches will be reordered in the order given,
+and if matches are from preferred and other ontologies, those from ontologies
+not in the preference list will be discarded. If provided and only matches
+from ontologies not in the preference list are found, they will not be cached.
+Can be provided as OBO ontology prefixes, or full ontology IRIs. The default
+is no preferences.</p></td>
+    </tr>
+    <tr>
+      <th>firstOnly</th>
+      <td><p>boolean, whether to return only the first match in case of
+multiple matches. The default is TRUE.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a logical vector of the same length as the vector of phenotypes, with
-TRUE as element if the corresponding phenotype matches, and FALSE otherwise.</p>
+    <p>Character, the IRI(s) for the requested term or property.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>At present, the only supported query filter is a list of studies (as their
-IDs). A phenotype matches if it is linked to at least one of the studies.</p>
+    <p>Requested IRIs are not hard-coded. Instead, they are dynamically retrieved from
+the API when first queried, and (depending on parameters) are subsequently held
+in cache in the session. Hence, if they were to change in the database, the R
+session would need to be restarted for this change to be reflected in the result.</p>
+<p>For the frequently needed properties "part of", "has part" etc, one should use
+the predefined functions (<code>partOf_iri()</code>, <code>hasPart_iri()</code>), so that the correct
+matches are cached and used internally by the package.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_phenotypes.html'>get_phenotypes</a></span>(<span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"basihyal bone"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/nrow'>nrow</a></span>(<span class='no'>x</span>)</div><div class='output co'>#&gt; [1] 19</div><div class='input'><span class='co'># which of these are in the same study or studies as the first one?</span>
-<span class='fu'>phenotype_matches</span>(<span class='no'>x</span>, <span class='fu'><a href='pk_get_study_list.html'>pk_get_study_list</a></span>(<span class='kw'>phenotype</span> <span class='kw'>=</span> <span class='no'>x</span>$<span class='no'>id</span>[<span class='fl'>1</span>]))</div><div class='output co'>#&gt;  [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>term_iri</span>(<span class='st'>"part of"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"owl:ObjectProperty"</span>, <span class='kw'>preferOntologies</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"RO"</span>, <span class='st'>"BFO"</span>))</div><div class='output co'>#&gt; [1] "http://purl.obolibrary.org/obo/BFO_0000050"</div><div class='input'><span class='fu'>term_iri</span>(<span class='st'>"develops from"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"owl:ObjectProperty"</span>, <span class='kw'>preferOntologies</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"RO"</span>))</div><div class='output co'>#&gt; [1] "http://purl.obolibrary.org/obo/RO_0002202"</div><div class='input'><span class='fu'>term_iri</span>(<span class='st'>"anatomical structure"</span>, <span class='kw'>firstOnly</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; [1] "http://purl.obolibrary.org/obo/UBERON_0000061"
+#&gt; [2] "http://purl.obolibrary.org/obo/CARO_0000003"  </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
