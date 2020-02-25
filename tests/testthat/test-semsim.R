@@ -58,6 +58,8 @@ test_that("edge-based similarity metrics work", {
 })
 
 test_that("Resnik similarity", {
+  skip_on_cran()
+
   phens <- get_phenotypes("basihyal bone", taxon = "Cyprinidae")
   subs.mat <- subsumer_matrix(phens$id, .colnames = "label", .labels = phens$label,
                               preserveOrder = TRUE)
@@ -71,18 +73,21 @@ test_that("Resnik similarity", {
   testthat::expect_equal(dim(sm.ic), c(nrow(phens), nrow(phens)))
   testthat::expect_true(all(sm.ic > 0))
   testthat::expect_true(all(sm.ic <= -log10(1 / corpus_size("taxon_annotations"))))
-  testthat::expect_equivalent(diag(sm.ic),
-                              -log10(term_freqs(phens$id,
-                                                as = "phenotype", corpus = "taxon_annotations")))
+  termICs <- -log10(term_freqs(phens$id, as = "phenotype", corpus = "taxon_annotations"))
+  testthat::expect_equivalent(diag(sm.ic), termICs)
 
   sm.ic <- resnik_similarity(subs.mat,
                              wt_args = list(as = "phenotype", corpus = "taxa"))
   testthat::expect_equal(dim(sm.ic), c(nrow(phens), nrow(phens)))
   testthat::expect_true(all(sm.ic > 0))
   testthat::expect_true(all(sm.ic <= -log10(1 / corpus_size("taxa"))))
-  testthat::expect_equivalent(diag(sm.ic),
-                              -log10(term_freqs(phens$id,
-                                                as = "phenotype", corpus = "taxa")))
+  termICs <- -log10(term_freqs(phens$id, as = "phenotype", corpus = "taxa"))
+  testthat::expect_equivalent(diag(sm.ic), termICs)
+
+  subs.ics <- -log10(term_freqs(rownames(subs.mat),
+                                as = "phenotype", corpus = "taxa"))
+  sm.ic2 <- resnik_similarity(subs.mat, wt = subs.ics)
+  testthat::expect_equal(sm.ic, sm.ic2)
 })
 
 test_that("profile similarity with Jaccard", {
@@ -136,6 +141,8 @@ test_that("profile similarity with Jaccard", {
 })
 
 test_that("profile similarity with Resnik", {
+  skip_on_cran()
+
   phens <- get_phenotypes("maxilla", taxon = "Cyprinidae")
   subs.mat <- subsumer_matrix(phens$id, .colnames = "label", .labels = phens$label,
                               preserveOrder = TRUE)
