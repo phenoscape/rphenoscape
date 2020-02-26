@@ -1,7 +1,7 @@
 ---
 title: "Mutually Exclusive Phenotypes"
 author: "Amandeep Rathee"
-date: "1/9/2020"
+date: "2/26/2020"
 output: html_document
 ---
 
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The goal is to establish mutual exclusion in phenotypes. This vignette provides a pseudo code of a function that takes any two phenotypes and outputs whether they are mutually exclusive based on the phenoscape knowledgebase.
 
-```{r include=TRUE, echo=TRUE, warning=FALSE, render=FALSE}
+```{r include=TRUE, echo=TRUE, warning=FALSE, render=FALSE, eval=FALSE}
 
 are_mutually_exclusive <- function(phenotype.a, phenotype.b, studies){
   
@@ -22,92 +22,101 @@ are_mutually_exclusive <- function(phenotype.a, phenotype.b, studies){
       #  1: data suggests mutual exclusion
   mutually_exclusive <- -1
   
-  # get states for each phenotype
-  states.a <- get_state(phenotype.a)
-  states.b <- get_state(phenotype.b)
+  # get charstates object
+  character_state_object <- charstates(c(phenotype.a, phenotype.b))
   
-  # filter states based on studies
-  states.a <- sapply(states.a, function(x) filter_states(studies, x))
-  states.b <- sapply(states.b, function(x) filter_states(studies, x))
+  # get states based on phenotypes and studies
+  states.a <- character_state_object$state.id[(character_state_object$phenotype.id == phenotype.a) & (character_state_object$study.id %in% studies)]
+  states.b <- character_state_object$state.id[(character_state_object$phenotype.id == phenotype.b) & (character_state_object$study.id %in% studies)]
   
-  # get studies -- #todo
-  studies.a 
-  studies.b
-  
-  # determine mutual exclusivity
-  if((length(studies.a) > 0) & (length(studies.b) > 0)){ # determine mutual exclusivity only if both studies are non-empty
-    # get character vectors
-    chars.a <- sapply(states.a, get_chars)
-    chars.b <- sapply(states.b, get_chars)
+  # filter studies based on phenotypes
+  studies.a <- unique(character_state_object$study.id[character_state_object$phenotype.id == phenotype.a])
+  studies.b <- unique(character_state_object$study.id[character_state_object$phenotype.id == phenotype.b])
+
+  # determine mutual exclusivity only if both study vectors are non-empty
+  if((length(studies.a) > 0) & (length(studies.b) > 0)){ 
     
-    # get character_state vectors
-    char_states.a <- sapply(states.a, get_char_states)
-    char_states.b <- sapply(states.b, get_char_states)
+    # get character vectors
+    chars.a <- unique(character_state_object$character.id[character_state_object$phenotype.id == phenotype.a])
+    chars.b <- unique(character_state_object$character.id[character_state_object$phenotype.id == phenotype.b])
+
+    # concatenate characters and states
+    SEPARATOR = '__@__'
+    character_state_object$char_state_pair <- sapply(character_state_object, 
+                                                     function(x){paste(c(x$character.id, x$state.id), collapse = SEPARATOR)})
     
     # check intersection of character vectors
     char_matches <- sum(chars.a %in% chars.b)
     
-    
-    if(char_matches == 0){ # CASE 1: if no characters match --> phenotypes are mutually compatible
+    if(char_matches == 0){ 
+      # CASE 1: if no characters match --> phenotypes are mutually compatible
       mutually_exclusive <- 0
     
-    } else { # CASE 2: if one or more characters match
-      
-      
-        # CASE 2-I: for matched characters, if no states are common among the matched characters --> phenotypes are mutually exclusive
-        char_match_count = get_char_state_match_count(char_states.a, char_states.b, state_count=FALSE)
-        state_different_count = get_char_state_match_count(char_states.a, char_states.b, state_count=TRUE)
+    } else { 
+        # CASE 2: if one or more characters match --> investigate further
+        
+        # get character_state concatenated strings for each phenotypes
+        char_states.a <- unique(character_state_object$char_state_pair[character_state_object$phenotype.id == phenotype.a])
+        char_states.b <- unique(character_state_object$char_state_pair[character_state_object$phenotype.id == phenotype.b])
+        
+        # number of common characters among char_states.a and char_states.b
+        char_match_count <- get_char_state_match_count(char_states.a, char_states.b, SEPARATOR)[1]
+        
+        # number of states that are different among the common characters in char.a and char.b
+        state_different_count <- get_char_state_match_count(char_states.a, char_states.b, SEPARATOR)[2] 
         
         if(char_match_count == state_different_count){
-          mutually_exclusive <- 1
+            # CASE 2-I: for matched characters, if no states are common among the matched characters --> phenotypes are mutually exclusive
+            mutually_exclusive <- 1
         } else {
-          # CASE 2-II: check, for any matched characters, whether any two states match --> phenotypes are mutually compatible
-          char_state_match_count <- sum(char_state.a %in% char_state.b)
-          if(char_state_match_count > 0){
-            mutually_exclusive <- 0
-          }
-          
+            # CASE 2-II: if, for any matched characters, any two corresponding states match --> phenotypes are mutually compatible
+            char_state_match_count <- sum(char_state.a %in% char_state.b)
+            if(char_state_match_count > 0){
+                mutually_exclusive <- 0
+            }
         }
     }
-      
-    return(mutually_exclusive)
+    
+    if(mutually_exclusive == -1){warning('Insufficient evidence to determine mutual exclusivity.')}  
+    mutually_exclusive
     
   } else {
-    stop("At least one of the phenotypes is not part of any studies.")
-    return(mutually_exclusive)  # returns -1
+    if(length(studies.a) == 0){
+        stop("Phenotype A is not part of any of the studies passed. Both phenotypes are required to be part of at least one study.")
+    } elif (length(studies.b) == 0){
+        stop("Phenotype B is not part of any of the studies passed. Both phenotypes are required to be part of at least one study.")
+    } else {
+        stop("Phenotypes A and B are not part of any of the studies passed. Both phenotypes are required to be part of at least one study.")
+    }
   }
-
 }
 
 
-get_char_state_match_count <- function(char_states.a, char_states.b, state_count=FALSE){
+get_char_state_match_count <- function(char_states.a, char_states.b, char_state_separator){
     
     char_match_count = 0        # number of common characters among char_states.a and char_states.b
     state_different_count = 0   # number of states that are different among the common characters in char.a and char.b
-        
-        
+    
+    
     for(char_state.a in char_states.a){
-    for (char_state.b in char_states.b){
-        char.a <- get_char(char_state.a)    # use regex to get character from character_state value
-        state.a <- get_state(char_state.a)  # use regex to get state from character_state value
-        
-        char.b <- get_char(char_state.b)
-        state.b <- get_state(char_state.b)
-        
-        if(char.a == char.b){
-          char_match_count = char_match_count + 1
-          if(state.a != state.b){
-            state_different_count = state_different_count + 1
-          }
+        for (char_state.b in char_states.b){
+            char.a <- strsplit(char_state.a, char_state_separator)[1]
+            state.a <- strsplit(char_state.a, char_state_separator)[2]
+            
+            char.b <- strsplit(char_state.b, char_state_separator)[1]
+            state.b <- strsplit(char_state.b, char_state_separator)[2]
+            
+            if(char.a == char.b){
+                char_match_count = char_match_count + 1
+                if(state.a != state.b){
+                    state_different_count = state_different_count + 1
+                }
+            }
         }
-      }
     }
     
-    if(state_count){
-      state_different_count
-    } else {
-      char_match_count
-    }
+    c(char_match_count, state_different_count)
 }
+
 
 ```
