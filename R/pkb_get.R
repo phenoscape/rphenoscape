@@ -10,6 +10,10 @@
 #' @param ensureNames character, which column or list names to ensure are included
 #'   in the result to be returned. If result returned by the API endpoint does
 #'   not include them, they will be added, with NA values.
+#' @param forceGET logical, whether to force using the HTTP GET method for API
+#'   access regardless of request length. The default is FALSE, meaning queries
+#'   exceeding a certain size for transmission will automatically use HTTP POST
+#'   for accessing the KB API.
 #' @param ... for `get_csv_data`, additional parameters to be passed on to
 #'   [read.csv()][utils::read.csv()]
 #' @return
@@ -24,13 +28,14 @@
 #' @aliases pk_GET
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr GET content
-get_json_data <- function(url, query, verbose = FALSE, ensureNames = NULL) {
-  if (nchar(jsonlite::toJSON(query)) >= 2048)
-    res <- httr::POST(url, httr::accept_json(), httr::user_agent(ua()),
-                      body = query, encode = "form")
-  else
+get_json_data <- function(url, query,
+                          verbose = FALSE, ensureNames = NULL, forceGET = FALSE) {
+  if (forceGET || nchar(jsonlite::toJSON(query)) < 3072)
     res <- httr::GET(url, httr::accept_json(), httr::user_agent(ua()),
                      query = query)
+  else
+    res <- httr::POST(url, httr::accept_json(), httr::user_agent(ua()),
+                      body = query, encode = "form")
   stop_for_pk_status(res)
   # some endpoints return zero content for failure to find data
   contLen <- res$headers$`content-length`
@@ -73,13 +78,13 @@ pk_GET <- get_json_data
 #' @rdname get_data
 #' @importFrom httr GET content
 #' @importFrom utils read.csv
-get_csv_data <- function(url, query, ..., verbose = FALSE) {
-  if (nchar(jsonlite::toJSON(query)) >= 2048)
-    res <- httr::POST(url, httr::accept("text/csv"), httr::user_agent(ua()),
-                      body = query, encode = "form")
-  else
+get_csv_data <- function(url, query, ..., verbose = FALSE, forceGET = FALSE) {
+  if (forceGET || nchar(jsonlite::toJSON(query)) < 2048)
     res <- httr::GET(url, httr::accept("text/csv"), httr::user_agent(ua()),
                      query = query)
+  else
+    res <- httr::POST(url, httr::accept("text/csv"), httr::user_agent(ua()),
+                      body = query, encode = "form")
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")
 
@@ -91,11 +96,11 @@ get_csv_data <- function(url, query, ..., verbose = FALSE) {
 #' @importFrom jsonlite toJSON
 #' @importFrom httr GET POST content
 #' @importFrom RNeXML nexml_read
-get_nexml_data <- function(url, query, verbose = FALSE) {
-  if (nchar(jsonlite::toJSON(query)) >= 2048)
-    res <- httr::POST(url, httr::user_agent(ua()), body = query, encode = "form")
-  else
+get_nexml_data <- function(url, query, verbose = FALSE, forceGET = FALSE) {
+  if (forceGET || nchar(jsonlite::toJSON(query)) < 2048)
     res <- httr::GET(url, httr::user_agent(ua()), query = query)
+  else
+    res <- httr::POST(url, httr::user_agent(ua()), body = query, encode = "form")
   stop_for_pk_status(res)
   # if passing parsed XML to RNeXML, it needs to be in classes of the XML
   # package, but httr::content now uses the xml2 package for parsing text/xml
