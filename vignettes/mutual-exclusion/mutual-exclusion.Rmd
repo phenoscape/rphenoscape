@@ -110,3 +110,83 @@ get_char_state_match_count <- function(char_state_dataframe, phenotype.a, phenot
 }
 
 ```
+
+# Examples of mutual compatibility.
+
+### Case 1: When there are no common characters between phenotypes A and B.
+
+#### Test case 1
+
+```{r}
+# get list of phenotypes
+phenotypes <- get_phenotypes(entity = "hyomandibular bone", taxon = "Hypancistrus")
+
+# get list of studies
+studies <- pk_get_study_list(entity = "hyomandibular bone", taxon = "Hypancistrus")
+
+# check mutual exclusivity between any two phenotypes from the phenotype list
+phenotype.a <- phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with prootic bone']
+phenotype.b <- phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with quadrate bone']
+study <- studies$id[studies$label == 'Armbruster (2004)']
+are_mutually_exclusive(phenotype.a, phenotype.b, study, verbose=TRUE)
+```
+
+
+
+#### Test case 2: 
+
+```{r}
+# get list of phenotypes
+phenotypes <- get_phenotypes(entity = "hyomandibular bone", taxon = "Hypancistrus")
+
+# get list of studies
+studies <- pk_get_study_list(entity = "hyomandibular bone", taxon = "Hypancistrus")
+
+# check mutual exclusivity between any two phenotypes from the phenotype list
+phenotype.a <- phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with prootic bone']
+phenotype.b <- phenotypes$id[phenotypes$label == 'pterotic-posttemporal-supracleithrum in contact with hyomandibular bone']
+study <- studies$id[studies$label == 'Armbruster (2004)']
+are_mutually_exclusive(phenotype.a, phenotype.b, study, verbose=TRUE)
+
+```
+
+### Case 2: When there are common states among characters between phenotypes A and B.
+
+#### Test case 3
+
+```{r}
+# get list of phenotypes
+phenotypes <- get_phenotypes(taxon = 'Abramites hypselonotus')
+
+# get list of studies
+studies <- pk_get_study_list(taxon = 'Abramites hypselonotus')
+
+# check mutual exclusivity between any two phenotypes from the phenotype list
+phenotype.a <- phenotypes$id[phenotypes$label == 'adductor mandibulae structure preopercle horizontal limb']
+phenotype.b <- phenotypes$id[phenotypes$label == 'adductor mandibulae structure preopercle horizontal limb']
+study <- studies$id[studies$label == 'Dillman et al. (2016)']
+are_mutually_exclusive(phenotype.a, phenotype.b, study, verbose=TRUE)
+
+```
+
+#### Test case 4
+
+```{r}
+# get list of phenotypes
+phenotypes <- get_phenotypes(taxon = 'Abramites hypselonotus')
+
+# get list of studies
+studies <- pk_get_study_list(taxon = 'Abramites hypselonotus')
+
+# check mutual exclusivity between any two phenotypes from the phenotype list
+phenotype.a <- phenotypes$id[phenotypes$label == 'ventral region and (part_of some symplectic) decreased width']
+phenotype.b <- phenotypes$id[phenotypes$label == 'ventral region and (part_of some symplectic) laminar']
+study <- studies$id[studies$label == 'Dillman et al. (2016)']
+are_mutually_exclusive(phenotype.a, phenotype.b, study, verbose=TRUE)
+```
+
+TODOS:
+
+1. Examples of mutual exclusivity
+2. Test multiple studies
+3. Allow passing multiple phenotypes and create mutual exclusivity matrix

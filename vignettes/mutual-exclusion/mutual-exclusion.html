@@ -463,6 +463,85 @@ get_char_state_match_count &lt;- function(char_state_dataframe, phenotype.a, phe
     
     c(char_match_count, state_mismatch_count)
 }</code></pre>
+<div id="examples-of-mutual-compatibility." class="section level1">
+<h1>Examples of mutual compatibility.</h1>
+<div id="case-1-when-there-are-no-common-characters-between-phenotypes-a-and-b." class="section level3">
+<h3>Case 1: When there are no common characters between phenotypes A and B.</h3>
+<div id="test-case-1" class="section level4">
+<h4>Test case 1</h4>
+<pre class="r"><code># get list of phenotypes
+phenotypes &lt;- get_phenotypes(entity = &quot;hyomandibular bone&quot;, taxon = &quot;Hypancistrus&quot;)
+
+# get list of studies
+studies &lt;- pk_get_study_list(entity = &quot;hyomandibular bone&quot;, taxon = &quot;Hypancistrus&quot;)
+
+# check mutual exclusivity between any two phenotypes from the phenotype list
+phenotype.a &lt;- phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with prootic bone']
+phenotype.b &lt;- phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with quadrate bone']
+study &lt;- studies$id[studies$label == 'Armbruster (2004)']
+are_mutually_exclusive(phenotype.a, phenotype.b, study, verbose=TRUE)</code></pre>
+<pre><code>## No character match.</code></pre>
+<pre><code>## [1] 0</code></pre>
+</div>
+<div id="test-case-2" class="section level4">
+<h4>Test case 2:</h4>
+<pre class="r"><code># get list of phenotypes
+phenotypes &lt;- get_phenotypes(entity = &quot;hyomandibular bone&quot;, taxon = &quot;Hypancistrus&quot;)
+
+# get list of studies
+studies &lt;- pk_get_study_list(entity = &quot;hyomandibular bone&quot;, taxon = &quot;Hypancistrus&quot;)
+
+# check mutual exclusivity between any two phenotypes from the phenotype list
+phenotype.a &lt;- phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with prootic bone']
+phenotype.b &lt;- phenotypes$id[phenotypes$label == 'pterotic-posttemporal-supracleithrum in contact with hyomandibular bone']
+study &lt;- studies$id[studies$label == 'Armbruster (2004)']
+are_mutually_exclusive(phenotype.a, phenotype.b, study, verbose=TRUE)</code></pre>
+<pre><code>## No character match.</code></pre>
+<pre><code>## [1] 0</code></pre>
+</div>
+</div>
+<div id="case-2-when-there-are-common-states-among-characters-between-phenotypes-a-and-b." class="section level3">
+<h3>Case 2: When there are common states among characters between phenotypes A and B.</h3>
+<div id="test-case-3" class="section level4">
+<h4>Test case 3</h4>
+<pre class="r"><code># get list of phenotypes
+phenotypes &lt;- get_phenotypes(taxon = 'Abramites hypselonotus')
+
+# get list of studies
+studies &lt;- pk_get_study_list(taxon = 'Abramites hypselonotus')
+
+# check mutual exclusivity between any two phenotypes from the phenotype list
+phenotype.a &lt;- phenotypes$id[phenotypes$label == 'adductor mandibulae structure preopercle horizontal limb']
+phenotype.b &lt;- phenotypes$id[phenotypes$label == 'adductor mandibulae structure preopercle horizontal limb']
+study &lt;- studies$id[studies$label == 'Dillman et al. (2016)']
+are_mutually_exclusive(phenotype.a, phenotype.b, study, verbose=TRUE)</code></pre>
+<pre><code>## Character match and state match.</code></pre>
+<pre><code>## [1] 0</code></pre>
+</div>
+<div id="test-case-4" class="section level4">
+<h4>Test case 4</h4>
+<pre class="r"><code># get list of phenotypes
+phenotypes &lt;- get_phenotypes(taxon = 'Abramites hypselonotus')
+
+# get list of studies
+studies &lt;- pk_get_study_list(taxon = 'Abramites hypselonotus')
+
+# check mutual exclusivity between any two phenotypes from the phenotype list
+phenotype.a &lt;- phenotypes$id[phenotypes$label == 'ventral region and (part_of some symplectic) decreased width']
+phenotype.b &lt;- phenotypes$id[phenotypes$label == 'ventral region and (part_of some symplectic) laminar']
+study &lt;- studies$id[studies$label == 'Dillman et al. (2016)']
+are_mutually_exclusive(phenotype.a, phenotype.b, study, verbose=TRUE)</code></pre>
+<pre><code>## Character match and state match.</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>TODOS:</p>
+<ol style="list-style-type: decimal">
+<li>Examples of mutual exclusivity</li>
+<li>Test multiple studies</li>
+<li>Allow passing multiple phenotypes and create mutual exclusivity matrix</li>
+</ol>
+</div>
+</div>
+</div>
 
 
 
