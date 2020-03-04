@@ -219,21 +219,15 @@ semweb_ns <- function(default = NA) {
 #' @return A character vector
 #' @export
 #' @importFrom dplyr filter_at all_vars
-anatomy_ontology_iris <- local({
-  .iris <- c();
+anatomy_ontology_iris <- memoise(
   function() {
-    if (length(.iris) == 0) {
-      res <- find_term("anatomical structure",
-                       matchBy = c("rdfs:label"),
-                       matchTypes = c("exact", "partial"),
-                       limit = 200)
-      res <- dplyr::filter_at(res, "label",
-                              all_vars(startsWith(., "anatomical structure")))
-      .iris <<- unique(res$isDefinedBy)
-    }
-    .iris
-  }
-})
+    res <- find_term("anatomical structure",
+                     matchBy = c("rdfs:label"), matchTypes = c("exact", "partial"),
+                     limit = 200)
+    res <- dplyr::filter_at(res, "label",
+                            all_vars(startsWith(., "anatomical structure")))
+    unique(res$isDefinedBy)
+  })
 
 #' Get IRIs of ontologies with taxonomy terms
 #'
@@ -241,18 +235,12 @@ anatomy_ontology_iris <- local({
 #' @return A character vector
 #' @export
 #' @importFrom dplyr filter_at all_vars
-taxon_ontology_iris <- local({
-  .iris <- c();
+taxon_ontology_iris <- memoise(
   function() {
-    if (length(.iris) == 0) {
-      res <- find_term("Vertebrata",
-                       matchBy = c("rdfs:label"),
-                       matchTypes = c("exact"))
-      .iris <<- unique(res$isDefinedBy)
-    }
-    .iris
-  }
-})
+    res <- find_term("Vertebrata",
+                     matchBy = c("rdfs:label"), matchTypes = c("exact"))
+    unique(res$isDefinedBy)
+  })
 
 ontology_iri <- function(abbr) {
   ifelse(nchar(abbr) == 0 |
