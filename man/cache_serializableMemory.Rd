@@ -11,10 +11,11 @@ cache_serializableMemory(algo = "sha512", path = NULL,
 \item{algo}{The hashing algorithm used for the cache, see
 \code{\link[digest]{digest}} for available algorithms.}
 
-\item{path}{the path for the file from which to initially load the cache, and
-by default also the one to restore from and serialize to when requested.
-If the file does not exist it will be treated as if an empty file had been
-provided.}
+\item{path}{the path for the file from which to initially load the cache, or
+a \link[base:call]{call} that evaluates to a file path. By default this is used
+as the file to restore from and serialize to when requested. If the file
+does not exist at initialization, it will be treated as if an empty file
+had been provided.}
 
 \item{compress}{logical, whether to use compression when serializing the cache.}
 }

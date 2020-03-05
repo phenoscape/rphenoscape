@@ -18,10 +18,11 @@
 #'
 #' @param algo The hashing algorithm used for the cache, see
 #' \code{\link[digest]{digest}} for available algorithms.
-#' @param path the path for the file from which to initially load the cache, and
-#'    by default also the one to restore from and serialize to when requested.
-#'    If the file does not exist it will be treated as if an empty file had been
-#'    provided.
+#' @param path the path for the file from which to initially load the cache, or
+#'    a [call][base::call] that evaluates to a file path. By default this is used
+#'    as the file to restore from and serialize to when requested. If the file
+#'    does not exist at initialization, it will be treated as if an empty file
+#'    had been provided.
 #' @param compress logical, whether to use compression when serializing the cache.
 #' @return
 #' An object (in the form of a list) with the same interface as the objects
@@ -44,6 +45,7 @@ cache_serializableMemory <- function(algo = "sha512", path = NULL, compress = FA
   cache_restore <- function(path = NULL, warnNotExists = TRUE) {
     if (missing(path) || is.null(path))
       path <- parent.env(env = environment())$path
+    if (is.call(path)) path <- eval(path)
 
     if (is.null(path))
       # no file path set here or when initialized, treat as reset
@@ -84,6 +86,7 @@ cache_serializableMemory <- function(algo = "sha512", path = NULL, compress = FA
   cache_serialize <- function(path = NULL) {
     if (missing(path) || is.null(path))
       path <- parent.env(env = environment())$path
+    if (is.call(path)) path <- eval(path)
 
     if (is.null(path))
       warning("No path set or provided to which to serialize cache", call. = FALSE)
@@ -195,9 +198,14 @@ memoise <- function(f, persistName = NULL) {
   if (is.null(persistName) || nchar(persistName) == 0)
     memoise::memoise(f, cache = memoise::cache_memory(algo = "xxhash64"))
   else {
-    fileCache <- file.path(system.file(package = "rphenoscape"),
-                           "data-cache", paste0(persistName, ".rds"))
+    # constructing the actual file path needs to be deferred to when it is
+    # actually needed, due to Staged Installation compatibility being tested
+    # in R 3.6.0 and above. See
+    # https://developer.r-project.org/Blog/public/2019/02/14/staged-install/index.html
+    cacheFile <- substitute(file.path(system.file(package = "rphenoscape"),
+                                      "data-cache",
+                                      paste0(persistName, ".rds")))
     memoise::memoise(f, cache = cache_serializableMemory(algo = "xxhash64",
-                                                         path = fileCache))
+                                                         path = cacheFile))
   }
 }
