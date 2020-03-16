@@ -99,10 +99,8 @@ get_char_state_match_count <- function(char_state_dataframe, phenotype.a, phenot
                 char_match_count = char_match_count + 1
                 if( char_state_df_a[index.a, 'state.id'] != char_state_df_b[index.b, 'state.id'] ){
                     state_mismatch_count = state_mismatch_count + 1
-                } else {next}
-                
-            } else {next}
-            
+                }
+            }
         }
     }
     
@@ -185,8 +183,62 @@ study <- studies$id[studies$label == 'Dillman et al. (2016)']
 are_mutually_exclusive(phenotype.a, phenotype.b, study, verbose=TRUE)
 ```
 
+
+
+## Test mutual exclusivity among more than two phenotypes
+
+```{r}
+mutual_exclusivity_matrix <- function(phenotypes, studies){
+    # return square matrix of size length(phenotypes)
+    # matrix has the following values
+    # -2: phenotypes present in the row and column are not part of the studies provided
+    # -1: default; insufficient data to conclude mutual exclusivity or compatibility
+    #  0: phenotypes belonging to row and column are mutually compatible
+    #  1: phenotypes belonging to row and column are mutually exclusive
+    
+    # initialize matrix
+    num_phenotypes <- length(phenotypes)
+    mutual_exclusivity_matrix <- matrix(-1, nrow=num_phenotypes, ncol=num_phenotypes)
+    
+    # fill each cell of the matrix
+    for (i in 1:num_phenotypes) {
+        for (j in i:num_phenotypes) {
+            
+            if(i != j){ # compute mutual exclusivity among distinct phenotypes only
+                mutual_exclusivity <- are_mutually_exclusive(phenotypes[i], phenotypes[j], studies)
+                mutual_exclusivity_matrix[i, j] <- mutual_exclusivity
+                mutual_exclusivity_matrix[j, i] <- mutual_exclusivity
+            } else {    # phenotype is mutually compatible with itself
+                mutual_exclusivity_matrix[i, j] <- 0
+            }
+        }
+    }
+    
+    # return matrix
+    mutual_exclusivity_matrix
+}
+```
+
+
+```{r}
+# get phenotypes
+phenotypes <- get_phenotypes(entity = "hyomandibular bone", taxon = "Hypancistrus")
+phenotypes <- c(phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with prootic bone'],
+                phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with quadrate bone'],
+                phenotypes$id[phenotypes$label == 'hyomandibular bone position opercle'],
+                phenotypes$id[phenotypes$label == 'hyomandibular bone structure metapterygoid'])
+# get studies
+studies <- pk_get_study_list(entity = "hyomandibular bone", taxon = "Hypancistrus")
+study <- studies$id[studies$label == 'Armbruster (2004)']
+
+# check mutual exclusivity
+mutual_exclusivity_matrix(phenotypes, study)
+
+```
+
+
+
 TODOS:
 
 1. Examples of mutual exclusivity
 2. Test multiple studies
-3. Allow passing multiple phenotypes and create mutual exclusivity matrix

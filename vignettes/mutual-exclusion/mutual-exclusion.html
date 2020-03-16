@@ -364,7 +364,7 @@ summary {
 
 <h1 class="title toc-ignore">Mutually Exclusive Phenotypes</h1>
 <h4 class="author">Amandeep Rathee</h4>
-<h4 class="date">March-04-2020</h4>
+<h4 class="date">March-15-2020</h4>
 
 </div>
 
@@ -454,10 +454,8 @@ get_char_state_match_count &lt;- function(char_state_dataframe, phenotype.a, phe
                 char_match_count = char_match_count + 1
                 if( char_state_df_a[index.a, 'state.id'] != char_state_df_b[index.b, 'state.id'] ){
                     state_mismatch_count = state_mismatch_count + 1
-                } else {next}
-                
-            } else {next}
-            
+                }
+            }
         }
     }
     
@@ -533,13 +531,61 @@ study &lt;- studies$id[studies$label == 'Dillman et al. (2016)']
 are_mutually_exclusive(phenotype.a, phenotype.b, study, verbose=TRUE)</code></pre>
 <pre><code>## Character match and state match.</code></pre>
 <pre><code>## [1] 0</code></pre>
+</div>
+</div>
+<div id="test-mutual-exclusivity-among-more-than-two-phenotypes" class="section level2">
+<h2>Test mutual exclusivity among more than two phenotypes</h2>
+<pre class="r"><code>mutual_exclusivity_matrix &lt;- function(phenotypes, studies){
+    # return square matrix of size length(phenotypes)
+    # matrix has the following values
+    # -2: phenotypes present in the row and column are not part of the studies provided
+    # -1: default; insufficient data to conclude mutual exclusivity or compatibility
+    #  0: phenotypes belonging to row and column are mutually compatible
+    #  1: phenotypes belonging to row and column are mutually exclusive
+    
+    # initialize matrix
+    num_phenotypes &lt;- length(phenotypes)
+    mutual_exclusivity_matrix &lt;- matrix(-1, nrow=num_phenotypes, ncol=num_phenotypes)
+    
+    # fill each cell of the matrix
+    for (i in 1:num_phenotypes) {
+        for (j in i:num_phenotypes) {
+            
+            if(i != j){ # compute mutual exclusivity among distinct phenotypes only
+                mutual_exclusivity &lt;- are_mutually_exclusive(phenotypes[i], phenotypes[j], studies)
+                mutual_exclusivity_matrix[i, j] &lt;- mutual_exclusivity
+                mutual_exclusivity_matrix[j, i] &lt;- mutual_exclusivity
+            } else {    # phenotype is mutually compatible with itself
+                mutual_exclusivity_matrix[i, j] &lt;- 0
+            }
+        }
+    }
+    
+    # return matrix
+    mutual_exclusivity_matrix
+}</code></pre>
+<pre class="r"><code># get phenotypes
+phenotypes &lt;- get_phenotypes(entity = &quot;hyomandibular bone&quot;, taxon = &quot;Hypancistrus&quot;)
+phenotypes &lt;- c(phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with prootic bone'],
+                phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with quadrate bone'],
+                phenotypes$id[phenotypes$label == 'hyomandibular bone position opercle'],
+                phenotypes$id[phenotypes$label == 'hyomandibular bone structure metapterygoid'])
+# get studies
+studies &lt;- pk_get_study_list(entity = &quot;hyomandibular bone&quot;, taxon = &quot;Hypancistrus&quot;)
+study &lt;- studies$id[studies$label == 'Armbruster (2004)']
+
+# check mutual exclusivity
+mutual_exclusivity_matrix(phenotypes, study)</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4]
+## [1,]    0    0    0    0
+## [2,]    0    0    0    0
+## [3,]    0    0    0    0
+## [4,]    0    0    0    0</code></pre>
 <p>TODOS:</p>
 <ol style="list-style-type: decimal">
 <li>Examples of mutual exclusivity</li>
 <li>Test multiple studies</li>
-<li>Allow passing multiple phenotypes and create mutual exclusivity matrix</li>
 </ol>
-</div>
 </div>
 </div>
 
