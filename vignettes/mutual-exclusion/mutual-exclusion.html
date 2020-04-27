@@ -364,7 +364,7 @@ summary {
 
 <h1 class="title toc-ignore">Mutually Exclusive Phenotypes</h1>
 <h4 class="author">Amandeep Rathee and Hilmar Lapp</h4>
-<h4 class="date">April-17-2020</h4>
+<h4 class="date">April-27-2020</h4>
 
 </div>
 
@@ -372,109 +372,121 @@ summary {
 <p>This vignette showcases a function <code>are_mutually_exclusive</code> that establishes whether two phenotypes are mutually exclusive based on the phenoscape KB data.</p>
 <div id="test-of-mutual-exclusivity-among-two-pehnotypes." class="section level2">
 <h2>1. Test of mutual exclusivity among two pehnotypes.</h2>
-<pre class="r"><code>are_mutually_exclusive &lt;- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL, verbose=FALSE){
+<pre class="r"><code>mutual_exclusivity_pair_test &lt;- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL){
     
-    # mutually_exclusive takes three values:
-    # -1: default; we assume that before checking mutual exclusion, phenotypes are neither mutually exclusive nor mutually compatible
-    #  0: data suggests mutual compatibility
-    #  1: data suggests mutual exclusion
-    #  2: data suggests mutual compatibility within same taxa
+    # INPUT:
+    # phenotype.a : phenotype id of the first phenotype for whom we want to determine mutual exclusivity.
+    # phenotype.b : phenotype id of the second phenotype for whom we want to determine mutual exclusivity.
+    # studies     : a vector of study IDs in case you want to determine mutual exclusivity based on the evidence found in those studies only.
+    # charstates  : the charstates dataframe that contains both the phenotypes.
     
-    # set mutual exclusivity to default value
-    mutually_exclusive &lt;- -1
+    # OUTPUT: is_pair_mutually_exclusive
+    # is_pair_mutually_exclusive takes six values:
+    # inconclusive evidence : default value set at the start of the function
+    # strong compatibility  : if the two phenotypes share one or more character-state value(s), they are mutually compatible (strong evidence).
+    # strong exclusivity    : if the two phenotypes share one or more characters, but do not share any states, then they are mutually exclusive (strong evidence).
+    # weak compatibility    : if the two phenotypes do not share any characters, and are part of same taxon, then they are mutually compatible (weak evidence).
+    # weak exclusivity      : if the two phenotypes do not share any characters, and are not part of same taxon, then they are mutually exclusive (weak evidence).
+    # NA                    : if either (or both) phenotypes have zero states associated with them, then mutual exclusion can not be computed.
     
-    # convert to phenotype object
-    if(!is.phenotype(phenotype.a)){
+    # convert phenotypes to phenotype objects for faster computation
+    if (!is.phenotype(phenotype.a)) {
         phenotype.a &lt;- as.phenotype(phenotype.a, withTaxa=TRUE)
     }
     
-    if(!is.phenotype(phenotype.b)){
+    if (!is.phenotype(phenotype.b)) {
         phenotype.b &lt;- as.phenotype(phenotype.b, withTaxa=TRUE)
     }
     
-    # get charstates dataframe
-    if(is.null(charstates)){
+    # set mutual exclusivity to default value
+    exclusivity_types &lt;- c('strong_compatibility',
+                           'weak_compatibility',
+                           'inconclusive_evidence',
+                           'weak_exclusivity',
+                           'strong_exclusivity')
+    is_pair_mutually_exclusive &lt;- exclusivity_types[3]
+    
+    # load charstates dataframe that contains both the phenotypes
+    if (is.null(charstates)) {
         character_states &lt;- charstates(list(phenotype.a, phenotype.b))
-    } else{
-        character_states = charstates
-    }
-    
-    # filter the character state dataframe based on phenotypes and studies (optional)
-    if(is.null(studies)){
-        charstates.a &lt;- character_states[character_states$phenotype.id == phenotype.a$id, ]
-        charstates.b &lt;- character_states[character_states$phenotype.id == phenotype.b$id, ]
     } else {
-        charstates.a &lt;- character_states[(character_states$phenotype.id == phenotype.a$id) &amp; (character_states$study.id %in% studies), ]
-        charstates.b &lt;- character_states[(character_states$phenotype.id == phenotype.b$id) &amp; (character_states$study.id %in% studies), ]   
+        character_states &lt;- charstates
     }
     
-    # get states associated with both phenotypes
-    states.a &lt;- charstates.a$state.id
-    states.b &lt;- charstates.b$state.id
+    # filter the character_states dataframe by studies
+    if (!is.null(studies)) {
+        character_states &lt;- character_states[character_states$study.id %in% studies, ]
+    }
     
-    # determine mutual exclusivity only if both study vectors are non-empty
-    if((length(states.a) &gt; 0) &amp; (length(states.b) &gt; 0)){ 
+    # store the charstate dataframe associated with each phenotype separately for easier computation
+    charstates.a &lt;- character_states[(character_states$phenotype.id == phenotype.a$id), ]
+    charstates.b &lt;- character_states[(character_states$phenotype.id == phenotype.b$id), ]
+    
+    # determine mutual exclusivity only if both phenotypes have non-empty states
+    num_states.a &lt;- length(charstates.a$state.id)
+    num_states.b &lt;- length(charstates.b$state.id)
+    if (num_states.a &gt; 0 &amp;&amp; num_states.b &gt; 0) {
         
-        # get characters
+        # compute the intersection of the two characters vectors
         chars.a &lt;- unique(charstates.a$character.id)
         chars.b &lt;- unique(charstates.b$character.id)
+        mutual_characters_present &lt;- length(intersect(chars.a, chars.b)) &gt; 0
+        #mutual_characters_present &lt;- (sum(chars.a %in% chars.b) &gt; 0)
         
-        # check intersection of characters in both phenotypes
-        char_matches &lt;- sum(chars.a %in% chars.b)
-        
-        if(char_matches == 0){ 
-            # CASE 1: if no characters match then check whether phenotypes have common taxa
+        if (mutual_characters_present) {
+            # If the two phenotypes have mutual characters, then
+            # there is enough evidence to decide mutual exclusivity among the two phenotypes.
+            # Therefore, the mutual exclusion in this case is called 'strong'.
+            # Mutual exclusivity is decided by looking at whether the two phenotypes have mutual states.
             
-            if(length(intersect(phenotype.a$taxa$id, phenotype.b$taxa$id)) &gt; 0){
-                # if phenotypes have common taxa then mutually compatible
-                if(verbose){cat(&quot;Phenotypes occur in the same taxa but no characters match.\n&quot;)}
-                mutually_exclusive &lt;- 2
+            states.a &lt;- charstates.a$state.id
+            states.b &lt;- charstates.b$state.id
+            mutual_states_present &lt;- length(intersect(states.a, states.b)) &gt; 0
+            
+            if (mutual_states_present) {
+                # strong compatibility if phenotypes share states
+                is_pair_mutually_exclusive &lt;- exclusivity_types[1]
             } else {
-                # if phenotypes occur in mutually exclusive taxa then they are mutually exclusive
-                if(verbose){cat(&quot;Phenotypes occur in two different mutually exclusive taxa and no characters match.\n&quot;)}
-                mutually_exclusive &lt;- 1
+                # strong exclusivity if phenotypes do not share states
+                is_pair_mutually_exclusive &lt;- exclusivity_types[5]
             }
             
-        } else { 
-            # CASE 2: if one or more characters match --&gt; investigate further
+        } else {
+            # If there are no mutal characters among the two phenotypes, then
+            # there is lack (but not absence) of evidence to determine mutual exclusivity.
+            # Therefore, the mutual exclusion in this case is called 'weak'.
+            # Mutual exclusivity is decided by looking at whether the two phenotypes have mutual taxa.
             
-            if(intersection_length(charstates.a, charstates.b) == 0){
-                # CASE 2-I: for matched characters, if no states are common among the matched characters --&gt; phenotypes are mutually exclusive
-                if(verbose){cat(&quot;Character match but no state match.\n&quot;)}
-                mutually_exclusive &lt;- 1
-                
+            mutual_taxa_present &lt;- length(intersect(phenotype.a$taxa$id, phenotype.b$taxa$id)) &gt; 0
+            if(mutual_taxa_present){
+                # weak compatibility
+                is_pair_mutually_exclusive &lt;- exclusivity_types[2]
             } else {
-                # CASE 2-II: if, for any matched characters, any two corresponding states match --&gt; phenotypes are mutually compatible
-                if(verbose){cat(&quot;Character match and state match.\n&quot;)}
-                mutually_exclusive &lt;- 0
+                # weak exclusivity
+                is_pair_mutually_exclusive &lt;- exclusivity_types[4]
             }
         }
         
-        if(mutually_exclusive == -1){warning('Insufficient evidence to determine mutual exclusivity.')}  
-        
     } else {
-        if(length(states.a) == 0){
-            mutually_exclusive &lt;- NA
-            warning(&quot;Phenotype A is not part of any of the studies passed. Both phenotypes are required to be part of at least one study.&quot;)
+        # If one or both phenotypes have empty-state, then
+        # mutual exclusivity is NA.
+        
+        if (num_states.a == 0) {
+            warning(&quot;Phenotype 1 does not have any states in the charstates dataframe.&quot;)
+            is_pair_mutually_exclusive &lt;- NA
             
-        } else if (length(states.b) == 0){
-            mutually_exclusive &lt;- NA
-            warning(&quot;Phenotype B is not part of any of the studies passed. Both phenotypes are required to be part of at least one study.&quot;)
+        } else if (num_states.b == 0){
+            warning(&quot;Phenotype 2 does not have any states in the charstates dataframe.&quot;)
+            is_pair_mutually_exclusive &lt;- NA
+            
         } else {
-            mutually_exclusive &lt;- NA
-            warning(&quot;Phenotypes A and B are not part of any of the studies passed. Both phenotypes are required to be part of at least one study.&quot;)
+            warning(&quot;Both phenotypes do not have any states in the charstates dataframe.&quot;)
+            is_pair_mutually_exclusive &lt;- NA
         }
     }
     
-    
-    mutually_exclusive
-}
-
-intersection_length &lt;- function(charstate.a, charstate.b){
-    
-    # find common character-state pairs among phenotype A and B
-    # finding for commom character-state pair is equivalent to looking for common state ids because state ids are unique
-    length(intersect(charstate.a[, c('state.id')], charstate.b[, c('state.id')]))
+    # return mutual exclusivity
+    is_pair_mutually_exclusive
 }</code></pre>
 <pre class="r"><code># get phenotypes
 phenotypes &lt;- get_phenotypes(entity = &quot;hyomandibular bone&quot;, taxon = &quot;Hypancistrus&quot;)
@@ -487,40 +499,61 @@ studies &lt;- pk_get_study_list(entity = &quot;hyomandibular bone&quot;, taxon =
 study &lt;- studies$id[studies$label == 'Armbruster (2004)']
 
 # check mutual exclusivity
-are_mutually_exclusive(phenotypes[1], phenotypes[2], study)</code></pre>
+mutual_exclusivity_pair_test(phenotypes[1], phenotypes[2], studies=study)</code></pre>
 </div>
 <div id="test-of-mutual-exclusivity-among-more-than-two-phenotypes." class="section level2">
 <h2>2. Test of mutual exclusivity among more than two phenotypes.</h2>
-<pre class="r"><code>mutual_exclusivity_matrix &lt;- function(phenotypes, studies=NULL, progress_bar=TRUE){
-    # return square matrix of size length(phenotypes) and a dataframe that contains mutual exclusive pairs of phenotypes
+<pre class="r"><code>mutual_exclusivity_test &lt;- function(phenotypes, studies=NULL, progress_bar=TRUE){
+    # INPUT:
+    # phenotypes   : a vector containing the IDs of the two phenotypes for whom we want to determine mutual exclusivity.
+    # studies      : a vector of study IDs in case you want to determine mutual exclusivity based on the evidence found in those studies only.
+    # progress_bar : logical; whether to print the progress of the function.
     
-    # matrix has the following values
-    # NA: phenotypes present in the row and column are not part of the studies provided
-    # -1: default; insufficient data to conclude mutual exclusivity or compatibility
-    #  0: phenotypes belonging to row and column are mutually compatible
-    #  1: phenotypes belonging to row and column are mutually exclusive
-    #  2: phenotypes belonging to row and column are mutually compatible (within same taxa)
+    # OUTPUT: A list containing a matrix and a dataframe
+    # are_mutually_exclusive takes six values:
+    # inconclusive evidence : default value set at the start of the function
+    # strong compatibility  : if the two phenotypes share one or more character-state value(s), they are mutually compatible (strong evidence).
+    # strong exclusivity    : if the two phenotypes share one or more characters, but do not share any states, then they are mutually exclusive (strong evidence).
+    # weak compatibility    : if the two phenotypes do not share any characters, and are part of same taxon, then they are mutually compatible (weak evidence).
+    # weak exclusivity      : if the two phenotypes do not share any characters, and are not part of same taxon, then they are mutually exclusive (weak evidence).
+    # NA                    : if either (or both) phenotypes have zero states associated with them, then mutual exclusion can not be computed.
     
-    # each row of dataframe represents a mutually exclusive pair with label and ids of both phenotypes
-    
-    # initialize matrix
-    num_phenotypes &lt;- length(phenotypes)
-    mutual_exclusivity_matrix &lt;- matrix(-1, nrow=num_phenotypes, ncol=num_phenotypes)
-    
-    # initialize variables to keep track of progress of the function
-    iteration &lt;- 1
-    total_iterations &lt;- choose(num_phenotypes, 2) + num_phenotypes
-    num_mutual_exclusive_pairs &lt;- 0
-    num_mutual_compatible_pairs &lt;- 0
-    num_inconclusive_evidence &lt;- 0
-    first_mutual_exclusive_pair &lt;- FALSE
-    
-    # convert to phenotype objects
-    if(!all(sapply(phenotypes, is.phenotype))){
-        phenotypes &lt;- as.phenotype(phenotypes)   
+    # make sure that only two phenotypes are passed
+    if (is.null(phenotypes)) {
+        stop(&quot;No phenotypes passed.&quot;)
     }
     
-    # load charstates dataframe
+    # initialize a square matrix to store mutual exclusivity result among each pair of phenotypes
+    num_phenotypes &lt;- length(phenotypes)
+    exclusivity_types &lt;- c('strong_compatibility',
+                           'weak_compatibility',
+                           'inconclusive_evidence',
+                           'weak_exclusivity',
+                           'strong_exclusivity')
+    mutual_exclusivity_matrix &lt;- matrix(&quot;inconclusive evidence&quot;,
+                                        nrow=num_phenotypes,
+                                        ncol=num_phenotypes)
+    rownames(mutual_exclusivity_matrix) &lt;- 1:num_phenotypes
+    colnames(mutual_exclusivity_matrix) &lt;- 1:num_phenotypes
+    
+    # boolean to determine whether resultant dataframe is created or not
+    dataframe_created &lt;- FALSE
+    
+    # initialize variables to keep track of progress of the function
+    if (progress_bar) {
+        iteration &lt;- 1
+        total_iterations &lt;- choose(num_phenotypes, 2) + num_phenotypes
+        num_mutual_exclusive_pairs &lt;- 0
+        num_mutual_compatible_pairs &lt;- 0
+        num_inconclusive_evidence &lt;- 0
+    }
+    
+    # convert phenotypes to phenotype objects for faster computation
+    if (!all(sapply(phenotypes, is.phenotype))) {
+        phenotypes &lt;- as.phenotype(phenotypes, withTaxa=TRUE)
+    }
+    
+    # load charstates dataframe that contains all the phenotypes
     character_states &lt;- charstates(phenotypes)
     
     # find mutual exclusivity for each pair in the phenotype vector
@@ -528,68 +561,83 @@ are_mutually_exclusive(phenotypes[1], phenotypes[2], study)</code></pre>
         for (column in row:num_phenotypes) {
             
             # print progress of the loop
-            if(progress_bar == TRUE){
+            if (progress_bar == TRUE) {
                 cat('\014')
-                cat(paste0(round(iteration / (total_iterations) * 100, 4), '% completed\n', 
-                           'Mutually exclusive pairs = ', num_mutual_exclusive_pairs, '\n',
+                cat(paste0(round(iteration / (total_iterations) * 100, 4), '% completed\n',
+                           'Mutually exclusive pairs  = ', num_mutual_exclusive_pairs, '\n',
                            'Mutually compatible pairs = ', num_mutual_compatible_pairs, '\n',
-                           'Inconclusive evidence = ', num_inconclusive_evidence, '\n'))
+                           'Inconclusive evidence     = ', num_inconclusive_evidence, '\n'))
                 iteration &lt;- iteration + 1
             }
             
-            if(row != column){ # compute mutual exclusivity among distinct phenotypes only
-                mutual_exclusivity &lt;- are_mutually_exclusive(phenotypes[[row]], phenotypes[[column]], 
-                                                             studies=studies,
-                                                             charstates=character_states,
-                                                             verbose=FALSE)
-                #print(mutual_exclusivity)
+            # compute mutual exclusivity among distinct phenotypes only
+            if (row != column) {
+                
+                # compute mutual exclusivity
+                mutual_exclusivity &lt;- mutual_exclusivity_pair_test(phenotypes[[row]],
+                                                                   phenotypes[[column]],
+                                                                   studies=studies,
+                                                                   charstates=character_states)
+                # store exclusivity as factor
+                mutual_exclusivity &lt;- factor(mutual_exclusivity,
+                                             levels = exclusivity_types,
+                                             ordered = TRUE)
+                
+                # store exclusivity result in matrix
                 mutual_exclusivity_matrix[row, column] &lt;- mutual_exclusivity
                 mutual_exclusivity_matrix[column, row] &lt;- mutual_exclusivity
                 
-                if(mutual_exclusivity == 1){
-                    num_mutual_exclusive_pairs &lt;- num_mutual_exclusive_pairs + 1
-                    
-                    # append row of mutually exclusive pair to dataframe
-                    #print(phenotypes[row])
-                    dataframe_row &lt;- c(phenotypes[[row]]$id,
-                                       phenotypes[[row]]$label,
-                                       #character_states[character_states$phenotype.id == row, ][, c(&quot;phenotype.label&quot;)],
-                                       phenotypes[[column]]$id,
-                                       phenotypes[[column]]$label
-                                       #character_states[character_states$phenotype.id == column, ][, c(&quot;phenotype.label&quot;)]
-                                       )
-                    
-                    if(first_mutual_exclusive_pair==FALSE){ # create dataframe if first mutually exclusive pair
-                        mutually_exclusive_pairs &lt;- data.frame(id.1    = dataframe_row[1],
-                                                               label.1 = dataframe_row[2],
-                                                               id.2    = dataframe_row[3],
-                                                               label.2 = dataframe_row[4],
-                                                               stringsAsFactors = FALSE)
-                        first_mutual_exclusive_pair &lt;- TRUE
-                    } else { # append to existing dataframe for all subsequent mutually exclusive pairs
-                        mutually_exclusive_pairs &lt;- rbind(mutually_exclusive_pairs, dataframe_row)
-                    }
+                # store exclusivity result in a dataframe
+                dataframe_row &lt;- c(phenotypes[[row]]$id,
+                                   phenotypes[[row]]$label,
+                                   phenotypes[[column]]$id,
+                                   phenotypes[[column]]$label,
+                                   as.character(mutual_exclusivity)
+                )
                 
-                } else if(mutual_exclusivity == -1){
-                    num_inconclusive_evidence &lt;- num_inconclusive_evidence + 1
-                
-                } else if(mutual_exclusivity == 0 | mutual_exclusivity == 2){
-                    num_mutual_compatible_pairs &lt;- num_mutual_compatible_pairs + 1
+                # create dataframe
+                if (dataframe_created == FALSE) {
+                    mutual_exclusivity_df &lt;- data.frame(id.1    = dataframe_row[1],
+                                                        label.1 = dataframe_row[2],
+                                                        id.2    = dataframe_row[3],
+                                                        label.2 = dataframe_row[4],
+                                                        mutual_exclusivity = mutual_exclusivity,
+                                                        stringsAsFactors = FALSE)
+                    dataframe_created &lt;- TRUE
+                    
+                } else {
+                    # append all subsequent results to existing dataframe
+                    mutual_exclusivity_df &lt;- rbind(mutual_exclusivity_df, dataframe_row)
                 }
                 
-            } else if(row == column){
-                mutual_exclusivity_matrix[row, column] &lt;- 0
+                # update progress bar statistics
+                if (progress_bar) {
+                    if (mutual_exclusivity == &quot;strong_exclusivity&quot; || mutual_exclusivity == &quot;weak_exclusivity&quot;) {
+                        # keep track of the number of exclusive phenotype pairs for printing in the progress bar
+                        num_mutual_exclusive_pairs &lt;- num_mutual_exclusive_pairs + 1
+                        
+                    } else if (mutual_exclusivity == &quot;inconclusive_evidence&quot;) {
+                        # keep track of the number of phenotype pairs with inconclusive evidence for printing in the progress bar
+                        num_inconclusive_evidence &lt;- num_inconclusive_evidence + 1
+                        
+                    } else if (mutual_exclusivity == &quot;strong_compatibility&quot; || mutual_exclusivity == &quot;weak_compatibility&quot;) {
+                        # keep track of the number of compatible phenotype pairs for printing in the progress bar
+                        num_mutual_compatible_pairs &lt;- num_mutual_compatible_pairs + 1
+                    }
+                }
+                
+            } else if (row == column) {
+                # a phenotype is strongly compatible with itself
+                mutual_exclusivity_matrix[row, column] &lt;- factor(&quot;strong_compatibility&quot;,
+                                                                 levels = exclusivity_types,
+                                                                 ordered = TRUE)
             }
         }
     }
     
-    # set header for matrix
-    rownames(mutual_exclusivity_matrix) &lt;- 1:length(phenotypes)
-    colnames(mutual_exclusivity_matrix) &lt;- 1:length(phenotypes)
-    
-    # return a list containing the matrix and the dataframe
-    list(matrix=mutual_exclusivity_matrix, 
-         mutually_exclusive_pairs=data.frame(mutually_exclusive_pairs))
+    # return a list containing the resultant matrix and the dataframe
+    list(matrix=mutual_exclusivity_matrix,
+         dataframe=mutual_exclusivity_df)
 }</code></pre>
 </div>
 <div id="find-mutual-exclusive-phenotypes-in-the-dillman-et-al.-2016-study" class="section level2">
@@ -603,63 +651,87 @@ phenotypes &lt;- get_phenotypes(study=study)
 phenotypes &lt;- as.phenotype(phenotypes)
 
 # test mutual exclusivity
-n &lt;- 5
-me &lt;- mutual_exclusivity_matrix(phenotypes[1:n], study, progress_bar=FALSE)
+n &lt;- 7
+me &lt;- mutual_exclusivity_test(phenotypes[1:n], study, progress_bar=FALSE)
 
 # get matrix
 me$matrix</code></pre>
-<pre><code>##   1 2 3 4 5
-## 1 0 1 1 1 1
-## 2 1 0 1 1 1
-## 3 1 1 0 1 1
-## 4 1 1 1 0 1
-## 5 1 1 1 1 0</code></pre>
+<pre><code>##   1   2   3   4   5   6   7  
+## 1 &quot;1&quot; &quot;5&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot;
+## 2 &quot;5&quot; &quot;1&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot;
+## 3 &quot;4&quot; &quot;4&quot; &quot;1&quot; &quot;5&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot;
+## 4 &quot;4&quot; &quot;4&quot; &quot;5&quot; &quot;1&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot;
+## 5 &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;1&quot; &quot;5&quot; &quot;4&quot;
+## 6 &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;5&quot; &quot;1&quot; &quot;4&quot;
+## 7 &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;1&quot;</code></pre>
 <pre class="r"><code># get phenotype pairs
-me$mutually_exclusive_pairs</code></pre>
-<pre><code>##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        id.1
-## 1  http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001667%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2000462%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000071%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBFO_0000050%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_2000452%253E%2529%23aeae11fa-7206-49d5-a92a-53e531c1e3d2%3E%29%29
-## 2  http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001667%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2000462%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000071%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBFO_0000050%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_2000452%253E%2529%23aeae11fa-7206-49d5-a92a-53e531c1e3d2%3E%29%29
-## 3  http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001667%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2000462%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000071%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBFO_0000050%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_2000452%253E%2529%23aeae11fa-7206-49d5-a92a-53e531c1e3d2%3E%29%29
-## 4  http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001667%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2000462%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000071%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBFO_0000050%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_2000452%253E%2529%23aeae11fa-7206-49d5-a92a-53e531c1e3d2%3E%29%29
-## 5                                                                                                                                                                                                                                                                                                          http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001667%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2000462%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2001825%3E%29%29
-## 6                                                                                                                                                                                                                                                                                                          http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001667%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2000462%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2001825%3E%29%29
-## 7                                                                                                                                                                                                                                                                                                          http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001667%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2000462%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2001825%3E%29%29
-## 8                                                                                                                                                                                                                                                                                                                                                                                                                                                        http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0002514%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_0016631%3E%29%29
-## 9                                                                                                                                                                                                                                                                                                                                                                                                                                                        http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0002514%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_0016631%3E%29%29
-## 10                                                                                                                                                                                                                                                                                                                                                                                                                                                       http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0002502%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_0016631%3E%29%29
-##                                                                     label.1
-## 1  abductor hyohyoid attached to anterior region and (part_of some urohyal)
-## 2  abductor hyohyoid attached to anterior region and (part_of some urohyal)
-## 3  abductor hyohyoid attached to anterior region and (part_of some urohyal)
-## 4  abductor hyohyoid attached to anterior region and (part_of some urohyal)
-## 5                     abductor hyohyoid attached to urohyal lateral process
-## 6                     abductor hyohyoid attached to urohyal lateral process
-## 7                     abductor hyohyoid attached to urohyal lateral process
-## 8           actinopterygian frontal-parietal joint anteromedial orientation
-## 9           actinopterygian frontal-parietal joint anteromedial orientation
-## 10            actinopterygian frontal-parietal joint transverse orientation
-##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      id.2
-## 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001667%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2000462%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_2001825%3E%29%29
-## 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0002514%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_0016631%3E%29%29
-## 3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0002502%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_0016631%3E%29%29
-## 4  http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001961%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0004865%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000120%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0000468%253E%2529%231179fee4-0611-4b11-b2c3-96a8db395a0d%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0004865%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000121%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0000468%253E%2529%2369b0a30a-87d7-4061-8693-4b69ef7cf5e1%3E%29%29
-## 5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0002514%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_0016631%3E%29%29
-## 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0002502%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_0016631%3E%29%29
-## 7  http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001961%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0004865%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000120%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0000468%253E%2529%231179fee4-0611-4b11-b2c3-96a8db395a0d%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0004865%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000121%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0000468%253E%2529%2369b0a30a-87d7-4061-8693-4b69ef7cf5e1%3E%29%29
-## 8                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0002502%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FUBERON_0016631%3E%29%29
-## 9  http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001961%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0004865%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000120%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0000468%253E%2529%231179fee4-0611-4b11-b2c3-96a8db395a0d%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0004865%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000121%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0000468%253E%2529%2369b0a30a-87d7-4061-8693-4b69ef7cf5e1%3E%29%29
-## 10 http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A++++%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FPATO_0001961%3E%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0000052%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0004865%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000120%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0000468%253E%2529%231179fee4-0611-4b11-b2c3-96a8db395a0d%3E%29%0A+++++and+%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FRO_0002503%3E+some+%3Chttp%3A%2F%2Fpurl.org%2Fphenoscape%2Fsubclassof%3Fvalue%3D%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0004865%253E%250A%2Band%2B%2528%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FBSPO_0000121%253E%2Bsome%2B%253Chttp%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FUBERON_0000468%253E%2529%2369b0a30a-87d7-4061-8693-4b69ef7cf5e1%3E%29%29
+me$dataframe[, c('label.1', 'label.2', 'mutual_exclusivity')]</code></pre>
+<pre><code>##                                                                                                                                                                             label.1
+## 1                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
+## 2                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
+## 3                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
+## 4                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
+## 5                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
+## 6                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
+## 7                                                                                                                             abductor hyohyoid attached to urohyal lateral process
+## 8                                                                                                                             abductor hyohyoid attached to urohyal lateral process
+## 9                                                                                                                             abductor hyohyoid attached to urohyal lateral process
+## 10                                                                                                                            abductor hyohyoid attached to urohyal lateral process
+## 11                                                                                                                            abductor hyohyoid attached to urohyal lateral process
+## 12                                                                                                                  actinopterygian frontal-parietal joint anteromedial orientation
+## 13                                                                                                                  actinopterygian frontal-parietal joint anteromedial orientation
+## 14                                                                                                                  actinopterygian frontal-parietal joint anteromedial orientation
+## 15                                                                                                                  actinopterygian frontal-parietal joint anteromedial orientation
+## 16                                                                                                                    actinopterygian frontal-parietal joint transverse orientation
+## 17                                                                                                                    actinopterygian frontal-parietal joint transverse orientation
+## 18                                                                                                                    actinopterygian frontal-parietal joint transverse orientation
+## 19 actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
+## 20 actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
+## 21  actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
 ##                                                                                                                                                                             label.2
 ## 1                                                                                                                             abductor hyohyoid attached to urohyal lateral process
 ## 2                                                                                                                   actinopterygian frontal-parietal joint anteromedial orientation
 ## 3                                                                                                                     actinopterygian frontal-parietal joint transverse orientation
 ## 4  actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 5                                                                                                                   actinopterygian frontal-parietal joint anteromedial orientation
-## 6                                                                                                                     actinopterygian frontal-parietal joint transverse orientation
-## 7  actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
+## 5   actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
+## 6                                                                                                                                            adductor mandibulae attachment quality
+## 7                                                                                                                   actinopterygian frontal-parietal joint anteromedial orientation
 ## 8                                                                                                                     actinopterygian frontal-parietal joint transverse orientation
 ## 9  actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 10 actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)</code></pre>
+## 10  actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
+## 11                                                                                                                                           adductor mandibulae attachment quality
+## 12                                                                                                                    actinopterygian frontal-parietal joint transverse orientation
+## 13 actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
+## 14  actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
+## 15                                                                                                                                           adductor mandibulae attachment quality
+## 16 actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
+## 17  actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
+## 18                                                                                                                                           adductor mandibulae attachment quality
+## 19  actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
+## 20                                                                                                                                           adductor mandibulae attachment quality
+## 21                                                                                                                                           adductor mandibulae attachment quality
+##    mutual_exclusivity
+## 1  strong_exclusivity
+## 2    weak_exclusivity
+## 3    weak_exclusivity
+## 4    weak_exclusivity
+## 5    weak_exclusivity
+## 6    weak_exclusivity
+## 7    weak_exclusivity
+## 8    weak_exclusivity
+## 9    weak_exclusivity
+## 10   weak_exclusivity
+## 11   weak_exclusivity
+## 12 strong_exclusivity
+## 13   weak_exclusivity
+## 14   weak_exclusivity
+## 15   weak_exclusivity
+## 16   weak_exclusivity
+## 17   weak_exclusivity
+## 18   weak_exclusivity
+## 19 strong_exclusivity
+## 20   weak_exclusivity
+## 21   weak_exclusivity</code></pre>
 </div>
 
 
