@@ -8,17 +8,16 @@
 #' computation for the mutual_exclusivity_test() function faster since
 #' it repeatedly calls mutual_exclusivity_pair_test().
 #'
-#' @param phenotype.a character, a vector containing the phenotype ID (IRI) or
-#' a phenotype object.
-#' @param phenotype.b character, a vector containing the phenotype ID (IRI) or
-#' a phenotype object.
+#' @param phenotype.a character, phenotype ID (IRI) or a phenotype object.
+#' @param phenotype.b character, phenotype ID (IRI) or a phenotype object.
 #' @param studies character, a vector of study IDs.
 #' @param charstates dataframe, a dataframe obtained by running
 #' charstates(list(phenotype.a, phenotype.b))
 #'
 #' @return is_pair_mutually_exclusive character, the mutual exclusivity result of two phenotypes.
 #' The output can be one of the following:
-#' 'inconclusive_evidence' : default value set at the start of the function
+#' 'inconclusive_evidence' : default if no evidence supporting or contradicting
+#' mutual exclusivity can be found.
 #'
 #' 'strong_compatibility'  : if the two phenotypes share one or more character-state value(s),
 #' they are mutually compatible (strong evidence).
@@ -27,24 +26,23 @@
 #' but do not share any states, then they are mutually exclusive (strong evidence).
 #'
 #' 'weak_compatibility'    : if the two phenotypes do not share any characters,
-#' and are part of same taxon, then they are mutually compatible (weak evidence).
+#' but there are taxa exhibiting both of their respective character states,
+#' then they are mutually compatible (weak evidence).
 #'
 #' 'weak_exclusivity'      : if the two phenotypes do not share any characters,
-#' and are not part of same taxon, then they are mutually exclusive (weak evidence).
-#'
-#' NA                      : if either (or both) phenotypes have zero states
-#' associated with them, then mutual exclusion can not be computed.
+#' and there are no taxa exhibiting both of their respective character states,
+#' then they are mutually exclusive (weak evidence).
 #'
 #' @examples
 #' \dontrun{
-#' # get studies
+#' # get all studies in the database
 #' studies <- pk_get_study_list()
 #' study <- studies$id[studies$label == 'Dillman et al. (2016)']
 #'
 #' # get phenotypes
 #' phenotypes <- get_phenotypes(study=study)
 #' #phenotypes <- phenotypes$id  # slower
-#' phenotypes <- as.phenotype(phenotypes, withTaxa=TRUE)  # faster, recommended
+#' phenotypes <- as.phenotype(phenotypes, withTaxa=TRUE)  # much faster, recommended
 #'
 #' # determine mutual exclusivity between the first and fith phenotypes in the study
 #' print(mutual_exclusivity_pair_test(phenotypes[1], phenotypes[5]))
@@ -52,21 +50,6 @@
 #'
 #' @export
 mutual_exclusivity_pair_test <- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL){
-
-    # INPUT:
-    # phenotype.a : phenotype id of the first phenotype for whom we want to determine mutual exclusivity.
-    # phenotype.b : phenotype id of the second phenotype for whom we want to determine mutual exclusivity.
-    # studies     : a vector of study IDs in case you want to determine mutual exclusivity based on the evidence found in those studies only.
-    # charstates  : the charstates dataframe that contains both the phenotypes.
-
-    # OUTPUT: is_pair_mutually_exclusive
-    # is_pair_mutually_exclusive takes six values:
-    # inconclusive evidence : default value set at the start of the function
-    # strong compatibility  : if the two phenotypes share one or more character-state value(s), they are mutually compatible (strong evidence).
-    # strong exclusivity    : if the two phenotypes share one or more characters, but do not share any states, then they are mutually exclusive (strong evidence).
-    # weak compatibility    : if the two phenotypes do not share any characters, and are part of same taxon, then they are mutually compatible (weak evidence).
-    # weak exclusivity      : if the two phenotypes do not share any characters, and are not part of same taxon, then they are mutually exclusive (weak evidence).
-    # NA                    : if either (or both) phenotypes have zero states associated with them, then mutual exclusion can not be computed.
 
     # convert phenotypes to phenotype objects for faster computation
     if (!is.phenotype(phenotype.a)) {
@@ -77,7 +60,7 @@ mutual_exclusivity_pair_test <- function(phenotype.a, phenotype.b, studies=NULL,
         phenotype.b <- as.phenotype(phenotype.b, withTaxa=TRUE)
     }
 
-    # set mutual exclusivity to default value
+    # define mutual exclusivity types
     exclusivity_types <- c('strong_compatibility',
                            'weak_compatibility',
                            'inconclusive_evidence',
@@ -110,7 +93,6 @@ mutual_exclusivity_pair_test <- function(phenotype.a, phenotype.b, studies=NULL,
         chars.a <- unique(charstates.a$character.id)
         chars.b <- unique(charstates.b$character.id)
         mutual_characters_present <- length(intersect(chars.a, chars.b)) > 0
-        #mutual_characters_present <- (sum(chars.a %in% chars.b) > 0)
 
         if (mutual_characters_present) {
             # If the two phenotypes have mutual characters, then
@@ -147,20 +129,19 @@ mutual_exclusivity_pair_test <- function(phenotype.a, phenotype.b, studies=NULL,
         }
 
     } else {
-        # If one or both phenotypes have empty-state, then
-        # mutual exclusivity is NA.
+        # If either (or both) phenotype(s) have empty state(s), then we say that
+        # there is no evidence to compute mutual exclusivity.
+        # This block raises a warning and is_pair_mutually_exclusive is returned
+        # with the default value: 'inconclusive_evidence'.
 
         if (num_states.a == 0) {
             warning("Phenotype 1 does not have any states in the charstates dataframe.")
-            is_pair_mutually_exclusive <- NA
 
         } else if (num_states.b == 0){
             warning("Phenotype 2 does not have any states in the charstates dataframe.")
-            is_pair_mutually_exclusive <- NA
 
         } else {
             warning("Both phenotypes do not have any states in the charstates dataframe.")
-            is_pair_mutually_exclusive <- NA
         }
     }
 
@@ -177,7 +158,7 @@ mutual_exclusivity_pair_test <- function(phenotype.a, phenotype.b, studies=NULL,
 #' @param phenotypes phenotype, a vector of phenotype objects or a vector of IRIs of
 #' phenotypes for which one wants to determine the mutual exclusivity.
 #' Passing phenotypes as phenotype objects results in much faster computation
-#' than passing IRIs.
+#' than passing phenotype IRIs.
 #' @param studies character, a vector of study IDs if one is interested to
 #' determine mutual exclusivity based on the evidence from a particular set
 #' of studies.
@@ -185,24 +166,26 @@ mutual_exclusivity_pair_test <- function(phenotype.a, phenotype.b, studies=NULL,
 #' If more than several hundred phenotypes are passed, it is suggested to track
 #' the progress of the function by setting this parameter to TRUE.
 #'
-#' @return a list of a matrix and a dataframe containing mutual exclusivity
+#' WARNING: setting progress_bar to TRUE clears the R console and then prints the progress.
+#'
+#' @return A list of a matrix and a dataframe containing mutual exclusivity
 #' results for the phenotypes.
-#' The matrix is square and its size is equal to the number of phenotypes.
+#' The resulting matrix is square where its size is equal to the number of phenotypes.
 #' Each cell contains a value that informs about the mutual exclusivity
-#' of the phenotypes corresponding to the row and the column of the cell.
-#' The dataframe contains five columns: the labels and ids of each phenotype
+#' among the phenotypes corresponding to the row and the column of the cell.
+#' The resulting dataframe contains five columns: the labels and ids of each phenotype
 #' in a pair, and the mutual exclusivity value of the pair.
 #'
 #' @examples
 #' \dontrun{
-#' # get studies
+#' # get all studies in the database
 #' studies <- pk_get_study_list()
 #' study <- studies$id[studies$label == 'Dillman et al. (2016)']
 #'
 #' # get phenotypes
 #' phenotypes <- get_phenotypes(study=study)
 #' #phenotypes <- phenotypes$id  # slower
-#' phenotypes <- as.phenotype(phenotypes, withTaxa=TRUE)  # faster, recommended
+#' phenotypes <- as.phenotype(phenotypes, withTaxa=TRUE)  # much faster, recommended
 #'
 #'# compute mutual exclusivity
 #' me <- mutual_exclusivity_test(phenotypes, study, progress_bar=TRUE)
@@ -215,23 +198,10 @@ mutual_exclusivity_pair_test <- function(phenotype.a, phenotype.b, studies=NULL,
 #' }
 #' @export
 mutual_exclusivity_test <- function(phenotypes, studies=NULL, progress_bar=TRUE){
-    # INPUT:
-    # phenotypes   : a vector containing the IDs of the two phenotypes for whom we want to determine mutual exclusivity.
-    # studies      : a vector of study IDs in case you want to determine mutual exclusivity based on the evidence found in those studies only.
-    # progress_bar : logical; whether to print the progress of the function.
 
-    # OUTPUT: A list containing a matrix and a dataframe
-    # are_mutually_exclusive takes six values:
-    # inconclusive evidence : default value set at the start of the function
-    # strong compatibility  : if the two phenotypes share one or more character-state value(s), they are mutually compatible (strong evidence).
-    # strong exclusivity    : if the two phenotypes share one or more characters, but do not share any states, then they are mutually exclusive (strong evidence).
-    # weak compatibility    : if the two phenotypes do not share any characters, and are part of same taxon, then they are mutually compatible (weak evidence).
-    # weak exclusivity      : if the two phenotypes do not share any characters, and are not part of same taxon, then they are mutually exclusive (weak evidence).
-    # NA                    : if either (or both) phenotypes have zero states associated with them, then mutual exclusion can not be computed.
-
-    # make sure that only two phenotypes are passed
-    if (is.null(phenotypes)) {
-        stop("No phenotypes passed.")
+    # make sure that at least two phenotypes are passed
+    if (is.null(phenotypes) || length(phenotypes) == 1) {
+        stop("Less than two phenotypes passed. The function expects at least two phenotypes to compute mutual exclusivity.")
     }
 
     # initialize a square matrix to store mutual exclusivity result among each pair of phenotypes

@@ -12,11 +12,9 @@ mutual_exclusivity_pair_test(
 )
 }
 \arguments{
-\item{phenotype.a}{character, a vector containing the phenotype ID (IRI) or
-a phenotype object.}
+\item{phenotype.a}{character, phenotype ID (IRI) or a phenotype object.}
 
-\item{phenotype.b}{character, a vector containing the phenotype ID (IRI) or
-a phenotype object.}
+\item{phenotype.b}{character, phenotype ID (IRI) or a phenotype object.}
 
 \item{studies}{character, a vector of study IDs.}
 
@@ -26,7 +24,8 @@ charstates(list(phenotype.a, phenotype.b))}
 \value{
 is_pair_mutually_exclusive character, the mutual exclusivity result of two phenotypes.
 The output can be one of the following:
-'inconclusive_evidence' : default value set at the start of the function
+'inconclusive_evidence' : default if no evidence supporting or contradicting
+mutual exclusivity can be found.
 
 'strong_compatibility'  : if the two phenotypes share one or more character-state value(s),
 they are mutually compatible (strong evidence).
@@ -35,13 +34,12 @@ they are mutually compatible (strong evidence).
 but do not share any states, then they are mutually exclusive (strong evidence).
 
 'weak_compatibility'    : if the two phenotypes do not share any characters,
-and are part of same taxon, then they are mutually compatible (weak evidence).
+but there are taxa exhibiting both of their respective character states,
+then they are mutually compatible (weak evidence).
 
 'weak_exclusivity'      : if the two phenotypes do not share any characters,
-and are not part of same taxon, then they are mutually exclusive (weak evidence).
-
-NA                      : if either (or both) phenotypes have zero states
-associated with them, then mutual exclusion can not be computed.
+and there are no taxa exhibiting both of their respective character states,
+then they are mutually exclusive (weak evidence).
 }
 \description{
 The function expects two phenotypes, not a vector.
@@ -54,14 +52,14 @@ it repeatedly calls mutual_exclusivity_pair_test().
 }
 \examples{
 \dontrun{
-# get studies
+# get all studies in the database
 studies <- pk_get_study_list()
 study <- studies$id[studies$label == 'Dillman et al. (2016)']
 
 # get phenotypes
 phenotypes <- get_phenotypes(study=study)
 #phenotypes <- phenotypes$id  # slower
-phenotypes <- as.phenotype(phenotypes, withTaxa=TRUE)  # faster, recommended
+phenotypes <- as.phenotype(phenotypes, withTaxa=TRUE)  # much faster, recommended
 
 # determine mutual exclusivity between the first and fith phenotypes in the study
 print(mutual_exclusivity_pair_test(phenotypes[1], phenotypes[5]))

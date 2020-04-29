@@ -10,7 +10,7 @@ mutual_exclusivity_test(phenotypes, studies = NULL, progress_bar = TRUE)
 \item{phenotypes}{phenotype, a vector of phenotype objects or a vector of IRIs of
 phenotypes for which one wants to determine the mutual exclusivity.
 Passing phenotypes as phenotype objects results in much faster computation
-than passing IRIs.}
+than passing phenotype IRIs.}
 
 \item{studies}{character, a vector of study IDs if one is interested to
 determine mutual exclusivity based on the evidence from a particular set
@@ -18,15 +18,17 @@ of studies.}
 
 \item{progress_bar}{logical, whether to print progress of the function.
 If more than several hundred phenotypes are passed, it is suggested to track
-the progress of the function by setting this parameter to TRUE.}
+the progress of the function by setting this parameter to TRUE.
+
+WARNING: setting progress_bar to TRUE clears the R console and then prints the progress.}
 }
 \value{
-a list of a matrix and a dataframe containing mutual exclusivity
+A list of a matrix and a dataframe containing mutual exclusivity
 results for the phenotypes.
-The matrix is square and its size is equal to the number of phenotypes.
+The resulting matrix is square where its size is equal to the number of phenotypes.
 Each cell contains a value that informs about the mutual exclusivity
-of the phenotypes corresponding to the row and the column of the cell.
-The dataframe contains five columns: the labels and ids of each phenotype
+among the phenotypes corresponding to the row and the column of the cell.
+The resulting dataframe contains five columns: the labels and ids of each phenotype
 in a pair, and the mutual exclusivity value of the pair.
 }
 \description{
@@ -36,14 +38,14 @@ function for each phenotype pair.
 }
 \examples{
 \dontrun{
-# get studies
+# get all studies in the database
 studies <- pk_get_study_list()
 study <- studies$id[studies$label == 'Dillman et al. (2016)']
 
 # get phenotypes
 phenotypes <- get_phenotypes(study=study)
 #phenotypes <- phenotypes$id  # slower
-phenotypes <- as.phenotype(phenotypes, withTaxa=TRUE)  # faster, recommended
+phenotypes <- as.phenotype(phenotypes, withTaxa=TRUE)  # much faster, recommended
 
 # compute mutual exclusivity
 me <- mutual_exclusivity_test(phenotypes, study, progress_bar=TRUE)
