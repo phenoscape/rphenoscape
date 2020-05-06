@@ -364,7 +364,7 @@ summary {
 
 <h1 class="title toc-ignore">Mutually Exclusive Phenotypes</h1>
 <h4 class="author">Amandeep Rathee and Hilmar Lapp</h4>
-<h4 class="date">April-29-2020</h4>
+<h4 class="date">May-05-2020</h4>
 
 </div>
 
@@ -372,7 +372,7 @@ summary {
 <p>This vignette showcases two functions <code>mutual_exclusivity_pair_test</code> and <code>mutual_exclusivity_test</code> both of which are used to compute mutually exclusivity among phenotypes. The <code>mutual_exclusivity_pair_test</code> calculates the mutual exclusivity between two phenotypes, and the <code>mutual_exclusivity_test</code> calculates the mutual exclusivity for multiple phenotypes.</p>
 <div id="test-of-mutual-exclusivity-among-two-phenotypes." class="section level2">
 <h2>1. Test of mutual exclusivity among two phenotypes.</h2>
-<pre class="r"><code>mutual_exclusivity_pair_test &lt;- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL){
+<pre class="r"><code>mutual_exclusivity_pair &lt;- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL){
     
     # convert phenotypes to phenotype objects for faster computation
     if (!is.phenotype(phenotype.a)) {
@@ -458,16 +458,20 @@ summary {
         # with the default value: 'inconclusive_evidence'.
         
         if (num_states.a == 0) {
-            warning(&quot;Phenotype 1 does not have any states in the charstates dataframe.&quot;)
+            warning(&quot;Phenotype A does not have any states in the charstates dataframe.&quot;)
             
         } else if (num_states.b == 0){
-            warning(&quot;Phenotype 2 does not have any states in the charstates dataframe.&quot;)
+            warning(&quot;Phenotype B does not have any states in the charstates dataframe.&quot;)
 
         } else {
             warning(&quot;Both phenotypes do not have any states in the charstates dataframe.&quot;)
         }
     }
     
+    # convert mutual exclusivity state to a factor
+    is_pair_mutually_exclusive &lt;- factor(is_pair_mutually_exclusive, 
+                                         levels = exclusivity_types,
+                                         ordered = TRUE)
     # return mutual exclusivity
     is_pair_mutually_exclusive
 }</code></pre>
@@ -482,11 +486,11 @@ studies &lt;- pk_get_study_list(entity = &quot;hyomandibular bone&quot;, taxon =
 study &lt;- studies$id[studies$label == 'Armbruster (2004)']
 
 # check mutual exclusivity
-mutual_exclusivity_pair_test(phenotypes[1], phenotypes[2], studies=study)</code></pre>
+mutual_exclusivity_pair(phenotypes[1], phenotypes[2], studies=study)</code></pre>
 </div>
 <div id="test-of-mutual-exclusivity-among-more-than-two-phenotypes." class="section level2">
 <h2>2. Test of mutual exclusivity among more than two phenotypes.</h2>
-<pre class="r"><code>mutual_exclusivity_test &lt;- function(phenotypes, studies=NULL, progress_bar=TRUE){
+<pre class="r"><code>mutual_exclusivity &lt;- function(phenotypes, studies=NULL, progress_bar=TRUE){
     
     # make sure that at least two phenotypes are passed
     if (is.null(phenotypes) || length(phenotypes) == 1) {
@@ -500,7 +504,9 @@ mutual_exclusivity_pair_test(phenotypes[1], phenotypes[2], studies=study)</code>
                            'inconclusive_evidence',
                            'weak_exclusivity',
                            'strong_exclusivity')
-    mutual_exclusivity_matrix &lt;- matrix(&quot;inconclusive evidence&quot;,
+    mutual_exclusivity_matrix &lt;- matrix(as.integer(factor(&quot;inconclusive_evidence&quot;,
+                                                          levels = exclusivity_types,
+                                                          ordered = TRUE)),
                                         nrow=num_phenotypes,
                                         ncol=num_phenotypes)
     rownames(mutual_exclusivity_matrix) &lt;- 1:num_phenotypes
@@ -544,18 +550,18 @@ mutual_exclusivity_pair_test(phenotypes[1], phenotypes[2], studies=study)</code>
             if (row != column) {
                 
                 # compute mutual exclusivity
-                mutual_exclusivity &lt;- mutual_exclusivity_pair_test(phenotypes[[row]],
-                                                                   phenotypes[[column]],
-                                                                   studies=studies,
-                                                                   charstates=character_states)
+                mutual_exclusivity &lt;- mutual_exclusivity_pair(phenotypes[[row]],
+                                                              phenotypes[[column]],
+                                                              studies=studies,
+                                                              charstates=character_states)
                 # store exclusivity as factor
-                mutual_exclusivity &lt;- factor(mutual_exclusivity,
-                                             levels = exclusivity_types,
-                                             ordered = TRUE)
+                #mutual_exclusivity &lt;- factor(mutual_exclusivity,
+                #                             levels = exclusivity_types,
+                #                             ordered = TRUE)
                 
                 # store exclusivity result in matrix
-                mutual_exclusivity_matrix[row, column] &lt;- mutual_exclusivity
-                mutual_exclusivity_matrix[column, row] &lt;- mutual_exclusivity
+                mutual_exclusivity_matrix[row, column] &lt;- as.integer(mutual_exclusivity)
+                mutual_exclusivity_matrix[column, row] &lt;- as.integer(mutual_exclusivity)
                 
                 # store exclusivity result in a dataframe
                 dataframe_row &lt;- c(phenotypes[[row]]$id,
@@ -598,12 +604,17 @@ mutual_exclusivity_pair_test(phenotypes[1], phenotypes[2], studies=study)</code>
                 
             } else if (row == column) {
                 # a phenotype is strongly compatible with itself
-                mutual_exclusivity_matrix[row, column] &lt;- factor(&quot;strong_compatibility&quot;,
-                                                                 levels = exclusivity_types,
-                                                                 ordered = TRUE)
+                mutual_exclusivity_matrix[row, column] &lt;- as.integer(factor(&quot;strong_compatibility&quot;,
+                                                                            levels = exclusivity_types,
+                                                                            ordered = TRUE))
             }
         }
     }
+    
+    # change mutual_exclusivity column to factor
+    mutual_exclusivity_df$mutual_exclusivity &lt;- factor(mutual_exclusivity_df$mutual_exclusivity,
+                                                       levels = exclusivity_types,
+                                                       ordered = TRUE)
     
     # return a list containing the resultant matrix and the dataframe
     list(matrix=mutual_exclusivity_matrix,
@@ -622,18 +633,18 @@ phenotypes &lt;- as.phenotype(phenotypes)
 
 # test mutual exclusivity
 n &lt;- 7
-me &lt;- mutual_exclusivity_test(phenotypes[1:n], study, progress_bar=FALSE)
+me &lt;- mutual_exclusivity(phenotypes[1:n], study, progress_bar=FALSE)
 
 # get matrix
 me$matrix</code></pre>
-<pre><code>##   1   2   3   4   5   6   7  
-## 1 &quot;1&quot; &quot;5&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot;
-## 2 &quot;5&quot; &quot;1&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot;
-## 3 &quot;4&quot; &quot;4&quot; &quot;1&quot; &quot;5&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot;
-## 4 &quot;4&quot; &quot;4&quot; &quot;5&quot; &quot;1&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot;
-## 5 &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;1&quot; &quot;5&quot; &quot;4&quot;
-## 6 &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;5&quot; &quot;1&quot; &quot;4&quot;
-## 7 &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;4&quot; &quot;1&quot;</code></pre>
+<pre><code>##   1 2 3 4 5 6 7
+## 1 1 5 4 4 4 4 4
+## 2 5 1 4 4 4 4 4
+## 3 4 4 1 5 4 4 4
+## 4 4 4 5 1 4 4 4
+## 5 4 4 4 4 1 5 4
+## 6 4 4 4 4 5 1 4
+## 7 4 4 4 4 4 4 1</code></pre>
 <pre class="r"><code># get phenotype pairs
 me$dataframe[, c('label.1', 'label.2', 'mutual_exclusivity')]</code></pre>
 <pre><code>##                                                                                                                                                                             label.1

@@ -20,7 +20,7 @@ This vignette showcases two functions `mutual_exclusivity_pair_test` and `mutual
 ## 1. Test of mutual exclusivity among two phenotypes.
 
 ```{r include=TRUE, eval=TRUE, echo=TRUE, render=FALSE}
-mutual_exclusivity_pair_test <- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL){
+mutual_exclusivity_pair <- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL){
     
     # convert phenotypes to phenotype objects for faster computation
     if (!is.phenotype(phenotype.a)) {
@@ -106,16 +106,20 @@ mutual_exclusivity_pair_test <- function(phenotype.a, phenotype.b, studies=NULL,
         # with the default value: 'inconclusive_evidence'.
         
         if (num_states.a == 0) {
-            warning("Phenotype 1 does not have any states in the charstates dataframe.")
+            warning("Phenotype A does not have any states in the charstates dataframe.")
             
         } else if (num_states.b == 0){
-            warning("Phenotype 2 does not have any states in the charstates dataframe.")
+            warning("Phenotype B does not have any states in the charstates dataframe.")
 
         } else {
             warning("Both phenotypes do not have any states in the charstates dataframe.")
         }
     }
     
+    # convert mutual exclusivity state to a factor
+    is_pair_mutually_exclusive <- factor(is_pair_mutually_exclusive, 
+                                         levels = exclusivity_types,
+                                         ordered = TRUE)
     # return mutual exclusivity
     is_pair_mutually_exclusive
 }
@@ -134,14 +138,14 @@ studies <- pk_get_study_list(entity = "hyomandibular bone", taxon = "Hypancistru
 study <- studies$id[studies$label == 'Armbruster (2004)']
 
 # check mutual exclusivity
-mutual_exclusivity_pair_test(phenotypes[1], phenotypes[2], studies=study)
+mutual_exclusivity_pair(phenotypes[1], phenotypes[2], studies=study)
 ```
 
 
 ## 2. Test of mutual exclusivity among more than two phenotypes. 
 
 ```{r include=TRUE, eval=TRUE, echo=TRUE, render=FALSE}
-mutual_exclusivity_test <- function(phenotypes, studies=NULL, progress_bar=TRUE){
+mutual_exclusivity <- function(phenotypes, studies=NULL, progress_bar=TRUE){
     
     # make sure that at least two phenotypes are passed
     if (is.null(phenotypes) || length(phenotypes) == 1) {
@@ -155,7 +159,9 @@ mutual_exclusivity_test <- function(phenotypes, studies=NULL, progress_bar=TRUE)
                            'inconclusive_evidence',
                            'weak_exclusivity',
                            'strong_exclusivity')
-    mutual_exclusivity_matrix <- matrix("inconclusive evidence",
+    mutual_exclusivity_matrix <- matrix(as.integer(factor("inconclusive_evidence",
+                                                          levels = exclusivity_types,
+                                                          ordered = TRUE)),
                                         nrow=num_phenotypes,
                                         ncol=num_phenotypes)
     rownames(mutual_exclusivity_matrix) <- 1:num_phenotypes
@@ -199,18 +205,18 @@ mutual_exclusivity_test <- function(phenotypes, studies=NULL, progress_bar=TRUE)
             if (row != column) {
                 
                 # compute mutual exclusivity
-                mutual_exclusivity <- mutual_exclusivity_pair_test(phenotypes[[row]],
-                                                                   phenotypes[[column]],
-                                                                   studies=studies,
-                                                                   charstates=character_states)
+                mutual_exclusivity <- mutual_exclusivity_pair(phenotypes[[row]],
+                                                              phenotypes[[column]],
+                                                              studies=studies,
+                                                              charstates=character_states)
                 # store exclusivity as factor
-                mutual_exclusivity <- factor(mutual_exclusivity,
-                                             levels = exclusivity_types,
-                                             ordered = TRUE)
+                #mutual_exclusivity <- factor(mutual_exclusivity,
+                #                             levels = exclusivity_types,
+                #                             ordered = TRUE)
                 
                 # store exclusivity result in matrix
-                mutual_exclusivity_matrix[row, column] <- mutual_exclusivity
-                mutual_exclusivity_matrix[column, row] <- mutual_exclusivity
+                mutual_exclusivity_matrix[row, column] <- as.integer(mutual_exclusivity)
+                mutual_exclusivity_matrix[column, row] <- as.integer(mutual_exclusivity)
                 
                 # store exclusivity result in a dataframe
                 dataframe_row <- c(phenotypes[[row]]$id,
@@ -253,12 +259,17 @@ mutual_exclusivity_test <- function(phenotypes, studies=NULL, progress_bar=TRUE)
                 
             } else if (row == column) {
                 # a phenotype is strongly compatible with itself
-                mutual_exclusivity_matrix[row, column] <- factor("strong_compatibility",
-                                                                 levels = exclusivity_types,
-                                                                 ordered = TRUE)
+                mutual_exclusivity_matrix[row, column] <- as.integer(factor("strong_compatibility",
+                                                                            levels = exclusivity_types,
+                                                                            ordered = TRUE))
             }
         }
     }
+    
+    # change mutual_exclusivity column to factor
+    mutual_exclusivity_df$mutual_exclusivity <- factor(mutual_exclusivity_df$mutual_exclusivity,
+                                                       levels = exclusivity_types,
+                                                       ordered = TRUE)
     
     # return a list containing the resultant matrix and the dataframe
     list(matrix=mutual_exclusivity_matrix,
@@ -280,7 +291,7 @@ phenotypes <- as.phenotype(phenotypes)
 
 # test mutual exclusivity
 n <- 7
-me <- mutual_exclusivity_test(phenotypes[1:n], study, progress_bar=FALSE)
+me <- mutual_exclusivity(phenotypes[1:n], study, progress_bar=FALSE)
 
 # get matrix
 me$matrix
