@@ -179,10 +179,10 @@ mutual_exclusivity_pair <- function(phenotype.a, phenotype.b, studies=NULL, char
         # with the default value: 'inconclusive_evidence'.
 
         if (num_states.a == 0) {
-            warning("Phenotype 1 does not have any states in the charstates dataframe.")
+            warning("Phenotype A does not have any states in the charstates dataframe.")
 
         } else if (num_states.b == 0){
-            warning("Phenotype 2 does not have any states in the charstates dataframe.")
+            warning("Phenotype B does not have any states in the charstates dataframe.")
 
         } else {
             warning("Both phenotypes do not have any states in the charstates dataframe.")
@@ -292,8 +292,15 @@ mutual_exclusivity <- function(phenotypes, studies=NULL, progress_bar=TRUE){
     rownames(mutual_exclusivity_matrix) <- 1:num_phenotypes
     colnames(mutual_exclusivity_matrix) <- 1:num_phenotypes
 
-    # boolean to determine whether resultant dataframe is created or not
-    dataframe_created <- FALSE
+    # create empty dataframe to store mutual exclusive pairs
+    mutual_exclusivity_df <- data.frame(id.1    = character(),
+                                        label.1 = character(),
+                                        id.2    = character(),
+                                        label.2 = character(),
+                                        mutual_exclusivity = factor(c(),
+                                                                    levels = exclusivity_types,
+                                                                    ordered = TRUE),
+                                        stringsAsFactors = FALSE)
 
     # initialize variables to keep track of progress of the function
     if (progress_bar) {
@@ -334,37 +341,20 @@ mutual_exclusivity <- function(phenotypes, studies=NULL, progress_bar=TRUE){
                                                               phenotypes[[column]],
                                                               studies=studies,
                                                               charstates=character_states)
-                # store exclusivity as factor
-                #mutual_exclusivity <- factor(mutual_exclusivity,
-                #                             levels = exclusivity_types,
-                #                             ordered = TRUE)
 
                 # store exclusivity result in matrix
-                mutual_exclusivity_matrix[row, column] <- as.integer(mutual_exclusivity)
-                mutual_exclusivity_matrix[column, row] <- as.integer(mutual_exclusivity)
+                mutual_exclusivity_matrix[row, column] <- mutual_exclusivity
+                mutual_exclusivity_matrix[column, row] <- mutual_exclusivity
 
-                # store exclusivity result in a dataframe
-                dataframe_row <- c(phenotypes[[row]]$id,
-                                   phenotypes[[row]]$label,
-                                   phenotypes[[column]]$id,
-                                   phenotypes[[column]]$label,
-                                   as.character(mutual_exclusivity)
+                # store exclusivity result in dataframe
+                dataframe_row <- data.frame(id.1    = phenotypes[[row]]$id,
+                                            label.1 = phenotypes[[row]]$label,
+                                            id.2    = phenotypes[[column]]$id,
+                                            label.2 = phenotypes[[column]]$label,
+                                            mutual_exclusivity=mutual_exclusivity,
+                                            stringsAsFactors = FALSE
                 )
-
-                # create dataframe
-                if (dataframe_created == FALSE) {
-                    mutual_exclusivity_df <- data.frame(id.1    = dataframe_row[1],
-                                                        label.1 = dataframe_row[2],
-                                                        id.2    = dataframe_row[3],
-                                                        label.2 = dataframe_row[4],
-                                                        mutual_exclusivity = mutual_exclusivity,
-                                                        stringsAsFactors = FALSE)
-                    dataframe_created <- TRUE
-
-                } else {
-                    # append all subsequent results to existing dataframe
-                    mutual_exclusivity_df <- rbind(mutual_exclusivity_df, dataframe_row)
-                }
+                mutual_exclusivity_df <- rbind(mutual_exclusivity_df, dataframe_row, stringsAsFactors=FALSE)
 
                 # update progress bar statistics
                 if (progress_bar) {
@@ -384,17 +374,12 @@ mutual_exclusivity <- function(phenotypes, studies=NULL, progress_bar=TRUE){
 
             } else if (row == column) {
                 # a phenotype is strongly compatible with itself
-                mutual_exclusivity_matrix[row, column] <- as.integer(factor("strong_compatibility",
-                                                                            levels = exclusivity_types,
-                                                                            ordered = TRUE))
+                mutual_exclusivity_matrix[row, column] <- factor("strong_compatibility",
+                                                                 levels = exclusivity_types,
+                                                                 ordered = TRUE)
             }
         }
     }
-
-    # change mutual_exclusivity column to factor
-    mutual_exclusivity_df$mutual_exclusivity <- factor(mutual_exclusivity_df$mutual_exclusivity,
-                                                       levels = exclusivity_types,
-                                                       ordered = TRUE)
 
     # return a list containing the resultant matrix and the dataframe
     list(matrix=mutual_exclusivity_matrix,
