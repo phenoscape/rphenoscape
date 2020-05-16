@@ -8,11 +8,12 @@
 \alias{get_nexml_data}
 \title{Get data from an API endpoint}
 \usage{
-get_json_data(url, query, verbose = FALSE, ensureNames = NULL)
+get_json_data(url, query, verbose = FALSE, ensureNames = NULL,
+  forceGET = FALSE)
 
-get_csv_data(url, query, ..., verbose = FALSE)
+get_csv_data(url, query, ..., verbose = FALSE, forceGET = FALSE)
 
-get_nexml_data(url, query, verbose = FALSE)
+get_nexml_data(url, query, verbose = FALSE, forceGET = FALSE)
 }
 \arguments{
 \item{url}{character, the URL of the API endpoint to query}
@@ -24,6 +25,11 @@ get_nexml_data(url, query, verbose = FALSE)
 \item{ensureNames}{character, which column or list names to ensure are included
 in the result to be returned. If result returned by the API endpoint does
 not include them, they will be added, with NA values.}
+
+\item{forceGET}{logical, whether to force using the HTTP GET method for API
+access regardless of request length. The default is FALSE, meaning queries
+exceeding a certain size for transmission will automatically use HTTP POST
+for accessing the KB API.}
 
 \item{...}{for \code{get_csv_data}, additional parameters to be passed on to
 \link[utils:read.csv]{read.csv()}}

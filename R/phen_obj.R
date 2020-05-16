@@ -92,13 +92,15 @@ as.phenotype.data.frame <- function(x, ...) {
 
 Phenotype <- function(iri, withTaxa = FALSE) {
   stopifnot(is.character(iri))
-  res <- get_json_data(pkb_api("/phenotype/info"), query = list(iri = iri))
+  res <- get_json_data(pkb_api("/phenotype/info"), query = list(iri = iri),
+                       # some phenotypes can have very long URIs
+                       forceGET = TRUE)
   names(res) <- sub("@", "", x = names(res))
   if (! is.null(res$states))
     names(res$states) <- sub("@", "", x = names(res$states))
   if (withTaxa) {
     taxa <- get_json_data(pkb_api("/taxon/with_phenotype"),
-                          query = list(phenotype = iri, limit = 0))
+                          query = list(phenotype = iri, limit = 0), forceGET = TRUE)
     taxa <- taxa$results
     colnames(taxa) <- sub("@", "", colnames(taxa))
     res$taxa <- taxa
