@@ -20,7 +20,7 @@ We present two functions to compute mutually exclusivity among phenotypes in the
 
 Let's look at the `mutual_exclusivity_pair` function first. The `mutual_exclusivity_pair` expects two phenotypes (as phenotype IDs or objects), and returns the resulting mutual exclusivity state. Let's look at some examples demonstrating the use of this function. In the following example, we look at mutual exclusivity among two phenotypes extracted from the KB database. While getting the phenotypes, we also specify the entity and taxon.
 
-```{r include=FALSE, eval=TRUE, echo=FALSE, render=FALSE}
+```{r include=FALSE, eval=TRUE, echo=FALSE, render=TRUE}
 mutual_exclusivity_pair <- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL){
 
     # convert phenotypes to phenotype objects for faster computation
@@ -127,7 +127,7 @@ mutual_exclusivity_pair <- function(phenotype.a, phenotype.b, studies=NULL, char
 ```
 
 
-```{r include=TRUE, eval=FALSE, echo=TRUE, render=FALSE}
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
 # define the entity and taxon from where we will get phenotypes.
 # we will then compute the mutual exclusivity among these phenotypes.
 entity <- "hyomandibular bone"
@@ -143,27 +143,27 @@ phenotypes <- c(phenotypes$id[phenotypes$label == 'hyomandibular bone in contact
 
 The phenotypes `hyomandibular bone in contact with prootic bone` and `hyomandibular bone in contact with prootic bone` are weakly compatible.
 
-```{r include=TRUE, eval=FALSE, echo=TRUE, render=FALSE}
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
 # compute mutual exclusivity among the first and second phenotype in the phenotype vector.
-mutual_exclusivity_pair(phenotypes[1], phenotypes[2], studies=study)
+mutual_exclusivity_pair(phenotypes[1], phenotypes[2])
 ```
 
 Similarly, the phenotypes `hyomandibular bone in contact with prootic bone` and `hyomandibular bone structure metapterygoid` are also weakly compatible.
 
-```{r include=TRUE, eval=FALSE, echo=TRUE, render=FALSE}
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
 # exclusivity among the second and fourth phenotype
-mutual_exclusivity_pair(phenotypes[2], phenotypes[4], studies=study)
+mutual_exclusivity_pair(phenotypes[2], phenotypes[4])
 ```
 
 Finally, a phenotype is strongly compatible with itself.
 
-```{r include=TRUE, eval=FALSE, echo=TRUE, render=FALSE}
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
 mutual_exclusivity_pair(phenotypes[3], phenotypes[3])
 ```
 
 Now, there are scenarios where one wants to look at the evidence of mutual exclusivity presented in a specified set of studies. The `studies` argument lets you pass one or more studies (as a vector of study IDs). The `mutual_exclusivity_pair` first filters based on the passed studies and then computes the exclusivity result. The phenotypes `hyomandibular bone in contact with prootic bone` and `hyomandibular bone in contact with prootic bone` are wekaly compatible based on the evidence in the "Armbruster (2004)" study as shown below.
 
-```{r include=TRUE, eval=FALSE, echo=TRUE, render=FALSE}
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
 # Get a particular study associated with the entity and taxon mentioned above.
 studies <- pk_get_study_list(entity = entity, taxon = taxon)
 study <- studies$id[studies$label == "Armbruster (2004)"]

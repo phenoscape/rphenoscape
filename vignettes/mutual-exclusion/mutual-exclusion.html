@@ -386,12 +386,18 @@ phenotypes &lt;- c(phenotypes$id[phenotypes$label == 'hyomandibular bone in cont
                 phenotypes$id[phenotypes$label == 'hyomandibular bone structure metapterygoid'])</code></pre>
 <p>The phenotypes <code>hyomandibular bone in contact with prootic bone</code> and <code>hyomandibular bone in contact with prootic bone</code> are weakly compatible.</p>
 <pre class="r"><code># compute mutual exclusivity among the first and second phenotype in the phenotype vector.
-mutual_exclusivity_pair(phenotypes[1], phenotypes[2], studies=study)</code></pre>
+mutual_exclusivity_pair(phenotypes[1], phenotypes[2])</code></pre>
+<pre><code>## [1] weak_compatibility
+## 5 Levels: strong_compatibility &lt; ... &lt; strong_exclusivity</code></pre>
 <p>Similarly, the phenotypes <code>hyomandibular bone in contact with prootic bone</code> and <code>hyomandibular bone structure metapterygoid</code> are also weakly compatible.</p>
 <pre class="r"><code># exclusivity among the second and fourth phenotype
-mutual_exclusivity_pair(phenotypes[2], phenotypes[4], studies=study)</code></pre>
+mutual_exclusivity_pair(phenotypes[2], phenotypes[4])</code></pre>
+<pre><code>## [1] weak_compatibility
+## 5 Levels: strong_compatibility &lt; ... &lt; strong_exclusivity</code></pre>
 <p>Finally, a phenotype is strongly compatible with itself.</p>
 <pre class="r"><code>mutual_exclusivity_pair(phenotypes[3], phenotypes[3])</code></pre>
+<pre><code>## [1] strong_compatibility
+## 5 Levels: strong_compatibility &lt; ... &lt; strong_exclusivity</code></pre>
 <p>Now, there are scenarios where one wants to look at the evidence of mutual exclusivity presented in a specified set of studies. The <code>studies</code> argument lets you pass one or more studies (as a vector of study IDs). The <code>mutual_exclusivity_pair</code> first filters based on the passed studies and then computes the exclusivity result. The phenotypes <code>hyomandibular bone in contact with prootic bone</code> and <code>hyomandibular bone in contact with prootic bone</code> are wekaly compatible based on the evidence in the “Armbruster (2004)” study as shown below.</p>
 <pre class="r"><code># Get a particular study associated with the entity and taxon mentioned above.
 studies &lt;- pk_get_study_list(entity = entity, taxon = taxon)
@@ -399,6 +405,8 @@ study &lt;- studies$id[studies$label == &quot;Armbruster (2004)&quot;]
 
 # Compute mutual exclusivity among the first and second phenotype in the phenotype vector.
 mutual_exclusivity_pair(phenotypes[1], phenotypes[2], studies=study)</code></pre>
+<pre><code>## [1] weak_compatibility
+## 5 Levels: strong_compatibility &lt; ... &lt; strong_exclusivity</code></pre>
 <p>There is another argument <code>charstates</code> which is not intended to be used by a user (refer documentation for details). Rather, its purpose is to be used by the <code>mutual_exclusivity</code> function that we discuss below.</p>
 </div>
 <div id="mutual-exclusivity-among-multiple-phenotypes." class="section level2">
@@ -427,26 +435,26 @@ me &lt;- mutual_exclusivity(phenotypes,
 <p>Let us look at the resultant matrix. Each cell of the matrix contains the result of the exclusivity status between the phenotypes corresponding to the row and column. R presents ordered factor as an integer associated with the level of the factor. For example, <code>strong_compatibility</code> is shown as 1. Since each phenotype is strongly compatible with itself, all the diagonal elements in the matrix are 1.</p>
 <pre class="r"><code>me$matrix</code></pre>
 <pre><code>##    1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-## 1  1 4 4 2 4 4 2 4 4  4  4  4  4  2  4  4  2  4  4  4
-## 2  4 1 4 4 4 4 4 4 4  4  2  4  4  4  4  4  4  4  4  4
-## 3  4 4 1 2 4 4 2 2 2  2  2  2  2  2  4  2  5  2  2  2
-## 4  2 4 2 1 4 4 2 2 2  2  2  2  2  2  4  2  2  2  2  2
-## 5  4 4 4 4 1 4 4 4 4  4  4  4  2  4  4  2  4  4  4  4
-## 6  4 4 4 4 4 1 4 2 4  4  4  2  4  2  4  2  4  4  4  2
-## 7  2 4 2 2 4 4 1 4 2  2  4  2  4  2  4  2  2  2  2  4
-## 8  4 4 2 2 4 2 4 1 2  2  4  2  4  2  2  2  4  2  4  2
-## 9  4 4 2 2 4 4 2 2 1  2  2  2  2  2  4  2  2  2  2  2
-## 10 4 4 2 2 4 4 2 2 2  1  4  2  2  2  4  2  2  2  2  2
-## 11 4 2 2 2 4 4 4 4 2  4  1  2  4  2  4  2  4  4  4  4
-## 12 4 4 2 2 4 2 2 2 2  2  2  1  2  2  2  2  2  2  2  2
-## 13 4 4 2 2 2 4 4 4 2  2  4  2  1  2  4  2  4  2  4  4
-## 14 2 4 2 2 4 2 2 2 2  2  2  2  2  1  2  2  2  2  2  2
-## 15 4 4 4 4 4 4 4 2 4  4  4  2  4  2  1  2  4  4  4  2
-## 16 4 4 2 2 2 2 2 2 2  2  2  2  2  2  2  1  2  2  2  2
-## 17 2 4 5 2 4 4 2 4 2  2  4  2  4  2  4  2  1  2  2  4
-## 18 4 4 2 2 4 4 2 2 2  2  4  2  2  2  4  2  2  1  2  2
-## 19 4 4 2 2 4 4 2 4 2  2  4  2  4  2  4  2  2  2  1  4
-## 20 4 4 2 2 4 2 4 2 2  2  4  2  4  2  2  2  4  2  4  1</code></pre>
+## 1  1 2 2 2 2 2 2 2 2  2  2  2  2  2  2  2  5  2  4  2
+## 2  2 1 2 2 2 2 2 2 2  2  2  2  2  2  4  2  2  2  4  2
+## 3  2 2 1 2 2 2 2 2 2  2  2  2  2  2  2  2  2  2  4  2
+## 4  2 2 2 1 4 4 2 4 2  2  2  4  2  4  4  4  4  4  4  2
+## 5  2 2 2 4 1 4 2 4 2  2  4  2  2  4  2  4  4  2  4  2
+## 6  2 2 2 4 4 1 2 2 2  2  2  2  2  2  4  2  4  2  4  2
+## 7  2 2 2 2 2 2 1 2 2  2  2  2  2  4  2  4  2  2  4  2
+## 8  2 2 2 4 4 2 2 1 2  2  2  2  2  2  4  2  2  2  2  2
+## 9  2 2 2 2 2 2 2 2 1  2  2  2  2  2  2  2  2  2  4  2
+## 10 2 2 2 2 2 2 2 2 2  1  2  2  2  2  2  2  2  2  4  2
+## 11 2 2 2 2 4 2 2 2 2  2  1  4  2  4  4  4  2  4  4  2
+## 12 2 2 2 4 2 2 2 2 2  2  4  1  2  2  2  2  4  2  4  2
+## 13 2 2 2 2 2 2 2 2 2  2  2  2  1  2  2  2  2  2  4  2
+## 14 2 2 2 4 4 2 4 2 2  2  4  2  2  1  4  2  4  2  2  2
+## 15 2 4 2 4 2 4 2 4 2  2  4  2  2  4  1  4  4  2  4  4
+## 16 2 2 2 4 4 2 4 2 2  2  4  2  2  2  4  1  4  2  2  2
+## 17 5 2 2 4 4 4 2 2 2  2  2  4  2  4  4  4  1  4  4  2
+## 18 2 2 2 4 2 2 2 2 2  2  4  2  2  2  2  2  4  1  4  2
+## 19 4 4 4 4 4 4 4 2 4  4  4  4  4  2  4  2  4  4  1  2
+## 20 2 2 2 2 2 2 2 2 2  2  2  2  2  2  4  2  2  2  2  1</code></pre>
 <p>Let us look at the resulting dataframe. The dataframe contains contains each distinct pair of a phenotype chosen from the vector phenotypes that were passed (therefore, the dataframe has nC2 rows where n is the number of phenotypes passed). The dataframe contains five columns as shown below.</p>
 <pre class="r"><code># there are 190 possible distinct pairs in 20 studies
 choose(length(random_indices), 2)</code></pre>
@@ -454,52 +462,52 @@ choose(length(random_indices), 2)</code></pre>
 <pre class="r"><code># structure of the dataframe
 str(me$dataframe)</code></pre>
 <pre><code>## 'data.frame':    190 obs. of  5 variables:
-##  $ id.1              : chr  &quot;http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+&quot;| __truncated__ ...
-##  $ label.1           : chr  &quot;cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent&quot; &quot;cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent&quot; &quot;cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent&quot; &quot;cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent&quot; ...
+##  $ id.1              : chr  &quot;http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A&quot;| __truncated__ ...
+##  $ label.1           : chr  &quot;postero-ventral region and (part_of some entopterygoid) shape and (not (elongated))&quot; &quot;postero-ventral region and (part_of some entopterygoid) shape and (not (elongated))&quot; &quot;postero-ventral region and (part_of some entopterygoid) shape and (not (elongated))&quot; &quot;postero-ventral region and (part_of some entopterygoid) shape and (not (elongated))&quot; ...
 ##  $ id.2              : chr  &quot;http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A&quot;| __truncated__ ...
-##  $ label.2           : chr  &quot;facet and (part_of some (antero-dorsal region and (part_of some maxilla))) increased size&quot; &quot;antero-ventral margin and (part_of some dentary) straight&quot; &quot;anatomical projection and (part_of some (ventro-medial region and (part_of some mesethmoid bone))) absent&quot; &quot;anatomical projection and (part_of some (medial region and (part_of some epibranchial 4 element))) bowl shaped&quot; ...
-##  $ mutual_exclusivity: Ord.factor w/ 5 levels &quot;strong_compatibility&quot;&lt;..: 4 4 2 4 4 2 4 4 4 4 ...</code></pre>
+##  $ label.2           : chr  &quot;upper pharyngeal 4 tooth plate in contact with upper pharyngeal 5 tooth plate&quot; &quot;antero-ventral region and (part_of some mesethmoid bone) shape and (not (bent)) premaxilla&quot; &quot;anatomical projection and (part_of some (antero-lateral region and (part_of some hypobranchial 2 bone))) absent&quot; &quot;dentary rhomboid&quot; ...
+##  $ mutual_exclusivity: Ord.factor w/ 5 levels &quot;strong_compatibility&quot;&lt;..: 2 2 2 2 2 2 2 2 2 2 ...</code></pre>
 <pre class="r"><code># ignoring phenotype IDs for brevity
 head(me$dataframe[, c('label.1', 'label.2', 'mutual_exclusivity')])</code></pre>
-<pre><code>##                                                                                      label.1
-## 1 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-## 2 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-## 3 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-## 4 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-## 5 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-## 6 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-##                                                                                                             label.2
-## 1                         facet and (part_of some (antero-dorsal region and (part_of some maxilla))) increased size
-## 2                                                         antero-ventral margin and (part_of some dentary) straight
-## 3         anatomical projection and (part_of some (ventro-medial region and (part_of some mesethmoid bone))) absent
-## 4    anatomical projection and (part_of some (medial region and (part_of some epibranchial 4 element))) bowl shaped
-## 5 anatomical projection and (part_of some (antero-dorsal region and (part_of some hypobranchial 2 bone))) elongated
-## 6                                 anterior margin and (part_of some lateral ethmoid wing) shape and (not (notched))
+<pre><code>##                                                                               label.1
+## 1 postero-ventral region and (part_of some entopterygoid) shape and (not (elongated))
+## 2 postero-ventral region and (part_of some entopterygoid) shape and (not (elongated))
+## 3 postero-ventral region and (part_of some entopterygoid) shape and (not (elongated))
+## 4 postero-ventral region and (part_of some entopterygoid) shape and (not (elongated))
+## 5 postero-ventral region and (part_of some entopterygoid) shape and (not (elongated))
+## 6 postero-ventral region and (part_of some entopterygoid) shape and (not (elongated))
+##                                                                                                           label.2
+## 1                                   upper pharyngeal 4 tooth plate in contact with upper pharyngeal 5 tooth plate
+## 2                      antero-ventral region and (part_of some mesethmoid bone) shape and (not (bent)) premaxilla
+## 3 anatomical projection and (part_of some (antero-lateral region and (part_of some hypobranchial 2 bone))) absent
+## 4                                                                                                dentary rhomboid
+## 5                                                                                     symplectic decreased length
+## 6                                         upper pharyngeal 5 tooth plate immobile relative to epibranchial 4 bone
 ##   mutual_exclusivity
-## 1   weak_exclusivity
-## 2   weak_exclusivity
+## 1 weak_compatibility
+## 2 weak_compatibility
 ## 3 weak_compatibility
-## 4   weak_exclusivity
-## 5   weak_exclusivity
+## 4 weak_compatibility
+## 5 weak_compatibility
 ## 6 weak_compatibility</code></pre>
 <p>The dataframe can be filtered using usual R syntax if one wants to look at a particular type of phenotype pair(s).</p>
 <pre class="r"><code>exclusivity_df &lt;- me$dataframe
 head(exclusivity_df[exclusivity_df$mutual_exclusivity == &quot;weak_exclusivity&quot;, 
                     c('label.1', 'label.2')])</code></pre>
-<pre><code>##                                                                                      label.1
-## 1 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-## 2 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-## 4 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-## 5 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-## 7 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-## 8 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
-##                                                                                                             label.2
-## 1                         facet and (part_of some (antero-dorsal region and (part_of some maxilla))) increased size
-## 2                                                         antero-ventral margin and (part_of some dentary) straight
-## 4    anatomical projection and (part_of some (medial region and (part_of some epibranchial 4 element))) bowl shaped
-## 5 anatomical projection and (part_of some (antero-dorsal region and (part_of some hypobranchial 2 bone))) elongated
-## 7                                                                           pharyngobranchial 1 bone decreased size
-## 8                                             proximal region and (part_of some rib 1) shape and (not (triangular))</code></pre>
+<pre><code>##                                                                                                            label.1
+## 18                             postero-ventral region and (part_of some entopterygoid) shape and (not (elongated))
+## 32                                   upper pharyngeal 4 tooth plate in contact with upper pharyngeal 5 tooth plate
+## 36                                   upper pharyngeal 4 tooth plate in contact with upper pharyngeal 5 tooth plate
+## 53                      antero-ventral region and (part_of some mesethmoid bone) shape and (not (bent)) premaxilla
+## 55 anatomical projection and (part_of some (antero-lateral region and (part_of some hypobranchial 2 bone))) absent
+## 56 anatomical projection and (part_of some (antero-lateral region and (part_of some hypobranchial 2 bone))) absent
+##                                                             label.2
+## 18                                          coronomeckelian concave
+## 32 dorsal margin and (part_of some ceratohyal bone) decreased width
+## 36                                          coronomeckelian concave
+## 53                                          coronomeckelian concave
+## 55                                                 dentary rhomboid
+## 56                                      symplectic decreased length</code></pre>
 <p>You can also pass mutliple studies as a vector of study IDs or pass none in which case the function will look at the evidence from all the studies where the phenotypes occur.</p>
 </div>
 
