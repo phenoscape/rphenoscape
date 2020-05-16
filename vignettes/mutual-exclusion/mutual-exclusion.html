@@ -364,355 +364,143 @@ summary {
 
 <h1 class="title toc-ignore">Mutually Exclusive Phenotypes</h1>
 <h4 class="author">Amandeep Rathee and Hilmar Lapp</h4>
-<h4 class="date">May-05-2020</h4>
+<h4 class="date">May-16-2020</h4>
 
 </div>
 
 
-<p>This vignette showcases two functions <code>mutual_exclusivity_pair_test</code> and <code>mutual_exclusivity_test</code> both of which are used to compute mutually exclusivity among phenotypes. The <code>mutual_exclusivity_pair_test</code> calculates the mutual exclusivity between two phenotypes, and the <code>mutual_exclusivity_test</code> calculates the mutual exclusivity for multiple phenotypes.</p>
-<div id="test-of-mutual-exclusivity-among-two-phenotypes." class="section level2">
-<h2>1. Test of mutual exclusivity among two phenotypes.</h2>
-<pre class="r"><code>mutual_exclusivity_pair &lt;- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL){
-    
-    # convert phenotypes to phenotype objects for faster computation
-    if (!is.phenotype(phenotype.a)) {
-        phenotype.a &lt;- as.phenotype(phenotype.a, withTaxa=TRUE)
-    }
-    
-    if (!is.phenotype(phenotype.b)) {
-        phenotype.b &lt;- as.phenotype(phenotype.b, withTaxa=TRUE)
-    }
-    
-    # define mutual exclusivity types
-    exclusivity_types &lt;- c('strong_compatibility',
-                           'weak_compatibility',
-                           'inconclusive_evidence',
-                           'weak_exclusivity',
-                           'strong_exclusivity')
-    is_pair_mutually_exclusive &lt;- exclusivity_types[3]
-    
-    # load charstates dataframe that contains both the phenotypes
-    if (is.null(charstates)) {
-        character_states &lt;- charstates(list(phenotype.a, phenotype.b))
-    } else {
-        character_states &lt;- charstates
-    }
-    
-    # filter the character_states dataframe by studies
-    if (!is.null(studies)) {
-        character_states &lt;- character_states[character_states$study.id %in% studies, ]
-    }
-    
-    # store the charstate dataframe associated with each phenotype separately for easier computation
-    charstates.a &lt;- character_states[(character_states$phenotype.id == phenotype.a$id), ]
-    charstates.b &lt;- character_states[(character_states$phenotype.id == phenotype.b$id), ]
-    
-    # determine mutual exclusivity only if both phenotypes have non-empty states
-    num_states.a &lt;- length(charstates.a$state.id)
-    num_states.b &lt;- length(charstates.b$state.id)
-    if (num_states.a &gt; 0 &amp;&amp; num_states.b &gt; 0) {
-        
-        # compute the intersection of the two characters vectors
-        chars.a &lt;- unique(charstates.a$character.id)
-        chars.b &lt;- unique(charstates.b$character.id)
-        mutual_characters_present &lt;- length(intersect(chars.a, chars.b)) &gt; 0
-        
-        if (mutual_characters_present) {
-            # If the two phenotypes have mutual characters, then
-            # there is enough evidence to decide mutual exclusivity among the two phenotypes.
-            # Therefore, the mutual exclusion in this case is called 'strong'.
-            # Mutual exclusivity is decided by looking at whether the two phenotypes have mutual states.
-            
-            states.a &lt;- charstates.a$state.id
-            states.b &lt;- charstates.b$state.id
-            mutual_states_present &lt;- length(intersect(states.a, states.b)) &gt; 0
-            
-            if (mutual_states_present) {
-                # strong compatibility if phenotypes share states
-                is_pair_mutually_exclusive &lt;- exclusivity_types[1]
-            } else {
-                # strong exclusivity if phenotypes do not share states
-                is_pair_mutually_exclusive &lt;- exclusivity_types[5]
-            }
-            
-        } else {
-            # If there are no mutal characters among the two phenotypes, then
-            # there is lack (but not absence) of evidence to determine mutual exclusivity.
-            # Therefore, the mutual exclusion in this case is called 'weak'.
-            # Mutual exclusivity is decided by looking at whether the two phenotypes have mutual taxa.
-            
-            mutual_taxa_present &lt;- length(intersect(phenotype.a$taxa$id, phenotype.b$taxa$id)) &gt; 0
-            if(mutual_taxa_present){
-                # weak compatibility
-                is_pair_mutually_exclusive &lt;- exclusivity_types[2]
-            } else {
-                # weak exclusivity
-                is_pair_mutually_exclusive &lt;- exclusivity_types[4]
-            }
-        }
-        
-    } else {
-        # If either (or both) phenotype(s) have empty state(s), then we say that
-        # there is no evidence to compute mutual exclusivity.
-        # This block raises a warning and is_pair_mutually_exclusive is returned
-        # with the default value: 'inconclusive_evidence'.
-        
-        if (num_states.a == 0) {
-            warning(&quot;Phenotype A does not have any states in the charstates dataframe.&quot;)
-            
-        } else if (num_states.b == 0){
-            warning(&quot;Phenotype B does not have any states in the charstates dataframe.&quot;)
+<p>We present two functions to compute mutually exclusivity among phenotypes in the Phenoscape Knowledgebase (KB) datastore, namely <code>mutual_exclusivity_pair</code> and <code>mutual_exclusivity</code>. At a high level, both functions offer the same functionality: computing the mutual exclusivity state among a pair of phenotypes. There are five different mutual exclusivity states that a pair of phenotypes can have: <code>strong_compatibility</code>, <code>weak_compatibility</code>, <code>inconclusive_evidence</code>, <code>weak_exclusivity</code> and <code>strong_exclusivity</code>. These states are defined as an ordered factor in R. Refer the documentation of the <code>mutual_exclusivity_pair</code> function to know more about the states and their relative ordering.</p>
+<div id="mutual-exclusivity-among-two-phenotypes." class="section level2">
+<h2>1. Mutual Exclusivity Among Two Phenotypes.</h2>
+<p>Let’s look at the <code>mutual_exclusivity_pair</code> function first. The <code>mutual_exclusivity_pair</code> expects two phenotypes (as phenotype IDs or objects), and returns the resulting mutual exclusivity state. Let’s look at some examples demonstrating the use of this function. In the following example, we look at mutual exclusivity among two phenotypes extracted from the KB database. While getting the phenotypes, we also specify the entity and taxon.</p>
+<pre class="r"><code># define the entity and taxon from where we will get phenotypes.
+# we will then compute the mutual exclusivity among these phenotypes.
+entity &lt;- &quot;hyomandibular bone&quot;
+taxon &lt;- &quot;Hypancistrus&quot;
 
-        } else {
-            warning(&quot;Both phenotypes do not have any states in the charstates dataframe.&quot;)
-        }
-    }
-    
-    # convert mutual exclusivity state to a factor
-    is_pair_mutually_exclusive &lt;- factor(is_pair_mutually_exclusive, 
-                                         levels = exclusivity_types,
-                                         ordered = TRUE)
-    # return mutual exclusivity
-    is_pair_mutually_exclusive
-}</code></pre>
-<pre class="r"><code># get phenotypes
-phenotypes &lt;- get_phenotypes(entity = &quot;hyomandibular bone&quot;, taxon = &quot;Hypancistrus&quot;)
+# get phenotypes IDs of some phenotypes from the entiy and taxon defined above.
+phenotypes &lt;- get_phenotypes(entity = entity, taxon = taxon)
 phenotypes &lt;- c(phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with prootic bone'],
                 phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with quadrate bone'],
                 phenotypes$id[phenotypes$label == 'hyomandibular bone position opercle'],
-                phenotypes$id[phenotypes$label == 'hyomandibular bone structure metapterygoid'])
-# get studies
-studies &lt;- pk_get_study_list(entity = &quot;hyomandibular bone&quot;, taxon = &quot;Hypancistrus&quot;)
-study &lt;- studies$id[studies$label == 'Armbruster (2004)']
-
-# check mutual exclusivity
+                phenotypes$id[phenotypes$label == 'hyomandibular bone structure metapterygoid'])</code></pre>
+<p>The phenotypes <code>hyomandibular bone in contact with prootic bone</code> and <code>hyomandibular bone in contact with prootic bone</code> are weakly compatible.</p>
+<pre class="r"><code># compute mutual exclusivity among the first and second phenotype in the phenotype vector.
 mutual_exclusivity_pair(phenotypes[1], phenotypes[2], studies=study)</code></pre>
+<p>Similarly, the phenotypes <code>hyomandibular bone in contact with prootic bone</code> and <code>hyomandibular bone structure metapterygoid</code> are also weakly compatible.</p>
+<pre class="r"><code># exclusivity among the second and fourth phenotype
+mutual_exclusivity_pair(phenotypes[2], phenotypes[4], studies=study)</code></pre>
+<p>Finally, a phenotype is strongly compatible with itself.</p>
+<pre class="r"><code>mutual_exclusivity_pair(phenotypes[3], phenotypes[3])</code></pre>
+<p>Now, there are scenarios where one wants to look at the evidence of mutual exclusivity presented in a specified set of studies. The <code>studies</code> argument lets you pass one or more studies (as a vector of study IDs). The <code>mutual_exclusivity_pair</code> first filters based on the passed studies and then computes the exclusivity result. The phenotypes <code>hyomandibular bone in contact with prootic bone</code> and <code>hyomandibular bone in contact with prootic bone</code> are wekaly compatible based on the evidence in the “Armbruster (2004)” study as shown below.</p>
+<pre class="r"><code># Get a particular study associated with the entity and taxon mentioned above.
+studies &lt;- pk_get_study_list(entity = entity, taxon = taxon)
+study &lt;- studies$id[studies$label == &quot;Armbruster (2004)&quot;]
+
+# Compute mutual exclusivity among the first and second phenotype in the phenotype vector.
+mutual_exclusivity_pair(phenotypes[1], phenotypes[2], studies=study)</code></pre>
+<p>There is another argument <code>charstates</code> which is not intended to be used by a user (refer documentation for details). Rather, its purpose is to be used by the <code>mutual_exclusivity</code> function that we discuss below.</p>
 </div>
-<div id="test-of-mutual-exclusivity-among-more-than-two-phenotypes." class="section level2">
-<h2>2. Test of mutual exclusivity among more than two phenotypes.</h2>
-<pre class="r"><code>mutual_exclusivity &lt;- function(phenotypes, studies=NULL, progress_bar=TRUE){
-    
-    # make sure that at least two phenotypes are passed
-    if (is.null(phenotypes) || length(phenotypes) == 1) {
-        stop(&quot;Less than two phenotypes passed. The function expects at least two phenotypes to compute mutual exclusivity.&quot;)
-    }
-    
-    # initialize a square matrix to store mutual exclusivity result among each pair of phenotypes
-    num_phenotypes &lt;- length(phenotypes)
-    exclusivity_types &lt;- c('strong_compatibility',
-                           'weak_compatibility',
-                           'inconclusive_evidence',
-                           'weak_exclusivity',
-                           'strong_exclusivity')
-    mutual_exclusivity_matrix &lt;- matrix(as.integer(factor(&quot;inconclusive_evidence&quot;,
-                                                          levels = exclusivity_types,
-                                                          ordered = TRUE)),
-                                        nrow=num_phenotypes,
-                                        ncol=num_phenotypes)
-    rownames(mutual_exclusivity_matrix) &lt;- 1:num_phenotypes
-    colnames(mutual_exclusivity_matrix) &lt;- 1:num_phenotypes
-    
-    # boolean to determine whether resultant dataframe is created or not
-    dataframe_created &lt;- FALSE
-    
-    # initialize variables to keep track of progress of the function
-    if (progress_bar) {
-        iteration &lt;- 1
-        total_iterations &lt;- choose(num_phenotypes, 2) + num_phenotypes
-        num_mutual_exclusive_pairs &lt;- 0
-        num_mutual_compatible_pairs &lt;- 0
-        num_inconclusive_evidence &lt;- 0
-    }
-    
-    # convert phenotypes to phenotype objects for faster computation
-    if (!all(sapply(phenotypes, is.phenotype))) {
-        phenotypes &lt;- as.phenotype(phenotypes, withTaxa=TRUE)
-    }
-    
-    # load charstates dataframe that contains all the phenotypes
-    character_states &lt;- charstates(phenotypes)
-    
-    # find mutual exclusivity for each pair in the phenotype vector
-    for (row in 1:num_phenotypes) {
-        for (column in row:num_phenotypes) {
-            
-            # print progress of the loop
-            if (progress_bar == TRUE) {
-                cat('\014')
-                cat(paste0(round(iteration / (total_iterations) * 100, 4), '% completed\n',
-                           'Mutually exclusive pairs  = ', num_mutual_exclusive_pairs, '\n',
-                           'Mutually compatible pairs = ', num_mutual_compatible_pairs, '\n',
-                           'Inconclusive evidence     = ', num_inconclusive_evidence, '\n'))
-                iteration &lt;- iteration + 1
-            }
-            
-            # compute mutual exclusivity among distinct phenotypes only
-            if (row != column) {
-                
-                # compute mutual exclusivity
-                mutual_exclusivity &lt;- mutual_exclusivity_pair(phenotypes[[row]],
-                                                              phenotypes[[column]],
-                                                              studies=studies,
-                                                              charstates=character_states)
-                # store exclusivity as factor
-                #mutual_exclusivity &lt;- factor(mutual_exclusivity,
-                #                             levels = exclusivity_types,
-                #                             ordered = TRUE)
-                
-                # store exclusivity result in matrix
-                mutual_exclusivity_matrix[row, column] &lt;- as.integer(mutual_exclusivity)
-                mutual_exclusivity_matrix[column, row] &lt;- as.integer(mutual_exclusivity)
-                
-                # store exclusivity result in a dataframe
-                dataframe_row &lt;- c(phenotypes[[row]]$id,
-                                   phenotypes[[row]]$label,
-                                   phenotypes[[column]]$id,
-                                   phenotypes[[column]]$label,
-                                   as.character(mutual_exclusivity)
-                )
-                
-                # create dataframe
-                if (dataframe_created == FALSE) {
-                    mutual_exclusivity_df &lt;- data.frame(id.1    = dataframe_row[1],
-                                                        label.1 = dataframe_row[2],
-                                                        id.2    = dataframe_row[3],
-                                                        label.2 = dataframe_row[4],
-                                                        mutual_exclusivity = mutual_exclusivity,
-                                                        stringsAsFactors = FALSE)
-                    dataframe_created &lt;- TRUE
-                    
-                } else {
-                    # append all subsequent results to existing dataframe
-                    mutual_exclusivity_df &lt;- rbind(mutual_exclusivity_df, dataframe_row)
-                }
-                
-                # update progress bar statistics
-                if (progress_bar) {
-                    if (mutual_exclusivity == &quot;strong_exclusivity&quot; || mutual_exclusivity == &quot;weak_exclusivity&quot;) {
-                        # keep track of the number of exclusive phenotype pairs for printing in the progress bar
-                        num_mutual_exclusive_pairs &lt;- num_mutual_exclusive_pairs + 1
-                        
-                    } else if (mutual_exclusivity == &quot;inconclusive_evidence&quot;) {
-                        # keep track of the number of phenotype pairs with inconclusive evidence for printing in the progress bar
-                        num_inconclusive_evidence &lt;- num_inconclusive_evidence + 1
-                        
-                    } else if (mutual_exclusivity == &quot;strong_compatibility&quot; || mutual_exclusivity == &quot;weak_compatibility&quot;) {
-                        # keep track of the number of compatible phenotype pairs for printing in the progress bar
-                        num_mutual_compatible_pairs &lt;- num_mutual_compatible_pairs + 1
-                    }
-                }
-                
-            } else if (row == column) {
-                # a phenotype is strongly compatible with itself
-                mutual_exclusivity_matrix[row, column] &lt;- as.integer(factor(&quot;strong_compatibility&quot;,
-                                                                            levels = exclusivity_types,
-                                                                            ordered = TRUE))
-            }
-        }
-    }
-    
-    # change mutual_exclusivity column to factor
-    mutual_exclusivity_df$mutual_exclusivity &lt;- factor(mutual_exclusivity_df$mutual_exclusivity,
-                                                       levels = exclusivity_types,
-                                                       ordered = TRUE)
-    
-    # return a list containing the resultant matrix and the dataframe
-    list(matrix=mutual_exclusivity_matrix,
-         dataframe=mutual_exclusivity_df)
-}</code></pre>
-</div>
-<div id="find-mutual-exclusive-phenotypes-in-the-dillman-et-al.-2016-study" class="section level2">
-<h2>Find mutual exclusive phenotypes in the Dillman et al. (2016) study</h2>
+<div id="mutual-exclusivity-among-multiple-phenotypes." class="section level2">
+<h2>2. Mutual Exclusivity Among Multiple Phenotypes.</h2>
+<p>As you might have observed, most of the pairs that we saw in the previous section are compatible. Exclusive phenotypes occur less frequently than compatible ones. Therefore, we look at the <code>mutual_exclusivity</code> function which is a wrapper around the <code>mutual_exclusivity_pair</code> function. The <code>mutual_exclusivity</code> is more abstract in the sense that you can pass two or more phenotypesto check which pairs are exclusive or compatible.</p>
+<p>This function returns two objects embedded in a list: a matrix and a dataframe. Since multiple phenotypes are passed to this function, the matrix (which is symmetric) allows us to quickly look the resulting exclusivity types. On the other hand, the dataframe presents the same information in a more information-rich format with phenotype IDs and label names of each distinct phenotype from the phenotype vector, and the resultant exclusivity state. Let us look at some examples demonstrating the usecase of the function. This function also lets you pass one or more studies like the <code>mutual_exclusivity_pair</code> function in case a user wants took at the evidence provided by those studies only.</p>
+<p>In the following example, we are computing mutual exclusivity among the phenotypes discussed in the 2016 study by Dillman et al. This study has more than a thousand phenotypes. Therefore, we will only consider 20 phenotypes from the study (chosen at random).</p>
 <pre class="r"><code># get all studies in the database
 studies &lt;- pk_get_study_list()
-study &lt;- studies$id[studies$label == 'Dillman et al. (2016)']
 
-# get phenotypes
+# get the Dillman study
+study_name &lt;- 'Dillman et al. (2016)'
+study &lt;- studies$id[studies$label == study_name]
+
+# get phenotypes objects associated with the Dillman study
 phenotypes &lt;- get_phenotypes(study=study)
-phenotypes &lt;- as.phenotype(phenotypes)
 
-# test mutual exclusivity
-n &lt;- 7
-me &lt;- mutual_exclusivity(phenotypes[1:n], study, progress_bar=FALSE)
+# select any 20 phenotypes randomly
+random_indices &lt;- sample(1:nrow(phenotypes), size=20, replace=FALSE)
+phenotypes &lt;- as.phenotype(phenotypes[random_indices, ], withTaxa=TRUE)
 
-# get matrix
-me$matrix</code></pre>
-<pre><code>##   1 2 3 4 5 6 7
-## 1 1 5 4 4 4 4 4
-## 2 5 1 4 4 4 4 4
-## 3 4 4 1 5 4 4 4
-## 4 4 4 5 1 4 4 4
-## 5 4 4 4 4 1 5 4
-## 6 4 4 4 4 5 1 4
-## 7 4 4 4 4 4 4 1</code></pre>
-<pre class="r"><code># get phenotype pairs
-me$dataframe[, c('label.1', 'label.2', 'mutual_exclusivity')]</code></pre>
-<pre><code>##                                                                                                                                                                             label.1
-## 1                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
-## 2                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
-## 3                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
-## 4                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
-## 5                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
-## 6                                                                                                          abductor hyohyoid attached to anterior region and (part_of some urohyal)
-## 7                                                                                                                             abductor hyohyoid attached to urohyal lateral process
-## 8                                                                                                                             abductor hyohyoid attached to urohyal lateral process
-## 9                                                                                                                             abductor hyohyoid attached to urohyal lateral process
-## 10                                                                                                                            abductor hyohyoid attached to urohyal lateral process
-## 11                                                                                                                            abductor hyohyoid attached to urohyal lateral process
-## 12                                                                                                                  actinopterygian frontal-parietal joint anteromedial orientation
-## 13                                                                                                                  actinopterygian frontal-parietal joint anteromedial orientation
-## 14                                                                                                                  actinopterygian frontal-parietal joint anteromedial orientation
-## 15                                                                                                                  actinopterygian frontal-parietal joint anteromedial orientation
-## 16                                                                                                                    actinopterygian frontal-parietal joint transverse orientation
-## 17                                                                                                                    actinopterygian frontal-parietal joint transverse orientation
-## 18                                                                                                                    actinopterygian frontal-parietal joint transverse orientation
-## 19 actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 20 actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 21  actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-##                                                                                                                                                                             label.2
-## 1                                                                                                                             abductor hyohyoid attached to urohyal lateral process
-## 2                                                                                                                   actinopterygian frontal-parietal joint anteromedial orientation
-## 3                                                                                                                     actinopterygian frontal-parietal joint transverse orientation
-## 4  actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 5   actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 6                                                                                                                                            adductor mandibulae attachment quality
-## 7                                                                                                                   actinopterygian frontal-parietal joint anteromedial orientation
-## 8                                                                                                                     actinopterygian frontal-parietal joint transverse orientation
-## 9  actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 10  actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 11                                                                                                                                           adductor mandibulae attachment quality
-## 12                                                                                                                    actinopterygian frontal-parietal joint transverse orientation
-## 13 actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 14  actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 15                                                                                                                                           adductor mandibulae attachment quality
-## 16 actinopterygian parietal bone and (in_left_side_of some multicellular organism) in contact with actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 17  actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 18                                                                                                                                           adductor mandibulae attachment quality
-## 19  actinopterygian parietal bone and (in_left_side_of some multicellular organism) separated from actinopterygian parietal bone and (in_right_side_of some multicellular organism)
-## 20                                                                                                                                           adductor mandibulae attachment quality
-## 21                                                                                                                                           adductor mandibulae attachment quality
-##    mutual_exclusivity
-## 1  strong_exclusivity
-## 2    weak_exclusivity
-## 3    weak_exclusivity
-## 4    weak_exclusivity
-## 5    weak_exclusivity
-## 6    weak_exclusivity
-## 7    weak_exclusivity
-## 8    weak_exclusivity
-## 9    weak_exclusivity
-## 10   weak_exclusivity
-## 11   weak_exclusivity
-## 12 strong_exclusivity
-## 13   weak_exclusivity
-## 14   weak_exclusivity
-## 15   weak_exclusivity
-## 16   weak_exclusivity
-## 17   weak_exclusivity
-## 18   weak_exclusivity
-## 19 strong_exclusivity
-## 20   weak_exclusivity
-## 21   weak_exclusivity</code></pre>
+# compute mutual exclusivity; 
+me &lt;- mutual_exclusivity(phenotypes, 
+                         study, 
+                         progress_bar=FALSE)  # set this to TRUE if passing hundreds of phenotypes</code></pre>
+<p>Let us look at the resultant matrix. Each cell of the matrix contains the result of the exclusivity status between the phenotypes corresponding to the row and column. R presents ordered factor as an integer associated with the level of the factor. For example, <code>strong_compatibility</code> is shown as 1. Since each phenotype is strongly compatible with itself, all the diagonal elements in the matrix are 1.</p>
+<pre class="r"><code>me$matrix</code></pre>
+<pre><code>##    1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+## 1  1 4 4 2 4 4 2 4 4  4  4  4  4  2  4  4  2  4  4  4
+## 2  4 1 4 4 4 4 4 4 4  4  2  4  4  4  4  4  4  4  4  4
+## 3  4 4 1 2 4 4 2 2 2  2  2  2  2  2  4  2  5  2  2  2
+## 4  2 4 2 1 4 4 2 2 2  2  2  2  2  2  4  2  2  2  2  2
+## 5  4 4 4 4 1 4 4 4 4  4  4  4  2  4  4  2  4  4  4  4
+## 6  4 4 4 4 4 1 4 2 4  4  4  2  4  2  4  2  4  4  4  2
+## 7  2 4 2 2 4 4 1 4 2  2  4  2  4  2  4  2  2  2  2  4
+## 8  4 4 2 2 4 2 4 1 2  2  4  2  4  2  2  2  4  2  4  2
+## 9  4 4 2 2 4 4 2 2 1  2  2  2  2  2  4  2  2  2  2  2
+## 10 4 4 2 2 4 4 2 2 2  1  4  2  2  2  4  2  2  2  2  2
+## 11 4 2 2 2 4 4 4 4 2  4  1  2  4  2  4  2  4  4  4  4
+## 12 4 4 2 2 4 2 2 2 2  2  2  1  2  2  2  2  2  2  2  2
+## 13 4 4 2 2 2 4 4 4 2  2  4  2  1  2  4  2  4  2  4  4
+## 14 2 4 2 2 4 2 2 2 2  2  2  2  2  1  2  2  2  2  2  2
+## 15 4 4 4 4 4 4 4 2 4  4  4  2  4  2  1  2  4  4  4  2
+## 16 4 4 2 2 2 2 2 2 2  2  2  2  2  2  2  1  2  2  2  2
+## 17 2 4 5 2 4 4 2 4 2  2  4  2  4  2  4  2  1  2  2  4
+## 18 4 4 2 2 4 4 2 2 2  2  4  2  2  2  4  2  2  1  2  2
+## 19 4 4 2 2 4 4 2 4 2  2  4  2  4  2  4  2  2  2  1  4
+## 20 4 4 2 2 4 2 4 2 2  2  4  2  4  2  2  2  4  2  4  1</code></pre>
+<p>Let us look at the resulting dataframe. The dataframe contains contains each distinct pair of a phenotype chosen from the vector phenotypes that were passed (therefore, the dataframe has nC2 rows where n is the number of phenotypes passed). The dataframe contains five columns as shown below.</p>
+<pre class="r"><code># there are 190 possible distinct pairs in 20 studies
+choose(length(random_indices), 2)</code></pre>
+<pre><code>## [1] 190</code></pre>
+<pre class="r"><code># structure of the dataframe
+str(me$dataframe)</code></pre>
+<pre><code>## 'data.frame':    190 obs. of  5 variables:
+##  $ id.1              : chr  &quot;http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+&quot;| __truncated__ ...
+##  $ label.1           : chr  &quot;cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent&quot; &quot;cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent&quot; &quot;cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent&quot; &quot;cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent&quot; ...
+##  $ id.2              : chr  &quot;http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+&quot;| __truncated__ &quot;http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A&quot;| __truncated__ ...
+##  $ label.2           : chr  &quot;facet and (part_of some (antero-dorsal region and (part_of some maxilla))) increased size&quot; &quot;antero-ventral margin and (part_of some dentary) straight&quot; &quot;anatomical projection and (part_of some (ventro-medial region and (part_of some mesethmoid bone))) absent&quot; &quot;anatomical projection and (part_of some (medial region and (part_of some epibranchial 4 element))) bowl shaped&quot; ...
+##  $ mutual_exclusivity: Ord.factor w/ 5 levels &quot;strong_compatibility&quot;&lt;..: 4 4 2 4 4 2 4 4 4 4 ...</code></pre>
+<pre class="r"><code># ignoring phenotype IDs for brevity
+head(me$dataframe[, c('label.1', 'label.2', 'mutual_exclusivity')])</code></pre>
+<pre><code>##                                                                                      label.1
+## 1 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+## 2 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+## 3 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+## 4 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+## 5 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+## 6 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+##                                                                                                             label.2
+## 1                         facet and (part_of some (antero-dorsal region and (part_of some maxilla))) increased size
+## 2                                                         antero-ventral margin and (part_of some dentary) straight
+## 3         anatomical projection and (part_of some (ventro-medial region and (part_of some mesethmoid bone))) absent
+## 4    anatomical projection and (part_of some (medial region and (part_of some epibranchial 4 element))) bowl shaped
+## 5 anatomical projection and (part_of some (antero-dorsal region and (part_of some hypobranchial 2 bone))) elongated
+## 6                                 anterior margin and (part_of some lateral ethmoid wing) shape and (not (notched))
+##   mutual_exclusivity
+## 1   weak_exclusivity
+## 2   weak_exclusivity
+## 3 weak_compatibility
+## 4   weak_exclusivity
+## 5   weak_exclusivity
+## 6 weak_compatibility</code></pre>
+<p>The dataframe can be filtered using usual R syntax if one wants to look at a particular type of phenotype pair(s).</p>
+<pre class="r"><code>exclusivity_df &lt;- me$dataframe
+head(exclusivity_df[exclusivity_df$mutual_exclusivity == &quot;weak_exclusivity&quot;, 
+                    c('label.1', 'label.2')])</code></pre>
+<pre><code>##                                                                                      label.1
+## 1 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+## 2 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+## 4 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+## 5 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+## 7 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+## 8 cusp of tooth and (part_of some (distal margin and (part_of some dentary tooth 3))) absent
+##                                                                                                             label.2
+## 1                         facet and (part_of some (antero-dorsal region and (part_of some maxilla))) increased size
+## 2                                                         antero-ventral margin and (part_of some dentary) straight
+## 4    anatomical projection and (part_of some (medial region and (part_of some epibranchial 4 element))) bowl shaped
+## 5 anatomical projection and (part_of some (antero-dorsal region and (part_of some hypobranchial 2 bone))) elongated
+## 7                                                                           pharyngobranchial 1 bone decreased size
+## 8                                             proximal region and (part_of some rib 1) shape and (not (triangular))</code></pre>
+<p>You can also pass mutliple studies as a vector of study IDs or pass none in which case the function will look at the evidence from all the studies where the phenotypes occur.</p>
 </div>
 
 
