@@ -2,8 +2,11 @@
 title: "Mutually Exclusive Phenotypes"
 author: "Amandeep Rathee and Hilmar Lapp"
 date: "`r format(Sys.Date(), '%B-%d-%Y')`"
-output:
-  html_document: default
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{rphenoscape Mutual Exclusion}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
@@ -155,6 +158,26 @@ Similarly, the phenotypes `hyomandibular bone in contact with prootic bone` and 
 mutual_exclusivity_pair(phenotypes[2], phenotypes[4])
 ```
 
+Let us now look at a pair of phenotypes from the 2016 study by Dillman et al. The first two phenotypes in the databse associated with this study have strong evidence for mutual exclusivity.
+
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
+# get all studies in the database
+studies <- pk_get_study_list()
+
+# get the study id of the Dillman study
+study_name <- 'Dillman et al. (2016)'
+study <- studies$id[studies$label == study_name]
+
+# get phenotypes dataframe associated with the Dillman study
+phenotypes <- get_phenotypes(study=study)
+
+# convert the first two phenotypes from the study to phenotype objects
+phenotypes <- as.phenotype(phenotypes[1:2], withTaxa=TRUE)
+
+# check exclusivity among the first two phenotypes in the study
+mutual_exclusivity_pair(phenotypes[1], phenotypes[2])
+```
+
 Finally, a phenotype is strongly compatible with itself.
 
 ```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
@@ -304,7 +327,7 @@ In the following example, we are computing mutual exclusivity among the phenotyp
 # get all studies in the database
 studies <- pk_get_study_list()
 
-# get the Dillman study
+# get the study id of the Dillman study
 study_name <- 'Dillman et al. (2016)'
 study <- studies$id[studies$label == study_name]
 
