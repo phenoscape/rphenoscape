@@ -2,7 +2,7 @@
 RPhenoscape: Semantically rich phenotypic traits from the Phenoscape Knowledgebase
 ==================================================================================
 
-![Build Status](https://github.com/phenoscape/rphenoscape/workflows/R-CMD-check/badge.svg)
+[![Build Status](https://github.com/phenoscape/rphenoscape/workflows/R-CMD-check/badge.svg)](https://github.com/phenoscape/rphenoscape/actions)
 
 -   Author: Hong Xu, Hilmar Lapp
 -   Maintainer: Hilmar Lapp
