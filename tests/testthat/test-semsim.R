@@ -92,7 +92,7 @@ test_that("Resnik similarity", {
 
 test_that("profile similarity with Jaccard", {
   tl <- c("pelvic fin", "pectoral fin", "forelimb", "hindlimb", "dorsal fin", "caudal fin")
-  tt <- sapply(tl, pk_get_iri, as = "anatomy", exactOnly = TRUE)
+  tt <- sapply(tl, get_term_iri, as = "anatomy", exactOnly = TRUE)
 
   tt.f1 <- c(rep("paired", times = 4), rep("unpaired", times = 2))
   tt.f2 <- c("fins", "fins", "limbs", "limbs", "fins", "fins")
