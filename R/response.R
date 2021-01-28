@@ -80,9 +80,6 @@ stop_for_pk_status <- function(x) {
   }
 
   known_cases = c(
-    "400" = "Malformed parameters.",
-    "404" = "URL path used for this version is outdated, please update.",
-    "500" = "Malformed parameters.",
     "504" = "The search term is too generic; server timed out."
   )
 
@@ -97,6 +94,10 @@ stop_for_pk_status <- function(x) {
 pk_condition <- function(x, type, message = NULL, call = sys.call(-1)) {
   status <- x$status_code
   status_desc <- http_statuses_msg[as.character(status)]
+  if (is.null(message)) {
+    # see if the server returned a message in the response object
+    message <- httr::content(x, as = "text")
+  }
   message <- paste("(", status, ") ", status_desc, ifelse(is.null(message), "", ": "), message, sep = "")
 
   type <- match.arg(type, c("error", "warning", "message"))
