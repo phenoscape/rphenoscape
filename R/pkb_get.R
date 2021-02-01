@@ -36,9 +36,16 @@ get_json_data <- function(url, query,
   else
     res <- httr::POST(url, httr::accept_json(), httr::user_agent(ua()),
                       body = query, encode = "form")
+  # some endpoints return HTTP 404 for failure to find data, though some
+  # also (erroneously) do so for other reasons
+  contLen <- res$headers$`content-length`
+  if (res$status_code == 404 && (! is.null(contLen)) && contLen > 0) {
+    # confirm by checking the error message
+    err <- httr::content(res, as = "text")
+    if (endsWith(err, "resource could not be found.")) return(NULL)
+  }
   stop_for_pk_status(res)
   # some endpoints return zero content for failure to find data
-  contLen <- res$headers$`content-length`
   if ((! is.null(contLen)) && contLen == 0) return(NULL)
 
   # if content-type is application/json, httr:content() doesn't assume UTF-8
