@@ -84,9 +84,9 @@ test_that("Resnik similarity", {
   termICs <- -log10(term_freqs(phens$id, as = "phenotype", corpus = "taxa"))
   testthat::expect_equivalent(diag(sm.ic), termICs)
 
-  subs.ics <- -log10(term_freqs(rownames(subs.mat),
-                                as = "phenotype", corpus = "taxa"))
-  sm.ic2 <- resnik_similarity(subs.mat, wt = subs.ics)
+  tfreqs <- term_freqs(rownames(subs.mat), as = "phenotype", corpus = "taxa")
+  sm.ic2 <- resnik_similarity(subs.mat[! (is.na(tfreqs) | tfreqs == 0), ],
+                              wt = -log10(tfreqs[! (is.na(tfreqs) | tfreqs == 0)]))
   testthat::expect_equal(sm.ic, sm.ic2)
 })
 
@@ -151,6 +151,9 @@ test_that("profile similarity with Resnik", {
   }))
 
   freqs <- term_freqs(rownames(subs.mat), as = "phenotype", corpus = "taxa")
+  toKeep <- ! (is.na(freqs) | freqs == 0)
+  freqs <- freqs[toKeep]
+  subs.mat <- subs.mat[toKeep,]
   sm <- profile_similarity(resnik_similarity, subs.mat, wt = -log10(freqs),
                            f = phens.f)
   testthat::expect_equal(colnames(sm), levels(phens.f))
