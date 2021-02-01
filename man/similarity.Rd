@@ -36,7 +36,9 @@ scores, though any score will work for which a higher value means higher
 information content, and where a term will always have a score equal to or
 greater than any of its superclasses. If a function, it must accept parameter
 \code{x} as the vector of term IRIs and return a vector of frequencies (\emph{not}
-IC scores) for the terms. The default is to use function \code{\link[=term_freqs]{term_freqs()}}.}
+IC scores) for the terms. The default is to use function \code{\link[=term_freqs]{term_freqs()}}.
+Subsumer terms with zero or missing (NA) frequency will be omitted from the
+calculation.}
 
 \item{wt_args}{list, named parameters for the function calculating term
 frequencies. Ignored if \code{wt} is not a function. For the default \code{wt}

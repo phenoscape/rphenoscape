@@ -213,6 +213,8 @@ cosine_similarity <- function(subsumer_mat = NA, terms = NULL, ...) {
 #'   greater than any of its superclasses. If a function, it must accept parameter
 #'   `x` as the vector of term IRIs and return a vector of frequencies (_not_
 #'   IC scores) for the terms. The default is to use function [term_freqs()].
+#'   Subsumer terms with zero or missing (NA) frequency will be omitted from
+#'   the calculation.
 #' @param wt_args list, named parameters for the function calculating term
 #'   frequencies. Ignored if `wt` is not a function. For the default `wt`
 #'   function [term_freqs()], the main parameters are `as` and `corpus`. 
@@ -248,7 +250,14 @@ resnik_similarity <- function(subsumer_mat = NA, terms = NULL, ...,
   if (missing(wt) || is.function(wt)) {
     wt_args$x <- rownames(subsumer_mat)
     wt <- do.call(wt, wt_args)
-    wt[wt == 0] <- 1
+    # Terms with frequency zero should not occur in the subsumer matrix, so
+    # if there are any, they either shouldn't have been a subsumer, or they
+    # didn't yield a count. Either way, remove them from the computation.
+    rowsToRemove <- is.na(wt) | wt == 0
+    if (any(rowsToRemove)) {
+      wt <- wt[! rowsToRemove]
+      subsumer_mat <- subsumer_mat[! rowsToRemove,]
+    }
     # we assume we got frequencies, turn into IC
     wt <- -log(wt, base = base)
   }
