@@ -80,7 +80,7 @@ test_that("Test retrieving IRI", {
   expect_true(is.na(iii))
 
   tiris <- find_term("pelvic fin", definedBy = NA, matchTypes = c("exact"))
-  expect_gt(nrow(tiris), 1)
+  expect_gte(nrow(tiris), 1)
   expect_silent(tiri <- pk_get_iri("pelvic fin", as = NA, exactOnly = TRUE))
   expect_equal(tiri, "http://purl.obolibrary.org/obo/UBERON_0000152")
 
