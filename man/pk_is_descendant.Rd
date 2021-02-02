@@ -34,7 +34,7 @@ Any of both the query term and the list of candidate terms can be supplied
 as labels (names), or as IRIs. The function will first resolve any labels
 to IRIs, allowing any ontology as the target. If labels aren't unique enough
 across ontologies, it is advisable to do the resolution before calling these
-functions, using \link{pk_get_iri} with the appropriate ontology set.
+functions, using \code{\link[=get_term_iri]{get_term_iri()}} with the appropriate ontology set.
 }
 \examples{
 \dontrun{

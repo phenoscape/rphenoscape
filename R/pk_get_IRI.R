@@ -98,7 +98,7 @@ find_term <- function(query,
   res
 }
 
-#' Resolve a text query to IRI
+#' Find the IRI of the term matching a text query
 #' 
 #' Finds the term matching the query text, and returns its IRI. If the query
 #' text is already a IRI, it is returned as is.
@@ -121,10 +121,10 @@ find_term <- function(query,
 #'   time-consuming operations. Default is FALSE.
 #' @return The IRI if a match is found.
 #' @export
-pk_get_iri <- function(text, as, 
-                       exactOnly = FALSE,
-                       nomatch = NA,
-                       verbose = FALSE) {
+get_term_iri <- function(text, as,
+                         exactOnly = FALSE,
+                         nomatch = NA,
+                         verbose = FALSE) {
   # if the query string is already a HTTP URI, return it as the result
   if (startsWith(text, "http://") || startsWith(text, "https://")) return(text)
 
