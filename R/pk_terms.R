@@ -33,7 +33,7 @@
 #' @rdname pk_terms
 pk_taxon_detail <- function(term, verbose=FALSE) {
   iriList <- sapply(term,
-                    pk_get_iri, as = "taxon",  verbose = verbose,
+                    get_term_iri, as = "taxon",  verbose = verbose,
                     USE.NAMES = FALSE)
   if (length(iriList) == 1 && is.na(iriList)) return(invisible(NA))
 
@@ -112,7 +112,7 @@ pk_is_extinct <- function(taxon, verbose = FALSE) {
 
 
 pk_details <- function(term, as, verbose=FALSE) {
-  iri <- pk_get_iri(term, as, verbose = verbose)
+  iri <- get_term_iri(term, as, verbose = verbose)
   if (is.na(iri)) return(invisible(NA))
 
   mssg(verbose, "Retrieving term details")

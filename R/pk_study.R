@@ -92,7 +92,7 @@ pk_get_study_list <- function(taxon = NA, entity = NA, quality = NA,
 
   iriQueryParam <- function(lookupText, definedIn, paramName) {
     if (is.na(lookupText)) return(list())
-    termIRI <- pk_get_iri(lookupText, as = definedIn)
+    termIRI <- get_term_iri(lookupText, as = definedIn)
     if (termIRI == FALSE) stop("Failed to resolve ", lookupText, " in ", toupper(definedIn),
                                call. = FALSE)
     paramList <- list(termIRI)

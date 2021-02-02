@@ -72,25 +72,37 @@ test_that("is_extinct works", {
 test_that("Test retrieving IRI", {
   skip_on_cran()
 
-  i <- pk_get_iri("Coralliozetus", "vto")
+  i <- get_term_iri("Coralliozetus", "vto")
   expect_equal(i, "http://purl.obolibrary.org/obo/VTO_0042955")
-  expect_warning(ii <- pk_get_iri("Coralliozetus TT", "vto"))
-  expect_warning(iii <- pk_get_iri("Coralliozetus", "pato"))
+  expect_warning(ii <- get_term_iri("Coralliozetus TT", "vto"))
+  expect_warning(iii <- get_term_iri("Coralliozetus", "pato"))
   expect_true(is.na(ii))
   expect_true(is.na(iii))
 
   tiris <- find_term("pelvic fin", definedBy = NA, matchTypes = c("exact"))
   expect_gte(nrow(tiris), 1)
-  expect_silent(tiri <- pk_get_iri("pelvic fin", as = NA, exactOnly = TRUE))
+  expect_silent(tiri <- get_term_iri("pelvic fin", as = NA, exactOnly = TRUE))
   expect_equal(tiri, "http://purl.obolibrary.org/obo/UBERON_0000152")
 
   tiris <- find_term("part_of", definedBy = NA)
   expect_true("isDefinedBy" %in% colnames(tiris))
   expect_true(all(is.na(tiris$isDefinedBy)))
 
-  expect_warning(tiri <- pk_get_iri("anatomical structure", as = NA, exactOnly = TRUE))
+  expect_warning(tiri <- get_term_iri("anatomical structure", as = NA, exactOnly = TRUE))
   expect_is(tiri, "character")
   expect_true(startsWith(tiri, "http://purl.obolibrary.org/obo/"))
+})
+
+test_that("Deprecated function forr retrieving IRI", {
+  skip_on_cran()
+
+  expect_warning(tt <- pk_get_iri("Coralliozetus", "vto"))
+  expect_equal(tt, "http://purl.obolibrary.org/obo/VTO_0042955")
+  expect_equal(tt, get_term_iri("Coralliozetus", "vto"))
+
+  expect_warning(tt <- pk_get_iri("pelvic fin", as = NA, exactOnly = TRUE))
+  expect_equal(tt, "http://purl.obolibrary.org/obo/UBERON_0000152")
+  expect_equal(tt, get_term_iri("pelvic fin", as = NA, exactOnly = TRUE))
 })
 
 test_that("Test getting labels", {

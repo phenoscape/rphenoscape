@@ -8,7 +8,7 @@
 #' as labels (names), or as IRIs. The function will first resolve any labels
 #' to IRIs, allowing any ontology as the target. If labels aren't unique enough
 #' across ontologies, it is advisable to do the resolution before calling these
-#' functions, using [pk_get_iri][pk_get_iri] with the appropriate ontology set.
+#' functions, using [get_term_iri()] with the appropriate ontology set.
 #' @param term character, the label (name) or IRI of the query term
 #' @param candidates character, the list of candidate term names or IRIs
 #' @param includeRels character, the relationships R for which to include
@@ -59,7 +59,7 @@ pk_is <- function(term, candidates,
   includeRels <- match.arg(includeRels)
 
   term_iris <- sapply(c(term, candidates),
-                      pk_get_iri, as = NA, exactOnly = TRUE)
+                      get_term_iri, as = NA, exactOnly = TRUE)
   if (any(is.na(term_iris)))
     warning("The following names could not be resolved as an exact match. ",
             "Results are incomplete.\n\t",

@@ -42,7 +42,7 @@
 #' @examples
 #' tt <- sapply(c("pelvic fin", "pectoral fin",
 #'                "forelimb", "hindlimb", "dorsal fin", "caudal fin"),
-#'              pk_get_iri, as = "anatomy")
+#'              get_term_iri, as = "anatomy")
 #'
 #' # define groups (profiles) as factors:
 #' pairedUnpaired <- c(rep("paired", times = 4), rep("unpaired", times = 2))

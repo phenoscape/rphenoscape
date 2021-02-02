@@ -186,8 +186,8 @@ pkb_args_to_query <- function(...,
                            paramVal <- argList[[x]]
                            ont <- ont_lookups[x]
                            if (! is.na(ont))
-                             paramVal <- pk_get_iri(paramVal, as = ont,
-                                                    verbose = verbose)
+                             paramVal <- get_term_iri(paramVal, as = ont,
+                                                      verbose = verbose)
                            names(paramVal) <- param
                            paramVal
                          },

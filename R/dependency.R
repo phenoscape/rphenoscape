@@ -67,8 +67,8 @@ pa_dep_matrix <- function(terms,
   }
   term_iris <- 
     unname(sapply(terms,
-                  function(x) pk_get_iri(x, as = "anatomy",
-                                         exactOnly = TRUE, verbose = verbose)))
+                  function(x) get_term_iri(x, as = "anatomy",
+                                           exactOnly = TRUE, verbose = verbose)))
   if (any(is.na(term_iris))) {
     warnings("Removing unresolved terms")
     term_iris <- term_iris[! is.na(term_iris)]

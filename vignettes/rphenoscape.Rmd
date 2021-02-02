@@ -108,8 +108,8 @@ pk_anatomical_detail("basihyal bone")
 #### Miscellaneous methods:
 Resolve a given term to its IRI:
 ```{r}
-pk_get_iri("Coralliozetus", "vto")
-pk_get_iri("basihyal bone", "uberon")
+get_term_iri("Coralliozetus", "vto")
+get_term_iri("basihyal bone", "uberon")
 ```
 
 Test if a taxon is extinct:
