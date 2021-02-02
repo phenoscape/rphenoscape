@@ -3,7 +3,7 @@
 ^\.Rproj\.user$
 README.rmd
 rphenoscape.*.tar.gz
-cache
+^cache
 vignettes/cache
 ^docs$
 ^_pkgdown\.yml$

@@ -3,7 +3,7 @@
 .Rproj.user/
 rphenoscape.Rproj
 .Rproj.user
-cache
+cache*/
 rphenoscape*.tar.gz
 *.Rcheck
 .DS_Store

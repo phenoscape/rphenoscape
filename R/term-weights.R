@@ -121,29 +121,30 @@ decode_entity_postcomp <- function(x) {
   })
 }
 
-annotations_count <- function(iri, termType, decodeIRI = TRUE,
-                              apiEndpoint = "/taxon/annotations",
-                              ...) {
-  query <- pkb_args_to_query(...)
-  query$total <- TRUE
-  if (termType == "entity" && decodeIRI) {
-    comps <- decode_entity_postcomp(iri)[[1]]
-    if ((length(comps$entities) == 1) && any(partOf_iri() %in% comps$rels)) {
-      query[[termType]] <- comps$entities
+annotations_count <- memoise(
+  function(iri, termType,
+           decodeIRI = TRUE, apiEndpoint = "/taxon/annotations", ...) {
+    query <- pkb_args_to_query(...)
+    query$total <- TRUE
+    if (termType == "entity" && decodeIRI) {
+      comps <- decode_entity_postcomp(iri)[[1]]
+      if ((length(comps$entities) == 1) && any(partOf_iri() %in% comps$rels)) {
+        query[[termType]] <- comps$entities
+      }
     }
-  }
-  if (is.null(query[[termType]])) query[[termType]] <- iri
-  res <- get_json_data(pkb_api(apiEndpoint), query = query)
-  # if the IRI used for counting is a result of decoding the IRI, _and_ if
-  # we haven't included parts in the count already
-  if ((query[[termType]] != iri) && (is.null(query$parts) || ! query$parts)) {
-    # count with including parts, then subtract entities alone (counted before)
-    query$parts <- TRUE
-    res2 <- get_json_data(pkb_api(apiEndpoint), query = query)
-    res2$total - res$total
-  } else
-    res$total
-}
+    if (is.null(query[[termType]])) query[[termType]] <- iri
+    res <- get_json_data(pkb_api(apiEndpoint), query = query)
+    # if the IRI used for counting is a result of decoding the IRI, _and_ if
+    # we haven't included parts in the count already
+    if ((query[[termType]] != iri) && (is.null(query$parts) || ! query$parts)) {
+      # count with including parts, then subtract entities alone (counted before)
+      query$parts <- TRUE
+      res2 <- get_json_data(pkb_api(apiEndpoint), query = query)
+      res2$total - res$total
+    } else
+      res$total
+  },
+  persistName = "annot-counts")
 
 #' Obtain the size of different corpora
 #'
@@ -163,23 +164,18 @@ annotations_count <- function(iri, termType, decodeIRI = TRUE,
 #' corpus_size("taxa")
 #' corpus_size("taxon_annotations")
 #' @export
-corpus_size <- local({
-  .sizes <- list()
+corpus_size <- memoise(
   function(corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes")) {
     corpus <- match.arg(corpus)
-    if (is.null(.sizes[[corpus]])) {
-      if (corpus == "taxa" || corpus == "genes") {
-        corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
-        res <- get_json_data(pkb_api("/similarity/corpus_size"),
-                             query = list(corpus_graph = corpusID))
-        .sizes[[corpus]] <- res$total
-      } else if (corpus == "taxon_annotations") {
-        res <- get_json_data(pkb_api("/taxon/annotations"), list(total = TRUE))
-        .sizes[[corpus]] <- res$total
-      } else {
-        stop("corpus 'gene_annotations' is currently unsupported", call. = FALSE)
-      }
+    if (corpus == "taxa" || corpus == "genes") {
+      corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
+      res <- get_json_data(pkb_api("/similarity/corpus_size"),
+                           query = list(corpus_graph = corpusID))
+      res$total
+    } else if (corpus == "taxon_annotations") {
+      res <- get_json_data(pkb_api("/taxon/annotations"), list(total = TRUE))
+      res$total
+    } else {
+      stop("corpus 'gene_annotations' is currently unsupported", call. = FALSE)
     }
-    .sizes[[corpus]]
-  }
-})
+  })

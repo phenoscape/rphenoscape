@@ -30,7 +30,9 @@ Imports:
     rlang,
     methods,
     stringi,
-    RNeXML (>= 2.4.0)
+    RNeXML (>= 2.4.0),
+    digest,
+    memoise
 Suggests: 
     roxygen2,
     knitr,
