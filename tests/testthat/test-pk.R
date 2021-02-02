@@ -128,6 +128,14 @@ test_that("labels for pre-generated post-comps", {
 
   subs <- sample(rownames(subsumer_matrix(c("femur"))), 30)
   subs.l <- get_term_label(subs, preserveOrder = TRUE)
+  # Unfortunately, there are some regular ontologies for which the database
+  # does not consistently have labels. Filter those out.
+  ontFilter <- Reduce(
+    function(v1, v2) v1 | startsWith(subs.l$id, v2),
+    paste0("http://purl.obolibrary.org/obo/", c("CARO"), "_"),
+    init = rep(FALSE, times = length(subs.l$id))
+  )
+  subs.l <- subs.l[! (is.na(subs.l$label) & ontFilter),]
   testthat::expect_lte(sum(is.na(subs.l$label)), 1)
 })
 
