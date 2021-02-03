@@ -3,9 +3,12 @@
 \name{rphenoscape-deprecated}
 \alias{rphenoscape-deprecated}
 \alias{pk_get_iri}
+\alias{pk_get_study_list}
 \title{Deprecated functions in \pkg{rphenoscape}.}
 \usage{
 pk_get_iri(...)
+
+pk_get_study_list(...)
 }
 \description{
 The functions listed below are deprecated and will become defunct in
@@ -17,6 +20,13 @@ the deprecated functions are available at \code{help("<function>-deprecated")}.
 \section{\code{pk_get_iri}}{
 
 For \code{pk_get_iri()} use \code{\link[=get_term_iri]{get_term_iri()}} instead.
+}
+
+\section{\code{pk_get_study_list}}{
+
+For \code{pk_get_study_list()} use \code{\link[=get_studies]{get_studies()}} instead. Note that \code{get_studies()}
+returns an empty result set if nothing was found, in contrast to \code{pk_get_study_list},
+which returns FALSE in that case (and prints a message).
 }
 
 \keyword{internal}

@@ -130,7 +130,7 @@ pkb_api <- function(...) {
 #' query result. This function aids in preparing the query string for these
 #' endpoints. It is internal to the package.
 #' @param ... any combination of zero or more parameters from `entity`,
-#'   `quality`, `taxon`, and `study`. Any provided with value `NA` will be
+#'   `quality`, `taxon`, `study`, and `phenotype`. Any provided with value `NA` will be
 #'   ignored. Entity, quality, and taxon will be resolved to IRI if not
 #'   already provided as such.
 #' @param includeRels character, in which case it is the relationship(s) for
@@ -153,7 +153,8 @@ pkb_args_to_query <- function(...,
                   "entity" = "entity",
                   "quality" = "quality",
                   "taxon" = "in_taxon",
-                  "study" = "publication")
+                  "study" = "publication",
+                  "phenotype" = "phenotype")
   ont_lookups <- c("entity" = "anatomy",
                    "quality" = "PATO",
                    "taxon" = "taxon")
@@ -221,3 +222,4 @@ phenoscape_api <- local({
     .api
   }
 })
+
