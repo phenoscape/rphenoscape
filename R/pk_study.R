@@ -79,10 +79,6 @@ get_studies <- function(taxon = NA, entity = NA, quality = NA,
   out <- get_json_data(pkb_api("/study/query"), queryseq)
   d <- out$results
 
-  if (length(d) == 0) {
-    warning("No study found in database.", call. = FALSE)
-    return(invisible(FALSE))
-  }
   if (length(d) > 0) {
     d <- dplyr::rename(d, id = "@id")
   }
