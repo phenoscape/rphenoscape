@@ -1,7 +1,7 @@
 #' Query the list of studies by taxa, anatomical entities, and qualities.
-#' @param taxon character. The name of the taxon by which to filter, if any.
-#' @param entity character. The name of the anatomical entity by which to filter, if any.
-#' @param quality character. The name of the phenotypic quality by which to filter, if any.
+#' @param taxon character. The taxon by which to filter, if any.
+#' @param entity character. The anatomical entity by which to filter, if any.
+#' @param quality character. The phenotypic quality by which to filter, if any.
 #' @param phenotype character. The phenotype (as its identifier) by which to filter, if any.
 #'   If provided, matching studies (through its one or more of its character states)
 #'   must be linked to the given phenotype, or one subsumed by it. This must be provided
@@ -15,7 +15,8 @@
 #' @param relation character. Deprecated, for backwards compatibility defaults to
 #'  `part of`. Only used if `includeRels` is left at its default value.
 #'
-#' @return data.frame
+#' @return A data.frame with columns "id" and "label", or an empty list if no
+#'   matching study was found.
 #'
 #' @description
 #' Return studies that contain taxa which are members of the optional input taxon,
@@ -24,99 +25,64 @@
 #' @examples
 #' \dontrun{
 #' # by default, parts are included
-#' slist <- pk_get_study_list(taxon = "Siluridae", entity = "fin")
+#' slist <- get_studies(taxon = "Siluridae", entity = "fin")
 #' colnames(slist)
 #' nrow(slist)
 #'
 #' # can also disable parts
-#' slist <- pk_get_study_list(taxon = "Siluridae", entity = "fin", includeRels = FALSE)
+#' slist <- get_studies(taxon = "Siluridae", entity = "fin", includeRels = FALSE)
 #' nrow(slist)
 #'
 #' # or filter studies only by entity, including their parts
-#' slist <- pk_get_study_list(entity = "pelvic fin", includeRels = c("part of"))
+#' slist <- get_studies(entity = "pelvic fin", includeRels = c("part of"))
 #' nrow(slist)
 #'
 #' # or filter studies only by entity, including their parts
-#' slist <- pk_get_study_list(entity = "pelvic fin", includeRels = c("part of"))
+#' slist <- get_studies(entity = "pelvic fin", includeRels = c("part of"))
 #' nrow(slist)
 #'
 #' # including not only parts but also historical and serial homologs
-#' slist <- pk_get_study_list(entity = "pelvic fin",
-#'                            includeRels = c("part of",
-#'                                            "serially homologous to",
-#'                                            "historical homologous to"))
+#' slist <- get_studies(entity = "pelvic fin",
+#'                      includeRels = c("part of",
+#'                                      "serially homologous to",
+#'                                      "historical homologous to"))
 #' nrow(slist)
 #' # relationship names can be given as prefixes
-#' slist1 <- pk_get_study_list(entity = "pelvic fin",
-#'                             includeRels = c("part", "serial", "historical"))
+#' slist1 <- get_studies(entity = "pelvic fin",
+#'                       includeRels = c("part", "serial", "historical"))
 #' nrow(slist1) == nrow(slist)
 #'
 #' # or apply no filter, obtaining all studies in the KB
-#' slist <- pk_get_study_list()
+#' slist <- get_studies()
 #' nrow(slist)
 #' }
 #' @export
-pk_get_study_list <- function(taxon = NA, entity = NA, quality = NA,
-                              phenotype = NA,
-                              includeRels = NA, relation = "part of") {
+get_studies <- function(taxon = NA, entity = NA, quality = NA,
+                        phenotype = NA,
+                        includeRels = c("part of"), relation = c("part of")) {
 
-  if (all(is.na(includeRels)))
-    includeRels <- c(relation)
-  else if (is.logical(includeRels))
-    if (includeRels)
-      includeRels <- c("part of",
-                       "historical homologous to",
-                       "serially homologous to")
-    else
-      includeRels <- c()
-
-  if (length(includeRels) > 0) {
-    tryCatch(
-      includeRels <- match.arg(includeRels,
-                               c("part of",
-                                 "historical homologous to",
-                                 "serially homologous to"),
-                               several.ok = TRUE),
-      error = function(e) {
-        stop(conditionMessage(e), call. = FALSE)
-      })
+  argsInCall <-  as.list(match.call())[-1]
+  # check for deprecated relation parameter
+  if (! is.null(argsInCall$relation)) {
+    warning("parameter 'relation' is deprecated, use 'includeRels' instead",
+            call. = FALSE)
+    if (is.null(argsInCall$includeRels)) includeRels <- relation
   }
-
-  queryseq <- lapply(includeRels,
-                     function(x)
-                       switch(x,
-                              "part of"=c(parts="true"),
-                              "historical homologous to"=c(historical_homologs="true"),
-                              "serially homologous to"=c(serial_homologs="true")))
-  queryseq <- as.list(unlist(queryseq))
-
-  iriQueryParam <- function(lookupText, definedIn, paramName) {
-    if (is.na(lookupText)) return(list())
-    termIRI <- get_term_iri(lookupText, as = definedIn)
-    if (termIRI == FALSE) stop("Failed to resolve ", lookupText, " in ", toupper(definedIn),
-                               call. = FALSE)
-    paramList <- list(termIRI)
-    names(paramList) <- paramName
-    paramList
-  }
-
-  queryseq <- c(queryseq,
-                iriQueryParam(taxon, "vto", "in_taxon"),
-                iriQueryParam(entity, "uberon", "entity"),
-                iriQueryParam(quality, "pato", "quality"),
-                limit = "100000")
-
+  # need to make sure to apply our defaults where they differ
+  argsInCall$includeRels <- includeRels
+  # note that evaluation needs to be in this function's parent frame, or
+  # otherwise using it in apply() and friends won't work
+  queryseq <- do.call(pkb_args_to_query, argsInCall, envir = parent.frame())
+  queryseq <- c(queryseq, limit = "1000000")
   if (! is.na(phenotype)) queryseq <- c(queryseq, phenotype = phenotype)
 
-  out <- pk_GET(pk_study_url, queryseq)
+  out <- get_json_data(pkb_api("/study/query"), queryseq)
   d <- out$results
 
-  if (length(d) == 0) {
-    warning("No study found in database.", call. = FALSE)
-    return(invisible(FALSE))
+  if (length(d) > 0) {
+    d <- dplyr::rename(d, id = "@id")
   }
-
-  d %>% dplyr::rename(id = "@id")
+  d
 }
 
 #' pk_get_study
@@ -124,7 +90,7 @@ pk_get_study_list <- function(taxon = NA, entity = NA, quality = NA,
 #' @return A list of data.frames containing matrices
 #' @examples
 #' \dontrun{
-#' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
+#' slist <- get_studies(taxon = "Ameiurus", entity = "pelvic splint")
 #' nex_list <- pk_get_study_xml(slist$id) # get the list of NeXML objects for the studies
 #' pk_get_study(nex_list) # retrieve the study matrices
 #' pk_get_study_meta(nex_list) # retrieve the meta data for the studies
@@ -149,7 +115,7 @@ pk_get_study <- function(nexmls) {
 #' @return A list of data.frames containing taxa and characters
 #' @examples
 #' \dontrun{
-#' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
+#' slist <- get_studies(taxon = "Ameiurus", entity = "pelvic splint")
 #' nex_list <- pk_get_study_xml(slist$id) # get the list of NeXML objects for the studies
 #' pk_get_study(nex_list) # retrieve the study matrices
 #' pk_get_study_meta(nex_list) # retrieve the meta data for the studies
@@ -238,5 +204,3 @@ unique_label <- function(m) {
   c <- grepl('character', cname)
   return(!c)
 }
-
-pk_study_url <- "http://kb.phenoscape.org/api/study/query"

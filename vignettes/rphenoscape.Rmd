@@ -62,7 +62,7 @@ To obtain the character matrices for studies published for a taxonomic clade and
 
 First step is to retrieve the list of studies given a taxonomic clade and anatomical structures (returned as ```data.frame```).
 ```{r}
-(slist <- pk_get_study_list(taxon = "Ictalurus australis", entity = "fin"))
+(slist <- get_studies(taxon = "Ictalurus australis", entity = "fin"))
 ```
 
 Based off the study ids retained from previous step, get the evolutionary character matrix for each study id (in NeXML-format) using ```pk_get_study_xml```.

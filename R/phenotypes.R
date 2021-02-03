@@ -127,7 +127,7 @@ get_phenotypes <- function(entity = NA, quality = NA, taxon = NA, study = NA,
 #' x <- get_phenotypes(entity = "basihyal bone")
 #' nrow(x)
 #' # which of these are in the same study or studies as the first one?
-#' phenotype_matches(x, pk_get_study_list(phenotype = x$id[1]))
+#' phenotype_matches(x, get_studies(phenotype = x$id[1]))
 #' @export
 phenotype_matches <- function(x, studies) {
   if ("id" %in% colnames(x)) x <- x$id
@@ -140,7 +140,7 @@ phenotype_matches <- function(x, studies) {
     rep(FALSE, times = length(x))
   else
     sapply(x, function(phen) {
-      phen.studies <- pk_get_study_list(phenotype = phen)
+      phen.studies <- get_studies(phenotype = phen)
       if (is.logical(phen.studies))
         FALSE
       else

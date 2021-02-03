@@ -70,7 +70,7 @@ test_that("matching phenotypes against study filter", {
   # basihyal bone phenotypes
   phens <- get_phenotypes(entity = "basihyal bone")
   # studies for basihyal bone
-  studies <- pk_get_study_list(entity = "basihyal bone")
+  studies <- get_studies(entity = "basihyal bone")
 
   # match one against one study
   phens.match <- phenotype_matches(phens$id[1], studies = studies$id[1])
@@ -99,8 +99,7 @@ test_that("matching phenotypes against study filter", {
   testthat::expect_true(all(phens.match))
 
   # tolerates phenotype IDs that aren't found
-  testthat::expect_warning(
-    phens.match <- phenotype_matches(c("foobar", phens$id), studies = studies$id))
+  phens.match <- phenotype_matches(c("foobar", phens$id), studies = studies$id)
   testthat::expect_is(phens.match, "logical")
   testthat::expect_length(phens.match, length(phens$id) + 1)
   testthat::expect_false(all(phens.match))
