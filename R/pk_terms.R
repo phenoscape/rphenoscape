@@ -154,7 +154,7 @@ get_term_label <- function(term_iris, preserveOrder = FALSE, verbose = FALSE) {
     noLabel <- is.na(res$label)
     if (any(noLabel)) {
       res[noLabel, "label"] <- sapply(res$id[noLabel], function(iri) {
-        clInfo <- pk_class(iri, as = NA, verbose = verbose)
+        clInfo <- term_classification(iri, as = NA, verbose = verbose)
         if (length(clInfo) <= 1 || clInfo$label == iri)
           NA
         else
