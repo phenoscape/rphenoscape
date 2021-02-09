@@ -4,11 +4,20 @@
 \alias{rphenoscape-deprecated}
 \alias{pk_get_iri}
 \alias{pk_get_study_list}
+\alias{pk_taxon_class}
+\alias{pk_anatomical_class}
+\alias{pk_phenotype_class}
 \title{Deprecated functions in \pkg{rphenoscape}.}
 \usage{
 pk_get_iri(...)
 
 pk_get_study_list(...)
+
+pk_taxon_class(x, verbose = TRUE)
+
+pk_anatomical_class(x, verbose = TRUE)
+
+pk_phenotype_class(x, verbose = TRUE)
 }
 \description{
 The functions listed below are deprecated and will become defunct in
@@ -27,6 +36,27 @@ For \code{pk_get_iri()} use \code{\link[=get_term_iri]{get_term_iri()}} instead.
 For \code{pk_get_study_list()} use \code{\link[=get_studies]{get_studies()}} instead. Note that \code{get_studies()}
 returns an empty result set if nothing was found, in contrast to \code{pk_get_study_list},
 which returns FALSE in that case (and prints a message).
+}
+
+\section{\code{pk_taxon_class}}{
+
+For \code{pk_taxon_class()} use \code{\link[=term_classification]{term_classification()}} with as="taxon" instead.
+Note that \code{pk_taxon_class()} defaults verbose to TRUE instead of FALSE as
+\code{term_classification()} does.
+}
+
+\section{\code{pk_anatomical_class}}{
+
+For \code{pk_anatomical_class()} use \code{\link[=term_classification]{term_classification()}} with as="anatomy" instead.
+Note that \code{pk_anatomical_class()} defaults verbose to TRUE instead of FALSE as
+\code{term_classification()} does.
+}
+
+\section{\code{pk_phenotype_class}}{
+
+For \code{pk_phenotype_class()} use \code{\link[=term_classification]{term_classification()}} with as="pato" instead.
+Note that \code{pk_phenotype_class()} defaults verbose to TRUE instead of FALSE as
+\code{term_classification()} does.
 }
 
 \keyword{internal}

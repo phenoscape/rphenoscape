@@ -1,40 +1,28 @@
 #' Get term classification
 #'
 #' @param x character. Name of the term
-#' @param verbose logical: optional. If TRUE (default), informative messages printed.
-#' @name pk_class
+#' @param as character. The ontology or ontologies as which to find the term.
+#'   Can be provided in several ways: (1) IRI of the ontology; (2) the ID space
+#'   for OBO ontologies such as UBERON, VTO, etc; (3) `"anatomy"` and `"taxon"`
+#'   as shorthand for all anatomy and taxon ontologies, respectively; (4) NA to
+#'   disable any filtering by defining ontology. Options (1) and (2) can be
+#'   combined. There is no default.
+#' @param verbose logical: optional. If TRUE, prints messages prior to potentially
+#'   time-consuming operations. Default is FALSE.
+#' @name term_classification
 #' @return A list containing data.frame
 #'
 #' @description Return direct superclasses, direct subclasses, and equivalent classes of a given term
 #'
 #'
 #' @export
-#' @rdname pk_class
-pk_taxon_class <- function(x, verbose=TRUE) {
-  pk_class(x, as = "taxon", verbose)
-}
-#' @export
-#' @rdname pk_class
-pk_anatomical_class <- function(x, verbose=TRUE) {
-  pk_class(x, as = "anatomy", verbose)
-}
-#' @export
-#' @rdname pk_class
-pk_phenotype_class <- function(x, verbose=TRUE) {
-  pk_class(x, as = "pato", verbose)
-}
-
-pk_class <- function(x, as, verbose=TRUE) {
+#' @rdname term_classification
+term_classification <- function(x, as, verbose=FALSE) {
   iri <- get_term_iri(x, as = as, verbose = verbose)
   if (is.na(iri)) return(invisible(NA))
 
   mssg(verbose, "Retrieving classification information")
 
   queryseq <- list(iri = iri)
-  pk_GET(pk_class_url, query = queryseq)
+  get_json_data(pkb_api("/term/classification"), queryseq)
 }
-pk_class_url <- "http://kb.phenoscape.org/api/term/classification"
-
-
-
-
