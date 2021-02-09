@@ -52,7 +52,7 @@ term_category <- function(x) {
         else if (any(isE))
           "entity"
         else {
-          subClasses <- pk_class(term, as = NA, verbose = FALSE)$superClassOf
+          subClasses <- term_classification(term, as = NA, verbose = FALSE)$superClassOf
           if (length(subClasses) > 0)
             term_category(subClasses[1,"@id"])
           else {
