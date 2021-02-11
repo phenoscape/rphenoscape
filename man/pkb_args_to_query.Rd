@@ -8,7 +8,7 @@ pkb_args_to_query(..., includeRels = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{...}{any combination of zero or more parameters from \code{entity},
-\code{quality}, \code{taxon}, and \code{study}. Any provided with value \code{NA} will be
+\code{quality}, \code{taxon}, \code{study}, and \code{phenotype}. Any provided with value \code{NA} will be
 ignored. Entity, quality, and taxon will be resolved to IRI if not
 already provided as such.}
 

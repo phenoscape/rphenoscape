@@ -4,8 +4,8 @@
 \alias{get_studies}
 \title{Query the list of studies by taxa, anatomical entities, and qualities.}
 \usage{
-get_studies(taxon = NA, entity = NA, quality = NA,
-  phenotype = NA, includeRels = c("part of"), relation = c("part of"))
+get_studies(taxon = NA, entity = NA, quality = NA, phenotype = NA,
+  includeRels = c("part of"), relation = c("part of"))
 }
 \arguments{
 \item{taxon}{character. The taxon by which to filter, if any.}
