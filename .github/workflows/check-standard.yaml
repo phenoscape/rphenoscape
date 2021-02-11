@@ -6,6 +6,8 @@ on:
       - main
       - master
   pull_request:
+  schedule:
+    - cron:  '0 23 * * THU'
 
 name: R-CMD-check
 
