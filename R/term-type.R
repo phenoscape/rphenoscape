@@ -54,7 +54,7 @@ term_category <- function(x) {
         else {
           subClasses <- term_classification(term, as = NA, verbose = FALSE)$superClassOf
           if (length(subClasses) > 0)
-            term_category(subClasses[1,"@id"])
+            term_category(subClasses[1,"id"])
           else {
             comps <- decode_entity_postcomp(term)[[1]]
             if (length(comps$rels) > 0 &&

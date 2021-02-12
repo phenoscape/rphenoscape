@@ -82,6 +82,36 @@ get_json_data <- function(url, query,
 }
 pk_GET <- get_json_data
 
+
+#' Clean JSON-LD names in a list/data.frame
+#'
+#' Recursively cleans names in a list/data.frame replacing `@id` names with `id`.
+#'
+#' @param x a data frame or list, typically created using [jsonlite::fromJSON()]
+#'
+#' @return the input data frame or list with changed names
+#' @export
+rclean_jsonld_names <- function(x) {
+  UseMethod("rclean_jsonld_names", x)
+}
+
+#' @export
+rclean_jsonld_names.default <- function(x) x
+
+#' @export
+rclean_jsonld_names.list <- function(x) {
+  x <- clean_jsonld_names(x)
+  lapply(x, rclean_jsonld_names)
+}
+
+#' @export
+rclean_jsonld_names.data.frame <- function(x) clean_jsonld_names(x)
+
+clean_jsonld_names <- function(x) {
+  names(x) <- sub("^@id$", "id", names(x))
+  x
+}
+
 #' @rdname get_data
 #' @importFrom httr GET content
 #' @importFrom utils read.csv
