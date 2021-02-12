@@ -39,34 +39,34 @@ pk_get_study_list <- function(...) {
 #' @section \code{pk_taxon_class}:
 #' For `pk_taxon_class()` use [term_classification()] with as="taxon" instead.
 #' Note that `pk_taxon_class()` defaults verbose to TRUE instead of FALSE as
-#' `term_classification()` does.
+#' `term_classification()` does. Also `pk_taxon_class()` return value has the legacy `@id` name.
 #' @keywords internal
 #' @export
 pk_taxon_class <- function(x, verbose=TRUE) {
   .Deprecated("term_classification")
-  term_classification(x, as = "taxon", verbose)
+  term_classification_raw(x, as = "taxon", verbose)
 }
 
 #' @rdname rphenoscape-deprecated
 #' @section \code{pk_anatomical_class}:
 #' For `pk_anatomical_class()` use [term_classification()] with as="anatomy" instead.
 #' Note that `pk_anatomical_class()` defaults verbose to TRUE instead of FALSE as
-#' `term_classification()` does.
+#' `term_classification()` does. Also `pk_anatomical_class()` return value has the legacy `@id` name.
 #' @keywords internal
 #' @export
 pk_anatomical_class <- function(x, verbose=TRUE) {
   .Deprecated("term_classification")
-  term_classification(x, as = "anatomy", verbose)
+  term_classification_raw(x, as = "anatomy", verbose)
 }
 
 #' @rdname rphenoscape-deprecated
 #' @section \code{pk_phenotype_class}:
 #' For `pk_phenotype_class()` use [term_classification()] with as="pato" instead.
 #' Note that `pk_phenotype_class()` defaults verbose to TRUE instead of FALSE as
-#' `term_classification()` does.
+#' `term_classification()` does. Also `pk_phenotype_class()` return value has the legacy `@id` name.
 #' @keywords internal
 #' @export
 pk_phenotype_class <- function(x, verbose=TRUE) {
   .Deprecated("term_classification")
-  term_classification(x, as = "pato", verbose)
+  term_classification_raw(x, as = "pato", verbose)
 }
