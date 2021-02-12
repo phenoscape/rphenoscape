@@ -18,6 +18,11 @@
 #' @export
 #' @rdname term_classification
 term_classification <- function(x, as, verbose=FALSE) {
+  res <- term_classification_raw(x, as, verbose)
+  rclean_jsonld_names(res)
+}
+
+term_classification_raw <- function(x, as, verbose=FALSE) {
   iri <- get_term_iri(x, as = as, verbose = verbose)
   if (is.na(iri)) return(invisible(NA))
 
