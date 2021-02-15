@@ -4,39 +4,44 @@ test_that("Test getting classification information", {
   skip_on_cran()
   t <- term_classification("Fisherichthys", as="taxon")
   tt <- term_classification("Fisherichthys folmeri", as="taxon")
-  
+
   a <- term_classification("fin", as="anatomy")
   p <- term_classification("shape", as="pato")
-  
+
   expect_true("id" %in% names(t))
-  expect_output(str(t), 'List of 5')
-  expect_output(str(tt), 'List of 5')
+  expect_is(t, "list")
+  expect_length(t, 5)
+  expect_is(tt, "list")
+  expect_length(tt, 5)
   expect_warning(ttt <- term_classification("Fisherichthys TT", as="taxon"))
   expect_true(is.na(ttt))
-  
+
   expect_true("id" %in% names(a))
-  expect_output(str(a), 'List of 5')
+  expect_is(a, "list")
+  expect_length(a, 5)
   expect_warning(aa <- term_classification("fin FF", as="anatomy"))
   expect_true(is.na(aa))
-  
+
   expect_true("id" %in% names(p))
-  expect_output(str(p), 'List of 5')
+  expect_is(p, "list")
+  expect_length(p, 5)
+
   expect_warning(pp <- term_classification("shape SS", as="pato"))
   expect_true(is.na(pp))
-  
+
   # test support for legacy methods
   expect_warning(t <- pk_taxon_class("Fisherichthys"))
   expect_true("@id" %in% names(t))
   expect_is(t, "list")
-  expect_equal(length(t), 5)
+  expect_length(t, 5)
   expect_warning(a <- pk_anatomical_class("fin"))
   expect_true("@id" %in% names(a))
   expect_is(a, "list")
-  expect_equal(length(a), 5)
+  expect_length(a, 5)
   expect_warning(p <- pk_phenotype_class("shape"))
   expect_true("@id" %in% names(p))
   expect_is(p, "list")
-  expect_equal(length(p), 5)
+  expect_length(p, 5)
 })
 
 test_that("descendants/ancestors", {
