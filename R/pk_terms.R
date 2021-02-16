@@ -118,7 +118,7 @@ pk_details <- function(term, as, verbose=FALSE) {
   mssg(verbose, "Retrieving term details")
 
   queryseq <- list(iri = iri)
-  lst <- pk_GET("http://kb.phenoscape.org/api/term", queryseq)
+  lst <- pk_GET(pkb_api("/term"), queryseq)
   names(lst) <- sub("@", "", names(lst))
   as.data.frame(Filter(function(x) !is.list(x), lst))
 }
@@ -170,7 +170,3 @@ get_term_label <- function(term_iris, preserveOrder = FALSE, verbose = FALSE) {
 
   res
 }
-
-pk_taxon_url <- "http://kb.phenoscape.org/api/taxon"
-
-
