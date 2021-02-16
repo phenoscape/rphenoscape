@@ -75,7 +75,7 @@ pk_is <- function(term, candidates,
     apiURL <- pkb_api("/term/all_ancestors")
   else
     apiURL <- pkb_api("/term/all_descendants")
-  res <- pk_GET(apiURL, queryseq)
+  res <- get_json_data(apiURL, queryseq)
   res <- res$results
 
   if (length(res) == 0)

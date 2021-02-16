@@ -118,7 +118,7 @@ pk_details <- function(term, as, verbose=FALSE) {
   mssg(verbose, "Retrieving term details")
 
   queryseq <- list(iri = iri)
-  lst <- pk_GET(pkb_api("/term"), queryseq)
+  lst <- get_json_data(pkb_api("/term"), queryseq)
   names(lst) <- sub("@", "", names(lst))
   as.data.frame(Filter(function(x) !is.list(x), lst))
 }
