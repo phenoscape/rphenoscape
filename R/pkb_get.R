@@ -80,7 +80,6 @@ get_json_data <- function(url, query,
   }
   res
 }
-pk_GET <- get_json_data
 
 
 #' Clean JSON-LD names in a list/data.frame
