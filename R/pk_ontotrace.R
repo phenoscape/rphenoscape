@@ -11,9 +11,9 @@
 #' taxon class expression.
 #' @examples
 #' \dontrun{
-#' nex0 <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
+#' nex0 <- get_ontotrace_data(taxon = "Ictalurus", entity = "fin")
 #'
-#' nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
+#' nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
 #' pk_get_ontotrace(nex)
 #' pk_get_ontotrace_meta(nex)
 #' }

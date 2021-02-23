@@ -70,3 +70,16 @@ pk_phenotype_class <- function(x, verbose=TRUE) {
   .Deprecated("term_classification")
   term_classification_raw(x, as = "pato", verbose)
 }
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_get_ontotrace_xml}:
+#' For `pk_get_ontotrace_xml()` use [get_ontotrace_data()] instead.
+#' @keywords internal
+#' @export
+pk_get_ontotrace_xml <- function(taxon, entity,
+                                 relation = 'part of',
+                                 variable_only = TRUE,
+                                 strict = TRUE) {
+  .Deprecated("get_ontotrace_data")
+  get_ontotrace_data(taxon, entity, relation, variable_only, strict)
+}

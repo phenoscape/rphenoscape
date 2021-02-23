@@ -109,8 +109,8 @@ nexml_drop_char(nex, filter = function(x) grepl("pelvic", x), at = "label") \%>\
   nexml_drop_otu(filter = is_unused_otu)
 
 \dontrun{
-nex <- pk_get_ontotrace_xml(taxon = "Ictaluridae",
-                            entity = "fin", variable_only = FALSE)
+nex <- get_ontotrace_data(taxon = "Ictaluridae",
+                          entity = "fin", variable_only = FALSE)
 # ontotrace results store VTO IRIs in dwc:taxonID annotations:
 nexml_drop_otu(nex,
                filter = function(x) !pk_is_descendant("Ictalurus", x),
