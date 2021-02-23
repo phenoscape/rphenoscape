@@ -8,6 +8,7 @@
 \alias{pk_anatomical_class}
 \alias{pk_phenotype_class}
 \alias{pk_get_ontotrace_xml}
+\alias{pk_get_study_xml}
 \title{Deprecated functions in \pkg{rphenoscape}.}
 \usage{
 pk_get_iri(...)
@@ -22,6 +23,8 @@ pk_phenotype_class(x, verbose = TRUE)
 
 pk_get_ontotrace_xml(taxon, entity, relation = "part of",
   variable_only = TRUE, strict = TRUE)
+
+pk_get_study_xml(study_ids)
 }
 \description{
 The functions listed below are deprecated and will become defunct in
@@ -66,6 +69,13 @@ Note that \code{pk_phenotype_class()} defaults verbose to TRUE instead of FALSE 
 \section{\code{pk_get_ontotrace_xml}}{
 
 For \code{pk_get_ontotrace_xml()} use \code{\link[=get_ontotrace_data]{get_ontotrace_data()}} instead.
+}
+
+\section{\code{pk_get_study_xml}}{
+
+For \code{pk_get_study_xml()} use \code{\link[=get_study_data]{get_study_data()}} instead.
+Note that \code{pk_get_study_xml()} maintains legacy functionality of displaying messages. \code{get_study_data()}
+has a verbose argument to control displaying messages.
 }
 
 \keyword{internal}

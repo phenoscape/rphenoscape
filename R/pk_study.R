@@ -91,7 +91,7 @@ get_studies <- function(taxon = NA, entity = NA, quality = NA,
 #' @examples
 #' \dontrun{
 #' slist <- get_studies(taxon = "Ameiurus", entity = "pelvic splint")
-#' nex_list <- pk_get_study_xml(slist$id) # get the list of NeXML objects for the studies
+#' nex_list <- get_study_data(slist$id) # get the list of NeXML objects for the studies
 #' pk_get_study(nex_list) # retrieve the study matrices
 #' pk_get_study_meta(nex_list) # retrieve the meta data for the studies
 #' }
@@ -116,7 +116,7 @@ pk_get_study <- function(nexmls) {
 #' @examples
 #' \dontrun{
 #' slist <- get_studies(taxon = "Ameiurus", entity = "pelvic splint")
-#' nex_list <- pk_get_study_xml(slist$id) # get the list of NeXML objects for the studies
+#' nex_list <- get_study_data(slist$id) # get the list of NeXML objects for the studies
 #' pk_get_study(nex_list) # retrieve the study matrices
 #' pk_get_study_meta(nex_list) # retrieve the meta data for the studies
 #' }

@@ -112,22 +112,24 @@ get_ontotrace_data <- function(taxon, entity,
 }
 
 
-#' pk_get_study_xml
+#' get_study_data
 #' @param study_ids, a list of study IDs.
+#' @param verbose logical: optional. If TRUE, prints messages prior to potentially
+#'   time-consuming operations. Default is FALSE.
 #' @return A list of [nexml][RNeXML::nexml] objects
 #' @examples
 #' \dontrun{
 #' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
-#' nex_list <- pk_get_study_xml(slist$id)
+#' nex_list <- get_study_data(slist$id)
 #' }
 #' @export
-pk_get_study_xml <- function(study_ids) {
+get_study_data <- function(study_ids, verbose = FALSE) {
 
-  message("....This might take a while....")
+  mssg(verbose, "....This might take a while....")
   ret <- vector('list')
 
   for (s in study_ids) {
-    message(s)
+    mssg(verbose, s)
     queryseq <- list(iri = s)
     nex <- get_nexml_data(pkb_api("/study/matrix"), queryseq)
     ret[[s]] <- nex

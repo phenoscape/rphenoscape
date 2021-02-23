@@ -83,3 +83,15 @@ pk_get_ontotrace_xml <- function(taxon, entity,
   .Deprecated("get_ontotrace_data")
   get_ontotrace_data(taxon, entity, relation, variable_only, strict)
 }
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_get_study_xml}:
+#' For `pk_get_study_xml()` use [get_study_data()] instead.
+#' Note that `pk_get_study_xml()` maintains legacy functionality of displaying messages. `get_study_data()`
+#' has a verbose argument to control displaying messages.
+#' @keywords internal
+#' @export
+pk_get_study_xml <- function(study_ids) {
+  .Deprecated("get_study_data")
+  get_study_data(study_ids, verbose = TRUE)
+}

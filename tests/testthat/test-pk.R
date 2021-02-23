@@ -223,7 +223,7 @@ test_that("Test getting study information", {
     expect_gt(nrow(slist9), 0)
     expect_gt(nrow(slist9), 20 * nrow(slist3))
 
-    s1 <- pk_get_study_xml(slist1[1,"id"])
+    s1 <- get_study_data(slist1[1,"id"])
     expect_is(s1[[1]], 'nexml')
 
     ss1 <- pk_get_study(s1)
