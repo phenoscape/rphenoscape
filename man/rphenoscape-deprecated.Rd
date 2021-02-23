@@ -7,6 +7,7 @@
 \alias{pk_taxon_class}
 \alias{pk_anatomical_class}
 \alias{pk_phenotype_class}
+\alias{pk_get_ontotrace_xml}
 \title{Deprecated functions in \pkg{rphenoscape}.}
 \usage{
 pk_get_iri(...)
@@ -18,6 +19,9 @@ pk_taxon_class(x, verbose = TRUE)
 pk_anatomical_class(x, verbose = TRUE)
 
 pk_phenotype_class(x, verbose = TRUE)
+
+pk_get_ontotrace_xml(taxon, entity, relation = "part of",
+  variable_only = TRUE, strict = TRUE)
 }
 \description{
 The functions listed below are deprecated and will become defunct in
@@ -57,6 +61,11 @@ Note that \code{pk_anatomical_class()} defaults verbose to TRUE instead of FALSE
 For \code{pk_phenotype_class()} use \code{\link[=term_classification]{term_classification()}} with as="pato" instead.
 Note that \code{pk_phenotype_class()} defaults verbose to TRUE instead of FALSE as
 \code{term_classification()} does. Also \code{pk_phenotype_class()} return value has the legacy \code{@id} name.
+}
+
+\section{\code{pk_get_ontotrace_xml}}{
+
+For \code{pk_get_ontotrace_xml()} use \code{\link[=get_ontotrace_data]{get_ontotrace_data()}} instead.
 }
 
 \keyword{internal}

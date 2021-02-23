@@ -31,21 +31,21 @@
 #' \dontrun{
 #' # one taxon (including subclasses), one entity (including subclasses and 
 #' # by default its parts)
-#' nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin")
+#' nex <- get_ontotrace_data(taxon = "Ictalurus", entity = "fin")
 #'
 #' # same as above, except do not include parts or other relationships (fin
 #' # presence/absence does not vary across Ictalurus, hence need to allow
 #' # non-variable characters)
-#' nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin",
-#'                             relation = NA, variable_only = FALSE)
+#' nex <- get_ontotrace_data(taxon = "Ictalurus", entity = "fin",
+#'                           relation = NA, variable_only = FALSE)
 #'
 #' # instead of parts, include entities in develops_from relationship to the query entity
-#' nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "paired fin bud",
-#'                             relation = "develops from", variable_only = FALSE)
+#' nex <- get_ontotrace_data(taxon = "Ictalurus", entity = "paired fin bud",
+#'                           relation = "develops from", variable_only = FALSE)
 #'
 #' # query with multiple taxa, and/or multiple entities:
-#' nex <- pk_get_ontotrace_xml(taxon = c("Ictalurus", "Ameiurus"),
-#'                             entity = c("pectoral fin", "pelvic fin"))
+#' nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"),
+#'                           entity = c("pectoral fin", "pelvic fin"))
 #'
 #' # Use the RNeXML API to obtain the character matrix etc:
 #' m <- RNeXML::get_characters(nex)
@@ -56,10 +56,10 @@
 #' }
 #' @importFrom RNeXML nexml
 #' @export
-pk_get_ontotrace_xml <- function(taxon, entity,
-                                 relation = 'part of',
-                                 variable_only = TRUE,
-                                 strict = TRUE) {
+get_ontotrace_data <- function(taxon, entity,
+                               relation = 'part of',
+                               variable_only = TRUE,
+                               strict = TRUE) {
 
   relation_id <- NA
   if (! is.na(relation)) {
