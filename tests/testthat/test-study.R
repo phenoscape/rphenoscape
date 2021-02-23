@@ -82,7 +82,7 @@ test_that("Test getting study information", {
   expect_length(ll, 0)
 
 
-  s1 <- pk_get_study_xml(slist1[1,"id"])
+  s1 <- get_study_data(slist1[1,"id"])
   expect_is(s1[[1]], 'nexml')
   
   ss1 <- pk_get_study(s1)
@@ -92,4 +92,19 @@ test_that("Test getting study information", {
   expect_is(sss1[[1]], 'list')
   expect_is(sss1[[1]]$id_taxa, 'data.frame')
   
+})
+
+test_that("Test deprecated get study data", {
+  skip_on_cran()
+  # backwards compatible mode, defaults to including part_of
+  slist1 <- get_studies(taxon = "Siluridae", entity = "fin")
+  expect_warning(s1 <- pk_get_study_xml(slist1[1,"id"]))
+  expect_is(s1[[1]], 'nexml')
+
+  ss1 <- pk_get_study(s1)
+  expect_is(ss1[[1]], 'data.frame')
+
+  sss1 <- pk_get_study_meta(s1)
+  expect_is(sss1[[1]], 'list')
+  expect_is(sss1[[1]]$id_taxa, 'data.frame')
 })

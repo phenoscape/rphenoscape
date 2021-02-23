@@ -65,7 +65,6 @@ test_that("relationship expressions", {
   
 })
 
-
 test_that("Deprecated ontotrace function", {
   skip_on_cran()
   expect_warning(single_nex <- pk_get_ontotrace_xml(taxon = "Ictalurus", entity = "fin"))
