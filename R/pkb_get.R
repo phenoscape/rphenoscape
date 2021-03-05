@@ -120,7 +120,7 @@ get_nexml_data <- function(url, query, verbose = FALSE, forceGET = FALSE) {
 pkb_api <- function(...) {
   path <- paste(..., sep = "/")
   if (! startsWith(path, "/")) path <- paste0("/", path)
-  paste0("https://kb.phenoscape.org/api", path)
+  paste0(phenoscape_api, path)
 }
 
 #' Creates a list of named query parameters
@@ -211,3 +211,5 @@ ua <- local({
     .ua
   }
 })
+
+phenoscape_api <- Sys.getenv("PHENOSCAPE_API", "https://kb.phenoscape.org/api")
