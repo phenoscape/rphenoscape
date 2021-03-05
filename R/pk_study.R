@@ -108,7 +108,7 @@ pk_get_study_list <- function(taxon = NA, entity = NA, quality = NA,
 
   if (! is.na(phenotype)) queryseq <- c(queryseq, phenotype = phenotype)
 
-  out <- pk_GET(pk_study_url, queryseq)
+  out <- pk_GET(pkb_api("/study/query"), queryseq)
   d <- out$results
 
   if (length(d) == 0) {
@@ -238,5 +238,3 @@ unique_label <- function(m) {
   c <- grepl('character', cname)
   return(!c)
 }
-
-pk_study_url <- "http://kb.phenoscape.org/api/study/query"
