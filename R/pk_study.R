@@ -204,3 +204,29 @@ unique_label <- function(m) {
   c <- grepl('character', cname)
   return(!c)
 }
+
+#' get_study_data
+#' @param study_ids, a list of study IDs.
+#' @param verbose logical: optional. If TRUE, prints messages prior to potentially
+#'   time-consuming operations. Default is FALSE.
+#' @return A list of [nexml][RNeXML::nexml] objects
+#' @examples
+#' \dontrun{
+#' slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
+#' nex_list <- get_study_data(slist$id)
+#' }
+#' @export
+get_study_data <- function(study_ids, verbose = FALSE) {
+
+  mssg(verbose, "....This might take a while....")
+  ret <- vector('list')
+
+  for (s in study_ids) {
+    mssg(verbose, s)
+    queryseq <- list(iri = s)
+    nex <- get_nexml_data(pkb_api("/study/matrix"), queryseq)
+    ret[[s]] <- nex
+  }
+
+  ret
+}
