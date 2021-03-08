@@ -122,16 +122,18 @@ get_ontotrace_data <- function(taxon, entity,
                                variable_only = TRUE,
                                strict = TRUE) {
 
-  relation_id <- NA
+  relation_iri <- NA
   if (! is.na(relation)) {
     tryCatch(
       relation_type <- match.arg(tolower(relation), c("part of", "develops from")),
       error = function(e) {
         stop(conditionMessage(e), call. = FALSE)
       })
-    relation_id <- switch(relation_type,
-                          "part of" = part_relation,
-                          "develops from" = develops_relation)
+    relation_iri <- switch(relation_type,
+                          "part of" = partOf_iri(),
+                          "develops from" = term_iri("develops from",
+                                                     type = "owl:ObjectProperty",
+                                                     preferOntologies = c("BFO", "RO")))
   }
 
   taxon_iris <- lapply(taxon,
@@ -155,7 +157,8 @@ get_ontotrace_data <- function(taxon, entity,
   # insert necessary "<" and ">" before concatenating string
   taxon_iris <- lapply(taxon_iris, FUN = function(x) paste0("<", x, ">"))
   entity_iris <- lapply(entity_iris, FUN = function(x) paste0("<", x, ">"))
-  if (! is.na(relation_id)) {
+  if (! is.na(relation_iri)) {
+    relation_id <- paste0("<", relation_iri, ">")
     entity_iris <- lapply(entity_iris,
                           FUN = function(x) sprintf("(%s or %s %s %s)",
                                                     x,
@@ -185,8 +188,5 @@ test_read_nex <- function(path = path0) {
   nex
 }
 
-
 path0 <- "https://raw.githubusercontent.com/phenoscape/rphenoscape/char-annots-example/inst/examples/ontotrace-result.xml"
 quantifier <- " some " # seperate quantifier
-part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050>" # "part of"
-develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202>" # "develops from"
