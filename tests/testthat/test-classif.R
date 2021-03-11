@@ -48,30 +48,52 @@ test_that("descendants/ancestors", {
   skip_on_cran()
   
   # taxon terms:
-  expect_equal(pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae")),
+  expect_equal(is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae")),
                c(FALSE, FALSE, TRUE))
-  expect_equal(pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae")),
+  expect_equal(is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae")),
                c(TRUE, FALSE, FALSE))
   
   # anatomical entities:
-  expect_equal(pk_is_descendant("paired fin", c("pectoral fin", "pelvic fin", "dorsal fin")),
+  expect_equal(is_descendant("paired fin", c("pectoral fin", "pelvic fin", "dorsal fin")),
                c(TRUE, TRUE, FALSE))
-  expect_equal(pk_is_descendant("paired fin", c("pelvic fin", "pelvic fin ray")),
+  expect_equal(is_descendant("paired fin", c("pelvic fin", "pelvic fin ray")),
                c(TRUE, FALSE))
-  expect_equal(pk_is_descendant("paired fin", c("pelvic fin", "pelvic fin ray"),
+  expect_equal(is_descendant("paired fin", c("pelvic fin", "pelvic fin ray"),
                                 includeRels = "part_of"),
                c(TRUE, TRUE))
-  expect_equal(pk_is_ancestor("pelvic fin", c("paired fin", "hindlimb", "fin")),
+  expect_equal(is_ancestor("pelvic fin", c("paired fin", "hindlimb", "fin")),
                c(TRUE, FALSE, TRUE))
-  expect_equal(pk_is_ancestor("pelvic fin ray", c("paired fin", "fin")),
+  expect_equal(is_ancestor("pelvic fin ray", c("paired fin", "fin")),
                c(FALSE, FALSE))
-  expect_equal(pk_is_ancestor("pelvic fin ray", c("paired fin", "fin"),
+  expect_equal(is_ancestor("pelvic fin ray", c("paired fin", "fin"),
                               includeRels = "part_of"),
                c(TRUE, TRUE))
 
   # phenotypic quality
-  expect_equal(pk_is_ancestor("triangular", c("shape", "color", "amount")),
+  expect_equal(is_ancestor("triangular", c("shape", "color", "amount")),
                c(TRUE, FALSE, FALSE))
-  expect_equal(pk_is_descendant("shape", c("T-shaped", "star shaped", "yellow")),
+  expect_equal(is_descendant("shape", c("T-shaped", "star shaped", "yellow")),
                c(TRUE, TRUE, FALSE))
+})
+
+test_that("legacy descendants/ancestors", {
+  skip_on_cran()
+
+  # taxon terms:
+  result <- expect_warning(pk_is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae")))
+  expect_equal(result, c(FALSE, FALSE, TRUE))
+  result <- expect_warning(pk_is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae")))
+  expect_equal(result, c(TRUE, FALSE, FALSE))
+
+  # anatomical entities:
+  result <- expect_warning(pk_is_descendant("paired fin", c("pectoral fin", "pelvic fin", "dorsal fin")))
+  expect_equal(result, c(TRUE, TRUE, FALSE))
+  result <- expect_warning(pk_is_ancestor("pelvic fin", c("paired fin", "hindlimb", "fin")))
+  expect_equal(result, c(TRUE, FALSE, TRUE))
+
+  # phenotypic quality
+  result <- expect_warning(pk_is_ancestor("triangular", c("shape", "color", "amount")))
+  expect_equal(result, c(TRUE, FALSE, FALSE))
+  result <- expect_warning(pk_is_descendant("shape", c("T-shaped", "star shaped", "yellow")))
+  expect_equal(result, c(TRUE, TRUE, FALSE))
 })
