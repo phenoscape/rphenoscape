@@ -85,10 +85,10 @@ study_metas[[1]]
 
 ## Obtain Other Data
 ### Subsetting a Matrix
-A matrix obtained from Phenoscape can be subsetted (filtered) by taxonomic subgroup or anatomical part. For example, using ```pk_is_descendant``` and ```pk_is_ancestor``` methods, a matrix can be subsetted to a taxonomic subgroup that is the descendants/ancestors of a given taxon.
+A matrix obtained from Phenoscape can be subsetted (filtered) by taxonomic subgroup or anatomical part. For example, using ```is_descendant``` and ```is_ancestor``` methods, a matrix can be subsetted to a taxonomic subgroup that is the descendants/ancestors of a given taxon.
 ```{r}
 m # original character matrix
-(is_desc <- pk_is_descendant('Ictalurus', m$taxa))
+(is_desc <- is_descendant('Ictalurus', m$taxa))
 m[is_desc, ] #subsetting to the descendants of Ictalurus
 ```
 

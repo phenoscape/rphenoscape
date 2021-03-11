@@ -64,13 +64,13 @@
 #'                           entity = "fin", variable_only = FALSE)
 #' # ontotrace results store VTO IRIs in dwc:taxonID annotations:
 #' nexml_drop_otu(nex,
-#'                filter = function(x) !pk_is_descendant("Ictalurus", x),
+#'                filter = function(x) !is_descendant("Ictalurus", x),
 #'                at = "dwc:taxonID") %>%
 #'   nexml_drop_char(filter = is_unused_char)
 #' # anatomy IRIs are in obo:IAO_0000219 ("denotes") annotations:
 #' nexml_drop_char(nex,
 #'                filter = function(x)
-#'                  !pk_is_descendant("paired fin", x, includeRels = "part_of"),
+#'                  !is_descendant("paired fin", x, includeRels = "part_of"),
 #'                at = "obo:IAO_0000219") %>%
 #'   nexml_drop_otu(filter = is_unused_otu)
 #' }

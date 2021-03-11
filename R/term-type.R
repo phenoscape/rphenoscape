@@ -44,10 +44,10 @@ term_category <- function(x) {
       else if (any(startsWith(term, semweb_ns())))
         "entity"
       else {
-        isE <- pk_is_ancestor(term, candidates = entity_roots(), includeRels = "part_of")
+        isE <- is_ancestor(term, candidates = entity_roots(), includeRels = "part_of")
         if (all(isE))
           "entity"
-        else if (any(pk_is_ancestor(term, candidates = quality_roots())))
+        else if (any(is_ancestor(term, candidates = quality_roots())))
           "quality"
         else if (any(isE))
           "entity"
