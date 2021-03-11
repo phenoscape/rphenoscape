@@ -107,7 +107,7 @@ pk_get_ontotrace_xml <- function(taxon, entity,
                   entity = paste(entity_iris, collapse = " or "),
                   variable_only = variable_only)
 
-  nex <- get_nexml_data(ontotrace_url, queryseq)
+  nex <- get_nexml_data(pkb_api("/ontotrace"), queryseq)
   return(nex)
 }
 
@@ -129,7 +129,7 @@ pk_get_study_xml <- function(study_ids) {
   for (s in study_ids) {
     message(s)
     queryseq <- list(iri = s)
-    nex <- get_nexml_data(pk_study_matrix_url, queryseq)
+    nex <- get_nexml_data(pkb_api("/study/matrix"), queryseq)
     ret[[s]] <- nex
   }
 
@@ -137,8 +137,6 @@ pk_get_study_xml <- function(study_ids) {
 }
 
 
-ontotrace_url <- "https://kb.phenoscape.org/api/ontotrace"
 quantifier <- " some " # seperate quantifier
 part_relation <- "<http://purl.obolibrary.org/obo/BFO_0000050>" # "part of"
 develops_relation <- "<http://purl.obolibrary.org/obo/RO_0002202>" # "develops from"
-pk_study_matrix_url <- "http://kb.phenoscape.org/api/study/matrix"

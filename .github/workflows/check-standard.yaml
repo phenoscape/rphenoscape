@@ -73,6 +73,14 @@ jobs:
         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "error", check_dir = "check")
         shell: Rscript {0}
 
+      - name: Check tests against dev server
+        if: github.event_name == 'schedule' # only run this step when called by cron
+        env:
+          _R_CHECK_CRAN_INCOMING_REMOTE_: false
+          PHENOSCAPE_API: https://stars-app.renci.org/phenoscape-dev-api
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "error", check_dir = "check")
+        shell: Rscript {0}
+
       - name: Upload check results
         if: failure()
         uses: actions/upload-artifact@main

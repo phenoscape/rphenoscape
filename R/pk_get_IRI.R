@@ -70,7 +70,8 @@ find_term <- function(query,
   if (is.na(limit)) limit <- "1000000"
   queryseq <- c(queryseq, limit = limit)
 
-  res <- pk_GET('http://kb.phenoscape.org/api/term/search', query = queryseq)
+  res <- pk_GET(pkb_api("/term/search"), query = queryseq)
+
   res <- res$results
 
   if (length(res) > 0 && nrow(res) > 0) {

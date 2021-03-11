@@ -72,9 +72,9 @@ pk_is <- function(term, candidates,
   }
 
   if (mode == 'ancestor')
-    apiURL <- pk_ancestor_url
+    apiURL <- pkb_api("/term/all_ancestors")
   else
-    apiURL <- pk_descendant_url
+    apiURL <- pkb_api("/term/all_descendants")
   res <- pk_GET(apiURL, queryseq)
   res <- res$results
 
@@ -83,7 +83,3 @@ pk_is <- function(term, candidates,
   else
     term_iris[-1] %in% res$`@id`
 }
-
-pk_subsumer_url <- "http://kb.phenoscape.org/api/term/least_common_subsumers"
-pk_ancestor_url <- "http://kb.phenoscape.org/api/term/all_ancestors"
-pk_descendant_url <- "http://kb.phenoscape.org/api/term/all_descendants"

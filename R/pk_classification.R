@@ -31,10 +31,8 @@ pk_class <- function(x, as, verbose=TRUE) {
   mssg(verbose, "Retrieving classification information")
 
   queryseq <- list(iri = iri)
-  pk_GET(pk_class_url, query = queryseq)
+  pk_GET(pkb_api("/term/classification"), query = queryseq)
 }
-pk_class_url <- "http://kb.phenoscape.org/api/term/classification"
-
 
 
 
