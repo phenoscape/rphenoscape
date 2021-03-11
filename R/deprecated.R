@@ -95,3 +95,23 @@ pk_get_study_xml <- function(study_ids) {
   .Deprecated("get_study_data")
   get_study_data(study_ids, verbose = TRUE)
 }
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_is_descendant}:
+#' For `pk_is_descendant()` use [is_descendant()] instead.
+#' @keywords internal
+#' @export
+pk_is_descendant <- function(term, candidates, includeRels = c("none", "part_of")) {
+  .Deprecated("is_descendant")
+  is_descendant(term, candidates, includeRels)
+}
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_is_ancestor}:
+#' For `pk_is_ancestor()` use [is_ancestor()] instead.
+#' @keywords internal
+#' @export
+pk_is_ancestor <- function(term, candidates, includeRels = c("none", "part_of")) {
+  .Deprecated("is_ancestor")
+  is_ancestor(term, candidates, includeRels)
+}

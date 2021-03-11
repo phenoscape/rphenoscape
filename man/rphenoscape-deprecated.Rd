@@ -9,6 +9,8 @@
 \alias{pk_phenotype_class}
 \alias{pk_get_ontotrace_xml}
 \alias{pk_get_study_xml}
+\alias{pk_is_descendant}
+\alias{pk_is_ancestor}
 \title{Deprecated functions in \pkg{rphenoscape}.}
 \usage{
 pk_get_iri(...)
@@ -25,6 +27,10 @@ pk_get_ontotrace_xml(taxon, entity, relation = "part of",
   variable_only = TRUE, strict = TRUE)
 
 pk_get_study_xml(study_ids)
+
+pk_is_descendant(term, candidates, includeRels = c("none", "part_of"))
+
+pk_is_ancestor(term, candidates, includeRels = c("none", "part_of"))
 }
 \description{
 The functions listed below are deprecated and will become defunct in
@@ -76,6 +82,16 @@ For \code{pk_get_ontotrace_xml()} use \code{\link[=get_ontotrace_data]{get_ontot
 For \code{pk_get_study_xml()} use \code{\link[=get_study_data]{get_study_data()}} instead.
 Note that \code{pk_get_study_xml()} maintains legacy functionality of displaying messages. \code{get_study_data()}
 has a verbose argument to control displaying messages.
+}
+
+\section{\code{pk_is_descendant}}{
+
+For \code{pk_is_descendant()} use \code{\link[=is_descendant]{is_descendant()}} instead.
+}
+
+\section{\code{pk_is_ancestor}}{
+
+For \code{pk_is_ancestor()} use \code{\link[=is_ancestor]{is_ancestor()}} instead.
 }
 
 \keyword{internal}
