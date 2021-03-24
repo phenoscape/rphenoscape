@@ -2,11 +2,11 @@ context("term finding and info APIs")
 
 test_that("Test term details", {
   skip_on_cran()
-  b <- pk_phenotype_detail("shape")
-  c <- pk_anatomical_detail("basihyal bone")
+  b <- phenotypic_quality_term_info("shape")
+  c <- anatomy_term_info("basihyal bone")
 
-  g <- pk_gene_detail("socs5")
-  gg <- pk_gene_detail("socs5", "Danio rerio")
+  g <- gene_info("socs5")
+  gg <- gene_info("socs5", "Danio rerio")
 
   expect_is(b, 'data.frame')
   expect_equal(nrow(b), 1)
@@ -16,8 +16,8 @@ test_that("Test term details", {
   expect_false(any(is.na(c)))
   
 
-  expect_warning(bb <- pk_phenotype_detail("shape tt"))
-  expect_warning(cc <- pk_anatomical_detail("fin tt"))
+  expect_warning(bb <- phenotypic_quality_term_info("shape tt"))
+  expect_warning(cc <- anatomy_term_info("fin tt"))
   expect_true(is.na(bb))
   expect_true(is.na(cc))
 
@@ -29,18 +29,34 @@ test_that("Test term details", {
   expect_length(unique(gg$label), 2)
 })
 
+test_that("Test deprecated term details", {
+  skip_on_cran()
+  expect_warning(b <- pk_phenotype_detail("shape"))
+  expect_warning(c <- pk_anatomical_detail("basihyal bone"))
+
+  expect_warning(g <- pk_gene_detail("socs5"))
+  expect_warning(gg <- pk_gene_detail("socs5", "Danio rerio"))
+
+  expect_is(b, 'data.frame')
+  expect_equal(nrow(b), 1)
+  expect_false(any(is.na(b)))
+  expect_is(c, 'data.frame')
+  expect_equal(nrow(c), 1)
+  expect_false(any(is.na(c)))
+})
+
 test_that("taxon details works", {
   skip_on_cran()
-  a <- pk_taxon_detail("Coralliozetus")
+  a <- taxon_info("Coralliozetus")
 
   expect_is(a, 'data.frame')
   expect_gt(nrow(a), 0)
   expect_setequal(colnames(a),
                   c("id", "label", "extinct", "rank.id", "rank.label", "common_name"))
 
-  expect_warning(aa <- pk_taxon_detail("coral tt"))
-  expect_warning(bb <- pk_taxon_detail("http://foobar.com/taxon"))
-  expect_warning(cc <- pk_taxon_detail(c("coral tt", "Danio rerio")))
+  expect_warning(aa <- taxon_info("coral tt"))
+  expect_warning(bb <- taxon_info("http://foobar.com/taxon"))
+  expect_warning(cc <- taxon_info(c("coral tt", "Danio rerio")))
   expect_true(is.na(aa))
   expect_true(is.na(bb))
   expect_true(any(is.na(cc)))
@@ -48,25 +64,43 @@ test_that("taxon details works", {
   expect_equal(nrow(cc), 2)
   expect_true(all(is.na(cc[1,])))
 
-  dd <- pk_taxon_detail(c("Danio", "Danio rerio"))
+  dd <- taxon_info(c("Danio", "Danio rerio"))
   expect_equal(nrow(dd), 2)
   expect_true(any(is.na(dd$common_name)))
   expect_false(all(is.na(dd$common_name)))
 })
 
+test_that("Test deprecated taxon details", {
+  skip_on_cran()
+  expect_warning(a <- pk_taxon_detail("Coralliozetus"))
+
+  expect_is(a, 'data.frame')
+  expect_gt(nrow(a), 0)
+  expect_setequal(colnames(a),
+                  c("id", "label", "extinct", "rank.id", "rank.label", "common_name"))
+})
+
 test_that("is_extinct works", {
   skip_on_cran()
 
-  ext <- pk_is_extinct("Fisherichthys")
+  ext <- is_extinct("Fisherichthys")
   expect_is(ext, "logical")
   expect_equal(names(ext), c("Fisherichthys"))
   # make one an unresolvable typo
-  expect_warning(ext <- pk_is_extinct(c("Fisheririchthys", "Tiktaalik")))
+  expect_warning(ext <- is_extinct(c("Fisheririchthys", "Tiktaalik")))
   expect_is(ext, "logical")
   expect_length(ext, 2)
   expect_true(any(is.na(ext)))
   expect_false(all(is.na(ext)))
   expect_equal(names(ext), c("Fisheririchthys", "Tiktaalik"))
+})
+
+test_that("Test deprecated is extinct", {
+  skip_on_cran()
+
+  expect_warning(ext <- pk_is_extinct("Fisherichthys"))
+  expect_is(ext, "logical")
+  expect_equal(names(ext), c("Fisherichthys"))
 })
 
 test_that("Test retrieving IRI", {

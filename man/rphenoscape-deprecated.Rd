@@ -11,6 +11,11 @@
 \alias{pk_get_study_xml}
 \alias{pk_is_descendant}
 \alias{pk_is_ancestor}
+\alias{pk_taxon_detail}
+\alias{pk_anatomical_detail}
+\alias{pk_phenotype_detail}
+\alias{pk_gene_detail}
+\alias{pk_is_extinct}
 \title{Deprecated functions in \pkg{rphenoscape}.}
 \usage{
 pk_get_iri(...)
@@ -31,6 +36,16 @@ pk_get_study_xml(study_ids)
 pk_is_descendant(term, candidates, includeRels = c("none", "part_of"))
 
 pk_is_ancestor(term, candidates, includeRels = c("none", "part_of"))
+
+pk_taxon_detail(term, verbose = FALSE)
+
+pk_anatomical_detail(term, verbose = FALSE)
+
+pk_phenotype_detail(term, verbose = FALSE)
+
+pk_gene_detail(term, taxon = NA, verbose = FALSE)
+
+pk_is_extinct(taxon, verbose = FALSE)
 }
 \description{
 The functions listed below are deprecated and will become defunct in
@@ -92,6 +107,31 @@ For \code{pk_is_descendant()} use \code{\link[=is_descendant]{is_descendant()}} 
 \section{\code{pk_is_ancestor}}{
 
 For \code{pk_is_ancestor()} use \code{\link[=is_ancestor]{is_ancestor()}} instead.
+}
+
+\section{\code{pk_taxon_detail}}{
+
+For \code{pk_taxon_detail()} use \code{\link[=taxon_info]{taxon_info()}} instead.
+}
+
+\section{\code{pk_anatomical_detail}}{
+
+For \code{pk_anatomical_detail()} use \code{\link[=anatomy_term_info]{anatomy_term_info()}} instead.
+}
+
+\section{\code{pk_phenotype_detail}}{
+
+For \code{pk_phenotype_detail()} use \code{\link[=phenotypic_quality_term_info]{phenotypic_quality_term_info()}} instead.
+}
+
+\section{\code{pk_gene_detail}}{
+
+For \code{pk_gene_detail()} use \code{\link[=gene_info]{gene_info()}} instead.
+}
+
+\section{\code{pk_is_extinct}}{
+
+For \code{pk_is_extinct()} use \code{\link[=is_extinct]{is_extinct()}} instead.
 }
 
 \keyword{internal}

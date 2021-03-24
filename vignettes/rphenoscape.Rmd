@@ -96,12 +96,12 @@ m[is_desc, ] #subsetting to the descendants of Ictalurus
 
 Search for details for a given taxon:
 ```{r}
-pk_taxon_detail("Coralliozetus")
+taxon_info("Coralliozetus")
 ```
 
 Search for details for a given anatomical structure:
 ```{r}
-pk_anatomical_detail("basihyal bone")
+anatomy_term_info("basihyal bone")
 ```
 
 
@@ -114,7 +114,7 @@ get_term_iri("basihyal bone", "uberon")
 
 Test if a taxon is extinct:
 ```{r}
-pk_is_extinct("Fisherichthys")
+is_extinct("Fisherichthys")
 ```
 
 [`nexml` object]: http://ropensci.github.io/RNeXML/reference/nexml-class.html
