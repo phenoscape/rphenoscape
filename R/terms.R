@@ -2,36 +2,36 @@
 #'
 #' Retrieve details about a taxon, an anatomical structure, a gene, or a phenotypic
 #' quality.
-#' @name pk_terms
+#' @name terms
 #' @param term character, the query term, either as name or IRI. Names are looked
-#'   up against taxonomies, anatomy ontologies, and PATO for `pk_taxon_detail`,
-#'   `pk_anatomical_detail`, and `pk_phenotype_detail`, respectively.
+#'   up against taxonomies, anatomy ontologies, and PATO for `taxon_info`,
+#'   `anatomy_term_info`, and `phenotypic_quality_term_info`, respectively.
 #'
-#'   For `pk_taxon_detail` this can also be a list (or vector) of terms (taxa).
+#'   For `taxon_info` this can also be a list (or vector) of terms (taxa).
 #' @param taxon character, the NCBI taxon name or corresponding NCBITaxon
 #'   ontology IRI for which to match the gene name.
 #' @param verbose logical, whether informative messages should be printed. The
 #'   default is `FALSE`.
 #' @return A data.frame, with at least columns "id" and "label".
 #'
-#'   For `pk_taxon_detail`, additional columns are "extinct" (logical),
+#'   For `taxon_info`, additional columns are "extinct" (logical),
 #'   "rank.id", "rank.label", and where available "common_name". The rows
 #'   corresponding to taxon names that failed to be resolved to IRIs will be NA.
 #'
-#'   For `pk_anatomical_detail` and `pk_phenotype_detail`, the additional
+#'   For `anatomy_term_info` and `phenotypic_quality_term_info`, the additional
 #'   column is "definition".
 #'
-#'   For `pk_gene_detail`, the additional columns are "taxon.id" and "taxon.label"
+#'   For `gene_info`, the additional columns are "taxon.id" and "taxon.label"
 #'   for the corresponding NCBI Taxonomy ID and name, and "matchType" ('exact'
 #'   or 'partial').
 #' @examples
-#' pk_taxon_detail("Coralliozetus")
-#' pk_anatomical_detail("basihyal bone")
-#' pk_gene_detail("socs5")
+#' taxon_info("Coralliozetus")
+#' anatomy_term_info("basihyal bone")
+#' gene_info("socs5")
 #'
 #' @export
-#' @rdname pk_terms
-pk_taxon_detail <- function(term, verbose=FALSE) {
+#' @rdname terms
+taxon_info <- function(term, verbose=FALSE) {
   iriList <- sapply(term,
                     get_term_iri, as = "taxon",  verbose = verbose,
                     USE.NAMES = FALSE)
@@ -64,19 +64,19 @@ pk_taxon_detail <- function(term, verbose=FALSE) {
 }
 
 #' @export
-#' @rdname pk_terms
-pk_anatomical_detail <- function(term, verbose=FALSE) {
-  pk_details(term, as = "anatomy", verbose = verbose)
+#' @rdname terms
+anatomy_term_info <- function(term, verbose=FALSE) {
+  term_info(term, as = "anatomy", verbose = verbose)
 }
 #' @export
-#' @rdname pk_terms
-pk_phenotype_detail <- function(term, verbose=FALSE) {
-  pk_details(term, as = "pato", verbose = verbose)
+#' @rdname terms
+phenotypic_quality_term_info <- function(term, verbose=FALSE) {
+  term_info(term, as = "pato", verbose = verbose)
 }
 
 #' @export
-#' @rdname pk_terms
-pk_gene_detail <- function(term, taxon = NA, verbose=FALSE) {
+#' @rdname terms
+gene_info <- function(term, taxon = NA, verbose=FALSE) {
   queryseq <- list(text = term)
   res <- get_json_data(pkb_api("/gene/search"), query = queryseq)
   res <- res$results
@@ -91,7 +91,7 @@ pk_gene_detail <- function(term, taxon = NA, verbose=FALSE) {
 
 #' Determine which taxa are extinct
 #'
-#' This is simply a convenience function on top of [pk_taxon_detail()].
+#' This is simply a convenience function on top of [taxon_info()].
 #' @param taxon character, the taxa or list of taxa, as names or IRIs. Names
 #'   will first be looked up, and a warning will be issued for names that fail
 #'   to be found as a taxon name. Names and IRIs can be intermixed.
@@ -102,8 +102,8 @@ pk_gene_detail <- function(term, taxon = NA, verbose=FALSE) {
 #'   to be looked up, the value will be NA. Names will be the input taxa where
 #'   there were given as names, and the label of the respective taxon otherwise.
 #' @export
-pk_is_extinct <- function(taxon, verbose = FALSE) {
-  det <- pk_taxon_detail(taxon, verbose = verbose)
+is_extinct <- function(taxon, verbose = FALSE) {
+  det <- taxon_info(taxon, verbose = verbose)
   if (all(is.na(det))) return(invisible(NA))
   res <- det$extinct
   names(res) <- ifelse(startsWith(taxon, "http"), det$label, taxon)
@@ -111,7 +111,7 @@ pk_is_extinct <- function(taxon, verbose = FALSE) {
 }
 
 
-pk_details <- function(term, as, verbose=FALSE) {
+term_info <- function(term, as, verbose=FALSE) {
   iri <- get_term_iri(term, as, verbose = verbose)
   if (is.na(iri)) return(invisible(NA))
 
