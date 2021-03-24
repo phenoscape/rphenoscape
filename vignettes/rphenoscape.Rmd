@@ -117,6 +117,6 @@ Test if a taxon is extinct:
 pk_is_extinct("Fisherichthys")
 ```
 
-[`nexml` object]: http://ropensci.github.io/RNeXML/reference/nexml-class.html
-[RNeXML documentation]: http://ropensci.github.io/RNeXML/
+[`nexml` object]: https://docs.ropensci.org/RNeXML/reference/nexml-class.html
+[RNeXML documentation]: https://docs.ropensci.org/RNeXML
 
