@@ -115,3 +115,53 @@ pk_is_ancestor <- function(term, candidates, includeRels = c("none", "part_of"))
   .Deprecated("is_ancestor")
   is_ancestor(term, candidates, includeRels)
 }
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_taxon_detail}:
+#' For `pk_taxon_detail()` use [taxon_info()] instead.
+#' @keywords internal
+#' @export
+pk_taxon_detail <- function(term, verbose=FALSE) {
+  .Deprecated("taxon_info")
+  taxon_info(term, verbose)
+}
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_anatomical_detail}:
+#' For `pk_anatomical_detail()` use [anatomy_term_info()] instead.
+#' @keywords internal
+#' @export
+pk_anatomical_detail <- function(term, verbose=FALSE) {
+  .Deprecated("anatomy_term_info")
+  anatomy_term_info(term, verbose)
+}
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_phenotype_detail}:
+#' For `pk_phenotype_detail()` use [phenotypic_quality_term_info()] instead.
+#' @keywords internal
+#' @export
+pk_phenotype_detail <- function(term, verbose=FALSE) {
+  .Deprecated("phenotypic_quality_term_info")
+  phenotypic_quality_term_info(term, verbose)
+}
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_gene_detail}:
+#' For `pk_gene_detail()` use [gene_info()] instead.
+#' @keywords internal
+#' @export
+pk_gene_detail <- function(term, taxon = NA, verbose=FALSE) {
+  .Deprecated("gene_info")
+  gene_info(term, taxon, verbose)
+}
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_is_extinct}:
+#' For `pk_is_extinct()` use [is_extinct()] instead.
+#' @keywords internal
+#' @export
+pk_is_extinct <- function(taxon, verbose = FALSE) {
+  .Deprecated("is_extinct")
+  is_extinct(taxon, verbose)
+}
