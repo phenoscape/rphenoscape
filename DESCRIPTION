@@ -1,10 +1,12 @@
 Package: rphenoscape
 Type: Package
 Title: Semantically rich phenotypic traits from the Phenoscape Knowledgebase
-Version: 0.2.15
+Version: 0.2.16
 Authors@R: c(person("Hong", "Xu", email = "xuhong713@gmail.com", role = "aut"),
   person("Hilmar", "Lapp", email = "hilmar.lapp@duke.edu", role = c("cre", "aut"),
-         comment = c(ORCID="0000-0001-9107-0714")))
+         comment = c(ORCID="0000-0001-9107-0714")),
+  person("John", "Bradley", email = "john.bradley@duke.edu", role = "aut",
+         comment = c(ORCID="0000-0003-3858-848X")))
 Description: Provides convenient access to the data, ontologies, and semantics-based
   analytics offered by the Phenoscape Knowledgebase (KB) API. The KB integrates
   morphological trait data curated from phylogenetic systematics studies with

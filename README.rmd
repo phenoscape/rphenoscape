@@ -9,7 +9,7 @@ output:
 
 [![Build Status](https://travis-ci.org/phenoscape/rphenoscape.svg?branch=master)](https://travis-ci.org/phenoscape/rphenoscape)
 
-- Author: Hong Xu, Hilmar Lapp
+- Author: Hong Xu, Hilmar Lapp, John Bradley
 - Maintainer: Hilmar Lapp
 
 Most of the services provided with the [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.
