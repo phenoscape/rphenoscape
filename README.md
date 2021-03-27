@@ -4,10 +4,10 @@ RPhenoscape: Semantically rich phenotypic traits from the Phenoscape Knowledgeba
 
 [![Build Status](https://github.com/phenoscape/rphenoscape/workflows/R-CMD-check/badge.svg)](https://github.com/phenoscape/rphenoscape/actions)
 
--   Author: Hong Xu, Hilmar Lapp
+-   Author: Hong Xu, Hilmar Lapp, John Bradley
 -   Maintainer: Hilmar Lapp
 
-Most of the services provided with the [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.
+Most of the services provided with the [Phenoscape Knowledgebase API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.
 
 Installation
 ------------
@@ -24,7 +24,7 @@ By default, this will skip building the package vignettes. To build and install 
 packageVersion("remotes")
 ```
 
-    ## [1] '2.0.4'
+    [1] '2.1.1'
 
 If the version is 2.1.0 or higher, use the `build_vignettes` parameter (which by default is FALSE):
 
@@ -55,6 +55,8 @@ The functionality and operations of the RPhenoscape package can be viewed on the
 -   Obtaining the character matrices for studies published for a taxonomic clade
 -   Subsetting matrices by taxonomic subgroup or anatomical part
 -   Searching for details for a given taxon
+
+By definition, most functions in this package connect to the [Phenoscape Knowledgebase API](http://kb.phenoscape.org/apidocs/). The base URL path to the API endpoints can changed from the default by setting the `PHENOSCAPE_API` environment variable. (See [R Startup](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html) and [RStudio support on .Renviron](https://support.rstudio.com/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf) on how to control environment variables at R session startup.)
 
 ------------------------------------------------------------------------
 
