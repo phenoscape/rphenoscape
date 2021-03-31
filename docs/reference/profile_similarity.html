@@ -8,21 +8,29 @@
 
 <title>Semantic similarity between profiles — profile_similarity • rphenoscape</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,8 +38,8 @@
 
 
 
-<meta property="og:title" content="Semantic similarity between profiles — profile_similarity" />
 
+<meta property="og:title" content="Semantic similarity between profiles — profile_similarity" />
 <meta property="og:description" content="Calculates the semantic similarity between profiles (groups) of terms.
 bestPairs aggregates pairwise scores by &quot;best pairs&quot; between two profiles.
 That is, for profiles P1 and P2 with terms T1[i] (i = 1,...n) and T2[j]
@@ -44,7 +52,7 @@ reduce.ignoringDiag is a convenience function for aggregating pairwise
 similarity scores such that the diagonal of the pair-wise similarity matrix
 is ignored. This may be desirable, for example, when average with-in group
 similarity should exclude the similarity of terms to themselves." />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -58,9 +66,10 @@ similarity should exclude the similarity of terms to themselves." />
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -74,7 +83,7 @@ similarity should exclude the similarity of terms to themselves." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.16</span>
       </span>
     </div>
 
@@ -82,7 +91,7 @@ similarity should exclude the similarity of terms to themselves." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -93,11 +102,10 @@ similarity should exclude the similarity of terms to themselves." />
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/phenoscape/rphenoscape">
-    <span class="fa fa-github fa-lg"></span>
+  <a href="https://github.com/phenoscape/rphenoscape/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -108,6 +116,7 @@ similarity should exclude the similarity of terms to themselves." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -119,7 +128,6 @@ similarity should exclude the similarity of terms to themselves." />
     </div>
 
     <div class="ref-description">
-    
     <p>Calculates the semantic similarity between profiles (groups) of terms.</p>
 <p><code>bestPairs</code> aggregates pairwise scores by "best pairs" between two profiles.
 That is, for profiles P1 and P2 with terms T1[i] (i = 1,...n) and T2[j]
@@ -132,15 +140,14 @@ i.e., S(P1, P2) != S(P2, P1) for P1 != P2.</p>
 similarity scores such that the diagonal of the pair-wise similarity matrix
 is ignored. This may be desirable, for example, when average with-in group
 similarity should exclude the similarity of terms to themselves.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>profile_similarity</span>(<span class='no'>pairwise</span>, <span class='no'>subsumer_mat</span>, <span class='no'>...</span>, <span class='no'>f</span>, <span class='kw'>reduce</span> <span class='kw'>=</span> <span class='fl'>NA</span>)
+    <pre class="usage"><span class='fu'>profile_similarity</span><span class='op'>(</span><span class='va'>pairwise</span>, <span class='va'>subsumer_mat</span>, <span class='va'>...</span>, <span class='va'>f</span>, reduce <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
 
-<span class='fu'>bestPairs</span>(<span class='no'>X</span>, <span class='kw'>best</span> <span class='kw'>=</span> <span class='no'>max</span>, <span class='kw'>aggregate</span> <span class='kw'>=</span> <span class='no'>mean</span>)
+<span class='fu'>bestPairs</span><span class='op'>(</span><span class='va'>X</span>, best <span class='op'>=</span> <span class='va'>max</span>, aggregate <span class='op'>=</span> <span class='va'>mean</span><span class='op'>)</span>
 
-<span class='fu'>reduce.ignoringDiag</span>(<span class='no'>X</span>, <span class='kw'>aggregate</span> <span class='kw'>=</span> <span class='no'>mean</span>)</pre>
-    
+<span class='fu'>reduce.ignoringDiag</span><span class='op'>(</span><span class='va'>X</span>, aggregate <span class='op'>=</span> <span class='va'>mean</span><span class='op'>)</span></pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -163,7 +170,7 @@ for more detail and the usual way for obtaining it.</p></td>
     </tr>
     <tr>
       <th>f</th>
-      <td><p>a <a href='https://www.rdocumentation.org/packages/base/topics/factor'>factor</a> (or an object coercible to factor) defining the group
+      <td><p>a <a href='https://rdrr.io/r/base/factor.html'>factor</a> (or an object coercible to factor) defining the group
 (profile) membership of the terms (= columns) in the subsumer matrix.
 Columns and rows of the resulting profile similarity matrix will take their
 names from the levels of the factor. The factor may have 2 or more levels.</p></td>
@@ -185,17 +192,17 @@ In the latter case, the result may not be symmetric (i.e., s(p1,p2) != s(p2,p1))
     </tr>
     <tr>
       <th>best</th>
-      <td><p>the function for determing the best score. The default is <code><a href='https://www.rdocumentation.org/packages/base/topics/Extremes'>max()</a></code>.</p></td>
+      <td><p>the function for determing the best score. The default is <code><a href='https://rdrr.io/r/base/Extremes.html'>max()</a></code>.</p></td>
     </tr>
     <tr>
       <th>aggregate</th>
       <td><p>the function for aggregating scores (for <code>reduce.ignoringDiag</code>)
 or best pairwise scores (for <code>bestPairs</code>). For <code>reduce.ignoringDiag</code>, the
 function must also accept parameter <code>na.rm</code>, and if the value is TRUE, remove
-NA values before calculating the aggregate. The default is <code><a href='https://www.rdocumentation.org/packages/base/topics/mean'>mean()</a></code>.</p></td>
+NA values before calculating the aggregate. The default is <code><a href='https://rdrr.io/r/base/mean.html'>mean()</a></code>.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>A profile refers to a group of terms, and profile similarity to the similarity
@@ -209,7 +216,7 @@ the unions.</p></li>
 and then the pairwise scores between the terms in two groups are reduced
 to a single score giving the between-group score.</p></li>
 </ul>
-    
+
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>In pairwise mode, if the <code>reduce</code> function is asymmetric (as will typically be
@@ -217,85 +224,88 @@ the case for functions aggregating in two steps), the upper and lower triangle
 of the profile similarity matrix will not be symmetric. If a symmetric similarity
 matrix is desired, this can be achieved by computing <code>(X +  t(X)) / 2</code>, if X is
 the profile similarity matrix.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>tt</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>sapply</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"pelvic fin"</span>, <span class='st'>"pectoral fin"</span>,
-               <span class='st'>"forelimb"</span>, <span class='st'>"hindlimb"</span>, <span class='st'>"dorsal fin"</span>, <span class='st'>"caudal fin"</span>),
-             <span class='no'>pk_get_iri</span>, <span class='kw'>as</span> <span class='kw'>=</span> <span class='st'>"anatomy"</span>)
+    <pre class="examples"><div class='input'><span class='va'>tt</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"pelvic fin"</span>, <span class='st'>"pectoral fin"</span>,
+               <span class='st'>"forelimb"</span>, <span class='st'>"hindlimb"</span>, <span class='st'>"dorsal fin"</span>, <span class='st'>"caudal fin"</span><span class='op'>)</span>,
+             <span class='va'>pk_get_iri</span>, as <span class='op'>=</span> <span class='st'>"anatomy"</span><span class='op'>)</span>
 
 <span class='co'># define groups (profiles) as factors:</span>
-<span class='no'>pairedUnpaired</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='st'>"paired"</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>4</span>), <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='st'>"unpaired"</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>2</span>))
-<span class='no'>finsLimbs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"fins"</span>, <span class='st'>"fins"</span>, <span class='st'>"limbs"</span>, <span class='st'>"limbs"</span>, <span class='st'>"fins"</span>, <span class='st'>"fins"</span>)
-<span class='no'>pairedFinLimb</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/interaction'>interaction</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/factor'>as.factor</a></span>(<span class='no'>pairedUnpaired</span>), <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/factor'>as.factor</a></span>(<span class='no'>finsLimbs</span>))
+<span class='va'>pairedUnpaired</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='st'>"paired"</span>, times <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='st'>"unpaired"</span>, times <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>finsLimbs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"fins"</span>, <span class='st'>"fins"</span>, <span class='st'>"limbs"</span>, <span class='st'>"limbs"</span>, <span class='st'>"fins"</span>, <span class='st'>"fins"</span><span class='op'>)</span>
+<span class='va'>pairedFinLimb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/interaction.html'>interaction</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='va'>pairedUnpaired</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='va'>finsLimbs</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># compute subsumer matrix</span>
-<span class='no'>subs.mat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='subsumer_matrix.html'>subsumer_matrix</a></span>(<span class='no'>tt</span>, <span class='kw'>.colnames</span> <span class='kw'>=</span> <span class='st'>"label"</span>, <span class='kw'>.labels</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>tt</span>),
-                            <span class='kw'>preserveOrder</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='va'>subs.mat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsumer_matrix.html'>subsumer_matrix</a></span><span class='op'>(</span><span class='va'>tt</span>, .colnames <span class='op'>=</span> <span class='st'>"label"</span>, .labels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>tt</span><span class='op'>)</span>,
+                            preserveOrder <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='co'># group-wise profile similarity:</span>
-<span class='fu'>profile_similarity</span>(<span class='no'>jaccard_similarity</span>, <span class='no'>subs.mat</span>, <span class='kw'>f</span> <span class='kw'>=</span> <span class='no'>pairedUnpaired</span>)</div><div class='output co'>#&gt;             paired  unpaired
-#&gt; paired   1.0000000 0.3163265
-#&gt; unpaired 0.3163265 1.0000000</div><div class='input'><span class='fu'>profile_similarity</span>(<span class='no'>jaccard_similarity</span>, <span class='no'>subs.mat</span>, <span class='kw'>f</span> <span class='kw'>=</span> <span class='no'>finsLimbs</span>)</div><div class='output co'>#&gt;            fins     limbs
-#&gt; fins  1.0000000 0.7653061
-#&gt; limbs 0.7653061 1.0000000</div><div class='input'><span class='fu'>profile_similarity</span>(<span class='no'>jaccard_similarity</span>, <span class='no'>subs.mat</span>, <span class='kw'>f</span> <span class='kw'>=</span> <span class='no'>pairedFinLimb</span>)</div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
-#&gt; paired.fins     1.0000000     0.3483146    0.8152174
-#&gt; unpaired.fins   0.3483146     1.0000000    0.3152174
-#&gt; paired.limbs    0.8152174     0.3152174    1.0000000</div><div class='input'>
+<span class='fu'>profile_similarity</span><span class='op'>(</span><span class='va'>jaccard_similarity</span>, <span class='va'>subs.mat</span>, f <span class='op'>=</span> <span class='va'>pairedUnpaired</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;             paired  unpaired
+#&gt; paired   1.0000000 0.3366337
+#&gt; unpaired 0.3366337 1.0000000</div><div class='input'><span class='fu'>profile_similarity</span><span class='op'>(</span><span class='va'>jaccard_similarity</span>, <span class='va'>subs.mat</span>, f <span class='op'>=</span> <span class='va'>finsLimbs</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;            fins     limbs
+#&gt; fins  1.0000000 0.7722772
+#&gt; limbs 0.7722772 1.0000000</div><div class='input'><span class='fu'>profile_similarity</span><span class='op'>(</span><span class='va'>jaccard_similarity</span>, <span class='va'>subs.mat</span>, f <span class='op'>=</span> <span class='va'>pairedFinLimb</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
+#&gt; paired.fins     1.0000000     0.3695652    0.8210526
+#&gt; unpaired.fins   0.3695652     1.0000000    0.3368421
+#&gt; paired.limbs    0.8210526     0.3368421    1.0000000</div><div class='input'>
 <span class='co'># pairwise, using mean (average pairwise score); result is symmetric</span>
-<span class='fu'>profile_similarity</span>(<span class='no'>jaccard_similarity</span>, <span class='no'>subs.mat</span>, <span class='kw'>f</span> <span class='kw'>=</span> <span class='no'>pairedFinLimb</span>,
-                   <span class='kw'>reduce</span> <span class='kw'>=</span> <span class='no'>mean</span>)</div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
-#&gt; paired.fins     0.9397590     0.3742470    0.8251232
-#&gt; unpaired.fins   0.3742470     0.9189189    0.3413199
-#&gt; paired.limbs    0.8251232     0.3413199    0.9285714</div><div class='input'><span class='co'># the same, but excluding self-similarity of terms within groups</span>
-<span class='fu'>profile_similarity</span>(<span class='no'>jaccard_similarity</span>, <span class='no'>subs.mat</span>, <span class='kw'>f</span> <span class='kw'>=</span> <span class='no'>pairedFinLimb</span>,
-                   <span class='kw'>reduce</span> <span class='kw'>=</span> <span class='no'>reduce.ignoringDiag</span>)</div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
-#&gt; paired.fins     0.8795181     0.3742470    0.8251232
-#&gt; unpaired.fins   0.3742470     0.8378378    0.3413199
-#&gt; paired.limbs    0.8251232     0.3413199    0.8571429</div><div class='input'><span class='co'># pairwise, using max; result is symmetric</span>
-<span class='fu'>profile_similarity</span>(<span class='no'>jaccard_similarity</span>, <span class='no'>subs.mat</span>, <span class='kw'>f</span> <span class='kw'>=</span> <span class='no'>pairedFinLimb</span>,
-                   <span class='kw'>reduce</span> <span class='kw'>=</span> <span class='no'>max</span>)</div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
-#&gt; paired.fins     1.0000000     0.3750000    0.8571429
-#&gt; unpaired.fins   0.3750000     1.0000000    0.3414634
-#&gt; paired.limbs    0.8571429     0.3414634    1.0000000</div><div class='input'><span class='co'># pairwise, using average of best pairs; result is _not_ symmetric</span>
-<span class='no'>sm</span> <span class='kw'>&lt;-</span> <span class='fu'>profile_similarity</span>(<span class='no'>jaccard_similarity</span>, <span class='no'>subs.mat</span>, <span class='kw'>f</span> <span class='kw'>=</span> <span class='no'>pairedFinLimb</span>,
-                         <span class='kw'>reduce</span> <span class='kw'>=</span> <span class='no'>bestPairs</span>)
-<span class='no'>sm</span></div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
-#&gt; paired.fins     1.0000000     0.3750000    0.8571429
-#&gt; unpaired.fins   0.3742470     1.0000000    0.3413199
-#&gt; paired.limbs    0.8571429     0.3414634    1.0000000</div><div class='input'><span class='co'># make symmtric, for example by averaging:</span>
-(<span class='no'>sm</span> + <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/t'>t</a></span>(<span class='no'>sm</span>)) / <span class='fl'>2</span></div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
-#&gt; paired.fins     1.0000000     0.3746235    0.8571429
-#&gt; unpaired.fins   0.3746235     1.0000000    0.3413917
-#&gt; paired.limbs    0.8571429     0.3413917    1.0000000</div></pre>
+<span class='fu'>profile_similarity</span><span class='op'>(</span><span class='va'>jaccard_similarity</span>, <span class='va'>subs.mat</span>, f <span class='op'>=</span> <span class='va'>pairedFinLimb</span>,
+                   reduce <span class='op'>=</span> <span class='va'>mean</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
+#&gt; paired.fins     0.9418605     0.3964696    0.8310345
+#&gt; unpaired.fins   0.3964696     0.9250000    0.3641711
+#&gt; paired.limbs    0.8310345     0.3641711    0.9310345</div><div class='input'><span class='co'># the same, but excluding self-similarity of terms within groups</span>
+<span class='fu'>profile_similarity</span><span class='op'>(</span><span class='va'>jaccard_similarity</span>, <span class='va'>subs.mat</span>, f <span class='op'>=</span> <span class='va'>pairedFinLimb</span>,
+                   reduce <span class='op'>=</span> <span class='va'>reduce.ignoringDiag</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
+#&gt; paired.fins     0.8837209     0.3964696    0.8310345
+#&gt; unpaired.fins   0.3964696     0.8500000    0.3641711
+#&gt; paired.limbs    0.8310345     0.3641711    0.8620690</div><div class='input'><span class='co'># pairwise, using max; result is symmetric</span>
+<span class='fu'>profile_similarity</span><span class='op'>(</span><span class='va'>jaccard_similarity</span>, <span class='va'>subs.mat</span>, f <span class='op'>=</span> <span class='va'>pairedFinLimb</span>,
+                   reduce <span class='op'>=</span> <span class='va'>max</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
+#&gt; paired.fins     1.0000000     0.3975904    0.8620690
+#&gt; unpaired.fins   0.3975904     1.0000000    0.3647059
+#&gt; paired.limbs    0.8620690     0.3647059    1.0000000</div><div class='input'><span class='co'># pairwise, using average of best pairs; result is _not_ symmetric</span>
+<span class='va'>sm</span> <span class='op'>&lt;-</span> <span class='fu'>profile_similarity</span><span class='op'>(</span><span class='va'>jaccard_similarity</span>, <span class='va'>subs.mat</span>, f <span class='op'>=</span> <span class='va'>pairedFinLimb</span>,
+                         reduce <span class='op'>=</span> <span class='va'>bestPairs</span><span class='op'>)</span>
+<span class='va'>sm</span>
+</div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
+#&gt; paired.fins     1.0000000     0.3975904    0.8620690
+#&gt; unpaired.fins   0.3964696     1.0000000    0.3641711
+#&gt; paired.limbs    0.8620690     0.3647059    1.0000000</div><div class='input'><span class='co'># make symmtric, for example by averaging:</span>
+<span class='op'>(</span><span class='va'>sm</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>sm</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>2</span>
+</div><div class='output co'>#&gt;               paired.fins unpaired.fins paired.limbs
+#&gt; paired.fins      1.000000     0.3970300    0.8620690
+#&gt; unpaired.fins    0.397030     1.0000000    0.3644385
+#&gt; paired.limbs     0.862069     0.3644385    1.0000000</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#details">Details</a></li>
-
-      <li><a href="#note">Note</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hong Xu, Hilmar Lapp.</p>
+  <p>Developed by Hong Xu, Hilmar Lapp, John Bradley.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

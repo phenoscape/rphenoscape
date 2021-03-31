@@ -8,21 +8,29 @@
 
 <title>Compute semantic similarity metrics between terms — similarity • rphenoscape</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,8 +38,8 @@
 
 
 
-<meta property="og:title" content="Compute semantic similarity metrics between terms — similarity" />
 
+<meta property="og:title" content="Compute semantic similarity metrics between terms — similarity" />
 <meta property="og:description" content="The Tanimoto similarity ST is computed according to the definition for bit vectors
 (see Jaccard index at Wikipedia).
 For weights \(W_i \in \{0, 1\}\) it is the same as the
@@ -53,7 +61,7 @@ inequality. First convert to angle to obtain a distance metric.
 The Resnik similarity between two terms is the information content (IC) of
 their most informative common ancestor (MICA), which is the common subsumer
 with the greatest information content." />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -67,9 +75,10 @@ with the greatest information content." />
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -83,7 +92,7 @@ with the greatest information content." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.16</span>
       </span>
     </div>
 
@@ -91,7 +100,7 @@ with the greatest information content." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -102,11 +111,10 @@ with the greatest information content." />
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/phenoscape/rphenoscape">
-    <span class="fa fa-github fa-lg"></span>
+  <a href="https://github.com/phenoscape/rphenoscape/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -117,6 +125,7 @@ with the greatest information content." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -128,7 +137,6 @@ with the greatest information content." />
     </div>
 
     <div class="ref-description">
-    
     <p>The Tanimoto similarity ST is computed according to the definition for bit vectors
 (see <a href='https://en.wikipedia.org/wiki/Jaccard_index#Tanimoto's_definitions_of_similarity_and_distance'>Jaccard index at Wikipedia</a>).
 For weights \(W_i \in \{0, 1\}\) it is the same as the
@@ -150,18 +158,17 @@ inequality. First convert to angle to obtain a distance metric.</p>
 <p>The Resnik similarity between two terms is the information content (IC) of
 their most informative common ancestor (MICA), which is the common subsumer
 with the greatest information content.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>tanimoto_similarity</span>(<span class='kw'>subsumer_mat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>terms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>tanimoto_similarity</span><span class='op'>(</span>subsumer_mat <span class='op'>=</span> <span class='cn'>NA</span>, terms <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>jaccard_similarity</span>(<span class='kw'>subsumer_mat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>terms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>jaccard_similarity</span><span class='op'>(</span>subsumer_mat <span class='op'>=</span> <span class='cn'>NA</span>, terms <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>cosine_similarity</span>(<span class='kw'>subsumer_mat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>terms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>cosine_similarity</span><span class='op'>(</span>subsumer_mat <span class='op'>=</span> <span class='cn'>NA</span>, terms <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>resnik_similarity</span>(<span class='kw'>subsumer_mat</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>terms</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>,
-  <span class='kw'>wt</span> <span class='kw'>=</span> <span class='no'>term_freqs</span>, <span class='kw'>wt_args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(), <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>)</pre>
-    
+<span class='fu'>resnik_similarity</span><span class='op'>(</span>subsumer_mat <span class='op'>=</span> <span class='cn'>NA</span>, terms <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span>,
+  wt <span class='op'>=</span> <span class='va'>term_freqs</span>, wt_args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, base <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span></pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -191,7 +198,9 @@ scores, though any score will work for which a higher value means higher
 information content, and where a term will always have a score equal to or
 greater than any of its superclasses. If a function, it must accept parameter
 <code>x</code> as the vector of term IRIs and return a vector of frequencies (<em>not</em>
-IC scores) for the terms. The default is to use function <code><a href='term_freqs.html'>term_freqs()</a></code>.</p></td>
+IC scores) for the terms. The default is to use function <code><a href='term_freqs.html'>term_freqs()</a></code>.
+Subsumer terms with zero or missing (NA) frequency will be omitted from the
+calculation.</p></td>
     </tr>
     <tr>
       <th>wt_args</th>
@@ -205,67 +214,63 @@ function <code><a href='term_freqs.html'>term_freqs()</a></code>, the main param
 content from term frequency. The default is 10.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A matrix with M[i,j] = similarity of terms <em>i</em> and <em>j</em>.</p>
-    
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Philip Resnik (1995). "Using information content to evaluate semantic
 similarity in a taxonomy". Proceedings of the 14th International Joint
 Conference on Artificial Intelligence (IJCAI'95). <strong>1</strong>: 448–453</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='no'>sm</span> <span class='kw'>&lt;-</span> <span class='fu'>jaccard_similarity</span>(<span class='kw'>terms</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"pelvic fin"</span>, <span class='st'>"pectoral fin"</span>,
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>sm</span> <span class='op'>&lt;-</span> <span class='fu'>jaccard_similarity</span><span class='op'>(</span>terms <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"pelvic fin"</span>, <span class='st'>"pectoral fin"</span>,
                                    <span class='st'>"forelimb"</span>, <span class='st'>"hindlimb"</span>,
-                                   <span class='st'>"dorsal fin"</span>, <span class='st'>"caudal fin"</span>),
-                         <span class='kw'>.colnames</span> <span class='kw'>=</span> <span class='st'>"label"</span>)
-<span class='no'>sm</span>
+                                   <span class='st'>"dorsal fin"</span>, <span class='st'>"caudal fin"</span><span class='op'>)</span>,
+                         .colnames <span class='op'>=</span> <span class='st'>"label"</span><span class='op'>)</span>
+<span class='va'>sm</span>
 
 <span class='co'># e.g., turn into distance matrix, cluster, and plot</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/hclust'>hclust</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/dist'>as.dist</a></span>(<span class='fl'>1</span>-<span class='no'>sm</span>)))
-<span class='co'># }</span><span class='co'># NOT RUN {</span>
-<span class='no'>phens</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_phenotypes.html'>get_phenotypes</a></span>(<span class='st'>"basihyal bone"</span>, <span class='kw'>taxon</span> <span class='kw'>=</span> <span class='st'>"Cyprinidae"</span>)
-<span class='no'>sm.ic</span> <span class='kw'>&lt;-</span> <span class='fu'>resnik_similarity</span>(<span class='kw'>terms</span> <span class='kw'>=</span> <span class='no'>phens</span>$<span class='no'>id</span>,
-                           <span class='kw'>.colnames</span> <span class='kw'>=</span> <span class='st'>"label"</span>, <span class='kw'>.labels</span> <span class='kw'>=</span> <span class='no'>phens</span>$<span class='no'>label</span>,
-                           <span class='kw'>wt_args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>as</span> <span class='kw'>=</span> <span class='st'>"phenotype"</span>,
-                                          <span class='kw'>corpus</span> <span class='kw'>=</span> <span class='st'>"taxa"</span>))
-<span class='no'>maxIC</span> <span class='kw'>&lt;-</span> -<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Log'>log10</a></span>(<span class='fl'>1</span> / <span class='fu'><a href='corpus_size.html'>corpus_size</a></span>(<span class='st'>"taxa"</span>))
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/hclust.html'>hclust</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/dist.html'>as.dist</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>-</span><span class='va'>sm</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>phens</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_phenotypes.html'>get_phenotypes</a></span><span class='op'>(</span><span class='st'>"basihyal bone"</span>, taxon <span class='op'>=</span> <span class='st'>"Cyprinidae"</span><span class='op'>)</span>
+<span class='va'>sm.ic</span> <span class='op'>&lt;-</span> <span class='fu'>resnik_similarity</span><span class='op'>(</span>terms <span class='op'>=</span> <span class='va'>phens</span><span class='op'>$</span><span class='va'>id</span>,
+                           .colnames <span class='op'>=</span> <span class='st'>"label"</span>, .labels <span class='op'>=</span> <span class='va'>phens</span><span class='op'>$</span><span class='va'>label</span>,
+                           wt_args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>as <span class='op'>=</span> <span class='st'>"phenotype"</span>,
+                                          corpus <span class='op'>=</span> <span class='st'>"taxa"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>maxIC</span> <span class='op'>&lt;-</span> <span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log10</a></span><span class='op'>(</span><span class='fl'>1</span> <span class='op'>/</span> <span class='fu'><a href='corpus_size.html'>corpus_size</a></span><span class='op'>(</span><span class='st'>"taxa"</span><span class='op'>)</span><span class='op'>)</span>
 <span class='co'># normalize by max IC, turn into distance matrix, cluster, and plot</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/hclust'>hclust</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/dist'>as.dist</a></span>(<span class='fl'>1</span>-<span class='no'>sm.ic</span>/<span class='no'>maxIC</span>)))
-<span class='co'># }</span></pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/hclust.html'>hclust</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/dist.html'>as.dist</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>-</span><span class='va'>sm.ic</span><span class='op'>/</span><span class='va'>maxIC</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#references">References</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hong Xu, Hilmar Lapp.</p>
+  <p>Developed by Hong Xu, Hilmar Lapp, John Bradley.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

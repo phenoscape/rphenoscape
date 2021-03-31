@@ -8,21 +8,29 @@
 
 <title>Obtains term frequencies for the Phenoscape KB — term_freqs • rphenoscape</title>
 
+
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -30,11 +38,11 @@
 
 
 
-<meta property="og:title" content="Obtains term frequencies for the Phenoscape KB — term_freqs" />
 
+<meta property="og:title" content="Obtains term frequencies for the Phenoscape KB — term_freqs" />
 <meta property="og:description" content="Determines the frequencies for the given input list of terms, based on
 the selected corpus." />
-<meta name="twitter:card" content="summary" />
+
 
 
 
@@ -48,9 +56,10 @@ the selected corpus." />
 <![endif]-->
 
 
+
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -64,7 +73,7 @@ the selected corpus." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.16</span>
       </span>
     </div>
 
@@ -72,7 +81,7 @@ the selected corpus." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -83,11 +92,10 @@ the selected corpus." />
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/phenoscape/rphenoscape">
-    <span class="fa fa-github fa-lg"></span>
+  <a href="https://github.com/phenoscape/rphenoscape/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -98,6 +106,7 @@ the selected corpus." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -109,16 +118,14 @@ the selected corpus." />
     </div>
 
     <div class="ref-description">
-    
     <p>Determines the frequencies for the given input list of terms, based on
 the selected corpus.</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>term_freqs</span>(<span class='no'>x</span>, <span class='kw'>as</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"auto"</span>, <span class='st'>"entity"</span>, <span class='st'>"quality"</span>, <span class='st'>"phenotype"</span>),
-  <span class='kw'>corpus</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"taxon_annotations"</span>, <span class='st'>"taxa"</span>, <span class='st'>"gene_annotations"</span>, <span class='st'>"genes"</span>),
-  <span class='kw'>decodeIRI</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>term_freqs</span><span class='op'>(</span><span class='va'>x</span>, as <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"auto"</span>, <span class='st'>"entity"</span>, <span class='st'>"quality"</span>, <span class='st'>"phenotype"</span><span class='op'>)</span>,
+  corpus <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"taxon_annotations"</span>, <span class='st'>"taxa"</span>, <span class='st'>"gene_annotations"</span>, <span class='st'>"genes"</span><span class='op'>)</span>,
+  decodeIRI <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -164,12 +171,11 @@ which can be used to include historical and serial homologues in the counts.
 It can also be used to always include parts for entity terms.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a vector of frequencies as floating point numbers (between zero
 and 1.0), of the same length (and ordering) as the input list of terms.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Depending on the corpus selected, the frequencies are queried directly
@@ -183,7 +189,6 @@ anatomy term), and at least currently these aren't handled correctly by the
 Phenoscape KB, resulting in counts of zero for such terms. For some of these
 the implementation here will try to rewrite the query (see parameter
 <code>decodeIRI</code>), but this only works to a limited extent.</p>
-    
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>Term categories being accurate is vital for obtaining correct counts and
@@ -198,52 +203,48 @@ determine (and possibly correct) categories beforehand, and then pass the
 result as <code>as</code>. If all terms are of the same category and the category is
 known beforehand, it saves time and prevents potential errors to supply this
 category using <code>as</code>.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>terms</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"pectoral fin"</span>, <span class='st'>"pelvic fin"</span>, <span class='st'>"dorsal fin"</span>, <span class='st'>"paired fin"</span>)
-<span class='no'>IRIs</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>sapply</a></span>(<span class='no'>terms</span>, <span class='no'>pk_get_iri</span>, <span class='kw'>as</span> <span class='kw'>=</span> <span class='st'>"anatomy"</span>)
-<span class='fu'>term_freqs</span>(<span class='no'>IRIs</span>)</div><div class='output co'>#&gt; [1] 0.001797967 0.002695709 0.004368265 0.004585561</div><div class='input'>
-<span class='no'>phens</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_phenotypes.html'>get_phenotypes</a></span>(<span class='kw'>entity</span> <span class='kw'>=</span> <span class='st'>"basihyal bone"</span>)
-<span class='fu'>term_freqs</span>(<span class='no'>phens</span>$<span class='no'>id</span>, <span class='kw'>as</span> <span class='kw'>=</span> <span class='st'>"phenotype"</span>, <span class='kw'>corpus</span> <span class='kw'>=</span> <span class='st'>"taxon_annotations"</span>)</div><div class='output co'>#&gt;  [1] 3.973408e-05 4.966760e-06 1.365859e-05 1.129938e-04 6.208450e-06
-#&gt;  [6] 2.607549e-05 6.332619e-05 2.222625e-04 1.365859e-05 1.328608e-04
-#&gt; [11] 4.966760e-06 6.518872e-04 8.940168e-05 2.619966e-04 5.090929e-05
-#&gt; [16] 1.862535e-05 1.192022e-04 2.235042e-05 1.030603e-04</div><div class='input'><span class='fu'>term_freqs</span>(<span class='no'>phens</span>$<span class='no'>id</span>, <span class='kw'>as</span> <span class='kw'>=</span> <span class='st'>"phenotype"</span>, <span class='kw'>corpus</span> <span class='kw'>=</span> <span class='st'>"taxa"</span>)</div><div class='output co'>#&gt;  [1] 0.002659574          NA 0.002659574 0.002659574 0.001329787 0.001329787
-#&gt;  [7] 0.002659574 0.001329787 0.002659574 0.005319149 0.002659574 0.005319149
-#&gt; [13] 0.001329787 0.002659574 0.002659574          NA 0.003989362 0.001329787
-#&gt; [19] 0.001329787</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='va'>terms</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"pectoral fin"</span>, <span class='st'>"pelvic fin"</span>, <span class='st'>"dorsal fin"</span>, <span class='st'>"paired fin"</span><span class='op'>)</span>
+<span class='va'>IRIs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='va'>terms</span>, <span class='va'>pk_get_iri</span>, as <span class='op'>=</span> <span class='st'>"anatomy"</span><span class='op'>)</span>
+<span class='fu'>term_freqs</span><span class='op'>(</span><span class='va'>IRIs</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0.001791597 0.002191650 0.004333911 0.004073383</div><div class='input'>
+<span class='va'>phens</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_phenotypes.html'>get_phenotypes</a></span><span class='op'>(</span>entity <span class='op'>=</span> <span class='st'>"basihyal bone"</span><span class='op'>)</span>
+<span class='fu'>term_freqs</span><span class='op'>(</span><span class='va'>phens</span><span class='op'>$</span><span class='va'>id</span>, as <span class='op'>=</span> <span class='st'>"phenotype"</span>, corpus <span class='op'>=</span> <span class='st'>"taxon_annotations"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  [1] 3.951144e-05 4.938930e-06 1.358206e-05 1.123607e-04 6.173663e-06
+#&gt;  [6] 2.592938e-05 6.297136e-05 2.210171e-04 2.222519e-04 1.358206e-05
+#&gt; [11] 1.358206e-04 4.938930e-06 6.494693e-04 8.890074e-05 2.617633e-04
+#&gt; [16] 5.185877e-05 1.852099e-05 1.185343e-04 2.222519e-05 1.024828e-04</div><div class='input'><span class='fu'>term_freqs</span><span class='op'>(</span><span class='va'>phens</span><span class='op'>$</span><span class='va'>id</span>, as <span class='op'>=</span> <span class='st'>"phenotype"</span>, corpus <span class='op'>=</span> <span class='st'>"taxa"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  [1] 0.002547771 0.000000000 0.002547771 0.002547771 0.001273885 0.001273885
+#&gt;  [7] 0.002547771 0.001273885 0.001273885 0.002547771 0.005095541 0.002547771
+#&gt; [13] 0.005095541 0.001273885 0.002547771 0.002547771 0.000000000 0.003821656
+#&gt; [19] 0.001273885 0.001273885</div><div class='input'>
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-
-      <li><a href="#note">Note</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
-  <p>Developed by Hong Xu, Hilmar Lapp.</p>
+  <p>Developed by Hong Xu, Hilmar Lapp, John Bradley.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
