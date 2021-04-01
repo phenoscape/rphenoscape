@@ -10,8 +10,7 @@ partOf_iri()
 
 hasPart_iri()
 
-term_iri(label, type = "owl:Class", preferOntologies = NULL,
-  firstOnly = TRUE)
+term_iri(label, type = "owl:Class", preferOntologies = NULL, firstOnly = TRUE)
 }
 \arguments{
 \item{label}{character, the label of the term for which to obtain the IRI}

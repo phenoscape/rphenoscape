@@ -13,5 +13,5 @@ rclean_jsonld_names(x)
 the input data frame or list with changed names
 }
 \description{
-Recursively cleans names in a list/data.frame replacing \code{@id} names with \code{id}.
+Recursively cleans names in a list/data.frame replacing \verb{@id} names with \code{id}.
 }

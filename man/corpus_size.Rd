@@ -4,8 +4,9 @@
 \alias{corpus_size}
 \title{Obtain the size of different corpora}
 \usage{
-corpus_size(corpus = c("taxon_annotations", "taxa", "gene_annotations",
-  "genes"))
+corpus_size(
+  corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes")
+)
 }
 \arguments{
 \item{corpus}{the name of the corpus, currently one of "taxon_annotations",

@@ -14,8 +14,14 @@ jaccard_similarity(subsumer_mat = NA, terms = NULL, ...)
 
 cosine_similarity(subsumer_mat = NA, terms = NULL, ...)
 
-resnik_similarity(subsumer_mat = NA, terms = NULL, ...,
-  wt = term_freqs, wt_args = list(), base = 10)
+resnik_similarity(
+  subsumer_mat = NA,
+  terms = NULL,
+  ...,
+  wt = term_freqs,
+  wt_args = list(),
+  base = 10
+)
 }
 \arguments{
 \item{subsumer_mat}{matrix or data.frame, the vector-encoded matrix M of

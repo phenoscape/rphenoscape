@@ -13,7 +13,7 @@ get_study_data(study_ids, verbose = FALSE)
 time-consuming operations. Default is FALSE.}
 }
 \value{
-A list of \link[RNeXML:nexml]{nexml} objects
+A list of \link[RNeXML:nexml-class]{nexml} objects
 }
 \description{
 get_study_data
