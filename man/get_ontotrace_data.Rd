@@ -4,8 +4,13 @@
 \alias{get_ontotrace_data}
 \title{Obtain a synthetic presence/absence matrix}
 \usage{
-get_ontotrace_data(taxon, entity, relation = "part of",
-  variable_only = TRUE, strict = TRUE)
+get_ontotrace_data(
+  taxon,
+  entity,
+  relation = "part of",
+  variable_only = TRUE,
+  strict = TRUE
+)
 }
 \arguments{
 \item{taxon}{character, required. A vector of taxon names.}
@@ -30,12 +35,12 @@ that did resolve to IRI. Default is TRUE, meaning any resolution failure will
 result in an error.}
 }
 \value{
-\link[RNeXML:nexml]{RNeXML::nexml} object
+\link[RNeXML:nexml-class]{RNeXML::nexml} object
 }
 \description{
 Queries the Phenoscape KB for a synthetic presence/absence character matrix
 for the given taxa and anatomical entities, and returns the result as a
-\link[RNeXML:nexml]{nexml} object (from the RNeXML package).
+\link[RNeXML:nexml-class]{nexml} object (from the RNeXML package).
 }
 \details{
 The character matrix includes both asserted and logically inferred states. The

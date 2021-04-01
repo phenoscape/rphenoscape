@@ -28,8 +28,13 @@ pk_anatomical_class(x, verbose = TRUE)
 
 pk_phenotype_class(x, verbose = TRUE)
 
-pk_get_ontotrace_xml(taxon, entity, relation = "part of",
-  variable_only = TRUE, strict = TRUE)
+pk_get_ontotrace_xml(
+  taxon,
+  entity,
+  relation = "part of",
+  variable_only = TRUE,
+  strict = TRUE
+)
 
 pk_get_study_xml(study_ids)
 
@@ -70,21 +75,21 @@ which returns FALSE in that case (and prints a message).
 
 For \code{pk_taxon_class()} use \code{\link[=term_classification]{term_classification()}} with as="taxon" instead.
 Note that \code{pk_taxon_class()} defaults verbose to TRUE instead of FALSE as
-\code{term_classification()} does. Also \code{pk_taxon_class()} return value has the legacy \code{@id} name.
+\code{term_classification()} does. Also \code{pk_taxon_class()} return value has the legacy \verb{@id} name.
 }
 
 \section{\code{pk_anatomical_class}}{
 
 For \code{pk_anatomical_class()} use \code{\link[=term_classification]{term_classification()}} with as="anatomy" instead.
 Note that \code{pk_anatomical_class()} defaults verbose to TRUE instead of FALSE as
-\code{term_classification()} does. Also \code{pk_anatomical_class()} return value has the legacy \code{@id} name.
+\code{term_classification()} does. Also \code{pk_anatomical_class()} return value has the legacy \verb{@id} name.
 }
 
 \section{\code{pk_phenotype_class}}{
 
 For \code{pk_phenotype_class()} use \code{\link[=term_classification]{term_classification()}} with as="pato" instead.
 Note that \code{pk_phenotype_class()} defaults verbose to TRUE instead of FALSE as
-\code{term_classification()} does. Also \code{pk_phenotype_class()} return value has the legacy \code{@id} name.
+\code{term_classification()} does. Also \code{pk_phenotype_class()} return value has the legacy \verb{@id} name.
 }
 
 \section{\code{pk_get_ontotrace_xml}}{

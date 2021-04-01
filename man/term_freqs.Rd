@@ -4,9 +4,13 @@
 \alias{term_freqs}
 \title{Obtains term frequencies for the Phenoscape KB}
 \usage{
-term_freqs(x, as = c("auto", "entity", "quality", "phenotype"),
+term_freqs(
+  x,
+  as = c("auto", "entity", "quality", "phenotype"),
   corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes"),
-  decodeIRI = TRUE, ...)
+  decodeIRI = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{a vector or list of one or more terms, either as IRIs or as term
@@ -66,10 +70,10 @@ the implementation here will try to rewrite the query (see parameter
 Term categories being accurate is vital for obtaining correct counts and
 thus frequencies. Auto-determining term categories yields reasonably accurate
 results, but with caveats. One, it can be time-consuming, and two, especially
-for entity terms and their subsumers it is often not 100% accurate. This
+for entity terms and their subsumers it is often not 100\% accurate. This
 function will try to correct for that by assuming that if not all terms
 are determined to be of the same category, but one category holds for more
-than 90% of the terms, that it must be the correct category for all terms.
+than 90\% of the terms, that it must be the correct category for all terms.
 If the list of terms is legitimately of different categories, it is best to
 determine (and possibly correct) categories beforehand, and then pass the
 result as \code{as}. If all terms are of the same category and the category is

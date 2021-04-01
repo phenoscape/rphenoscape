@@ -4,8 +4,15 @@
 \alias{get_phenotypes}
 \title{Retrieve phenotypes by entity, quality, taxon, and study}
 \usage{
-get_phenotypes(entity = NA, quality = NA, taxon = NA, study = NA,
-  includeRels = c("part of"), .withTaxon = FALSE, verbose = FALSE)
+get_phenotypes(
+  entity = NA,
+  quality = NA,
+  taxon = NA,
+  study = NA,
+  includeRels = c("part of"),
+  .withTaxon = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{entity}{character, the anatomical entity by which to filter, if any.}

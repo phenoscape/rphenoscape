@@ -4,9 +4,16 @@
 \alias{find_term}
 \title{Find terms matching a query text}
 \usage{
-find_term(query, type = NA, definedBy = quote(!is.na(.)),
-  matchBy = NA, matchTypes = NA, nomatch = NA, limit = 100,
-  verbose = FALSE)
+find_term(
+  query,
+  type = NA,
+  definedBy = quote(!is.na(.)),
+  matchBy = NA,
+  matchTypes = NA,
+  nomatch = NA,
+  limit = 100,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{query}{character, the search text}

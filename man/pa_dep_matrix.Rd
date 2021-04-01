@@ -4,8 +4,13 @@
 \alias{pa_dep_matrix}
 \title{Obtains a presence-absence dependency matrix}
 \usage{
-pa_dep_matrix(terms, .names = c("ID", "IRI", "label"), .labels = NULL,
-  preserveOrder = FALSE, verbose = FALSE)
+pa_dep_matrix(
+  terms,
+  .names = c("ID", "IRI", "label"),
+  .labels = NULL,
+  preserveOrder = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{terms}{character, the list of terms for which to compute the dependency

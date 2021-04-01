@@ -4,8 +4,13 @@
 \alias{subsumer_matrix}
 \title{Obtains a subsumer matrix}
 \usage{
-subsumer_matrix(terms, .colnames = c("ID", "IRI", "label"),
-  .labels = NULL, preserveOrder = FALSE, verbose = FALSE)
+subsumer_matrix(
+  terms,
+  .colnames = c("ID", "IRI", "label"),
+  .labels = NULL,
+  preserveOrder = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{terms}{character, the list of terms for which to compute the dependency

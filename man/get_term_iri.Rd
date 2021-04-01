@@ -4,8 +4,7 @@
 \alias{get_term_iri}
 \title{Find the IRI of the term matching a text query}
 \usage{
-get_term_iri(text, as, exactOnly = FALSE, nomatch = NA,
-  verbose = FALSE)
+get_term_iri(text, as, exactOnly = FALSE, nomatch = NA, verbose = FALSE)
 }
 \arguments{
 \item{text}{character. The search text to be resolved.}
