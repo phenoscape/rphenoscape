@@ -269,5 +269,113 @@ test_that("Test getting study information", {
 
 })
 
+test_that("creating terminfo objects and extracting properties", {
+  terms = find_term("basihyal bone")
 
+  # not a terminfo object
+  testthat::expect_false(is.terminfo(terms))
+  testthat::expect_false(is.terminfo(terms[1,]))
+  testthat::expect_false(is.terminfo(terms$id[1]))
 
+  # create one terminfo object
+  obj <- as.terminfo(terms[1, "id"])
+  testthat::expect_is(obj, "terminfo")
+  testthat::expect_true(is.terminfo(obj))
+  testthat::expect_true(is_valid_terminfo(obj))
+
+  # optionally include classification
+  testthat::expect_false("classification" %in% names(obj))
+  obj <- as.terminfo(terms[1, "id"], withClassification = TRUE)
+  testthat::expect_true(is.terminfo(obj))
+  testthat::expect_true(is_valid_terminfo(obj))
+  testthat::expect_true("classification" %in% names(obj))
+  testthat::expect_equal(length(obj$classification), 3)
+
+  # robust to unresolving IRIs
+  testthat::expect_warning(obj <- as.terminfo("foo"))
+  testthat::expect_is(obj, "terminfo")
+  testthat::expect_true(is.terminfo(obj))
+  testthat::expect_false(is_valid_terminfo(obj))
+
+  # robust to unresolving IRIs including classification
+  testthat::expect_warning(obj <- as.terminfo("foo", withClassification = TRUE))
+  testthat::expect_is(obj, "terminfo")
+  testthat::expect_true(is.terminfo(obj))
+  testthat::expect_false(is_valid_terminfo(obj))
+  testthat::expect_null(obj$classification)
+
+  # also works with data.frame as input
+  obj <- as.terminfo(terms[1,])
+  testthat::expect_is(obj, "terminfo")
+  testthat::expect_true(is.terminfo(obj))
+  testthat::expect_true(is_valid_terminfo(obj))
+
+  # can run vectorized
+  testthat::expect_gt(length(terms$id), 1)
+  objs <- as.terminfo(terms$id)
+  testthat::expect_length(objs, nrow(terms))
+  testthat::expect_is(objs, "list")
+  testthat::expect_true(all(sapply(objs, is.terminfo)))
+  testthat::expect_length(is_valid_terminfo(objs), length(objs))
+  testthat::expect_true(all(is_valid_terminfo(objs)))
+  l <- sapply(objs, function(p) p$label)
+  testthat::expect_true(all(l == terms$label))
+  testthat::expect_true(all(sapply(objs, function(p) nrow(p$synonyms)) > 0))
+})
+
+test_that("pretty-printing terminfo objects", {
+  # find term iri
+  term_iri <- find_term("basihyal bone", limit = 1)
+  # create terminfo object
+  ti <- as.terminfo(term_iri)
+  # check print output
+  expect_output(print(ti), "terminfo 'basihyal bone' http.*Definition:.*Synonyms:.*Relationships:.*")
+  # create terminfo object with classification
+  ti <- as.terminfo(term_iri, withClassification = TRUE)
+  # check print output including classification sections
+  expect_output(print(ti), "terminfo 'basihyal bone' http.*Definition:.*Synonyms:.*Relationships:.*Subclass of:.*Superclass of::*")
+
+  # find taxon term iri
+  term_iri <- find_term('Coralliozetus angelicus', limit = 1)
+  # create terminfo object
+  ti <- as.terminfo(term_iri)
+  # check print output including taxon specific sections
+  expect_output(print(ti), "terminfo 'Coralliozetus angelicus' http.*Synonyms:.*Extinct:.*Rank:.*Common Name:.*")
+})
+
+test_that("as.terminfo withClassification can be controlled via an option", {
+  # find term iri
+  term_iri <- find_term("basihyal bone", limit = 1)
+  # create terminfo object
+  ti <- as.terminfo(term_iri)
+  # classification should not be filled in
+  testthat::expect_false("classification" %in% names(ti))
+
+  # turn on the option to default withClassification to TRUE
+  options(rphenoscape.fetch.classification = TRUE)
+  # create terminfo object
+  ti <- as.terminfo(term_iri)
+  # classification should be filled in
+  testthat::expect_true("classification" %in% names(ti))
+  testthat::expect_equal(length(ti$classification), 3)
+
+  # setting the option to FALSE should return to the default behavior
+  options(rphenoscape.fetch.classification = FALSE)
+  # create terminfo object
+  ti <- as.terminfo(term_iri)
+  # classification should not be filled in
+  testthat::expect_false("classification" %in% names(ti))
+})
+
+test_that("as.terminfo can add classification to terminfo objects", {
+  # find term iri
+  term_iri <- find_term("basihyal bone", limit = 1)
+  # create terminfo object
+  ti <- as.terminfo(term_iri)
+  # classification should not be filled in
+  testthat::expect_false("classification" %in% names(ti))
+  # run as.terminfo on a terminfo object requesting classification data
+  ti <- as.terminfo(ti, withClassification = TRUE)
+  # classification should be filled in
+  testthat::expect_true("classification" %in% names(ti))
+})

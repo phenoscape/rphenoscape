@@ -14,6 +14,8 @@
 #'   access regardless of request length. The default is FALSE, meaning queries
 #'   exceeding a certain size for transmission will automatically use HTTP POST
 #'   for accessing the KB API.
+#' @param cleanNames for `get_json_data`, logical, whether to clean names in the returned data 
+#'   replacing  "@id" with "id"
 #' @param ... for `get_csv_data`, additional parameters to be passed on to
 #'   [read.csv()][utils::read.csv()]
 #' @return
@@ -29,7 +31,8 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr GET content
 get_json_data <- function(url, query,
-                          verbose = FALSE, ensureNames = NULL, forceGET = FALSE) {
+                          verbose = FALSE, ensureNames = NULL, forceGET = FALSE,
+                          cleanNames = FALSE) {
   if (forceGET || nchar(jsonlite::toJSON(query)) < 3072)
     res <- httr::GET(url, httr::accept_json(), httr::user_agent(ua()),
                      query = query)
@@ -78,7 +81,11 @@ get_json_data <- function(url, query,
         res$results <- resFixed
     }
   }
-  res
+  if (cleanNames) {
+    rclean_jsonld_names(res)
+  } else {
+    res
+  }
 }
 
 
@@ -107,7 +114,8 @@ rclean_jsonld_names.list <- function(x) {
 rclean_jsonld_names.data.frame <- function(x) clean_jsonld_names(x)
 
 clean_jsonld_names <- function(x) {
-  names(x) <- sub("^@id$", "id", names(x))
+  # replace "@id" at the end of names with "id"
+  names(x) <- sub("@id$", "id", names(x))
   x
 }
 

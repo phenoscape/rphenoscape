@@ -13,7 +13,8 @@ get_json_data(
   query,
   verbose = FALSE,
   ensureNames = NULL,
-  forceGET = FALSE
+  forceGET = FALSE,
+  cleanNames = FALSE
 )
 
 get_csv_data(url, query, ..., verbose = FALSE, forceGET = FALSE)
@@ -35,6 +36,9 @@ not include them, they will be added, with NA values.}
 access regardless of request length. The default is FALSE, meaning queries
 exceeding a certain size for transmission will automatically use HTTP POST
 for accessing the KB API.}
+
+\item{cleanNames}{for \code{get_json_data}, logical, whether to clean names in the returned data
+replacing  "@id" with "id"}
 
 \item{...}{for \code{get_csv_data}, additional parameters to be passed on to
 \link[utils:read.table]{read.csv()}}
