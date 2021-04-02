@@ -107,7 +107,8 @@ rclean_jsonld_names.list <- function(x) {
 rclean_jsonld_names.data.frame <- function(x) clean_jsonld_names(x)
 
 clean_jsonld_names <- function(x) {
-  names(x) <- sub("^@id$", "id", names(x))
+  # replace "@id" at the end of names with "id"
+  names(x) <- sub("@id$", "id", names(x))
   x
 }
 

@@ -170,3 +170,103 @@ get_term_label <- function(term_iris, preserveOrder = FALSE, verbose = FALSE) {
 
   res
 }
+
+### terminfo class funcs
+
+#' @export
+as.terminfo <- function(x, withClassification = FALSE, ...) {
+  UseMethod("as.terminfo", x)
+}
+
+#' @export
+as.terminfo.default <- function(x, ...) {
+  res <- lapply(x, function(elem) {
+    if (is.terminfo(elem))
+      elem
+    else {
+      terminfo(elem, ...)
+    }
+  })
+  if (length(res) == 1)
+    res[[1]]
+  else
+    res
+}
+
+#' @export
+as.terminfo.data.frame <- function(x, ...) {
+  if (is.null(x$id)) stop("data frame must have 'id' column containing IRI", call. = FALSE)
+  as.terminfo(x$id, ...)
+}
+
+#' @export
+is.terminfo <- function(x) {
+  inherits(x, "terminfo")
+}
+
+#' @export
+terminfo <- function(iri, withClassification = FALSE) {
+  stopifnot(is.character(iri))
+  res <- get_json_data(pkb_api("/term"),
+                       query = list(iri = iri),
+                       forceGET = TRUE)
+  if (is.null(res$label)) {
+    labelres <- get_json_data(pkb_api("/term/label"),
+                         query = list(iri = iri),
+                         forceGET = TRUE)
+    res$label <- labelres$label
+  }
+  if (withClassification) {
+    res$classification <- get_json_data(pkb_api("/term/classification"),
+                                        query = list(iri = iri),
+                                        forceGET = TRUE)
+  }
+  res <- rclean_jsonld_names(res)
+  structure(res, class = c("terminfo", class(res)))
+}
+
+#' @export
+print.terminfo <- function(x, ...) {
+  cat("terminfo '", if (is.null(x$label)) x$id else x$label, "'\n", sep = "")
+  if (x$definition != "") {
+    cat("Definition: ", x$definition, "\n", sep = "")
+  }
+  if (length(x$synonyms) > 0) {
+    cat("Synonyms:\n    ",
+        paste(x$synonyms$value, collapse = "\n    ", sep = ""), 
+        "\n",
+        sep = ""
+    )
+  }
+  if (length(x$relationships) > 0) {
+    cat("Relationships:\n    ",
+        paste(x$relationships$property.label, " ", x$relationships$value.label, collapse = "\n    ", sep = ""),
+        "\n",
+        sep = ""
+    )
+  }
+  if (length(x$classification) > 0) {
+    if (length(x$classification$subClassOf) > 0) {
+      cat("Subclass of:\n    ",
+          paste(x$classification$subClassOf$label, collapse = "\n    ", sep = ""),
+          "\n",
+          sep = ""
+      )
+    }
+    if (length(x$classification$superClassOf) > 0) {
+      cat("Superclass of:\n    ",
+          paste(x$classification$superClassOf$label, collapse = "\n    ", sep = ""),
+          "\n",
+          sep = ""
+      )
+    }
+    if (length(x$classification$equivalentTo) > 0) {
+      cat("Equivalent to:\n    ",
+          paste("  ", x$classification$equivalentTo$label, collapse = "\n    ", sep = ""),
+          "\n",
+          sep = ""
+      )
+    }
+  }
+  invisible(x)
+}
