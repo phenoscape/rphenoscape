@@ -4,7 +4,12 @@
 \alias{get_term_label}
 \title{Obtains the labels for a list of terms}
 \usage{
-get_term_label(term_iris, preserveOrder = FALSE, verbose = FALSE)
+get_term_label(
+  term_iris,
+  preserveOrder = FALSE,
+  verbose = FALSE,
+  .tryClassification = TRUE
+)
 }
 \arguments{
 \item{term_iris}{character, a list of term IRIs}
@@ -15,6 +20,9 @@ order.}
 
 \item{verbose}{logical, whether to print information about possibly
 time-consuming operations.}
+
+\item{.tryClassification}{logical, whether to try checking term classification when finding a label.
+If TRUE (the default), terms for which the default API endpoint does not yield a label will incur a second API call.}
 }
 \value{
 A data.frame with columns "id" and "label". The "id" column contains
