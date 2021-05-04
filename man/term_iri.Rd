@@ -3,12 +3,15 @@
 \name{partOf_iri}
 \alias{partOf_iri}
 \alias{hasPart_iri}
+\alias{developsFrom_iri}
 \alias{term_iri}
 \title{Obtain IRI(s) for canonical terms and properties}
 \usage{
 partOf_iri()
 
 hasPart_iri()
+
+developsFrom_iri()
 
 term_iri(label, type = "owl:Class", preferOntologies = NULL, firstOnly = TRUE)
 }
@@ -38,6 +41,9 @@ Character, the IRI(s) for the requested term or property.
 database.
 
 \code{hasPart_iri} returns the IRI ofthe canonical "has_part" relationship in the
+database.
+
+\code{developsFrom_iri} returns the IRI of the canonical "develops from" relationship in the
 database.
 
 Provides cached access to IRIs of terms and properties that are frequently used.

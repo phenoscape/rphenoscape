@@ -154,6 +154,14 @@ get_nexml_data <- function(url, query, verbose = FALSE, forceGET = FALSE) {
   RNeXML::nexml_read(out)
 }
 
+#' @rdname get_data
+#' @importFrom httr GET content
+get_plain_text <- function(url, query, verbose = FALSE) {
+  res <- httr::GET(url, httr::accept("text/plain"), query=query)
+  stop_for_pk_status(res)
+  httr::content(res, as = "text")
+}
+
 pkb_api <- function(...) {
   path <- paste(..., sep = "/")
   if (! startsWith(path, "/")) path <- paste0("/", path)

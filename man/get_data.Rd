@@ -6,6 +6,7 @@
 \alias{pk_GET}
 \alias{get_csv_data}
 \alias{get_nexml_data}
+\alias{get_plain_text}
 \title{Get data from an API endpoint}
 \usage{
 get_json_data(
@@ -20,6 +21,8 @@ get_json_data(
 get_csv_data(url, query, ..., verbose = FALSE, forceGET = FALSE)
 
 get_nexml_data(url, query, verbose = FALSE, forceGET = FALSE)
+
+get_plain_text(url, query, verbose = FALSE)
 }
 \arguments{
 \item{url}{character, the URL of the API endpoint to query}

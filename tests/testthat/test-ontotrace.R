@@ -72,3 +72,31 @@ test_that("Deprecated ontotrace function", {
   testthat::expect_s4_class(single_nex, 'nexml')
   testthat::expect_s4_class(multi_nex, 'nexml')
 })
+
+test_that("Ontotrace with OWL expressions", {
+  skip_on_cran()
+
+  # using label resolve
+  taxon <- as.owl("Ictalurus", usesLabels = TRUE)
+  entity <- as.owl("'paired fin bud' or ('develops from' some 'paired fin bud')", usesLabels = TRUE)
+  nex1 <- get_ontotrace_data(taxon, entity)
+  testthat::expect_gte(length(nex1@otus[[1]]@otu), 9)
+
+  # using hard coded owl expresssions
+  taxon <- as.owl("<http://purl.obolibrary.org/obo/VTO_0036217>")
+  entity <- as.owl("<http://purl.obolibrary.org/obo/UBERON_0002531> 
+                   or (<http://purl.obolibrary.org/obo/RO_0002202> some <http://purl.obolibrary.org/obo/UBERON_0002531>)")
+  nex1 <- get_ontotrace_data(taxon, entity)
+  testthat::expect_gte(length(nex1@otus[[1]]@otu), 9)
+})
+
+test_that("Ontotrace without subsumption", {
+  skip_on_cran()
+  nex1 <- get_ontotrace_data(
+    taxon = c("http://purl.obolibrary.org/obo/VTO_0061495", # Ictalurus australis
+              "http://purl.obolibrary.org/obo/VTO_0036223"), # Ictalurus furcatus
+    entity = c("http://purl.obolibrary.org/obo/UBERON_2002001"), # anterior dentation of pectoral fin spine
+    subsume = FALSE)
+  testthat::expect_lte(length(nex1@otus[[1]]@otu), 2)
+  testthat::expect_lte(length(nex1@characters[[1]]@format@char), 1)
+})
