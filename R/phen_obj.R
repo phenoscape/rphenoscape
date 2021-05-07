@@ -16,7 +16,7 @@
 #' @param ... additional parameters where applicable; ignored for printing
 #'
 #' @return
-#' `as.phenotype` returns and object of type "phenotype", or a list of such objects
+#' `as.phenotype` returns an object of type "phenotype", or a list of such objects
 #'    if the object to be coerced had multiple elements (if a vector) or rows (if a
 #'    data.frame). A phenotype object has properties "id" (ID, i.e., IRI of the
 #'    phenotype), "label" (label of the phenotype if one exists), "states" (a
