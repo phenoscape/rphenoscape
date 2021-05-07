@@ -30,7 +30,7 @@ library(rphenoscape)
 ```
 
 ## Character Matrix via OntoTrace
-Use OntoTrace to obtain a character matrix for a taxonomic clade and anatomical region of interest. 
+Use OntoTrace to obtain a character matrix of inferred presence/absence associations for a taxonomic clade and anatomical region of interest. 
 
 The [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/#/OntoTrace/get_ontotrace) returns the evolutionary character matrix in NeXML format. The first step is to get the NeXML object using ```pk_get_ontotrace_xml``` method. 
 ```{r}
