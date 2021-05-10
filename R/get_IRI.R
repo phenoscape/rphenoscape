@@ -267,7 +267,7 @@ anatomical_id <- function() ontology_iri('UBERON')
 phenotype_id <- function() ontology_iri('PATO')
 
 #' @description
-#' `partOf_iri` returns the IRI ofthe canonical "part_of" relationship in the
+#' `partOf_iri` returns the IRI of the canonical "part_of" relationship in the
 #'     database.
 #' @rdname term_iri
 #' @export
@@ -277,7 +277,7 @@ partOf_iri <- function() {
 }
 
 #' @description
-#' `hasPart_iri` returns the IRI ofthe canonical "has_part" relationship in the
+#' `hasPart_iri` returns the IRI of the canonical "has_part" relationship in the
 #'     database.
 #' @rdname term_iri
 #' @export
