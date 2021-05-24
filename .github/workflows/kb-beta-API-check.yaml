@@ -1,16 +1,13 @@
 # For help debugging build failures open an issue on the RStudio community with the 'github-actions' tag.
 # https://community.rstudio.com/new-topic?category=Package%20development&tags=github-actions
 on:
-  push:
-    branches:
-      - main
-      - master
-  pull_request:
+  schedule:
+    - cron:  '0 23 * * THU'
 
-name: R-CMD-check
+name: kb-beta-API-check
 
 jobs:
-  R-CMD-check:
+  kb-beta-API-check:
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
@@ -65,9 +62,10 @@ jobs:
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
-      - name: Check
+      - name: Check tests against kb.phenoscape API v2-beta server
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false
+          PHENOSCAPE_API: https://dev.phenoscape.org/api/v2-beta
         run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "error", check_dir = "check")
         shell: Rscript {0}
 
