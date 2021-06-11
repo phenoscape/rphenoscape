@@ -71,9 +71,12 @@ pk_get_ontotrace_meta <- function(nex) {
 #' this. By default, only characters that are variable across the resulting taxa
 #' are included; use `variable_only` to change this.
 #'
-#' @param taxon character, required. A vector of taxon names.
-#' @param entity character, required.
-#'   A single character string or a vector of anatomical class expressions.
+#' @param taxon character or object of type "owlmn", required. A vector of taxon names
+#'   or a single OWL Manchester expression object. [as.owl()] can be used to create a
+#'   OWL Manchester expression object.
+#' @param entity character or object of type "owlmn", required. A vector of entity names
+#'   or a single OWL Manchester expression object. [as.owl()] can be used to create a
+#'   OWL Manchester expression object.
 #' @param relation character string, optional.
 #'   The relationship to the entities to be included in the result. Must be
 #'   either "part of" or "develops from", or set to NA to disable.
@@ -87,6 +90,9 @@ pk_get_ontotrace_meta <- function(nex) {
 #'   If FALSE, query execution will continue with the taxon and entity terms
 #'   that did resolve to IRI. Default is TRUE, meaning any resolution failure will
 #'   result in an error.
+#' @param subsume logical, optional. If TRUE (the default), taxon and entity parameters include their logical descendants.
+#'   Ignored if entity or taxon is a OWL Manchester expression object (which always include logical descendants).
+#'   If set to FALSE, _only_ data for the given taxa and entities will be returned.
 #' @return [RNeXML::nexml] object
 #' @examples
 #' \dontrun{
@@ -108,6 +114,24 @@ pk_get_ontotrace_meta <- function(nex) {
 #' nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"),
 #'                           entity = c("pectoral fin", "pelvic fin"))
 #'
+#' # query disabling subsumption with multiple taxa, and/or multiple entities
+#' get_ontotrace_data(
+#'     taxon = c("Ictalurus australis", "Ictalurus balsanus"),
+#'     entity = c("anterior dentation of pectoral fin spine", "pelvic splint"),
+#'     subsume = FALSE)
+#'
+#' # query using taxon and/or entity owl expressions
+#' taxon_owl <- as.owl("<http://purl.obolibrary.org/obo/VTO_0036217>")
+#' entity_owl <- as.owl("<http://purl.obolibrary.org/obo/UBERON_0008897> or
+#'    (<http://purl.obolibrary.org/obo/BFO_0000050> some
+#'     <http://purl.obolibrary.org/obo/UBERON_0008897>)")
+#' nex <- get_ontotrace_data(taxon = taxon_owl, entity = entity_owl)
+#'
+#' # query using taxon and/or entity owl expressions resolved from label expressions
+#' taxon_owl <- as.owl("Ictalurus", usesLabels = TRUE)
+#' entity_owl <- as.owl("'fin' or ('part of' some 'fin')", usesLabels = TRUE)
+#' nex <- get_ontotrace_data(taxon = taxon_owl, entity = entity_owl)
+#'
 #' # Use the RNeXML API to obtain the character matrix etc:
 #' m <- RNeXML::get_characters(nex)
 #' dim(m)      # number of taxa and characters
@@ -120,61 +144,71 @@ pk_get_ontotrace_meta <- function(nex) {
 get_ontotrace_data <- function(taxon, entity,
                                relation = 'part of',
                                variable_only = TRUE,
-                               strict = TRUE) {
-
-  relation_iri <- NA
-  if (! is.na(relation)) {
-    tryCatch(
-      relation_type <- match.arg(tolower(relation), c("part of", "develops from")),
-      error = function(e) {
-        stop(conditionMessage(e), call. = FALSE)
-      })
-    relation_iri <- switch(relation_type,
-                          "part of" = partOf_iri(),
-                          "develops from" = term_iri("develops from",
-                                                     type = "owl:ObjectProperty",
-                                                     preferOntologies = c("BFO", "RO")))
+                               strict = TRUE,
+                               subsume = TRUE) {
+  queryseq = list(variable_only = variable_only)
+  if (is.owl(taxon)) {
+    queryseq$taxon <- taxon
+  } else {
+    taxon_iris <- apply_term_iris(taxon, as="taxon", term_type="taxon", exactOnly = TRUE, strict = strict)
+    if (subsume) {
+      # create an OWL expression for the taxon parameter as the logical union of the taxa (and their descendants)
+      taxon_iris <- lapply(taxon_iris, FUN = function(x) paste0("<", x, ">"))
+      queryseq$taxon <- paste(taxon_iris, collapse = " or ") 
+    } else {
+      # convert IRI list to JSON array for taxon_list parameter (that does not subsume the IRIs)
+      queryseq$taxon_list <- as.character(jsonlite::toJSON(unlist(taxon_iris)))
+    }
   }
-
-  taxon_iris <- lapply(taxon,
-                       FUN = get_term_iri, as = "taxon", exactOnly = TRUE)
-  entity_iris <- lapply(entity, FUN = get_term_iri, as = "anatomy")
-
-  # check for successful resolution of all search terms
-  kinds <- c()
-  if (any(is.na(taxon_iris))) {
-    kinds <- c("taxon")
-    taxon_iris <- taxon_iris[! is.na(taxon_iris)]
+  if (is.owl(entity)) {
+    if (!missing(relation)) stop("Relation cannot be applied when passing an OWL expression.", call. = FALSE)
+    queryseq$entity <- entity
+  } else {
+    entity_iris <- apply_term_iris(entity, as="anatomy", term_type="entity", strict = strict)
+    if (subsume) {
+      # create an owl expression for the entity parameter (that subsumes the expression)
+      relation_iri <- NA
+      if (! is.na(relation)) {
+        tryCatch(
+          relation_type <- match.arg(tolower(relation), c("part of", "develops from")),
+          error = function(e) {
+            stop(conditionMessage(e), call. = FALSE)
+          })
+        relation_iri <- switch(relation_type,
+                               "part of" = partOf_iri(),
+                               "develops from" = developsFrom_iri())
+      }
+      # insert necessary "<" and ">" before concatenating string
+      entity_iris <- lapply(entity_iris, FUN = function(x) paste0("<", x, ">"))
+      if (! is.na(relation_iri)) {
+        relation_id <- paste0("<", relation_iri, ">")
+        entity_iris <- lapply(entity_iris,
+                              FUN = function(x) sprintf("(%s or %s %s %s)",
+                                                        x,
+                                                        relation_id,
+                                                        quantifier,
+                                                        x))
+      }
+      queryseq$entity <- paste(entity_iris, collapse = " or ")
+    } else {
+      # convert IRI list to JSON array for taxon_list parameter (that does not subsume the IRIs)      
+      queryseq$entity_list <- as.character(jsonlite::toJSON(unlist(entity_iris)))
+    }
   }
-  if (any(is.na(entity_iris))) {
-    kinds <- c(kinds, "entity")
-    entity_iris <- entity_iris[! is.na(entity_iris)]
-  }
-  if (length(kinds) > 0 && strict)
-    stop("One or more ", paste(kinds, collapse = " and "),
-         " names failed to resolve to IRI, unable to continue", call. = FALSE)
-
-  # insert necessary "<" and ">" before concatenating string
-  taxon_iris <- lapply(taxon_iris, FUN = function(x) paste0("<", x, ">"))
-  entity_iris <- lapply(entity_iris, FUN = function(x) paste0("<", x, ">"))
-  if (! is.na(relation_iri)) {
-    relation_id <- paste0("<", relation_iri, ">")
-    entity_iris <- lapply(entity_iris,
-                          FUN = function(x) sprintf("(%s or %s %s %s)",
-                                                    x,
-                                                    relation_id,
-                                                    quantifier,
-                                                    x))
-  }
-
-  queryseq = list(taxon = paste(taxon_iris, collapse = " or "),
-                  entity = paste(entity_iris, collapse = " or "),
-                  variable_only = variable_only)
-
   nex <- get_nexml_data(pkb_api("/ontotrace"), queryseq)
   return(nex)
 }
 
+apply_term_iris <- function(names, as, term_type, exactOnly = FALSE, strict = FALSE) {
+  term_iris <- lapply(names, FUN = get_term_iri, as = as, exactOnly = exactOnly)
+  if (any(is.na(term_iris))) {
+    term_iris <- term_iris[! is.na(term_iris)]
+    if (strict) {
+      stop("One or more ", term_type, " names failed to resolve to IRI, unable to continue", call. = FALSE)  
+    }
+  }
+  term_iris
+}
 
 meta_attr_taxon <- "dwc:taxonID"
 meta_attr_entity <- "obo:IAO_0000219"

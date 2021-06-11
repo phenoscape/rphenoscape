@@ -9,14 +9,18 @@ get_ontotrace_data(
   entity,
   relation = "part of",
   variable_only = TRUE,
-  strict = TRUE
+  strict = TRUE,
+  subsume = TRUE
 )
 }
 \arguments{
-\item{taxon}{character, required. A vector of taxon names.}
+\item{taxon}{character or object of type "owlmn", required. A vector of taxon names
+or a single OWL Manchester expression object. \code{\link[=as.owl]{as.owl()}} can be used to create a
+OWL Manchester expression object.}
 
-\item{entity}{character, required.
-A single character string or a vector of anatomical class expressions.}
+\item{entity}{character or object of type "owlmn", required. A vector of entity names
+or a single OWL Manchester expression object. \code{\link[=as.owl]{as.owl()}} can be used to create a
+OWL Manchester expression object.}
 
 \item{relation}{character string, optional.
 The relationship to the entities to be included in the result. Must be
@@ -33,6 +37,10 @@ other inexact match results in a warning, but is not considered a failure.
 If FALSE, query execution will continue with the taxon and entity terms
 that did resolve to IRI. Default is TRUE, meaning any resolution failure will
 result in an error.}
+
+\item{subsume}{logical, optional. If TRUE (the default), taxon and entity parameters include their logical descendants.
+Ignored if entity or taxon is a OWL Manchester expression object (which always include logical descendants).
+If set to FALSE, \emph{only} data for the given taxa and entities will be returned.}
 }
 \value{
 \link[RNeXML:nexml-class]{RNeXML::nexml} object
@@ -68,6 +76,24 @@ nex <- get_ontotrace_data(taxon = "Ictalurus", entity = "paired fin bud",
 # query with multiple taxa, and/or multiple entities:
 nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"),
                           entity = c("pectoral fin", "pelvic fin"))
+
+# query disabling subsumption with multiple taxa, and/or multiple entities
+get_ontotrace_data(
+    taxon = c("Ictalurus australis", "Ictalurus balsanus"),
+    entity = c("anterior dentation of pectoral fin spine", "pelvic splint"),
+    subsume = FALSE)
+
+# query using taxon and/or entity owl expressions
+taxon_owl <- as.owl("<http://purl.obolibrary.org/obo/VTO_0036217>")
+entity_owl <- as.owl("<http://purl.obolibrary.org/obo/UBERON_0008897> or
+   (<http://purl.obolibrary.org/obo/BFO_0000050> some
+    <http://purl.obolibrary.org/obo/UBERON_0008897>)")
+nex <- get_ontotrace_data(taxon = taxon_owl, entity = entity_owl)
+
+# query using taxon and/or entity owl expressions resolved from label expressions
+taxon_owl <- as.owl("Ictalurus", usesLabels = TRUE)
+entity_owl <- as.owl("'fin' or ('part of' some 'fin')", usesLabels = TRUE)
+nex <- get_ontotrace_data(taxon = taxon_owl, entity = entity_owl)
 
 # Use the RNeXML API to obtain the character matrix etc:
 m <- RNeXML::get_characters(nex)

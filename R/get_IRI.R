@@ -285,6 +285,15 @@ hasPart_iri <- function() {
   term_iri("has_part", type = "owl:ObjectProperty", preferOntologies = c("BFO", "RO"))
 }
 
+#' @description
+#' `developsFrom_iri` returns the IRI of the canonical "develops from" relationship in the
+#'     database.
+#' @rdname term_iri
+#' @export
+developsFrom_iri <- function() {
+  term_iri("develops from", type = "owl:ObjectProperty", preferOntologies = c("BFO", "RO"))
+}
+
 #' Obtain IRI(s) for canonical terms and properties
 #'
 #' Provides cached access to IRIs of terms and properties that are frequently used.
