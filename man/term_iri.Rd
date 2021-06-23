@@ -37,10 +37,10 @@ multiple matches. The default is TRUE.}
 Character, the IRI(s) for the requested term or property.
 }
 \description{
-\code{partOf_iri} returns the IRI ofthe canonical "part_of" relationship in the
+\code{partOf_iri} returns the IRI of the canonical "part_of" relationship in the
 database.
 
-\code{hasPart_iri} returns the IRI ofthe canonical "has_part" relationship in the
+\code{hasPart_iri} returns the IRI of the canonical "has_part" relationship in the
 database.
 
 \code{developsFrom_iri} returns the IRI of the canonical "develops from" relationship in the
