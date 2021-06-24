@@ -83,7 +83,6 @@ their most informative common ancestor (MICA), which is the common subsumer
 with the greatest information content.
 }
 \examples{
-\dontrun{
 sm <- jaccard_similarity(terms = c("pelvic fin", "pectoral fin",
                                    "forelimb", "hindlimb",
                                    "dorsal fin", "caudal fin"),
@@ -92,7 +91,6 @@ sm
 
 # e.g., turn into distance matrix, cluster, and plot
 plot(hclust(as.dist(1-sm)))
-}
 \dontrun{
 phens <- get_phenotypes("basihyal bone", taxon = "Cyprinidae")
 sm.ic <- resnik_similarity(terms = phens$id,

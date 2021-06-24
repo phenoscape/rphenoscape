@@ -63,7 +63,6 @@ PATO, and taxonomy ontologies, respectively. Warnings will be issued if only
 a partial match can be found. The study must be given as IRI.
 }
 \examples{
-\dontrun{
 phens1 <- get_phenotypes(entity = "pelvic fin")
 head(phens1)
 
@@ -99,5 +98,4 @@ nrow(unique(phens2a[,c("id", "label")])) == nrow(phens2) # but same #phenotypes
 # can compute and visualize similarity
 sm <- jaccard_similarity(terms = phens2$id, .labels = phens2$label, .colnames = "label")
 plot(hclust(as.dist(1-sm)))
-}
 }

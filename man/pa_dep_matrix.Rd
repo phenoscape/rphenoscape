@@ -62,7 +62,6 @@ M[j,i] = 1 for \eqn{i\neq j}{i != j}. Terms \emph{i} and \emph{j} (\eqn{i\neq j}
 for which M[i,j] = M[j,i] = 1 are sometimes referred to as \emph{super-dependent}.
 }
 \examples{
-\dontrun{
 tl <- c("http://purl.obolibrary.org/obo/UBERON_0000981",
         "http://purl.obolibrary.org/obo/UBERON_0002103",
         "http://purl.obolibrary.org/obo/UBERON_0000976",
@@ -76,5 +75,4 @@ m <- pa_dep_matrix(tl, .names = "label")
 m # term labels as row and column names
 mat_terms <- attr(m, "term.iris")
 mat_terms # term IRIs in the same order as rows (and columns)
-}
 }

@@ -115,10 +115,8 @@ objs[[3]]
 charstates(obj)
 chars(obj)
 
-\dontrun{
 # IDs that don't resolve still yield an object, but is not valid
-obj <- as.phenotype("http://foo")
+suppressWarnings(obj <- as.phenotype("http://foo"))
 is.phenotype(obj)
 is_valid_phenotype(obj)
-}
 }

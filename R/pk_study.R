@@ -23,7 +23,6 @@
 #' and characters which have phenotype annotations subsumed by the given entity and quality
 #' terms.
 #' @examples
-#' \dontrun{
 #' # by default, parts are included
 #' slist <- get_studies(taxon = "Siluridae", entity = "fin")
 #' colnames(slist)
@@ -55,7 +54,6 @@
 #' # or apply no filter, obtaining all studies in the KB
 #' slist <- get_studies()
 #' nrow(slist)
-#' }
 #' @export
 get_studies <- function(taxon = NA, entity = NA, quality = NA,
                         phenotype = NA,

@@ -29,7 +29,6 @@
 #' @param verbose logical, whether to print messages informing about potentially
 #'   time-consuming operations. Default is FALSE.
 #' @examples
-#' \dontrun{
 #' phens1 <- get_phenotypes(entity = "pelvic fin")
 #' head(phens1)
 #'
@@ -65,7 +64,6 @@
 #' # can compute and visualize similarity
 #' sm <- jaccard_similarity(terms = phens2$id, .labels = phens2$label, .colnames = "label")
 #' plot(hclust(as.dist(1-sm)))
-#' }
 #' @return A data frame with columns "id" and "label".
 #'
 #'   If a character value for `taxon` was provided, and `.withTaxon` is TRUE’,

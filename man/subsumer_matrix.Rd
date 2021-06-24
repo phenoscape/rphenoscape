@@ -66,7 +66,6 @@ subsumer matrix is thus only useful for similarity metrics for which
 non-subsuming terms can be ignored.
 }
 \examples{
-\dontrun{
 tl <- c("http://purl.obolibrary.org/obo/UBERON_0000981",
         "http://purl.obolibrary.org/obo/UBERON_0002103",
         "http://purl.obolibrary.org/obo/UBERON_0000976",
@@ -80,5 +79,4 @@ m <- subsumer_matrix(tl, .colnames = "label")
 m # term labels as column names
 mat_terms <- attr(m, "term.iris")
 mat_terms # term IRIs in the same order as columns
-}
 }

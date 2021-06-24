@@ -19,7 +19,6 @@
 #' @return A logical vector indicating which candidate terms are ancestors and
 #'   descendants, respectively, of the query term.
 #' @examples
-#' \dontrun{
 #' # taxa:
 #' is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
 #' is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
@@ -36,7 +35,6 @@
 #' # phenotypic quality
 #' is_ancestor("triangular", c("shape", "color", "amount"))
 #' is_descendant("shape", c("T-shaped", "star shaped", "yellow"))
-#' }
 #' @export
 #' @rdname is_relation
 is_descendant <- function(term, candidates, includeRels = c("none", "part_of")) {

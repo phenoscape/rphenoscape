@@ -37,7 +37,6 @@ across ontologies, it is advisable to do the resolution before calling these
 functions, using \code{\link[=get_term_iri]{get_term_iri()}} with the appropriate ontology set.
 }
 \examples{
-\dontrun{
 # taxa:
 is_descendant("Halecostomi", c("Halecostomi", "Icteria", "Sciaenidae"))
 is_ancestor("Sciaenidae", c("Halecostomi", "Abeomelomys", "Sciaenidae"))
@@ -54,5 +53,4 @@ is_ancestor("pelvic fin ray", c("paired fin", "fin"), includeRels = "part_of")
 # phenotypic quality
 is_ancestor("triangular", c("shape", "color", "amount"))
 is_descendant("shape", c("T-shaped", "star shaped", "yellow"))
-}
 }
