@@ -320,6 +320,9 @@ test_that("creating terminfo objects and extracting properties", {
   testthat::expect_true(all(is_valid_terminfo(objs)))
   l <- sapply(objs, function(p) p$label)
   testthat::expect_true(all(l == terms$label))
+  # filter out ZP terms because they do not have synonyms
+  non_zp_terms <- terms[terms$isDefinedBy != ontology_iri("ZP"),]
+  objs <- as.terminfo(non_zp_terms$id)
   testthat::expect_true(all(sapply(objs, function(p) nrow(p$synonyms)) > 0))
 })
 
