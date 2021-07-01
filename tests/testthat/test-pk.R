@@ -22,7 +22,7 @@ test_that("Test term details", {
   expect_true(is.na(cc))
 
   expect_is(g, "data.frame")
-  expect_gt(length(unique(g$taxon.label)), 2)
+  expect_ge(length(unique(g$taxon.label)), 2)
   expect_setequal(unique(g$matchType), c("exact", "partial"))
   expect_is(gg, "data.frame")
   expect_length(unique(gg$taxon.label), 1)
