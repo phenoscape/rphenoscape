@@ -116,7 +116,8 @@ test_that("obtaining/calculating term frequencies", {
   testthat::expect_length(wt1, nrow(phens))
   testthat::expect_true(all(wt1 >= 0))
   testthat::expect_true(all(wt1 <= 1))
-  testthat::expect_true(all(wt < wt1))
+  # expect 80%+ of the taxa freqs to be > than the taxon annotations freqs
+  testthat::expect_gt(mean(wt < wt1), .8)
   # can use defaults
   wt1 <- term_freqs(phens$id[1:3])
   testthat::expect_identical(wt1, wt[1:3])
