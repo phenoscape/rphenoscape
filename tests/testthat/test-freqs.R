@@ -75,7 +75,7 @@ test_that("obtaining corpus size", {
 
   s <- corpus_size("genes")
   testthat::expect_gt(s, 100)
-  testthat::expect_lt(s, 50000)
+  testthat::expect_lt(s, 100000)
 
   s <- corpus_size("taxon_annotations")
   testthat::expect_gt(s, 10000)
