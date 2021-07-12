@@ -90,17 +90,13 @@ test_that("obtaining/calculating term frequencies", {
   tl <- c("pelvic fin", "pectoral fin", "forelimb", "hindlimb", "dorsal fin", "caudal fin")
   tt <- sapply(tl, get_term_iri, as = "anatomy", exactOnly = TRUE)
 
-  wt <- term_freqs(tt, corpus = "taxon_annotations")
+  wt <- term_freqs(tt, as = "entity", corpus = "taxon_annotations")
   testthat::expect_is(wt, "numeric")
   testthat::expect_length(wt, length(tt))
   testthat::expect_true(all(wt >= 0))
   testthat::expect_true(all(wt <= 1))
 
-  wt1 <- term_freqs(tt, as = "auto", corpus = "taxon_annotations")
-  testthat::expect_identical(wt1, wt)
-  wt1 <- term_freqs(tt, as = "entity", corpus = "taxon_annotations")
-  testthat::expect_identical(wt1, wt)
-  wt1 <- term_freqs(tt)
+  wt1 <- term_freqs(tt, as = "entity")
   testthat::expect_identical(wt1, wt)
   wt1 <- term_freqs(tt, as = c(rep("entity", times = 5), "quality"))
   testthat::expect_false(all(wt1 == wt))
@@ -118,9 +114,6 @@ test_that("obtaining/calculating term frequencies", {
   testthat::expect_true(all(wt1 <= 1))
   # expect 80%+ of the taxa freqs to be > than the taxon annotations freqs
   testthat::expect_gt(mean(wt < wt1), .8)
-  # can use defaults
-  wt1 <- term_freqs(phens$id[1:3])
-  testthat::expect_identical(wt1, wt[1:3])
 
   # checking of error conditions
   testthat::expect_error(term_freqs(phens$id, as = "foobar"))

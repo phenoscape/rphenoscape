@@ -55,14 +55,8 @@ term_category <- function(x) {
           subClasses <- term_classification(term, as = NA, verbose = FALSE)$superClassOf
           if (length(subClasses) > 0)
             term_category(subClasses[1,"id"])
-          else {
-            comps <- decode_entity_postcomp(term)[[1]]
-            if (length(comps$rels) > 0 &&
-                any(c(hasPart_iri(), partOf_iri()) %in% comps$rels))
-              term_category(comps$entities[1])
-            else
-              "phenotype"
-          }
+          else
+            NA
         }
       }
     })

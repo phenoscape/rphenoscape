@@ -6,9 +6,9 @@
 \usage{
 term_freqs(
   x,
-  as = c("auto", "entity", "quality", "phenotype"),
+  as = c("entity", "quality", "phenotype"),
   corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes"),
-  decodeIRI = TRUE,
+  decodeIRI = FALSE,
   ...
 )
 }
@@ -19,25 +19,19 @@ objects.}
 \item{as}{the category or categories of the input terms (see \code{\link[=term_category]{term_category()}}).
 Supported categories are "entity", "quality", and "phenotype". The value
 must either be a single category (applying to all terms), or a vector of
-categories (of same length as \code{x}). If provided as "auto" (or NULL), the
-category of each term is automatically determined. The default is "auto".}
+categories (of same length as \code{x}). The default is "entity".}
 
 \item{corpus}{the name of the corpus for which to determine frequencies.
 Supported values are "taxon_annotations", "taxa", "gene_annotations", and
 "genes". (At present, support for "gene_annotations" is pending support in
 the Phenoscape API.) The default is "taxon_annotations".}
 
-\item{decodeIRI}{boolean. If TRUE (the default), attempt to decode
-post-composed entity IRIs, and under certain circumstances rewrite the
-count query according to the results. At present, this is used only for
-entity IRIs detected as "part_of some X" post-compositions, and only for
-the "taxon_annotations" corpus. In those cases, the count query will be
-rewritten to first query for X, then for X including parts, and the resulting
-count is the result of the latter minus that of the former.
-
-The decoding algorithm may be imprecise, so one may want to turn this off,
-the result of which will usually be a frequency of zero for those IRIs, due
-to limitations in the Phenoscape KB API.}
+\item{decodeIRI}{boolean. This parameter is deprecated (as of v0.3.x) and must be set
+to FALSE (the default). If TRUE is passed an error will be raised. In v0.2.x
+when TRUE this parameter would attempt to decode post-composed entity IRIs.
+Due to changes in the IRI returned by the Phenoscape KB v2.x API decoding
+post-composed entity IRIs is no longer possible. Prior to v0.3.x, the default
+value for this parameter was TRUE.}
 
 \item{...}{additional query parameters to be passed to the function querying
 for counts, see \code{\link[=pkb_args_to_query]{pkb_args_to_query()}}. Currently this is only used for
@@ -62,28 +56,22 @@ the "taxon_annotations" corpus are most reliable for phenotype terms and their
 subsumers. For entity terms, subsumers can include many generated
 post-composed terms (such as "part_of some X", where X is, for example, an
 anatomy term), and at least currently these aren't handled correctly by the
-Phenoscape KB, resulting in counts of zero for such terms. For some of these
-the implementation here will try to rewrite the query (see parameter
-\code{decodeIRI}), but this only works to a limited extent.
+Phenoscape KB, resulting in counts of zero for such terms.
 }
 \note{
 Term categories being accurate is vital for obtaining correct counts and
-thus frequencies. Auto-determining term categories yields reasonably accurate
-results, but with caveats. One, it can be time-consuming, and two, especially
-for entity terms and their subsumers it is often not 100\% accurate. This
-function will try to correct for that by assuming that if not all terms
-are determined to be of the same category, but one category holds for more
-than 90\% of the terms, that it must be the correct category for all terms.
-If the list of terms is legitimately of different categories, it is best to
-determine (and possibly correct) categories beforehand, and then pass the
-result as \code{as}. If all terms are of the same category and the category is
-known beforehand, it saves time and prevents potential errors to supply this
-category using \code{as}.
+thus frequencies. In earlier (<=0.2.x) releases, auto-determining term
+category was an option, but this is no longer supported, in part because it
+was potentially time consuming and sometimes inaccurate, in particular for
+the many post-composed subsumer terms returned by \code{\link[=subsumer_matrix]{subsumer_matrix()}}. In the
+KB v2.0 API, auto-determining the category of a post-composed term is no
+longer supported. If the list of terms is legitimately of different categories,
+determine (and possibly correct) categories beforehand using \code{\link[=term_category]{term_category()}}.
 }
 \examples{
 terms <- c("pectoral fin", "pelvic fin", "dorsal fin", "paired fin")
 IRIs <- sapply(terms, get_term_iri, as = "anatomy")
-term_freqs(IRIs)
+term_freqs(IRIs, as = "entity")
 
 phens <- get_phenotypes(entity = "basihyal bone")
 term_freqs(phens$id, as = "phenotype", corpus = "taxon_annotations")
