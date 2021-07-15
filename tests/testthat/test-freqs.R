@@ -61,7 +61,11 @@ test_that("success rate for entity subsumer terms", {
   tt <- sapply(c("fin ray", "dorsal fin", "caudal fin"), get_term_iri, as = "anatomy")
   subs.mat <- subsumer_matrix(tt)
   tt.types <- term_category(rownames(subs.mat))
-  type.fracs <- table(tt.types)/nrow(subs.mat)
+  # less than 10% of the terms should be indeterminate
+  testthat::expect_lt(mean(is.na(tt.types)), .1)
+  # remove NA types
+  tt.types <- tt.types[!is.na(tt.types)]
+  type.fracs <- table(tt.types)/length(tt.types)
   testthat::expect_lte(length(names(type.fracs)), 3)
   testthat::expect_gt(max(type.fracs), 0.9)
   testthat::expect_equal(names(type.fracs)[type.fracs == max(type.fracs)], "entity")
