@@ -91,33 +91,16 @@ test_that("obtaining corpus size", {
 })
 
 test_that("obtaining/calculating term frequencies", {
-  tl <- c("pelvic fin", "pectoral fin", "forelimb", "hindlimb", "dorsal fin", "caudal fin")
-  tt <- sapply(tl, get_term_iri, as = "anatomy", exactOnly = TRUE)
-
-  wt <- term_freqs(tt, as = "entity", corpus = "taxon_annotations")
+  phens <- get_phenotypes(entity = "pectoral fin", quality = "present")
+  wt <- term_freqs(phens$id, as = "phenotype")
   testthat::expect_is(wt, "numeric")
-  testthat::expect_length(wt, length(tt))
+  testthat::expect_length(wt, length(phens$id))
   testthat::expect_true(all(wt >= 0))
   testthat::expect_true(all(wt <= 1))
 
-  wt1 <- term_freqs(tt, as = "entity")
-  testthat::expect_identical(wt1, wt)
-  wt1 <- term_freqs(tt, as = c(rep("entity", times = 5), "quality"))
-  testthat::expect_false(all(wt1 == wt))
-  testthat::expect_true(all(wt1[1:5] == wt[1:5]))
-  testthat::expect_equal(wt1[6], 0)
-
-  phens <- get_phenotypes(entity = "pelvic fin", quality = "shape")
-  wt <- term_freqs(phens$id, as = "phenotype", corpus = "taxon_annotations")
-  testthat::expect_length(wt, nrow(phens))
-  testthat::expect_true(all(wt >= 0))
-  testthat::expect_true(all(wt <= 1))
+  # check that the corpus defaults to "taxa"
   wt1 <- term_freqs(phens$id, as = "phenotype", corpus = "taxa")
-  testthat::expect_length(wt1, nrow(phens))
-  testthat::expect_true(all(wt1 >= 0))
-  testthat::expect_true(all(wt1 <= 1))
-  # expect 80%+ of the taxa freqs to be > than the taxon annotations freqs
-  testthat::expect_gt(mean(wt < wt1), .8)
+  testthat::expect_identical(wt1, wt)
 
   # checking of error conditions
   testthat::expect_error(term_freqs(phens$id, as = "foobar"))
@@ -127,6 +110,7 @@ test_that("obtaining/calculating term frequencies", {
                                                          times = nrow(phens)-1),
                                                      "auto")))
   testthat::expect_error(term_freqs(phens$id, as = "entity", corpus = "taxa"))
+  testthat::expect_error(term_freqs(phens$id, as = "quality", corpus = "taxa"))
 })
 
 test_that("term frequencies for post-comp subsumers of entities", {
@@ -135,8 +119,8 @@ test_that("term frequencies for post-comp subsumers of entities", {
   # reduce to post-comps and test a handful
   onts <- obo_prefix(subs)
   subs <- subs[is.na(onts)]
-  if (length(subs) > 5) subs <- subs[1:5]
-  freqs <- term_freqs(subs, as = "entity", corpus = "taxon_annotations")
-  testthat::expect_true(any(freqs > 0))
+  # Expect an error since the taxon_annotations corpus is no longer supported.
+  testthat::expect_error(term_freqs(subs, as = "entity", corpus = "taxon_annotations"), 
+                         "corpus 'taxon_annotations' is currently unsupported")
 })
 
