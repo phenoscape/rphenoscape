@@ -82,7 +82,7 @@ get_phenotypes <- function(entity = NA, quality = NA, taxon = NA, study = NA,
   # note that evaluation needs to be in this function's parent frame, or
   # otherwise using it in apply() and friends won't work
   queryseq <- do.call(pkb_args_to_query, argsInCall, envir = parent.frame())
-  queryseq <- c(queryseq, limit = "1000000")
+  queryseq <- c(queryseq, limit = "0")
 
   mssg(verbose, "Querying for phenotypes ...")
   if (is.na(taxon) || ! .withTaxon)

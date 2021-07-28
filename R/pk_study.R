@@ -71,7 +71,7 @@ get_studies <- function(taxon = NA, entity = NA, quality = NA,
   # note that evaluation needs to be in this function's parent frame, or
   # otherwise using it in apply() and friends won't work
   queryseq <- do.call(pkb_args_to_query, argsInCall, envir = parent.frame())
-  queryseq <- c(queryseq, limit = "1000000")
+  queryseq <- c(queryseq, limit = "0")
   if (! is.na(phenotype)) queryseq <- c(queryseq, phenotype = phenotype)
 
   out <- get_json_data(pkb_api("/study/query"), queryseq)

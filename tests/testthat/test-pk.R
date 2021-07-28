@@ -127,6 +127,11 @@ test_that("Test retrieving IRI", {
   expect_true(startsWith(tiri, "http://purl.obolibrary.org/obo/"))
 })
 
+test_that("Test finding terms without a limit", {
+  # Ensure that we receive more than the default KB API limit (100)
+  expect_gt(nrow(find_term("fin", limit=NA)), 100)
+})
+
 test_that("Deprecated function forr retrieving IRI", {
   skip_on_cran()
 

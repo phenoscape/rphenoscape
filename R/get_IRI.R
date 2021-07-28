@@ -67,7 +67,7 @@ find_term <- function(query,
   }
   
   # apply limit to result
-  if (is.na(limit)) limit <- "1000000"
+  if (is.na(limit)) limit <- "0"
   queryseq <- c(queryseq, limit = limit)
 
   res <- get_json_data(pkb_api("/term/search"), query = queryseq)

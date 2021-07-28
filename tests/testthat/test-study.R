@@ -94,6 +94,11 @@ test_that("Test getting study information", {
   
 })
 
+test_that("Test finding studies fetches more than the default KB limit", {
+  # Ensure that we receive more than the default KB API limit (20)
+  expect_gt(nrow(get_studies(entity = "pelvic fin")), 20)
+})
+
 test_that("Test deprecated get study data", {
   skip_on_cran()
   # backwards compatible mode, defaults to including part_of
