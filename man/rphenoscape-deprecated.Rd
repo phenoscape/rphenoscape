@@ -16,6 +16,10 @@
 \alias{pk_phenotype_detail}
 \alias{pk_gene_detail}
 \alias{pk_is_extinct}
+\alias{pk_get_ontotrace}
+\alias{pk_get_ontotrace_meta}
+\alias{pk_get_study}
+\alias{pk_get_study_meta}
 \title{Deprecated functions in \pkg{rphenoscape}.}
 \usage{
 pk_get_iri(...)
@@ -51,6 +55,14 @@ pk_phenotype_detail(term, verbose = FALSE)
 pk_gene_detail(term, taxon = NA, verbose = FALSE)
 
 pk_is_extinct(taxon, verbose = FALSE)
+
+pk_get_ontotrace(nex)
+
+pk_get_ontotrace_meta(nex)
+
+pk_get_study(nexmls)
+
+pk_get_study_meta(nexmls)
 }
 \description{
 The functions listed below are deprecated and will become defunct in
@@ -137,6 +149,28 @@ For \code{pk_gene_detail()} use \code{\link[=gene_info]{gene_info()}} instead.
 \section{\code{pk_is_extinct}}{
 
 For \code{pk_is_extinct()} use \code{\link[=is_extinct]{is_extinct()}} instead.
+}
+
+\section{\code{pk_get_ontotrace}}{
+
+For \code{pk_get_ontotrace()} use \code{\link[=get_char_matrix]{get_char_matrix()}} instead.
+}
+
+\section{\code{pk_get_ontotrace_meta}}{
+
+For \code{pk_get_ontotrace_meta()} use \code{\link[=get_char_matrix_meta]{get_char_matrix_meta()}} instead.
+}
+
+\section{\code{pk_get_study}}{
+
+For \code{pk_get_study()} use \code{\link[=get_char_matrix]{get_char_matrix()}} with lapply instead.
+Note that \code{pk_get_study()} always displays messages instead of using the
+verbose parameter as \code{get_char_matrix()} does.
+}
+
+\section{\code{pk_get_study_meta}}{
+
+For \code{pk_get_study_meta()} use \code{\link[=get_char_matrix_meta]{get_char_matrix_meta()}} with lapply instead.
 }
 
 \keyword{internal}

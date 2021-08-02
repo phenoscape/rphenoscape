@@ -426,3 +426,115 @@ add_provenance_record <- function(nexml, cmd = NA, creator = Sys.getenv("USER"))
                                    rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
   nexml
 }
+
+
+#' Obtains a character-state matrix from a nexml object
+#'
+#' @param nex, a [nexml][[RNeXML::nexml-class] object
+#' @param otus_id, logical, default TRUE, return a column with the otus block id.
+#' @param states_as_labels, logical, default FALSE, when TRUE returns states as labels instead of symbols.
+#' @param verbose, logical, default FALSE, If TRUE, informative messages printed.
+#'
+#' @return data.frame: The character-state matrix. The first column (taxa) contains taxon ids.
+#' The second column (otu) contains otu ids. When the otus_id parameter is TRUE the third column (otus) will
+#' contain otu block ids. The remaining columns are named for each anatomical label in the dataset and 
+#' contain the associated state values.
+#'
+#' @seealso [get_char_matrix_meta()] to retrieve metadata for a nexml object.
+#' @examples
+#' \dontrun{
+#' nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
+#' get_char_matrix(nex)
+#' 
+#' slist <- get_studies(taxon = "Ictalurus australis", entity = "fin spine")
+#' nex_list <- get_study_data(slist$id)
+#' nex <- nex_list[[1]]
+#' get_char_matrix(nex)
+#' }
+#' @importFrom RNeXML get_characters
+#' @export
+get_char_matrix <- function(nex, otus_id = TRUE, states_as_labels = FALSE, verbose = FALSE) {
+  
+  m <- get_characters(nex, rownames_as_col = TRUE,
+                      otu_id = TRUE, otus_id = otus_id)
+  if (states_as_labels) {
+    mat <- rbind(colnames(m)[-c(1,2)], m[, -c(1,2)])
+    #
+    states <- get_level(nex, "characters/format/states/state")[, c("symbol", "label", "states")]
+    chars <- get_level(nex, "characters/format/char")[, c("states", "char", "label")]
+    
+    # util function
+    translate_symbol <- function(col) {
+      lab <- col[1]
+      rest <- col[-1]
+      # get the states id corresponds to current column
+      if (unique_label(mat)) {
+        st <- chars$states[chars$label == lab]
+      } else {
+        st <- chars$states[chars$char == lab]
+      }
+      # find matching rows in states data frame for current column
+      states_match <- states[states$states == st, ]
+      #
+      sapply(rest, function(x) {
+        if(!is.na(x)) states_match$label[states_match$symbol == x]
+        else NA
+      })
+    }
+    lst <- apply(mat, 2, translate_symbol)
+    ret <- as.data.frame(lst, stringsAsFactors = FALSE)
+    return(cbind(m[, c(1,2)], ret))
+  } else {
+    return(m)  
+  }
+}
+
+
+#' Obtains taxa and entity metadata from a nexml object
+#'
+#' @param nex, a [nexml][[RNeXML::nexml-class] object
+#'
+#' @return list: A list containing two data frames. The first list item (id_taxa) contains
+#' a data frame with columns label, href, out and otus columns. The second list item
+#' (id_entities) contains a data frame with columns label, href, and char.
+#'
+#' @examples
+#' \dontrun{
+#' nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
+#' get_char_matrix_meta(nex)
+#'
+#' slist <- get_studies(taxon = "Ictalurus australis", entity = "fin spine")
+#' nex_list <- get_study_data(slist$id)
+#' nex <- nex_list[[1]]
+#' get_char_matrix_meta(nex)
+#' }
+#' @importFrom RNeXML get_taxa get_metadata get_level
+#' @importFrom dplyr filter inner_join select rename "%>%"
+#' @export
+get_char_matrix_meta <- function(nex) {
+  
+  # NULLing out : for the R CMD CHECK
+  property <- label <- href <- otu <- otus.x <- char <- NULL
+  
+  id_taxa <- get_taxa(nex)
+  id_taxa_meta <- get_metadata(nex, "otu")
+  
+  id_taxa <- (id_taxa_meta
+              %>% filter(property == meta_attr_taxon)
+              %>% inner_join(id_taxa, by = c("otu" = "otu"))
+              %>% select(label, href, otu, otus.x)
+              %>% rename(otus = otus.x))
+  
+  id_entities <- get_level(nex, "characters/format/char")
+  id_entities_meta <- get_metadata(nex, level="characters/format/char")
+  
+  id_entities <- (id_entities_meta
+                  %>% filter(property == meta_attr_entity)
+                  %>% inner_join(id_entities, by = c("char" = "char"))
+                  %>% select(label, href, char))
+  
+  m_re <- list(id_taxa = id_taxa,
+               id_entities = id_entities)
+  
+  return(m_re)
+}

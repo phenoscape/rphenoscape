@@ -265,10 +265,10 @@ test_that("Test getting study information", {
     s1 <- get_study_data(slist1[1,"id"])
     expect_is(s1[[1]], 'nexml')
 
-    ss1 <- pk_get_study(s1)
+    ss1 <- lapply(s1, function(nex) get_char_matrix(nex, otus_id = FALSE, states_as_labels = TRUE))
     expect_is(ss1[[1]], 'data.frame')
 
-    sss1 <- pk_get_study_meta(s1)
+    sss1 <- lapply(s1, function(nex) get_char_matrix_meta(nex))
     expect_is(sss1[[1]], 'list')
     expect_is(sss1[[1]]$id_taxa, 'data.frame')
 

@@ -20,13 +20,13 @@ test_that("Ontotrace basics", {
   testthat::expect_gt(sumnx$notus, 1)
   testthat::expect_gt(sumnx$ncharacters, 1)
   
-  single_mat <- pk_get_ontotrace(single_nex)
-  multi_mat <- pk_get_ontotrace(multi_nex)
+  single_mat <- get_char_matrix(single_nex)
+  multi_mat <- get_char_matrix(multi_nex)
   
   testthat::expect_is(single_mat, 'data.frame')
   testthat::expect_is(multi_mat, 'data.frame')
   
-  single_met <- pk_get_ontotrace_meta(single_nex)
+  single_met <- get_char_matrix_meta(single_nex)
   
   testthat::expect_is(single_met, 'list')
   
@@ -99,4 +99,17 @@ test_that("Ontotrace without subsumption", {
     subsume = FALSE)
   testthat::expect_lte(length(nex1@otus[[1]]@otu), 2)
   testthat::expect_lte(length(nex1@characters[[1]]@format@char), 1)
+})
+
+test_that("Deprecated ontotrace matrix functions", {
+  skip_on_cran()
+  single_nex <- get_ontotrace_data(taxon = "Ictalurus", entity = "fin")
+
+  char_mat <- get_char_matrix(single_nex)
+  expect_warning(dep_char_mat <- pk_get_ontotrace(single_nex))
+  testthat::expect_equal(char_mat, dep_char_mat)
+
+  char_mat_meta <- get_char_matrix_meta(single_nex)
+  expect_warning(dep_char_mat_meta <- pk_get_ontotrace_meta(single_nex))
+  testthat::expect_equal(char_mat_meta, dep_char_mat_meta)
 })

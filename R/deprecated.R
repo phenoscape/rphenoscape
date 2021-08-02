@@ -165,3 +165,45 @@ pk_is_extinct <- function(taxon, verbose = FALSE) {
   .Deprecated("is_extinct")
   is_extinct(taxon, verbose)
 }
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_get_ontotrace}:
+#' For `pk_get_ontotrace()` use [get_char_matrix()] instead.
+#' @keywords internal
+#' @export
+pk_get_ontotrace <- function(nex) {
+  .Deprecated("get_char_matrix")
+  get_char_matrix(nex)
+}
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_get_ontotrace_meta}:
+#' For `pk_get_ontotrace_meta()` use [get_char_matrix_meta()] instead.
+#' @keywords internal
+#' @export
+pk_get_ontotrace_meta <- function(nex) {
+  .Deprecated("get_char_matrix_meta")
+  get_char_matrix_meta(nex)
+}
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_get_study}:
+#' For `pk_get_study()` use [get_char_matrix()] with lapply instead.
+#' Note that `pk_get_study()` always displays messages instead of using the
+#'  verbose parameter as `get_char_matrix()` does.
+#' @keywords internal
+#' @export
+pk_get_study <- function(nexmls) {
+  .Deprecated("get_char_matrix")
+  lapply(nexmls, function(nex) get_char_matrix(nex, otus_id = FALSE, states_as_labels = TRUE, verbose = TRUE))
+}
+
+#' @rdname rphenoscape-deprecated
+#' @section \code{pk_get_study_meta}:
+#' For `pk_get_study_meta()` use [get_char_matrix_meta()] with lapply instead.
+#' @keywords internal
+#' @export
+pk_get_study_meta <- function(nexmls) {
+  .Deprecated("get_char_matrix_meta")
+  lapply(nexmls, function(nex) get_char_matrix_meta(nex))
+}

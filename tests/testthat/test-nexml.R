@@ -23,8 +23,8 @@ test_that("dropping OTUs works", {
                           length(nex@characters[[1]]@matrix@row) - nmatch)
   mat_sub <- get_characters(nex_sub)
   testthat::expect_equal(dim(mat_sub), dim(get_characters(nex)) - c(1, 0))
-  meta_sub <- pk_get_ontotrace_meta(nex_sub)
-  meta_nex <- pk_get_ontotrace_meta(nex)
+  meta_sub <- get_char_matrix_meta(nex_sub)
+  meta_nex <- get_char_matrix_meta(nex)
   testthat::expect_equal(dim(meta_sub$id_taxa), dim(meta_nex$id_taxa) - c(1, 0))
   testthat::expect_equal(dim(meta_sub$id_entities), dim(meta_nex$id_entities))
 
@@ -34,7 +34,7 @@ test_that("dropping OTUs works", {
   testthat::expect_equal(sapply(nex_sub2@otus[[1]]@otu, slot, name = "id"),
                          sapply(nex_sub@otus[[1]]@otu, slot, name = "id"))
   testthat::expect_equal(get_characters(nex_sub2), mat_sub)
-  testthat::expect_equal(pk_get_ontotrace_meta(nex_sub2), meta_sub)
+  testthat::expect_equal(get_char_matrix_meta(nex_sub2), meta_sub)
 })
 
 test_that("dropping characters works", {
@@ -67,8 +67,8 @@ test_that("dropping characters works", {
   testthat::expect_equal(dim(mat_sub), dim(get_characters(nex)) - c(1, 1))
   # states still match, and thus symbols aren't all NA
   testthat::expect_false(any(apply(mat_sub, 2, function(x) all(is.na(x)))))
-  meta_sub <- pk_get_ontotrace_meta(nex_sub)
-  meta_nex <- pk_get_ontotrace_meta(nex)
+  meta_sub <- get_char_matrix_meta(nex_sub)
+  meta_nex <- get_char_matrix_meta(nex)
   testthat::expect_equal(dim(meta_sub$id_taxa), dim(meta_nex$id_taxa))
   testthat::expect_equal(dim(meta_sub$id_entities), dim(meta_nex$id_entities) - c(1,0))
 
@@ -78,7 +78,7 @@ test_that("dropping characters works", {
   testthat::expect_equal(sapply(nex_sub2@characters[[1]]@format@char, slot, name = "id"),
                          sapply(nex_sub@characters[[1]]@format@char, slot, name = "id"))
   testthat::expect_equal(get_characters(nex_sub2), mat_sub)
-  testthat::expect_equal(pk_get_ontotrace_meta(nex_sub2), meta_sub)
+  testthat::expect_equal(get_char_matrix_meta(nex_sub2), meta_sub)
 })
 
 test_that("dropping unused otus works", {
@@ -101,7 +101,7 @@ test_that("dropping unused otus works", {
                           length(nex_sub2@characters[[1]]@matrix@row))
   mat_sub <- get_characters(nex_sub2)
   testthat::expect_equal(dim(mat_sub), dim(get_characters(nex_sub)))
-  meta_sub <- pk_get_ontotrace_meta(nex_sub2)
+  meta_sub <- get_char_matrix_meta(nex_sub2)
   testthat::expect_equal(nrow(meta_sub$id_taxa), nrow(mat_sub))
   testthat::expect_equal(nrow(meta_sub$id_entities), ncol(mat_sub))
 })
@@ -126,7 +126,7 @@ test_that("dropping unused characters works", {
                           length(nex_sub@characters[[1]]@matrix@row))
   mat_sub <- get_characters(nex_sub2)
   testthat::expect_equal(dim(mat_sub), dim(get_characters(nex_sub)))
-  meta_sub <- pk_get_ontotrace_meta(nex_sub2)
+  meta_sub <- get_char_matrix_meta(nex_sub2)
   testthat::expect_equal(nrow(meta_sub$id_taxa), nrow(mat_sub))
   testthat::expect_equal(nrow(meta_sub$id_entities), ncol(mat_sub))
 })
