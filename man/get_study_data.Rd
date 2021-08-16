@@ -20,7 +20,7 @@ get_study_data
 }
 \examples{
 \dontrun{
-slist <- pk_get_study_list(taxon = "Ameiurus", entity = "pelvic splint")
+slist <- get_studies(taxon = "Ameiurus", entity = "pelvic splint")
 nex_list <- get_study_data(slist$id)
 }
 }
