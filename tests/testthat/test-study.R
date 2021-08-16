@@ -58,7 +58,14 @@ test_that("Test getting study information", {
   expect_gt(nrow(slist8.1), nrow(slist7.1))
   expect_gt(nrow(slist8.1), nrow(slist8.2))
   expect_gt(nrow(slist8.3), nrow(slist8.2))
-  
+
+  # can also filter by phenotype
+  phens <- get_phenotypes(entity = "pelvic fin")
+  slist8.4 <- get_studies(phenotype = phens$id[1])
+  expect_is(slist8.4, "data.frame")
+  expect_gt(nrow(slist8.4), 0)
+  expect_lt(nrow(slist8.4), nrow(slist8.1))
+
   # can also obtain all studies by leaving off all filters
   slist9 <- get_studies()
   expect_is(slist9, "data.frame")
@@ -74,13 +81,13 @@ test_that("Test getting study information", {
   expect_identical(ll, get_studies(taxon = "Siluridae", entity = "fin", quality = "size"))
   expect_warning(ll <- pk_get_study_list(entity = "pelvic fin", includeRels = c("serial","historical")))
   expect_identical(ll, get_studies(entity = "pelvic fin", includeRels = c("serial","historical")))
+
   # different treatment of empty result sets:
   expect_warning(ll <- pk_get_study_list(taxon = "Grus grus"))
   expect_is(ll, "logical")
   ll <- get_studies(taxon = "Grus grus")
   expect_is(ll, "list")
   expect_length(ll, 0)
-
 
   s1 <- get_study_data(slist1[1,"id"])
   expect_is(s1[[1]], 'nexml')
