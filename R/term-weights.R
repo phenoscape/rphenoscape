@@ -1,3 +1,21 @@
+similarity_sparql_query <- function(corpus) {
+  if (corpus == "taxa") {
+    list(
+      path = "<http://purl.org/phenoscape/vocab.owl#has_phenotypic_profile>/<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+      subject_filter_property = "http://www.w3.org/2000/01/rdf-schema#isDefinedBy",
+      subject_filter_value = "http://purl.obolibrary.org/obo/vto.owl"
+    )
+  } else if (corpus == "genes") {
+    list(
+      path = "<http://purl.org/phenoscape/vocab.owl#has_phenotypic_profile>/<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+      subject_filter_property = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      subject_filter_value = "http://purl.org/phenoscape/vocab.owl#AnnotatedGene"
+    )
+  } else {
+    stop("corpus '", corpus, "' is currently unsupported", call. = FALSE)
+  }
+}
+
 #' Obtains term frequencies for the Phenoscape KB
 #'
 #' Determines the frequencies for the given input list of terms, based on
@@ -66,9 +84,8 @@ term_freqs <- function(x,
   if (corpus == "taxa" || corpus == "genes") {
     if (any(as != "phenotype"))
       stop("corpus '", corpus, "' requires phenotype terms", call. = FALSE)
-    corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
-    query <- list(terms = as.character(jsonlite::toJSON(x)),
-                  corpus_graph = corpusID)
+    query <- similarity_sparql_query(corpus)
+    query$terms <- as.character(jsonlite::toJSON(x))
     freqs <- get_csv_data(pkb_api("/similarity/frequency"), query = query,
                           header = FALSE, row.names = 1, check.names = FALSE)
     reordering <- match(x, rownames(freqs))
@@ -103,9 +120,8 @@ corpus_size <- local({
     corpus <- match.arg(corpus)
     if (is.null(.sizes[[corpus]])) {
       if (corpus == "taxa" || corpus == "genes") {
-        corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
-        res <- get_json_data(pkb_api("/similarity/corpus_size"),
-                             query = list(corpus_graph = corpusID))
+        query <- similarity_sparql_query(corpus)
+        res <- get_json_data(pkb_api("/similarity/corpus_size"), query)
         .sizes[[corpus]] <- res$total
       } else if (corpus == "taxon_annotations") {
         res <- get_json_data(pkb_api("/taxon/annotations"), list(total = TRUE))
