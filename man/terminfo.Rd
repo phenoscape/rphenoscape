@@ -8,11 +8,7 @@
 \alias{print.terminfo}
 \title{Terminfo Objects}
 \usage{
-as.terminfo(
-  x,
-  withClassification = getOption("rphenoscape.fetch.classification", default = FALSE),
-  ...
-)
+as.terminfo(x, ...)
 
 is.terminfo(x)
 
@@ -24,11 +20,6 @@ is_valid_terminfo(x)
 \item{x}{an object of type "terminfo" or coercible to it, or to be tested
 for being of type "terminfo"}
 
-\item{withClassification}{logical. If TRUE classification data will be available
-through the terminfo object at key "classification". Default is FALSE, because
-obtaining taxa requires an additional query per object. The default can be
-customized by setting the "rphenoscape.fetch.classification" option.}
-
 \item{...}{additional parameters where applicable}
 }
 \value{
@@ -37,8 +28,8 @@ if the object to be coerced had multiple elements (if a vector) or rows (if a
 data.frame). A terminfo object has properties "id" (ID, i.e., IRI of the
 term), "label" (label of the term if one exists). If the term is a taxon
 additional properties will be populated: "extinct", "rank", "common_name".
-If \code{withClassification} is TRUE,there will also be a key "classification"
-(a list with properties "subClassOf", "equivalentTo" and "superClassOf").
+There will also be a key "classification" (a list with properties "subClassOf",
+"equivalentTo" and "superClassOf").
 
 \code{is.terminfo} returns TRUE if the object is of type "terminfo" and FALSE
 otherwise.
@@ -51,8 +42,6 @@ array of objects, with TRUE for those objects in the list that are of type
 \code{as.terminfo} creates an object (or a list of objects) of type "terminfo".
 The object to be coerced can be a character vector (of term IRIs), or a data.frame.
 In the latter case, there must be a column "id" with term IRIs.
-If the object is already of type "terminfo", a new terminfo object will be created
-so options such as withClassification will be applied.
 
 \code{is.terminfo} tests whether an object is of type "terminfo"
 
@@ -74,12 +63,6 @@ obj <- as.terminfo(term_iri)
 class(obj)
 obj
 
-# classification details can be requested:
-term_iri <- find_term('maxilla', matchType='exact')
-# turn it into a terminfo object
-obj <- as.terminfo(term_iri, withClassification=TRUE)
-class(obj)
-obj
 
 # taxon terms have additional properties: 
 term_iri <- find_term('Coralliozetus angelicus', matchType='exact')

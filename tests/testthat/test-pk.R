@@ -203,12 +203,7 @@ test_that("creating terminfo objects and extracting properties", {
   testthat::expect_is(obj, "terminfo")
   testthat::expect_true(is.terminfo(obj))
   testthat::expect_true(is_valid_terminfo(obj))
-
-  # optionally include classification
-  testthat::expect_false("classification" %in% names(obj))
-  obj <- as.terminfo(terms[1, "id"], withClassification = TRUE)
-  testthat::expect_true(is.terminfo(obj))
-  testthat::expect_true(is_valid_terminfo(obj))
+  # check that the server returned classification details
   testthat::expect_true("classification" %in% names(obj))
   testthat::expect_equal(length(obj$classification), 3)
 
@@ -217,13 +212,6 @@ test_that("creating terminfo objects and extracting properties", {
   testthat::expect_is(obj, "terminfo")
   testthat::expect_true(is.terminfo(obj))
   testthat::expect_false(is_valid_terminfo(obj))
-
-  # robust to unresolving IRIs including classification
-  testthat::expect_warning(obj <- as.terminfo("foo", withClassification = TRUE))
-  testthat::expect_is(obj, "terminfo")
-  testthat::expect_true(is.terminfo(obj))
-  testthat::expect_false(is_valid_terminfo(obj))
-  testthat::expect_null(obj$classification)
 
   # also works with data.frame as input
   obj <- as.terminfo(terms[1,])
@@ -253,10 +241,6 @@ test_that("pretty-printing terminfo objects", {
   # create terminfo object
   ti <- as.terminfo(term_iri)
   # check print output
-  expect_output(print(ti), "terminfo 'basihyal bone' http.*Definition:.*Synonyms:.*Relationships:.*")
-  # create terminfo object with classification
-  ti <- as.terminfo(term_iri, withClassification = TRUE)
-  # check print output including classification sections
   expect_output(print(ti), "terminfo 'basihyal bone' http.*Definition:.*Synonyms:.*Relationships:.*Subclass of:.*Superclass of::*")
 
   # find taxon term iri
@@ -265,41 +249,4 @@ test_that("pretty-printing terminfo objects", {
   ti <- as.terminfo(term_iri)
   # check print output including taxon specific sections
   expect_output(print(ti), "terminfo 'Coralliozetus angelicus' http.*Synonyms:.*Extinct:.*Rank:.*Common Name:.*")
-})
-
-test_that("as.terminfo withClassification can be controlled via an option", {
-  # find term iri
-  term_iri <- find_term("basihyal bone", limit = 1)
-  # create terminfo object
-  ti <- as.terminfo(term_iri)
-  # classification should not be filled in
-  testthat::expect_false("classification" %in% names(ti))
-
-  # turn on the option to default withClassification to TRUE
-  options(rphenoscape.fetch.classification = TRUE)
-  # create terminfo object
-  ti <- as.terminfo(term_iri)
-  # classification should be filled in
-  testthat::expect_true("classification" %in% names(ti))
-  testthat::expect_equal(length(ti$classification), 3)
-
-  # setting the option to FALSE should return to the default behavior
-  options(rphenoscape.fetch.classification = FALSE)
-  # create terminfo object
-  ti <- as.terminfo(term_iri)
-  # classification should not be filled in
-  testthat::expect_false("classification" %in% names(ti))
-})
-
-test_that("as.terminfo can add classification to terminfo objects", {
-  # find term iri
-  term_iri <- find_term("basihyal bone", limit = 1)
-  # create terminfo object
-  ti <- as.terminfo(term_iri)
-  # classification should not be filled in
-  testthat::expect_false("classification" %in% names(ti))
-  # run as.terminfo on a terminfo object requesting classification data
-  ti <- as.terminfo(ti, withClassification = TRUE)
-  # classification should be filled in
-  testthat::expect_true("classification" %in% names(ti))
 })

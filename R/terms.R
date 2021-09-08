@@ -179,15 +179,9 @@ get_term_label <- function(term_iris, preserveOrder = FALSE, verbose = FALSE, .t
 #' `as.terminfo` creates an object (or a list of objects) of type "terminfo".
 #'   The object to be coerced can be a character vector (of term IRIs), or a data.frame.
 #'   In the latter case, there must be a column "id" with term IRIs.
-#'   If the object is already of type "terminfo", a new terminfo object will be created
-#'   so options such as withClassification will be applied.
 #'
 #' @param x an object of type "terminfo" or coercible to it, or to be tested
 #'  for being of type "terminfo"
-#' @param withClassification logical. If TRUE classification data will be available
-#'  through the terminfo object at key "classification". Default is FALSE, because
-#'  obtaining taxa requires an additional query per object. The default can be
-#'  customized by setting the "rphenoscape.fetch.classification" option.
 #' @param ... additional parameters where applicable
 #'
 #' @return
@@ -196,8 +190,8 @@ get_term_label <- function(term_iris, preserveOrder = FALSE, verbose = FALSE, .t
 #'    data.frame). A terminfo object has properties "id" (ID, i.e., IRI of the
 #'    term), "label" (label of the term if one exists). If the term is a taxon 
 #'    additional properties will be populated: "extinct", "rank", "common_name".
-#'    If `withClassification` is TRUE,there will also be a key "classification"
-#'    (a list with properties "subClassOf", "equivalentTo" and "superClassOf").
+#'    There will also be a key "classification" (a list with properties "subClassOf",
+#'     "equivalentTo" and "superClassOf").
 #'
 #' @examples
 #' # find a term iri
@@ -207,12 +201,6 @@ get_term_label <- function(term_iris, preserveOrder = FALSE, verbose = FALSE, .t
 #' class(obj)
 #' obj
 #'
-#' # classification details can be requested:
-#' term_iri <- find_term('maxilla', matchType='exact')
-#' # turn it into a terminfo object
-#' obj <- as.terminfo(term_iri, withClassification=TRUE)
-#' class(obj)
-#' obj
 #'
 #' # taxon terms have additional properties: 
 #' term_iri <- find_term('Coralliozetus angelicus', matchType='exact')
@@ -224,7 +212,7 @@ get_term_label <- function(term_iris, preserveOrder = FALSE, verbose = FALSE, .t
 #' @name terminfo
 #' @rdname terminfo
 #' @export
-as.terminfo <- function(x, withClassification = getOption("rphenoscape.fetch.classification", default = FALSE), ...) {
+as.terminfo <- function(x, ...) {
   UseMethod("as.terminfo", x)
 }
 
@@ -270,7 +258,7 @@ as.terminfo.data.frame <- function(x, ...) {
 
 #' @export
 as.terminfo.terminfo <- function(x, ...) {
-  # recreate to allow fetching additional data with ... parameters like withClassification
+  # recreate to allow fetching additional data with ... parameters
   as.terminfo(x$id, ...)
 }
 
@@ -319,21 +307,13 @@ is_known_term_response <- function(x) {
 }
 
 #' @export
-terminfo <- function(iri, withClassification = getOption("rphenoscape.fetch.classification", default = FALSE)) {
+terminfo <- function(iri) {
   stopifnot(is.character(iri))
   res <- get_json_data(pkb_api("/term"),
                        query = list(iri = iri),
                        forceGET = TRUE,
                        cleanNames = TRUE)
   if (is_known_term_response(res)) {
-    if (withClassification) {
-      classification <- term_classification(iri)
-      # remove redundant information
-      classification$id <- NULL
-      classification$label <- NULL
-      # add to resulting list
-      res$classification <- classification
-    }
     if (identical(obo_ont_type(res$isDefinedBy), "taxon")) {
       taxon <- get_json_data(pkb_api("/taxon"),
                              list(iri = iri),
