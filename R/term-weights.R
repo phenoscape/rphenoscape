@@ -62,8 +62,8 @@ term_freqs <- function(x,
   if (length(as) > 1 && length(as) != length(x))
     stop("'as' must be a single value, or have the same length as 'x'", call. = FALSE)
 
-  ctotal <- corpus_size(corpus = corpus)
   if (corpus == "taxa" || corpus == "states") {
+    ctotal <- corpus_size(corpus = corpus)    
     if (any(as != "phenotype"))
       stop("corpus '", corpus, "' requires phenotype terms", call. = FALSE)
     ontology_terms_type <- as

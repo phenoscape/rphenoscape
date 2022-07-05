@@ -227,7 +227,11 @@ anatomy_ontology_iris <- local({
                        matchTypes = c("exact", "partial"),
                        limit = 200)
       res <- dplyr::filter_at(res, "label",
-                              all_vars(startsWith(., "anatomical structure") & !endsWith(., "anatomical structure quality")))
+                              all_vars(
+                                startsWith(., "anatomical structure") 
+                                & !grepl("quality", .)
+                                & !grepl("abnormal", .)
+                             )) 
       .iris <<- unique(res$isDefinedBy)
     }
     .iris
