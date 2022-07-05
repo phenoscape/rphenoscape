@@ -129,7 +129,6 @@ get_csv_data <- function(url, query, ..., verbose = FALSE, forceGET = FALSE) {
   else
     res <- httr::POST(url, httr::accept("text/csv"), httr::user_agent(ua()),
                       body = query, encode = "form")
-  
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")
 
