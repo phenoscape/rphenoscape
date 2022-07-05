@@ -49,11 +49,11 @@
 #' @examples
 #' phens <- get_phenotypes(entity = "basihyal bone")
 #' term_freqs(phens$id, as = "phenotype", corpus = "taxa")
-#' term_freqs(phens$id, as = "phenotype", corpus = "genes")
+#' term_freqs(phens$id, as = "phenotype", corpus = "states")
 #' @export
 term_freqs <- function(x,
-                       as = c("phenotype", "entity", "quality"),
-                       corpus = c("taxa", "taxon_annotations", "gene_annotations", "genes"),
+                       as = c("phenotype", "entity"),
+                       corpus = c("taxa", "states", "taxon_annotations", "gene_annotations", "genes"),
                        decodeIRI = FALSE,
                        ...) {
   as <- match.arg(as, several.ok = TRUE)
@@ -63,12 +63,17 @@ term_freqs <- function(x,
     stop("'as' must be a single value, or have the same length as 'x'", call. = FALSE)
 
   ctotal <- corpus_size(corpus = corpus)
-  if (corpus == "taxa" || corpus == "genes") {
+  if (corpus == "taxa" || corpus == "states") {
     if (any(as != "phenotype"))
       stop("corpus '", corpus, "' requires phenotype terms", call. = FALSE)
+    ontology_terms_type <- as
+    if (ontology_terms_type == "entity") {
+      ontology_terms_type <- "anatomical_entity"
+    }
     corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
     query <- list(terms = as.character(jsonlite::toJSON(x)),
-                  corpus_graph = corpusID)
+                  corpus = corpus,
+                  type = ontology_terms_type)
     freqs <- get_csv_data(pkb_api("/similarity/frequency"), query = query,
                           header = FALSE, row.names = 1, check.names = FALSE)
     reordering <- match(x, rownames(freqs))
@@ -88,32 +93,18 @@ term_freqs <- function(x,
 #' Thus, if the Phenoscape KB changes, a session needs to be restarted to
 #' have those changes be reflected.
 #'
-#' @param corpus the name of the corpus, currently one of "taxon_annotations",
-#'   "taxa", "gene_annotations", and "genes". (At present "gene_annotations" is
-#'   pending support by the Phenoscape API.) Unambiguous abbreviations are
-#'   acceptable.
+#' @param corpus the name of the corpus, currently one of "taxa", or "states".
 #' @return the size of the specified corpus as an integer number.
 #' @examples
 #' corpus_size("taxa")
-#' corpus_size("taxon_annotations")
+#' corpus_size("states")
 #' @export
 corpus_size <- local({
   .sizes <- list()
-  function(corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes")) {
+  function(corpus = c("taxa", "states")) {
     corpus <- match.arg(corpus)
-    if (is.null(.sizes[[corpus]])) {
-      if (corpus == "taxa" || corpus == "genes") {
-        corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
-        res <- get_json_data(pkb_api("/similarity/corpus_size"),
-                             query = list(corpus_graph = corpusID))
-        .sizes[[corpus]] <- res$total
-      } else if (corpus == "taxon_annotations") {
-        res <- get_json_data(pkb_api("/taxon/annotations"), list(total = TRUE))
-        .sizes[[corpus]] <- res$total
-      } else {
-        stop("corpus 'gene_annotations' is currently unsupported", call. = FALSE)
-      }
-    }
-    .sizes[[corpus]]
+    res <- get_json_data(pkb_api("/similarity/corpus_size"),
+                         query = list(corpus = corpus))
+    res$total
   }
 })

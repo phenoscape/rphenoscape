@@ -129,6 +129,7 @@ get_csv_data <- function(url, query, ..., verbose = FALSE, forceGET = FALSE) {
   else
     res <- httr::POST(url, httr::accept("text/csv"), httr::user_agent(ua()),
                       body = query, encode = "form")
+  
   stop_for_pk_status(res)
   out <- httr::content(res, as = "text")
 
@@ -262,7 +263,7 @@ phenoscape_api <- local({
   .api <- NA;
   function() {
     if (is.na(.api)) {
-      .api <<- Sys.getenv("PHENOSCAPE_API", "https://kb.phenoscape.org/api/v2-beta")
+      .api <<- Sys.getenv("PHENOSCAPE_API", "https://dev.phenoscape.org/api/v2-beta/")
     }
     .api
   }

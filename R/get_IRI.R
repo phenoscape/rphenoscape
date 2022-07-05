@@ -69,7 +69,6 @@ find_term <- function(query,
   # apply limit to result
   if (is.na(limit)) limit <- "0"
   queryseq <- c(queryseq, limit = limit)
-
   res <- get_json_data(pkb_api("/term/search"), query = queryseq)
   res <- res$results
 
@@ -228,7 +227,7 @@ anatomy_ontology_iris <- local({
                        matchTypes = c("exact", "partial"),
                        limit = 200)
       res <- dplyr::filter_at(res, "label",
-                              all_vars(startsWith(., "anatomical structure")))
+                              all_vars(startsWith(., "anatomical structure") & !endsWith(., "anatomical structure quality")))
       .iris <<- unique(res$isDefinedBy)
     }
     .iris

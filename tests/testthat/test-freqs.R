@@ -77,15 +77,12 @@ test_that("obtaining corpus size", {
   testthat::expect_gt(s, 100)
   testthat::expect_lt(s, 10000)
 
-  s <- corpus_size("genes")
+  s <- corpus_size("states")
   testthat::expect_gt(s, 100)
   testthat::expect_lt(s, 100000)
 
-  s <- corpus_size("taxon_annotations")
-  testthat::expect_gt(s, 10000)
-  testthat::expect_lt(s, 5000000)
-  testthat::expect_equal(corpus_size(), s)
-
+  testthat::expect_error(corpus_size("taxon_annotations"))
+  testthat::expect_error(corpus_size("genes"))
   testthat::expect_error(corpus_size("gene_annotations"))
   testthat::expect_error(corpus_size("foobar"))
 })

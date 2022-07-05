@@ -203,12 +203,7 @@ test_that("creating terminfo objects and extracting properties", {
   testthat::expect_is(obj, "terminfo")
   testthat::expect_true(is.terminfo(obj))
   testthat::expect_true(is_valid_terminfo(obj))
-
-  # optionally include classification
-  testthat::expect_false("classification" %in% names(obj))
-  obj <- as.terminfo(terms[1, "id"], withClassification = TRUE)
-  testthat::expect_true(is.terminfo(obj))
-  testthat::expect_true(is_valid_terminfo(obj))
+  # the current api automatically supplies classification data
   testthat::expect_true("classification" %in% names(obj))
   testthat::expect_equal(length(obj$classification), 3)
 
@@ -223,7 +218,6 @@ test_that("creating terminfo objects and extracting properties", {
   testthat::expect_is(obj, "terminfo")
   testthat::expect_true(is.terminfo(obj))
   testthat::expect_false(is_valid_terminfo(obj))
-  testthat::expect_null(obj$classification)
 
   # also works with data.frame as input
   obj <- as.terminfo(terms[1,])
@@ -272,8 +266,8 @@ test_that("as.terminfo withClassification can be controlled via an option", {
   term_iri <- find_term("basihyal bone", limit = 1)
   # create terminfo object
   ti <- as.terminfo(term_iri)
-  # classification should not be filled in
-  testthat::expect_false("classification" %in% names(ti))
+  # classification is filled in by default
+  testthat::expect_true("classification" %in% names(ti))
 
   # turn on the option to default withClassification to TRUE
   options(rphenoscape.fetch.classification = TRUE)
@@ -287,8 +281,8 @@ test_that("as.terminfo withClassification can be controlled via an option", {
   options(rphenoscape.fetch.classification = FALSE)
   # create terminfo object
   ti <- as.terminfo(term_iri)
-  # classification should not be filled in
-  testthat::expect_false("classification" %in% names(ti))
+  # classification is filled in by default
+  testthat::expect_true("classification" %in% names(ti))
 })
 
 test_that("as.terminfo can add classification to terminfo objects", {
@@ -296,8 +290,8 @@ test_that("as.terminfo can add classification to terminfo objects", {
   term_iri <- find_term("basihyal bone", limit = 1)
   # create terminfo object
   ti <- as.terminfo(term_iri)
-  # classification should not be filled in
-  testthat::expect_false("classification" %in% names(ti))
+  # classification is filled in by default
+  testthat::expect_true("classification" %in% names(ti))
   # run as.terminfo on a terminfo object requesting classification data
   ti <- as.terminfo(ti, withClassification = TRUE)
   # classification should be filled in
