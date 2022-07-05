@@ -69,6 +69,7 @@ find_term <- function(query,
   # apply limit to result
   if (is.na(limit)) limit <- "0"
   queryseq <- c(queryseq, limit = limit)
+
   res <- get_json_data(pkb_api("/term/search"), query = queryseq)
   res <- res$results
 
@@ -226,6 +227,8 @@ anatomy_ontology_iris <- local({
                        matchBy = c("rdfs:label"),
                        matchTypes = c("exact", "partial"),
                        limit = 200)
+      # Include terms with labels begin with "anatomical structure"
+      # Exclude terms with labels containing "quality" or "abnormal" to remove PATO and ZP
       res <- dplyr::filter_at(res, "label",
                               all_vars(
                                 startsWith(., "anatomical structure") 
