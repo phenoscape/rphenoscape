@@ -53,7 +53,7 @@
 #' @export
 term_freqs <- function(x,
                        as = c("phenotype", "entity", "quality"),
-                       corpus = c("taxa", "taxon_annotations", "gene_annotations", "genes"),
+                       corpus = c("taxa", "taxon_annotations", "gene_annotations", "genes", "states"),
                        decodeIRI = FALSE,
                        ...) {
   as <- match.arg(as, several.ok = TRUE)
@@ -62,13 +62,18 @@ term_freqs <- function(x,
   if (length(as) > 1 && length(as) != length(x))
     stop("'as' must be a single value, or have the same length as 'x'", call. = FALSE)
 
-  ctotal <- corpus_size(corpus = corpus)
-  if (corpus == "taxa" || corpus == "genes") {
+  if (corpus == "taxa" || corpus == "genes" || corpus == "states") {
     if (any(as != "phenotype"))
       stop("corpus '", corpus, "' requires phenotype terms", call. = FALSE)
+    ctotal <- corpus_size(corpus = corpus)
     corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
+    ontology_terms_type <- as
+    if (ontology_terms_type == "entity") {
+      ontology_terms_type <- "anatomical_entity"
+    }
     query <- list(terms = as.character(jsonlite::toJSON(x)),
-                  corpus_graph = corpusID)
+                  corpus = corpus,
+                  type = ontology_terms_type)
     freqs <- get_csv_data(pkb_api("/similarity/frequency"), query = query,
                           header = FALSE, row.names = 1, check.names = FALSE)
     reordering <- match(x, rownames(freqs))
@@ -99,13 +104,12 @@ term_freqs <- function(x,
 #' @export
 corpus_size <- local({
   .sizes <- list()
-  function(corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes")) {
+  function(corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes", "states")) {
     corpus <- match.arg(corpus)
     if (is.null(.sizes[[corpus]])) {
-      if (corpus == "taxa" || corpus == "genes") {
-        corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
+      if (corpus == "taxa" || corpus == "genes"|| corpus == "states") {
         res <- get_json_data(pkb_api("/similarity/corpus_size"),
-                             query = list(corpus_graph = corpusID))
+                             query = list(corpus = corpus))
         .sizes[[corpus]] <- res$total
       } else if (corpus == "taxon_annotations") {
         res <- get_json_data(pkb_api("/taxon/annotations"), list(total = TRUE))

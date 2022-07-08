@@ -81,6 +81,10 @@ test_that("obtaining corpus size", {
   testthat::expect_gt(s, 100)
   testthat::expect_lt(s, 100000)
 
+  s <- corpus_size("states")
+  testthat::expect_gt(s, 100)
+  testthat::expect_lt(s, 100000)
+
   s <- corpus_size("taxon_annotations")
   testthat::expect_gt(s, 10000)
   testthat::expect_lt(s, 5000000)
@@ -101,6 +105,20 @@ test_that("obtaining/calculating term frequencies", {
   # check that the corpus defaults to "taxa"
   wt1 <- term_freqs(phens$id, as = "phenotype", corpus = "taxa")
   testthat::expect_identical(wt1, wt)
+
+  # check that we can use genes corpus with term_freqs
+  wt <- term_freqs(phens$id, as = "phenotype", corpus = "genes")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(phens$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+
+  # check that we can use states corpus with term_freqs
+  wt <- term_freqs(phens$id, as = "phenotype", corpus = "states")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(phens$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
 
   # checking of error conditions
   testthat::expect_error(term_freqs(phens$id, as = "foobar"))
