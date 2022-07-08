@@ -262,7 +262,7 @@ phenoscape_api <- local({
   .api <- NA;
   function() {
     if (is.na(.api)) {
-      .api <<- Sys.getenv("PHENOSCAPE_API", "https://kb.phenoscape.org/api/v2-beta")
+      .api <<- Sys.getenv("PHENOSCAPE_API", "https://dev.phenoscape.org/api/v2-beta")
     }
     .api
   }
