@@ -1,0 +1,374 @@
+---
+title: "Mutually Exclusive Phenotypes"
+author: "Amandeep Rathee and Hilmar Lapp"
+date: "`r format(Sys.Date(), '%B-%d-%Y')`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{rphenoscape Mutual Exclusion}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rphenoscape)
+library(tidyverse)
+library(microbenchmark)
+```
+
+
+We present two functions to compute mutually exclusivity among phenotypes in the Phenoscape Knowledgebase (KB) datastore, namely `mutual_exclusivity_pair` and `mutual_exclusivity`. At a high level, both functions offer the same functionality: computing the mutual exclusivity state among a pair of phenotypes. There are five different mutual exclusivity states that a pair of phenotypes can have: `strong_compatibility`, `weak_compatibility`, `inconclusive_evidence`, `weak_exclusivity` and `strong_exclusivity`. These states are defined as an ordered factor in R. Refer the documentation of the `mutual_exclusivity_pair` function to know more about the states and their relative ordering.
+
+## 1. Mutual Exclusivity Among Two Phenotypes.
+
+Let's look at the `mutual_exclusivity_pair` function first. The `mutual_exclusivity_pair` expects two phenotypes (as phenotype IDs or objects), and returns the resulting mutual exclusivity state. Let's look at some examples demonstrating the use of this function. In the following example, we look at mutual exclusivity among two phenotypes extracted from the KB database. While getting the phenotypes, we also specify the entity and taxon.
+
+```{r include=FALSE, eval=TRUE, echo=FALSE, render=TRUE}
+mutual_exclusivity_pair <- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL){
+
+    # convert phenotypes to phenotype objects for faster computation
+    if (!is.phenotype(phenotype.a)) {
+        phenotype.a <- as.phenotype(phenotype.a, withTaxa=TRUE)
+    }
+
+    if (!is.phenotype(phenotype.b)) {
+        phenotype.b <- as.phenotype(phenotype.b, withTaxa=TRUE)
+    }
+
+    # define mutual exclusivity types
+    exclusivity_types <- c('strong_compatibility',
+                           'weak_compatibility',
+                           'inconclusive_evidence',
+                           'weak_exclusivity',
+                           'strong_exclusivity')
+    is_pair_mutually_exclusive <- exclusivity_types[3]
+
+    # load charstates dataframe that contains both the phenotypes
+    if (is.null(charstates)) {
+        character_states <- charstates(list(phenotype.a, phenotype.b))
+    } else {
+        character_states <- charstates
+    }
+
+    # filter the character_states dataframe by studies
+    if (!is.null(studies)) {
+        character_states <- character_states[character_states$study.id %in% studies, ]
+    }
+
+    # store the charstate dataframe associated with each phenotype separately for easier computation
+    charstates.a <- character_states[(character_states$phenotype.id == phenotype.a$id), ]
+    charstates.b <- character_states[(character_states$phenotype.id == phenotype.b$id), ]
+
+    # determine mutual exclusivity only if both phenotypes have non-empty states
+    num_states.a <- length(charstates.a$state.id)
+    num_states.b <- length(charstates.b$state.id)
+    if (num_states.a > 0 && num_states.b > 0) {
+
+        # compute the intersection of the two characters vectors
+        chars.a <- unique(charstates.a$character.id)
+        chars.b <- unique(charstates.b$character.id)
+        mutual_characters_present <- length(intersect(chars.a, chars.b)) > 0
+
+        if (mutual_characters_present) {
+            # If the two phenotypes have mutual characters, then
+            # there is enough evidence to decide mutual exclusivity among the two phenotypes.
+            # Therefore, the mutual exclusion in this case is called 'strong'.
+            # Mutual exclusivity is decided by looking at whether the two phenotypes have mutual states.
+
+            states.a <- charstates.a$state.id
+            states.b <- charstates.b$state.id
+            mutual_states_present <- length(intersect(states.a, states.b)) > 0
+
+            if (mutual_states_present) {
+                # strong compatibility if phenotypes share states
+                is_pair_mutually_exclusive <- exclusivity_types[1]
+            } else {
+                # strong exclusivity if phenotypes do not share states
+                is_pair_mutually_exclusive <- exclusivity_types[5]
+            }
+
+        } else {
+            # If there are no mutal characters among the two phenotypes, then
+            # there is lack (but not absence) of evidence to determine mutual exclusivity.
+            # Therefore, the mutual exclusion in this case is called 'weak'.
+            # Mutual exclusivity is decided by looking at whether the two phenotypes have mutual taxa.
+
+            mutual_taxa_present <- length(intersect(phenotype.a$taxa$id, phenotype.b$taxa$id)) > 0
+            if(mutual_taxa_present){
+                # weak compatibility
+                is_pair_mutually_exclusive <- exclusivity_types[2]
+            } else {
+                # weak exclusivity
+                is_pair_mutually_exclusive <- exclusivity_types[4]
+            }
+        }
+
+    } else {
+        # If either (or both) phenotype(s) have empty state(s), then we say that
+        # there is no evidence to compute mutual exclusivity.
+        # This block raises a warning and is_pair_mutually_exclusive is returned
+        # with the default value: 'inconclusive_evidence'.
+
+        if (num_states.a == 0) {
+            warning("Phenotype A does not have any states in the charstates dataframe.")
+
+        } else if (num_states.b == 0){
+            warning("Phenotype B does not have any states in the charstates dataframe.")
+
+        } else {
+            warning("Both phenotypes do not have any states in the charstates dataframe.")
+        }
+    }
+
+    # convert mutual exclusivity state to a factor
+    is_pair_mutually_exclusive <- factor(is_pair_mutually_exclusive,
+                                         levels = exclusivity_types,
+                                         ordered = TRUE)
+    # return mutual exclusivity
+    is_pair_mutually_exclusive
+}
+```
+
+
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
+# define the entity and taxon from where we will get phenotypes.
+# we will then compute the mutual exclusivity among these phenotypes.
+entity <- "hyomandibular bone"
+taxon <- "Hypancistrus"
+
+# get phenotypes IDs of some phenotypes from the entiy and taxon defined above.
+phenotypes <- get_phenotypes(entity = entity, taxon = taxon)
+phenotypes <- c(phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with prootic bone'],
+                phenotypes$id[phenotypes$label == 'hyomandibular bone in contact with quadrate bone'],
+                phenotypes$id[phenotypes$label == 'hyomandibular bone position opercle'],
+                phenotypes$id[phenotypes$label == 'hyomandibular bone structure metapterygoid'])
+```
+
+The phenotypes `hyomandibular bone in contact with prootic bone` and `hyomandibular bone in contact with prootic bone` are weakly compatible.
+
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
+# compute mutual exclusivity among the first and second phenotype in the phenotype vector.
+mutual_exclusivity_pair(phenotypes[1], phenotypes[2])
+```
+
+Similarly, the phenotypes `hyomandibular bone in contact with prootic bone` and `hyomandibular bone structure metapterygoid` are also weakly compatible.
+
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
+# exclusivity among the second and fourth phenotype
+mutual_exclusivity_pair(phenotypes[2], phenotypes[4])
+```
+
+Let us now look at a pair of phenotypes from the 2016 study by Dillman et al. The first two phenotypes in the databse associated with this study have strong evidence for mutual exclusivity.
+
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
+# get all studies in the database
+studies <- pk_get_study_list()
+
+# get the study id of the Dillman study
+study_name <- 'Dillman et al. (2016)'
+study <- studies$id[studies$label == study_name]
+
+# get phenotypes dataframe associated with the Dillman study
+phenotypes <- get_phenotypes(study=study)
+
+# convert the first two phenotypes from the study to phenotype objects
+phenotypes <- as.phenotype(phenotypes[1:2], withTaxa=TRUE)
+
+# check exclusivity among the first two phenotypes in the study
+mutual_exclusivity_pair(phenotypes[1], phenotypes[2])
+```
+
+Finally, a phenotype is strongly compatible with itself.
+
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
+mutual_exclusivity_pair(phenotypes[3], phenotypes[3])
+```
+
+Now, there are scenarios where one wants to look at the evidence of mutual exclusivity presented in a specified set of studies. The `studies` argument lets you pass one or more studies (as a vector of study IDs). The `mutual_exclusivity_pair` first filters based on the passed studies and then computes the exclusivity result. The phenotypes `hyomandibular bone in contact with prootic bone` and `hyomandibular bone in contact with prootic bone` are wekaly compatible based on the evidence in the "Armbruster (2004)" study as shown below.
+
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=TRUE}
+# Get a particular study associated with the entity and taxon mentioned above.
+studies <- pk_get_study_list(entity = entity, taxon = taxon)
+study <- studies$id[studies$label == "Armbruster (2004)"]
+
+# Compute mutual exclusivity among the first and second phenotype in the phenotype vector.
+mutual_exclusivity_pair(phenotypes[1], phenotypes[2], studies=study)
+```
+
+There is another argument `charstates` which is not intended to be used by a user (refer documentation for details). Rather, its purpose is to be used by the `mutual_exclusivity` function that we discuss below.
+
+## 2. Mutual Exclusivity Among Multiple Phenotypes. 
+
+As you might have observed, most of the pairs that we saw in the previous section are compatible. Exclusive phenotypes occur less frequently than compatible ones. Therefore, we look at the `mutual_exclusivity` function which is a wrapper around the `mutual_exclusivity_pair` function. The `mutual_exclusivity` is more abstract in the sense that you can pass two or more phenotypesto check which pairs are exclusive or compatible.
+
+This function returns two objects embedded in a list: a matrix and a dataframe. Since multiple phenotypes are passed to this function, the matrix (which is symmetric) allows us to quickly look the resulting exclusivity types. On the other hand, the dataframe presents the same information in a more information-rich format with phenotype IDs and label names of each distinct phenotype from the phenotype vector, and the resultant exclusivity state. Let us look at some examples demonstrating the usecase of the function. This function also lets you pass one or more studies like the `mutual_exclusivity_pair` function in case a user wants took at the evidence provided by those studies only.
+
+```{r include=FALSE, eval=TRUE, echo=FALSE, render=FALSE}
+mutual_exclusivity <- function(phenotypes, studies=NULL, progress_bar=TRUE){
+
+    # make sure that at least two phenotypes are passed
+    if (is.null(phenotypes) || length(phenotypes) == 1) {
+        stop("Less than two phenotypes passed. The function expects at least two phenotypes to compute mutual exclusivity.")
+    }
+
+    # initialize a square matrix to store mutual exclusivity result among each pair of phenotypes
+    num_phenotypes <- length(phenotypes)
+    exclusivity_types <- c('strong_compatibility',
+                           'weak_compatibility',
+                           'inconclusive_evidence',
+                           'weak_exclusivity',
+                           'strong_exclusivity')
+    mutual_exclusivity_matrix <- matrix(as.integer(factor("inconclusive_evidence",
+                                                          levels = exclusivity_types,
+                                                          ordered = TRUE)),
+                                        nrow=num_phenotypes,
+                                        ncol=num_phenotypes)
+    rownames(mutual_exclusivity_matrix) <- 1:num_phenotypes
+    colnames(mutual_exclusivity_matrix) <- 1:num_phenotypes
+
+    # create empty dataframe to store mutual exclusive pairs
+    mutual_exclusivity_df <- data.frame(id.1    = character(),
+                                        label.1 = character(),
+                                        id.2    = character(),
+                                        label.2 = character(),
+                                        mutual_exclusivity = factor(c(),
+                                                                    levels = exclusivity_types,
+                                                                    ordered = TRUE),
+                                        stringsAsFactors = FALSE)
+
+    # initialize variables to keep track of progress of the function
+    if (progress_bar) {
+        iteration <- 1
+        total_iterations <- choose(num_phenotypes, 2) + num_phenotypes
+        num_mutual_exclusive_pairs <- 0
+        num_mutual_compatible_pairs <- 0
+        num_inconclusive_evidence <- 0
+    }
+
+    # convert phenotypes to phenotype objects for faster computation
+    if (!all(sapply(phenotypes, is.phenotype))) {
+        phenotypes <- as.phenotype(phenotypes, withTaxa=TRUE)
+    }
+
+    # load charstates dataframe that contains all the phenotypes
+    character_states <- charstates(phenotypes)
+
+    # find mutual exclusivity for each pair in the phenotype vector
+    for (row in 1:num_phenotypes) {
+        for (column in row:num_phenotypes) {
+
+            # print progress of the loop
+            if (progress_bar == TRUE) {
+                cat('\014')
+                cat(paste0(round(iteration / (total_iterations) * 100, 4), '% completed\n',
+                           'Mutually exclusive pairs  = ', num_mutual_exclusive_pairs, '\n',
+                           'Mutually compatible pairs = ', num_mutual_compatible_pairs, '\n',
+                           'Inconclusive evidence     = ', num_inconclusive_evidence, '\n'))
+                iteration <- iteration + 1
+            }
+
+            # compute mutual exclusivity among distinct phenotypes only
+            if (row != column) {
+
+                # compute mutual exclusivity
+                mutual_exclusivity <- mutual_exclusivity_pair(phenotypes[[row]],
+                                                              phenotypes[[column]],
+                                                              studies=studies,
+                                                              charstates=character_states)
+
+                # store exclusivity result in matrix
+                mutual_exclusivity_matrix[row, column] <- mutual_exclusivity
+                mutual_exclusivity_matrix[column, row] <- mutual_exclusivity
+
+                # store exclusivity result in dataframe
+                dataframe_row <- data.frame(id.1    = phenotypes[[row]]$id,
+                                            label.1 = phenotypes[[row]]$label,
+                                            id.2    = phenotypes[[column]]$id,
+                                            label.2 = phenotypes[[column]]$label,
+                                            mutual_exclusivity=mutual_exclusivity,
+                                            stringsAsFactors = FALSE
+                )
+                mutual_exclusivity_df <- rbind(mutual_exclusivity_df, dataframe_row, stringsAsFactors=FALSE)
+
+                # update progress bar statistics
+                if (progress_bar) {
+                    if (mutual_exclusivity == "strong_exclusivity" || mutual_exclusivity == "weak_exclusivity") {
+                        # keep track of the number of exclusive phenotype pairs for printing in the progress bar
+                        num_mutual_exclusive_pairs <- num_mutual_exclusive_pairs + 1
+
+                    } else if (mutual_exclusivity == "inconclusive_evidence") {
+                        # keep track of the number of phenotype pairs with inconclusive evidence for printing in the progress bar
+                        num_inconclusive_evidence <- num_inconclusive_evidence + 1
+
+                    } else if (mutual_exclusivity == "strong_compatibility" || mutual_exclusivity == "weak_compatibility") {
+                        # keep track of the number of compatible phenotype pairs for printing in the progress bar
+                        num_mutual_compatible_pairs <- num_mutual_compatible_pairs + 1
+                    }
+                }
+
+            } else if (row == column) {
+                # a phenotype is strongly compatible with itself
+                mutual_exclusivity_matrix[row, column] <- factor("strong_compatibility",
+                                                                 levels = exclusivity_types,
+                                                                 ordered = TRUE)
+            }
+        }
+    }
+
+    # return a list containing the resultant matrix and the dataframe
+    list(matrix=mutual_exclusivity_matrix,
+         dataframe=mutual_exclusivity_df)
+}
+```
+
+In the following example, we are computing mutual exclusivity among the phenotypes discussed in the 2016 study by Dillman et al. This study has more than a thousand phenotypes. Therefore, we will only consider 20 phenotypes from the study (chosen at random).
+
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=FALSE}
+# get all studies in the database
+studies <- pk_get_study_list()
+
+# get the study id of the Dillman study
+study_name <- 'Dillman et al. (2016)'
+study <- studies$id[studies$label == study_name]
+
+# get phenotypes objects associated with the Dillman study
+phenotypes <- get_phenotypes(study=study)
+
+# select any 20 phenotypes randomly
+random_indices <- sample(1:nrow(phenotypes), size=20, replace=FALSE)
+phenotypes <- as.phenotype(phenotypes[random_indices, ], withTaxa=TRUE)
+
+# compute mutual exclusivity; 
+me <- mutual_exclusivity(phenotypes, 
+                         study, 
+                         progress_bar=FALSE)  # set this to TRUE if passing hundreds of phenotypes
+```
+
+Let us look at the resultant matrix. Each cell of the matrix contains the result of the exclusivity status between the phenotypes corresponding to the row and column. R presents ordered factor as an integer associated with the level of the factor. For example, `strong_compatibility` is shown as 1. Since each phenotype is strongly compatible with itself, all the diagonal elements in the matrix are 1.
+
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=FALSE}
+me$matrix
+```
+
+Let us look at the resulting dataframe. The dataframe contains contains each distinct pair of a phenotype chosen from the vector phenotypes that were passed (therefore, the dataframe has nC2 rows where n is the number of phenotypes passed). The dataframe contains five columns as shown below.
+
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=FALSE}
+# there are 190 possible distinct pairs in 20 studies
+choose(length(random_indices), 2)
+
+# structure of the dataframe
+str(me$dataframe)
+
+# ignoring phenotype IDs for brevity
+head(me$dataframe[, c('label.1', 'label.2', 'mutual_exclusivity')])
+```
+
+The dataframe can be filtered using usual R syntax if one wants to look at a particular type of phenotype pair(s).
+
+```{r include=TRUE, eval=TRUE, echo=TRUE, render=FALSE}
+exclusivity_df <- me$dataframe
+head(exclusivity_df[exclusivity_df$mutual_exclusivity == "weak_exclusivity", 
+                    c('label.1', 'label.2')])
+```
+
+You can also pass mutliple studies as a vector of study IDs or pass none in which case the function will look at the evidence from all the studies where the phenotypes occur.
