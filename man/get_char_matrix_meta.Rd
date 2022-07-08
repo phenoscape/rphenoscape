@@ -2,29 +2,35 @@
 % Please edit documentation in R/nexml.R
 \name{get_char_matrix_meta}
 \alias{get_char_matrix_meta}
-\title{Obtains taxa and entity metadata from a nexml object}
+\title{Obtains taxa and character metadata from a nexml object}
 \usage{
 get_char_matrix_meta(nex)
 }
 \arguments{
-\item{nex, }{a [nexml][\link[RNeXML:nexml-class]{RNeXML::nexml} object}
+\item{nex}{a \link[RNeXML:nexml-class]{nexml} object}
 }
 \value{
-list: A list containing two data frames. The first list item (id_taxa) contains
-a data frame with columns label, href, out and otus columns. The second list item
-(id_entities) contains a data frame with columns label, href, and char.
+A list of two data frames. The first list item, \code{id_taxa}, contains
+a data frame with columns label, href (taxon IRI), otu (OTU ID) and otus (OTUs block ID) columns. The second list item,
+\code{id_entities}, contains a data frame with columns label, href (character ID), and char (character ID in NeXML document).
+For nexml objects obtained with \code{\link[=get_ontotrace_data]{get_ontotrace_data()}} the href column will contain the entity term IRI
+rather than the character ID, and the char column will contain the entity term ID (the term IRI without the
+HTTP path prefix).
 }
 \description{
-Obtains taxa and entity metadata from a nexml object
+Obtains taxa and character metadata from a nexml object
 }
 \examples{
-\dontrun{
+# apply to (synthetic) Ontotrace data matrix
 nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
 get_char_matrix_meta(nex)
 
+# apply to data matrix from a study
 slist <- get_studies(taxon = "Ictalurus australis", entity = "fin spine")
-nex_list <- get_study_data(slist$id)
-nex <- nex_list[[1]]
-get_char_matrix_meta(nex)
-}
+nex <- get_study_data(slist$id[1])[[1]]
+metadata <- get_char_matrix_meta(nex)
+# for brevity show only first 5 rows
+metadata$id_taxa[1:5,]
+metadata$id_entities[1:5,]
+
 }

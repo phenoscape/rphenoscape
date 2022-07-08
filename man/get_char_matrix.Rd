@@ -7,13 +7,13 @@
 get_char_matrix(nex, otus_id = TRUE, states_as_labels = FALSE, verbose = FALSE)
 }
 \arguments{
-\item{nex, }{a [nexml][\link[RNeXML:nexml-class]{RNeXML::nexml} object}
+\item{nex}{a \link[RNeXML:nexml-class]{nexml} object}
 
-\item{otus_id, }{logical, default TRUE, return a column with the otus block id.}
+\item{otus_id}{logical, default TRUE, return a column with the otus block id.}
 
-\item{states_as_labels, }{logical, default FALSE, when TRUE returns states as labels instead of symbols.}
+\item{states_as_labels}{logical, default FALSE, when TRUE returns states as labels instead of symbols.}
 
-\item{verbose, }{logical, default FALSE, If TRUE, informative messages printed.}
+\item{verbose}{logical, default FALSE, If TRUE, messages informing about steps is printed.}
 }
 \value{
 data.frame: The character-state matrix. The first column (taxa) contains taxon ids.
@@ -25,14 +25,18 @@ contain the associated state values.
 Obtains a character-state matrix from a nexml object
 }
 \examples{
-\dontrun{
+# applied to a (synthetic) Ontotrace matrix:
 nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
-get_char_matrix(nex)
+get_char_matrix(nex, otus_id = FALSE)
 
+# applied to a data matrix for a study
 slist <- get_studies(taxon = "Ictalurus australis", entity = "fin spine")
-nex_list <- get_study_data(slist$id)
-nex <- nex_list[[1]]
-get_char_matrix(nex)
+nex <- get_study_data(slist$id[1])[[1]]
+# for brevity show only 6 character data columns and first 5 rows
+get_char_matrix(nex, otus_id = FALSE)[1:5,1:8]
+\dontrun{
+# same, but states as labels (this can take a while)
+get_char_matrix(nex, otus_id = FALSE, states_as_labels = TRUE)
 }
 }
 \seealso{

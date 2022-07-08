@@ -40,7 +40,9 @@ see parameter \code{cmd}.
 \item A provenance record using \href{https://www.w3.org/TR/prov-o/}{Prov-O}
 (a W3C recommendation) nested within \code{prov:wasGeneratedBy} is added.
 In RDF Turtle representation, the record would have the following structure
-(cf. \href{http://purl.obolibrary.org/obo/IAO_0000591}{obo:IAO_0000591}):\if{html}{\out{<div class="ttl">}}\preformatted{:nexml prov:wasGeneratedBy [
+(cf. \href{http://purl.obolibrary.org/obo/IAO_0000591}{obo:IAO_0000591}):
+
+\if{html}{\out{<div class="sourceCode ttl">}}\preformatted{:nexml prov:wasGeneratedBy [
   prov:endedAtTime "2019-06-20 15:09:08 GMT" ;
   prov:wasAssociatedWith [
     a obo:IAO_0000591 ;
