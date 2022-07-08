@@ -227,8 +227,14 @@ anatomy_ontology_iris <- local({
                        matchBy = c("rdfs:label"),
                        matchTypes = c("exact", "partial"),
                        limit = 200)
+      # Include terms with labels begin with "anatomical structure"
+      # Exclude terms with labels containing "quality" or "abnormal" to remove PATO and ZP
       res <- dplyr::filter_at(res, "label",
-                              all_vars(startsWith(., "anatomical structure")))
+                              all_vars(
+                                startsWith(., "anatomical structure")
+                                & !grepl("quality", .)
+                                & !grepl("abnormal", .)
+                             ))
       .iris <<- unique(res$isDefinedBy)
     }
     .iris
