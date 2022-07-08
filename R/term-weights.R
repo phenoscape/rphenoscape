@@ -53,7 +53,7 @@
 #' @export
 term_freqs <- function(x,
                        as = c("phenotype", "entity"),
-                       corpus = c("taxa", "states", "taxon_annotations", "gene_annotations", "genes"),
+                       corpus = c("taxa", "states", "genes", "taxon_annotations", "gene_annotations"),
                        decodeIRI = FALSE,
                        ...) {
   as <- match.arg(as, several.ok = TRUE)
@@ -101,7 +101,7 @@ term_freqs <- function(x,
 #' @export
 corpus_size <- local({
   .sizes <- list()
-  function(corpus = c("taxa", "states")) {
+  function(corpus = c("taxa", "states", "genes")) {
     corpus <- match.arg(corpus)
     res <- get_json_data(pkb_api("/similarity/corpus_size"),
                          query = list(corpus = corpus))

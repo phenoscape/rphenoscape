@@ -63,12 +63,7 @@ test_that("Resnik similarity", {
   phens <- get_phenotypes("basihyal bone", taxon = "Cyprinidae")
   subs.mat <- subsumer_matrix(phens$id, .colnames = "label", .labels = phens$label,
                               preserveOrder = TRUE)
-  s <- unique(c(sample(1:nrow(subs.mat), size = 10),
-                match(phens$id, rownames(subs.mat))))
-  subs1 <- rownames(subs.mat)[s]
-  subs.mat1 <- subs.mat[s,]
-  rownames(subs.mat1) <- subs1
-  sm.ic <- resnik_similarity(subs.mat1,
+  sm.ic <- resnik_similarity(subs.mat,
                              wt_args = list(as = "phenotype", corpus = "taxa"))
   testthat::expect_equal(dim(sm.ic), c(nrow(phens), nrow(phens)))
   testthat::expect_true(all(sm.ic > 0))

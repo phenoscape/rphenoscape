@@ -6,8 +6,8 @@
 \usage{
 term_freqs(
   x,
-  as = c("phenotype", "entity", "quality"),
-  corpus = c("taxa", "taxon_annotations", "gene_annotations", "genes"),
+  as = c("phenotype", "entity"),
+  corpus = c("taxa", "states", "genes", "taxon_annotations", "gene_annotations"),
   decodeIRI = FALSE,
   ...
 )
@@ -73,5 +73,5 @@ only supported value for the \code{as} parameter is "phenotype" since "entity" a
 \examples{
 phens <- get_phenotypes(entity = "basihyal bone")
 term_freqs(phens$id, as = "phenotype", corpus = "taxa")
-term_freqs(phens$id, as = "phenotype", corpus = "genes")
+term_freqs(phens$id, as = "phenotype", corpus = "states")
 }

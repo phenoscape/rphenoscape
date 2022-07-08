@@ -4,15 +4,10 @@
 \alias{corpus_size}
 \title{Obtain the size of different corpora}
 \usage{
-corpus_size(
-  corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes")
-)
+corpus_size(corpus = c("taxa", "states", "genes"))
 }
 \arguments{
-\item{corpus}{the name of the corpus, currently one of "taxon_annotations",
-"taxa", "gene_annotations", and "genes". (At present "gene_annotations" is
-pending support by the Phenoscape API.) Unambiguous abbreviations are
-acceptable.}
+\item{corpus}{the name of the corpus, currently one of "taxa", or "states".}
 }
 \value{
 the size of the specified corpus as an integer number.
@@ -28,5 +23,5 @@ have those changes be reflected.
 }
 \examples{
 corpus_size("taxa")
-corpus_size("taxon_annotations")
+corpus_size("states")
 }
