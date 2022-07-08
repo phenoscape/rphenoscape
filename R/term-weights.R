@@ -70,7 +70,6 @@ term_freqs <- function(x,
     if (ontology_terms_type == "entity") {
       ontology_terms_type <- "anatomical_entity"
     }
-    corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
     query <- list(terms = as.character(jsonlite::toJSON(x)),
                   corpus = corpus,
                   type = ontology_terms_type)
