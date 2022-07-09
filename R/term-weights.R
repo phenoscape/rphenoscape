@@ -61,13 +61,14 @@ term_freqs <- function(x,
   if (decodeIRI) stop("Decoding an IRI is no longer supported.")
   if (length(as) > 1 && length(as) != length(x))
     stop("'as' must be a single value, or have the same length as 'x'", call. = FALSE)
-
+  if (length(unique(as)) != 1)
+    stop("'as' currently requires all values to be the same", call. = FALSE)
   if (corpus == "taxa" || corpus == "genes" || corpus == "states") {
-    if (any(as != "phenotype"))
-      stop("corpus '", corpus, "' requires phenotype terms", call. = FALSE)
     ctotal <- corpus_size(corpus = corpus)
     corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
-    ontology_terms_type <- as
+    # for now 'as' must contain the same value so use the first one since
+    # /similarity/frequency type field only allows one value
+    ontology_terms_type <- as[1]
     if (ontology_terms_type == "entity") {
       ontology_terms_type <- "anatomical_entity"
     }

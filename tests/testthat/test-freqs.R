@@ -102,21 +102,51 @@ test_that("obtaining/calculating term frequencies", {
   testthat::expect_true(all(wt >= 0))
   testthat::expect_true(all(wt <= 1))
 
-  # check that the corpus defaults to "taxa"
+  # check that the corpus defaults to "taxa" passing phenotype IRIS
   wt1 <- term_freqs(phens$id, as = "phenotype", corpus = "taxa")
   testthat::expect_identical(wt1, wt)
 
-  # check that we can use genes corpus with term_freqs
+  # check that we can use genes corpus with term_freqs passing phenotype IRIS
   wt <- term_freqs(phens$id, as = "phenotype", corpus = "genes")
   testthat::expect_is(wt, "numeric")
   testthat::expect_length(wt, length(phens$id))
   testthat::expect_true(all(wt >= 0))
   testthat::expect_true(all(wt <= 1))
 
-  # check that we can use states corpus with term_freqs
+  # check that we can use states corpus with term_freqs passing phenotype IRIS
   wt <- term_freqs(phens$id, as = "phenotype", corpus = "states")
   testthat::expect_is(wt, "numeric")
   testthat::expect_length(wt, length(phens$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+
+  entities <- find_term("basihyal bone")
+  # check that we can use taxa corpus with term_freqs passing entity IRIS
+  wt <- term_freqs(entities$id, as = "entity", corpus = "taxa")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(entities$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+
+  # check that we can use genes corpus with term_freqs passing entity IRIS
+  wt <- term_freqs(entities$id, as = "entity", corpus = "genes")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(entities$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+
+  # check that we can use states corpus with term_freqs passing entity IRIS
+  wt <- term_freqs(entities$id, as = "entity", corpus = "states")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(entities$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+
+  # check that we can use states corpus with term_freqs passing entity IRIS with as vector
+  as_value = rep("entity", times=nrow(entities))
+  wt <- term_freqs(entities$id, as = as_value, corpus = "states")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(entities$id))
   testthat::expect_true(all(wt >= 0))
   testthat::expect_true(all(wt <= 1))
 
@@ -127,8 +157,11 @@ test_that("obtaining/calculating term frequencies", {
   testthat::expect_error(term_freqs(phens$id, as = c(rep("phenotype",
                                                          times = nrow(phens)-1),
                                                      "auto")))
-  testthat::expect_error(term_freqs(phens$id, as = "entity", corpus = "taxa"))
   testthat::expect_error(term_freqs(phens$id, as = "quality", corpus = "taxa"))
+  # check that mismatched as values raises an error
+  as_value = rep("entity", times=nrow(entities))
+  as_value[1] <- "phenotype"
+  testthat::expect_error(term_freqs(entities$id, as = as_value, corpus = "states"))
 })
 
 test_that("term frequencies for post-comp subsumers of entities", {
