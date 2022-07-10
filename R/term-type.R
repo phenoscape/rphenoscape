@@ -1,19 +1,31 @@
 #' Determine the general category of terms
 #'
-#' Terms in the Phenoscape KB fall into different general categories: entity,
-#' quality, phenotype (which typically are entity-quality compositions), and
-#' taxon. The category is sometimes needed to plug a term IRI into the right
-#' parameter for a function or API call.
+#' Terms in the Phenoscape KB fall into different general categories: entity
+#' (anatomical entities), quality, phenotype (which typically are entity-quality
+#' compositions), and taxon. The category is sometimes needed to plug a term IRI
+#' into the right parameter for a function or API call.
 #'
-#' The implementation will first try infer the category from the object type
-#' and the ontology for terms of certain OBO ontologies. Where that fails
-#' it will rely subsumption by specific upper ontology terms, specifically
-#' the BFO terms "independent continuant" (for entity terms) and "quality"
-#' (for quality terms).
+#' The implementation uses the following successive steps until a determination
+#' is made, or all possibilities are exhausted:
+#' - Try infer the category from the object type and the ontology for terms of
+#'   certain OBO ontologies.
+#' - Consider subsumption by specific upper ontology terms, specifically
+#'   the BFO terms "independent continuant" (for entity terms) and "quality"
+#'   (for quality terms).
+#' - If superclasses are retrievable and any of them has a label starting with
+#'   "phenotype of", determine category as phenotype.
+#' - If superclasses are retrievable, apply the algorithm recursively to each
+#'   superclass until a positive determination is made.
+#' - If subclasses are retrievable, apply the algorithm recursively to each
+#'   subclass until a positive determination is made.
+#'
+#' Due to requiring potentially multiple KB API calls per term for those for which
+#' the first step fails, this algorithm can be slow.
 #' @param x a vector of one or more term IRIs, or a list of such IRIs or term
 #'   objects (such as phenotype objects)
 #' @return A character vector with the term categories ("entity", "quality",
-#'   "phenotype", or "taxon") of the terms in the input list.
+#'   "phenotype", or "taxon") of the terms in the input list. The category is
+#'   NA for terms for which no determination could be made.
 #' @examples
 #' term_category(c("http://purl.obolibrary.org/obo/UBERON_0011618",
 #'                 "http://purl.obolibrary.org/obo/PATO_0002279",
@@ -52,11 +64,31 @@ term_category <- function(x) {
         else if (any(isE))
           "entity"
         else {
-          subClasses <- term_classification(term, as = NA, verbose = FALSE)$superClassOf
-          if (length(subClasses) > 0)
-            term_category(subClasses[1,"id"])
-          else
+          ti <- as.terminfo(term, withClassification = TRUE)
+          if (is.null(ti$classification))
             NA
+          else {
+            categ <- NA
+            classif_dfs <- c("subClassOf", "superClassOf")
+            for (classif in classif_dfs) {
+              classif_ds <- ti$classification[[classif]]
+              if ((! is.data.frame(classif_ds)) || nrow(classif_ds) == 0) break
+              if (any(startsWith(ifelse(is.character(classif_ds$label), classif_ds$label, ""),
+                                 "phenotype of"))) {
+                categ <- "phenotype"
+                break
+              } else {
+                for (cls in classif_ds$id) {
+                  categ <- term_category(cls)
+                  if (! is.na(categ)) {
+                    break
+                  }
+                }
+              }
+              if (! is.na(categ)) break
+            }
+            categ
+          }
         }
       }
     })
