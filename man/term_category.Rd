@@ -30,6 +30,9 @@ certain OBO ontologies.
 \item Consider subsumption by specific upper ontology terms, specifically
 the BFO terms "independent continuant" (for entity terms) and "quality"
 (for quality terms).
+\item If a label can be obtained, and it matches the pattern "p some X" with
+p being a property used for composing classes (e.g., part of, has part, etc),
+extract X and recursively apply the algorithm to X.
 \item If superclasses are retrievable and any of them has a label starting with
 "phenotype of", determine category as phenotype.
 \item If superclasses are retrievable, apply the algorithm recursively to each

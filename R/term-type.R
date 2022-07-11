@@ -12,12 +12,13 @@
 #' - Consider subsumption by specific upper ontology terms, specifically
 #'   the BFO terms "independent continuant" (for entity terms) and "quality"
 #'   (for quality terms).
+#' - If a label can be obtained, and it matches the pattern "p some X" with
+#'   p being a property used for composing classes (e.g., part of, has part, etc),
+#'   extract X and recursively apply the algorithm to X.
 #' - If superclasses are retrievable and any of them has a label starting with
 #'   "phenotype of", determine category as phenotype.
 #' - If superclasses are retrievable, apply the algorithm recursively to each
 #'   superclass until a positive determination is made.
-#' - If subclasses are retrievable, apply the algorithm recursively to each
-#'   subclass until a positive determination is made.
 #'
 #' Due to requiring potentially multiple KB API calls per term for those for which
 #' the first step fails, this algorithm can be slow.
@@ -48,52 +49,82 @@ term_category <- function(x) {
   # for those remaining unresolved, try to determine by upper ontology ancestor
   terms <- x[is.na(types)]
   if (length(terms) > 0) {
-    types[is.na(types)] <- sapply(terms, function(term) {
-      if (term %in% entity_roots())
-        "entity"
-      else if (term %in% quality_roots())
-        "quality"
-      else if (any(startsWith(term, semweb_ns())))
-        "entity"
-      else {
-        isE <- is_ancestor(term, candidates = entity_roots(), includeRels = "part_of")
-        if (all(isE))
-          "entity"
-        else if (any(is_ancestor(term, candidates = quality_roots())))
-          "quality"
-        else if (any(isE))
-          "entity"
-        else {
-          ti <- as.terminfo(term, withClassification = TRUE)
-          if (is.null(ti$classification))
-            NA
-          else {
-            categ <- NA
-            classif_dfs <- c("subClassOf", "superClassOf")
-            for (classif in classif_dfs) {
-              classif_ds <- ti$classification[[classif]]
-              if ((! is.data.frame(classif_ds)) || nrow(classif_ds) == 0) break
-              if (any(startsWith(ifelse(is.character(classif_ds$label), classif_ds$label, ""),
-                                 "phenotype of"))) {
-                categ <- "phenotype"
-                break
-              } else {
-                for (cls in classif_ds$id) {
-                  categ <- term_category(cls)
-                  if (! is.na(categ)) {
-                    break
-                  }
-                }
-              }
-              if (! is.na(categ)) break
-            }
-            categ
-          }
-        }
-      }
-    })
+    types[is.na(types)] <- sapply(terms, term_category_detective)
   }
   types
+}
+
+#' Perform some detective work to determine the category of a term
+#'
+#' This function does the following steps as part of the algorithm used by
+#' [term_category()].
+#' - If a label can be obtained, and it matches the pattern "p some X" with
+#'   p being a property used for composing classes (e.g., part of, has part, etc),
+#'   extract X and recursively apply the algorithm to X.
+#' - If superclasses are retrievable and any of them has a label starting with
+#'   "phenotype of", determine category as phenotype.
+#' - If superclasses are retrievable, apply the algorithm recursively to each
+#'   superclass until a positive determination is made.
+#' @param term The IRI of the term to do detective work for.
+#' @return The term category as a character vector, or NA if category determination
+#' was unsuccessful.
+#' @seealso [term_category()]
+#' @noRd
+term_category_detective <- function(term) {
+  if (term %in% entity_roots())
+    "entity"
+  else if (term %in% quality_roots())
+    "quality"
+  else if (any(startsWith(term, semweb_ns())))
+    "entity"
+  else {
+    isE <- is_ancestor(term, candidates = entity_roots(), includeRels = "part_of")
+    if (all(isE))
+      "entity"
+    else if (any(is_ancestor(term, candidates = quality_roots())))
+      "quality"
+    else if (any(isE))
+      "entity"
+    else {
+      ti <- term_classification(term)
+      if (length(ti) == 0)
+        NA
+      else {
+        categ <- NA
+        # if {part of, has part, develops from} some X, then should be of same
+        # category as X (provided we can find X)
+        ent_expr_prefixes <- c("part of some ", "has part some ", "develops from some ")
+        if (! is.null(ti$label)) {
+          label_matches <- startsWith(ti$label, ent_expr_prefixes)
+          if (any(label_matches)) {
+            cand_ent_label <- sub(ent_expr_prefixes[label_matches], "", ti$label)
+            cand_ents <- find_term(cand_ent_label, matchBy = "rdfs:label", matchTypes = c("exact"))
+            # no match by default returns NA
+            if (is.data.frame(cand_ents))
+              categ <- term_category(cand_ents$id[1])
+          }
+        }
+        # is that failed
+        if (is.na(categ)) {
+          # if subClassOf of X, then should be of same category as X
+          superCls <- ti$subClassOf
+          if (is.data.frame(superCls) && nrow(superCls) > 0) {
+            # are the superclasses with labels starting with "phenotype of"?
+            if (any(startsWith(as.character(superCls$label), "phenotype of"))) {
+              categ <- "phenotype"
+            } else {
+              # otherwise recursively try superclasses
+              for (cls in superCls$id) {
+                categ <- term_category(cls)
+                if (! is.na(categ)) break
+              }
+            }
+          }
+        }
+        categ
+      }
+    }
+  }
 }
 
 entity_roots <- function() {
