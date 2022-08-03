@@ -6,7 +6,8 @@
 #' Depending on the corpus selected, the frequencies are queried directly
 #' from pre-computed counts through the KB API, or are calculated based on
 #' matching row counts obtained from query results. Currently, the Phenoscape KB
-#' has precomputed counts for corpora "taxa" and "genes".
+#' has precomputed counts for corpora "annotated-taxa","taxon-variation", "genes" and "states".
+#'
 #' @note
 #' Term categories being accurate is vital for obtaining correct counts and
 #' thus frequencies. In earlier (<=0.2.x) releases, auto-determining term
@@ -37,13 +38,17 @@
 #' @param corpus the name of the corpus for determining how to count, currently one of the following:
 #'   - "taxon_annotations" (counts phenotype annotations to character states and thus taxa),
 #'   - "states" (counts character states),
-#'   - "taxa" (counts taxa),
+#'   - "taxon-variation" (counts taxa among variation profiles),
+#'   - "annotated-taxa" (counts taxa with annotations),
 #'   - "gene_annotations" (counts phenotype annotations to genes), and
 #'   - "genes" (counts genes)
 #'   
-#'   Unambiguous abbreviations of corpus names are acceptable. The default is "taxa".
+#'   Unambiguous abbreviations of corpus names are acceptable. The default is "taxon-variation".
 #'   Note that at present "taxon_annotations" and "gene_annotations" are not yet
 #'   supported by the KB API and will thus result in an error.
+#'
+#'   Note that previously "taxa" was allowed as a corpus, but is no longer supported.
+#'   The "taxon-variation" corpus is the equivalent of the deprecated "taxa" corpus.
 #' @param decodeIRI boolean. This parameter is deprecated (as of v0.3.x) and must be set
 #'  to FALSE (the default). If TRUE is passed an error will be raised. In v0.2.x
 #'  when TRUE this parameter would attempt to decode post-composed entity IRIs.
@@ -60,21 +65,21 @@
 #' # see which phenotypes we have:
 #' phens$label
 #' # frequencies by counting taxa:
-#' freqs.t <- term_freqs(phens$id, as = "phenotype", corpus = "taxa")
+#' freqs.t <- term_freqs(phens$id, as = "phenotype", corpus = "taxon-variation")
 #' freqs.t
 #' # we can convert this to absolute counts:
-#' freqs.t * corpus_size("taxa")
+#' freqs.t * corpus_size("taxon-variation")
 #' # frequencies by counting character states:
 #' freqs.s <- term_freqs(phens$id, as = "phenotype", corpus = "states")
 #' freqs.s
 #' # and as absolute counts:
 #' freqs.s * corpus_size("states")
 #' # we can compare the absolute counts by computing a ratio
-#' freqs.s * corpus_size("states") / (freqs.t * corpus_size("taxa"))
+#' freqs.s * corpus_size("states") / (freqs.t * corpus_size("taxon-variation"))
 #' @export
 term_freqs <- function(x,
                        as = c("phenotype", "entity", "anatomical_entity", "quality"),
-                       corpus = c("taxa", "taxon_annotations", "gene_annotations", "genes", "states"),
+                       corpus = c("taxon-variation", "annotated-taxa", "taxon_annotations", "gene_annotations", "genes", "states"),
                        decodeIRI = FALSE,
                        ...) {
   as <- match.arg(as, several.ok = TRUE)
@@ -84,7 +89,7 @@ term_freqs <- function(x,
     stop("'as' must be a single value, or have the same length as 'x'", call. = FALSE)
   if (length(unique(as)) != 1)
     stop("'as' currently requires all values to be the same", call. = FALSE)
-  if (corpus == "taxa" || corpus == "genes" || corpus == "states") {
+  if (corpus == "annotated-taxa" || corpus == "taxon-variation" || corpus == "genes" || corpus == "states") {
     ctotal <- corpus_size(corpus = corpus)
     # for now 'as' must contain the same value so use the first one since
     # /similarity/frequency type field only allows one value
@@ -118,24 +123,29 @@ term_freqs <- function(x,
 #' @param corpus the name of the corpus, currently one of the following:
 #'   - "taxon_annotations" (counts phenotype annotations to character states and thus taxa),
 #'   - "states" (counts character states),
-#'   - "taxa" (counts taxa),
+#'   - "taxon-variation" (counts taxa among variation profiles),
+#'   - "annotated-taxa" (counts taxa with annotations),
 #'   - "gene_annotations" (counts phenotype annotations to genes), and
 #'   - "genes" (counts genes)
 #'   
 #'   Note that at present "gene_annotations" is not yet supported by the Phenoscape API.
 #'   Unambiguous abbreviations of corpus names are acceptable.
+#'
+#'   Note that previously "taxa" was allowed as a corpus, but is no longer supported.
+#'   The "taxon-variation" corpus is the equivalent of the deprecated "taxa" corpus.
 #' @return The total size of the specified corpus as an integer number.
 #' @examples
-#' corpus_size("taxa")
+#' corpus_size("taxon-variation")
+#' corpus_size("annotated-taxa")
 #' corpus_size("states")
 #' corpus_size("genes")
 #' @export
 corpus_size <- local({
   .sizes <- list()
-  function(corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes", "states")) {
+  function(corpus = c("taxon_annotations", "taxon-variation", "annotated-taxa", "gene_annotations", "genes", "states")) {
     corpus <- match.arg(corpus)
     if (is.null(.sizes[[corpus]])) {
-      if (corpus == "taxa" || corpus == "genes"|| corpus == "states") {
+      if (corpus == "taxon-variation" || corpus == "annotated-taxa" || corpus == "genes"|| corpus == "states") {
         res <- get_json_data(pkb_api("/similarity/corpus_size"),
                              query = list(corpus = corpus))
         .sizes[[corpus]] <- res$total

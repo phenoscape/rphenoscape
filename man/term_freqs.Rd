@@ -7,7 +7,8 @@
 term_freqs(
   x,
   as = c("phenotype", "entity", "anatomical_entity", "quality"),
-  corpus = c("taxa", "taxon_annotations", "gene_annotations", "genes", "states"),
+  corpus = c("taxon-variation", "annotated-taxa", "taxon_annotations",
+    "gene_annotations", "genes", "states"),
   decodeIRI = FALSE,
   ...
 )
@@ -30,14 +31,18 @@ doing so will thus raise an error.}
 \itemize{
 \item "taxon_annotations" (counts phenotype annotations to character states and thus taxa),
 \item "states" (counts character states),
-\item "taxa" (counts taxa),
+\item "taxon-variation" (counts taxa among variation profiles),
+\item "annotated-taxa" (counts taxa with annotations),
 \item "gene_annotations" (counts phenotype annotations to genes), and
 \item "genes" (counts genes)
 }
 
-Unambiguous abbreviations of corpus names are acceptable. The default is "taxa".
+Unambiguous abbreviations of corpus names are acceptable. The default is "taxon-variation".
 Note that at present "taxon_annotations" and "gene_annotations" are not yet
-supported by the KB API and will thus result in an error.}
+supported by the KB API and will thus result in an error.
+
+Note that previously "taxa" was allowed as a corpus, but is no longer supported.
+The "taxon-variation" corpus is the equivalent of the deprecated "taxa" corpus.}
 
 \item{decodeIRI}{boolean. This parameter is deprecated (as of v0.3.x) and must be set
 to FALSE (the default). If TRUE is passed an error will be raised. In v0.2.x
@@ -62,7 +67,7 @@ the selected corpus and the type of the terms.
 Depending on the corpus selected, the frequencies are queried directly
 from pre-computed counts through the KB API, or are calculated based on
 matching row counts obtained from query results. Currently, the Phenoscape KB
-has precomputed counts for corpora "taxa" and "genes".
+has precomputed counts for corpora "annotated-taxa","taxon-variation", "genes" and "states".
 }
 \note{
 Term categories being accurate is vital for obtaining correct counts and
@@ -86,15 +91,15 @@ phens <- get_phenotypes(entity = "basihyal bone")
 # see which phenotypes we have:
 phens$label
 # frequencies by counting taxa:
-freqs.t <- term_freqs(phens$id, as = "phenotype", corpus = "taxa")
+freqs.t <- term_freqs(phens$id, as = "phenotype", corpus = "taxon-variation")
 freqs.t
 # we can convert this to absolute counts:
-freqs.t * corpus_size("taxa")
+freqs.t * corpus_size("taxon-variation")
 # frequencies by counting character states:
 freqs.s <- term_freqs(phens$id, as = "phenotype", corpus = "states")
 freqs.s
 # and as absolute counts:
 freqs.s * corpus_size("states")
 # we can compare the absolute counts by computing a ratio
-freqs.s * corpus_size("states") / (freqs.t * corpus_size("taxa"))
+freqs.s * corpus_size("states") / (freqs.t * corpus_size("taxon-variation"))
 }
