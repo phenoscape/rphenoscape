@@ -89,12 +89,12 @@ test_that("obtaining corpus size", {
   testthat::expect_gt(s, 100)
   testthat::expect_lt(s, 100000)
 
-  s <- corpus_size("taxon_annotations")
+  s <- corpus_size("taxon-annotations")
   testthat::expect_gt(s, 10000)
   testthat::expect_lt(s, 5000000)
   testthat::expect_equal(corpus_size(), s)
 
-  testthat::expect_error(corpus_size("gene_annotations"))
+  testthat::expect_error(corpus_size("gene-annotations"))
   testthat::expect_error(corpus_size("foobar"))
 })
 
@@ -182,8 +182,8 @@ test_that("term frequencies for post-comp subsumers of entities", {
   # reduce to post-comps and test a handful
   onts <- obo_prefix(subs)
   subs <- subs[is.na(onts)]
-  # Expect an error since the taxon_annotations corpus is no longer supported.
-  testthat::expect_error(term_freqs(subs, as = "entity", corpus = "taxon_annotations"), 
-                         "corpus 'taxon_annotations' is currently unsupported")
+  # Expect an error since the taxon-annotations corpus is not yet supported.
+  testthat::expect_error(term_freqs(subs, as = "entity", corpus = "taxon-annotations"), 
+                         "corpus 'taxon-annotations' is currently unsupported")
 })
 
