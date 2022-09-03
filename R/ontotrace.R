@@ -28,7 +28,8 @@
 #'   other inexact match results in a warning, but is not considered a failure.
 #'   If FALSE, query execution will continue with the taxon and entity terms
 #'   that did resolve to IRI. Default is TRUE, meaning any resolution failure will
-#'   result in an error.
+#'   result in an error. _All_ taxon or entity names failing resolution to IRIs will
+#'   result in an error regardless. 
 #' @param subsume logical, optional. If TRUE (the default), taxon and entity parameters include their logical descendants.
 #'   Ignored if entity or taxon is a OWL Manchester expression object (which always include logical descendants).
 #'   If set to FALSE, _only_ data for the given taxa and entities will be returned.
@@ -140,11 +141,13 @@ get_ontotrace_data <- function(taxon, entity,
 
 apply_term_iris <- function(names, as, term_type, exactOnly = FALSE, strict = FALSE) {
   term_iris <- lapply(names, FUN = get_term_iri, as = as, exactOnly = exactOnly)
-  if (any(is.na(term_iris))) {
-    term_iris <- term_iris[! is.na(term_iris)]
+  if (all(is.na(term_iris)))
+    stop("All ", term_type, " names failed to resolve to IRI, unable to continue", call. = FALSE)
+  else if (any(is.na(term_iris))) {
     if (strict) {
       stop("One or more ", term_type, " names failed to resolve to IRI, unable to continue", call. = FALSE)  
     }
+    term_iris <- term_iris[! is.na(term_iris)]
   }
   term_iris
 }

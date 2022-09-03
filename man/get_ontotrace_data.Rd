@@ -36,7 +36,8 @@ any taxon or entity names to IRI as input error. Resolution by partial or
 other inexact match results in a warning, but is not considered a failure.
 If FALSE, query execution will continue with the taxon and entity terms
 that did resolve to IRI. Default is TRUE, meaning any resolution failure will
-result in an error.}
+result in an error. \emph{All} taxon or entity names failing resolution to IRIs will
+result in an error regardless.}
 
 \item{subsume}{logical, optional. If TRUE (the default), taxon and entity parameters include their logical descendants.
 Ignored if entity or taxon is a OWL Manchester expression object (which always include logical descendants).

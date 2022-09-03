@@ -9,8 +9,13 @@ test_that("Ontotrace basics", {
   testthat::expect_s4_class(multi_nex, 'nexml')
   
   testthat::expect_error(
-    get_ontotrace_data(taxon = "Ictalurus TT", entity = "fin",
-                       relation = "other relation"))
+    suppressWarnings(get_ontotrace_data(taxon = "Ictalurus TT", entity = "fin",
+                                        relation = "other relation")))
+  # even in relaxed mode, can't fail lookup for _all_ taxa
+  testthat::expect_error(
+    suppressWarnings(get_ontotrace_data(taxon = "Ictalurus TT", entity = "fin",
+                                        relation = "other relation",
+                                        strict = FALSE)))
   testthat::expect_warning(
     nx <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus XXX"),
                              entity = c("fin", "spine"),
