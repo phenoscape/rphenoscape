@@ -5,21 +5,12 @@
 \title{Obtain the size of different corpora}
 \usage{
 corpus_size(
-  corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes", "states")
+  corpus = c("taxon-annotations", "taxon-variation", "annotated-taxa",
+    "gene-annotations", "genes", "states")
 )
 }
 \arguments{
-\item{corpus}{the name of the corpus, currently one of the following:
-\itemize{
-\item "taxon_annotations" (counts phenotype annotations to character states and thus taxa),
-\item "states" (counts character states),
-\item "taxa" (counts taxa),
-\item "gene_annotations" (counts phenotype annotations to genes), and
-\item "genes" (counts genes)
-}
-
-Note that at present "gene_annotations" is not yet supported by the Phenoscape API.
-Unambiguous abbreviations of corpus names are acceptable.}
+\item{corpus}{the name of the corpus, see \code{\link[=term_freqs]{term_freqs()}} for allowed values.}
 }
 \value{
 The total size of the specified corpus as an integer number.
@@ -35,7 +26,8 @@ Thus, if the Phenoscape KB changes, a session needs to be restarted to
 have those changes be reflected.
 }
 \examples{
-corpus_size("taxa")
+corpus_size("taxon-variation")
+corpus_size("annotated-taxa")
 corpus_size("states")
 corpus_size("genes")
 }

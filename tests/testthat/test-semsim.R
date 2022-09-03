@@ -64,11 +64,11 @@ test_that("Resnik similarity", {
   subs.mat <- subsumer_matrix(phens$id, .colnames = "label", .labels = phens$label,
                               preserveOrder = TRUE)
   sm.ic <- resnik_similarity(subs.mat,
-                             wt_args = list(as = "phenotype", corpus = "taxa"))
+                             wt_args = list(as = "phenotype", corpus = "taxon-variation"))
   testthat::expect_equal(dim(sm.ic), c(nrow(phens), nrow(phens)))
   testthat::expect_true(all(sm.ic > 0))
-  testthat::expect_true(all(sm.ic <= -log10(1 / corpus_size("taxa"))))
-  termICs <- -log10(term_freqs(phens$id, as = "phenotype", corpus = "taxa"))
+  testthat::expect_true(all(sm.ic <= -log10(1 / corpus_size("taxon-variation"))))
+  termICs <- -log10(term_freqs(phens$id, as = "phenotype", corpus = "taxon-variation"))
   testthat::expect_equivalent(diag(sm.ic), termICs)
 })
 
@@ -132,7 +132,7 @@ test_that("profile similarity with Resnik", {
     if (length(phen$eqs$related_entities) > 0) "relational" else "monadic"
   }))
 
-  freqs <- term_freqs(rownames(subs.mat), as = "phenotype", corpus = "taxa")
+  freqs <- term_freqs(rownames(subs.mat), as = "phenotype", corpus = "taxon-variation")
   toKeep <- ! (is.na(freqs) | freqs == 0)
   freqs <- freqs[toKeep]
   subs.mat <- subs.mat[toKeep,]
@@ -141,7 +141,7 @@ test_that("profile similarity with Resnik", {
   testthat::expect_equal(colnames(sm), levels(phens.f))
   testthat::expect_equal(rownames(sm), levels(phens.f))
   testthat::expect_gt(min(sm), 0)
-  testthat::expect_lte(max(sm), -log10(1 / corpus_size("taxa")))
+  testthat::expect_lte(max(sm), -log10(1 / corpus_size("taxon-variation")))
 
   # for Resnik as metric, group-wise is the same as pair-wise with maxIC
   sm1 <- profile_similarity(resnik_similarity, subs.mat, wt = -log10(freqs),

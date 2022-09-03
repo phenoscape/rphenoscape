@@ -73,7 +73,11 @@ test_that("success rate for entity subsumer terms", {
 })
 
 test_that("obtaining corpus size", {
-  s <- corpus_size("taxa")
+  s <- corpus_size("taxon-variation")
+  testthat::expect_gt(s, 100)
+  testthat::expect_lt(s, 10000)
+
+  s <- corpus_size("annotated-taxa")
   testthat::expect_gt(s, 100)
   testthat::expect_lt(s, 10000)
 
@@ -85,12 +89,12 @@ test_that("obtaining corpus size", {
   testthat::expect_gt(s, 100)
   testthat::expect_lt(s, 100000)
 
-  s <- corpus_size("taxon_annotations")
+  s <- corpus_size("taxon-annotations")
   testthat::expect_gt(s, 10000)
   testthat::expect_lt(s, 5000000)
   testthat::expect_equal(corpus_size(), s)
 
-  testthat::expect_error(corpus_size("gene_annotations"))
+  testthat::expect_error(corpus_size("gene-annotations"))
   testthat::expect_error(corpus_size("foobar"))
 })
 
@@ -102,8 +106,8 @@ test_that("obtaining/calculating term frequencies", {
   testthat::expect_true(all(wt >= 0))
   testthat::expect_true(all(wt <= 1))
 
-  # check that the corpus defaults to "taxa" passing phenotype IRIS
-  wt1 <- term_freqs(phens$id, as = "phenotype", corpus = "taxa")
+  # check that the corpus defaults to "taxon-variation" passing phenotype IRIS
+  wt1 <- term_freqs(phens$id, as = "phenotype", corpus = "taxon-variation")
   testthat::expect_identical(wt1, wt)
 
   # check that we can use genes corpus with term_freqs passing phenotype IRIS
@@ -122,7 +126,7 @@ test_that("obtaining/calculating term frequencies", {
 
   entities <- find_term("basihyal bone")
   # check that we can use taxa corpus with term_freqs passing entity IRIS
-  wt <- term_freqs(entities$id, as = "entity", corpus = "taxa")
+  wt <- term_freqs(entities$id, as = "entity", corpus = "taxon-variation")
   testthat::expect_is(wt, "numeric")
   testthat::expect_length(wt, length(entities$id))
   testthat::expect_true(all(wt >= 0))
@@ -150,6 +154,14 @@ test_that("obtaining/calculating term frequencies", {
   testthat::expect_true(all(wt >= 0))
   testthat::expect_true(all(wt <= 1))
 
+  # check that we can use annotated-taxa corpus with term_freqs passing entity IRIS with as vector
+  as_value = rep("entity", times=nrow(entities))
+  wt <- term_freqs(entities$id, as = as_value, corpus = "annotated-taxa")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(entities$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+  
   # checking of error conditions
   testthat::expect_error(term_freqs(phens$id, as = "foobar"))
   testthat::expect_error(term_freqs(phens$id, corpus = "foobar"))
@@ -157,7 +169,7 @@ test_that("obtaining/calculating term frequencies", {
   testthat::expect_error(term_freqs(phens$id, as = c(rep("phenotype",
                                                          times = nrow(phens)-1),
                                                      "auto")))
-  testthat::expect_error(term_freqs(phens$id, as = "quality", corpus = "taxa"))
+  testthat::expect_error(term_freqs(phens$id, as = "quality", corpus = "taxon-variation"))
   # check that mismatched as values raises an error
   as_value = rep("entity", times=nrow(entities))
   as_value[1] <- "phenotype"
@@ -170,8 +182,8 @@ test_that("term frequencies for post-comp subsumers of entities", {
   # reduce to post-comps and test a handful
   onts <- obo_prefix(subs)
   subs <- subs[is.na(onts)]
-  # Expect an error since the taxon_annotations corpus is no longer supported.
-  testthat::expect_error(term_freqs(subs, as = "entity", corpus = "taxon_annotations"), 
-                         "corpus 'taxon_annotations' is currently unsupported")
+  # Expect an error since the taxon-annotations corpus is not yet supported.
+  testthat::expect_error(term_freqs(subs, as = "entity", corpus = "taxon-annotations"), 
+                         "corpus 'taxon-annotations' is currently unsupported")
 })
 
