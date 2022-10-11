@@ -11,7 +11,8 @@ get_char_matrix(nex, otus_id = TRUE, states_as_labels = FALSE, verbose = FALSE)
 
 \item{otus_id}{logical, default TRUE, return a column with the otus block id.}
 
-\item{states_as_labels}{logical, default FALSE, when TRUE returns states as labels instead of symbols.}
+\item{states_as_labels}{logical, default FALSE, when TRUE returns states as labels instead of symbols.
+One can also use \code{\link[=state_symbols2labels]{state_symbols2labels()}} to translate symbols to labels later.}
 
 \item{verbose}{logical, default FALSE, If TRUE, messages informing about steps is printed.}
 }
@@ -34,10 +35,9 @@ slist <- get_studies(taxon = "Ictalurus australis", entity = "fin spine")
 nex <- get_study_data(slist$id[1])[[1]]
 # for brevity show only 6 character data columns and first 5 rows
 get_char_matrix(nex, otus_id = FALSE)[1:5,1:8]
-\dontrun{
 # same, but states as labels (this can take a while)
 get_char_matrix(nex, otus_id = FALSE, states_as_labels = TRUE)
-}
+
 }
 \seealso{
 \code{\link[=get_char_matrix_meta]{get_char_matrix_meta()}} to retrieve metadata for a nexml object.
