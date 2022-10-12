@@ -508,11 +508,14 @@ state_symbols2labels <- function(nex, charmat, metacolumns = c(1,2)) {
      %>% dplyr::inner_join(get_level(nex, "characters/format/char"),
                            by = c("states" = "states", "characters" = "characters"),
                            suffix = c(".state", ".char")))
-  polymorph <-
-    dplyr::inner_join(get_level(nex, "characters/format/states/polymorphic_state_set/member"),
-                      get_level(nex, "characters/format/states/polymorphic_state_set"),
-                      by = c("polymorphic_state_set" = "polymorphic_state_set",
-                             "states" = "states", "characters" = "characters"))
+  polymorph <- data.frame()
+  polymorp_mems <- get_level(nex, "characters/format/states/polymorphic_state_set/member")
+  if (nrow(polymorp_mems) > 0)
+    polymorph <- dplyr::inner_join(polymorp_mems,
+                                   get_level(nex, "characters/format/states/polymorphic_state_set"),
+                                   by = c("polymorphic_state_set" = "polymorphic_state_set",
+                                          "states" = "states",
+                                          "characters" = "characters"))
 
   # utility function for translating one column
   # (where first row is the column name, i.e., character)
