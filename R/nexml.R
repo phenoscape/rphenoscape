@@ -461,9 +461,11 @@ get_char_matrix <- function(nex, otus_id = TRUE, states_as_labels = FALSE, verbo
   
   m <- get_characters(nex, rownames_as_col = TRUE,
                       otu_id = TRUE, otus_id = otus_id)
-  if (states_as_labels)
-    state_symbols2labels(nex, charmat = m)
-  else
+  if (states_as_labels) {
+    metacols = c(1,2)
+    if (otus_id) metacols <- c(metacols, 3)
+    state_symbols2labels(nex, charmat = m, metacolumns = metacols)
+  } else
     m
 }
 
