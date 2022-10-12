@@ -83,14 +83,6 @@ get_studies <- function(taxon = NA, entity = NA, quality = NA,
   d
 }
 
-unique_label <- function(m) {
-  # this is dependent on <char/> being in
-  # the format of  character_*
-  cname <- colnames(m)[1]
-  c <- grepl('character', cname)
-  return(!c)
-}
-
 #' get_study_data
 #' @param study_ids, a list of study IDs.
 #' @param verbose logical: optional. If TRUE, prints messages prior to potentially
