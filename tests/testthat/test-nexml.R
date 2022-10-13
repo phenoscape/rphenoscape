@@ -182,3 +182,39 @@ test_that("adding provenance records works", {
   testthat::expect_match(get_metadata_values(nex2, props = "prov:value"),
                          "filter = ")
 })
+
+test_that("translating state symbols to labels works", {
+  nex <- nexml_read(system.file("examples", "ontotrace-result.xml", package = "rphenoscape"))
+  
+  m <- get_char_matrix(nex, otus_id = FALSE)
+  m_t <- state_symbols2labels(nex, m)
+  
+  # the untranslated and translated differ in every cell (aside from metadata columns)
+  testthat::expect_equal(sum(m[, -c(1,2)] != m_t[, -c(1,2)], na.rm = TRUE),
+                         nrow(m) * (ncol(m) - 2) - sum(is.na(m[, -c(1,2)])))
+  # the same cells should have a "x and y" value (x and y = two symbols or labels)
+  m_matches <- sapply(m[, -c(1,2)], function(x) grepl(" and ", x))
+  m_t_matches <- sapply(m_t[, -c(1,2)], function(x) grepl(" and ", x))
+  testthat::expect_identical(m_t_matches, m_matches)
+  # and these should be at the position of polymorphic cells
+  eq <- function(a, b) ifelse(is.na(a) | is.na(b), FALSE, a == b)
+  poly_cell <- eq(RNeXML::get_characters(nex,
+                                         rownames_as_col = TRUE,
+                                         include_state_types = TRUE)$state_types, "polymorphic")
+  poly_cell <- poly_cell[, -1] # drop taxa column
+  testthat::expect_equal(m_t_matches, poly_cell)
+  # also works if additional metadata columns
+  m2 <- get_char_matrix(nex, otus_id = TRUE)
+  m2_t <- state_symbols2labels(nex, m2, metacolumns = c(1,2,3))
+  testthat::expect_equal(sapply(m2_t[, -c(1,2,3)], function(x) grepl(" and ", x)), poly_cell)
+  # also works with no metadata columns at all
+  m2 <- RNeXML::get_characters(nex) # default is taxa are row labels (not column), no otu or otus IDs
+  m2_t <- state_symbols2labels(nex, m2, metacolumns = c())
+  testthat::expect_equal(sapply(m2_t, function(x) grepl(" and ", x)), poly_cell)
+
+  # does not error (though it will warn) if state labels are missing
+  nex1 <- nexml_read(system.file("examples", "comp_analysis.xml", package = "rphenoscape"))
+  mc <- get_char_matrix(nex1, otus_id = FALSE)
+  testthat::expect_warning(mc_t <- state_symbols2labels(nex1, mc), "cannot translate .*symbols")
+  testthat::expect_equal(mc_t, mc)
+})
