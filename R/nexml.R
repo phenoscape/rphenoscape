@@ -476,6 +476,12 @@ get_char_matrix <- function(nex, otus_id = TRUE, states_as_labels = FALSE, verbo
 #' object, usually using [get_char_matrix()], and the nexml object is required
 #' for the translation.
 #'
+#' If state labels are missing for some characters, a warning will be issued.
+#' If the nexml object has no state labels at all, a warning will be issued and
+#' no translation will be attempted. If a symbol cannot be matched to a state
+#' definition in the nexml object, or if the matching state definition does not
+#' give a label for the state, the symbol will not be translated.
+#'
 #' @note If the nexml object contains multiple character matrices, currently the character labels
 #' must be distinct between them.
 #' @param nex the [nexml][RNeXML::nexml-class] object from which the character matrix was obtained
@@ -484,6 +490,12 @@ get_char_matrix <- function(nex, otus_id = TRUE, states_as_labels = FALSE, verbo
 #'   identifiers, etc), not character states. If not all of these columns are before all character
 #'   columns, then the returned matrix will move all of them to the front. The default is the first
 #'   two columns.
+#' @return
+#' A data.frame of the character matrix, with cells as state labels instead of symbols, and rows
+#' and columns in the same order as the input matrix (see parameter `metacolumns` for a possible exception).
+#' The data types of the columns may change as a result of translation, and even if no translation
+#' can take place (due to missing state labels) (although in the absence of translation a numeric
+#' type column should still have a numeric type).
 #' @examples
 #' # obtain a (synthetic) Ontotrace matrix:
 #' nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
@@ -499,15 +511,20 @@ get_char_matrix <- function(nex, otus_id = TRUE, states_as_labels = FALSE, verbo
 #' @importFrom dplyr inner_join  "%>%"
 #' @export
 state_symbols2labels <- function(nex, charmat, metacolumns = c(1,2)) {
-  # create a modified matrix where the metadata columns are removed and the first row is column names
-  mat <- rbind(colnames(charmat)[-metacolumns], charmat[, -metacolumns])
-
   # create lookup tables for character ID (by column name), state symbol, and polymorphic symbol
   states <- 
     (get_level(nex, "characters/format/states/state")[, c("symbol", "label", "state", "states", "characters")]
      %>% dplyr::inner_join(get_level(nex, "characters/format/char"),
                            by = c("states" = "states", "characters" = "characters"),
                            suffix = c(".state", ".char")))
+  # if there are no labels, there's nothing to be done
+  if (all(is.na(states$label.state))) {
+    warning("No state labels present in nexml object, cannot translate symbols", call. = FALSE)
+    return(charmat)
+  }
+  if (any(is.na(states$label.state))) {
+    warning("One or more discrete state(s) lack(s) labels, cannot translate corresponding symbols", call. = FALSE)
+  }
   polymorph <- data.frame()
   polymorp_mems <- get_level(nex, "characters/format/states/polymorphic_state_set/member")
   if (nrow(polymorp_mems) > 0)
@@ -519,14 +536,13 @@ state_symbols2labels <- function(nex, charmat, metacolumns = c(1,2)) {
 
   # utility function for translating one column
   # (where first row is the column name, i.e., character)
-  translate_symbol <- function(col) {
-    # find character matching column (character) label
-    states_for_char <- states[states$label.char == col[1], ]
+  translate_symbol <- function(col, charname) {
+    # find character matching column (character) name / label
+    states_for_char <- states[states$label.char == charname, ]
     if (nrow(states_for_char) == 0)
-      states_for_char <- states[states$char == col[1], ]
+      states_for_char <- states[states$char == charname, ]
     # map symbols to labels using the match table
-    # (but remove the first element, which isn't a symbol)
-    sapply(col[-1], function(x) {
+    sapply(col, function(x) {
       if(!is.na(x)) {
         labl <- states_for_char$label.state[states_for_char$symbol == x]
         if ((length(labl) == 0) && (nrow(polymorph) > 0)) {
@@ -537,13 +553,24 @@ state_symbols2labels <- function(nex, charmat, metacolumns = c(1,2)) {
                                                     & states_for_char$states %in% state_members$states],
                         collapse = " and ")
         }
-        labl
+        # if state symbol can't be matched or if label is missing, fall back to symbol
+        if (length(labl) == 0 || is.na(labl))
+          x
+        else
+          labl
       } else
         NA
     })
   }
+
+  # create a modified matrix where the metadata columns are removed
+  mat <- if (length(metacolumns) == 0)
+    charmat
+  else
+    charmat[, -metacolumns]
+
   # translate each column using the utility function, convert to data.frame
-  ret <- as.data.frame(apply(mat, 2, translate_symbol), stringsAsFactors = FALSE)
+  ret <- as.data.frame(mapply(translate_symbol, mat, colnames(mat)), stringsAsFactors = FALSE)
   # return after combining with the metadata columns
   return(cbind(charmat[, metacolumns], ret))
 }

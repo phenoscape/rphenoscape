@@ -16,11 +16,25 @@ identifiers, etc), not character states. If not all of these columns are before 
 columns, then the returned matrix will move all of them to the front. The default is the first
 two columns.}
 }
+\value{
+A data.frame of the character matrix, with cells as state labels instead of symbols, and rows
+and columns in the same order as the input matrix (see parameter \code{metacolumns} for a possible exception).
+The data types of the columns may change as a result of translation, and even if no translation
+can take place (due to missing state labels) (although in the absence of translation a numeric
+type column should still have a numeric type).
+}
 \description{
 Translates a character matrix using symbols for states to one using labels
 instead. The character matrix must have been obtained from a \link[RNeXML:nexml-class]{nexml}
 object, usually using \code{\link[=get_char_matrix]{get_char_matrix()}}, and the nexml object is required
 for the translation.
+}
+\details{
+If state labels are missing for some characters, a warning will be issued.
+If the nexml object has no state labels at all, a warning will be issued and
+no translation will be attempted. If a symbol cannot be matched to a state
+definition in the nexml object, or if the matching state definition does not
+give a label for the state, the symbol will not be translated.
 }
 \note{
 If the nexml object contains multiple character matrices, currently the character labels
