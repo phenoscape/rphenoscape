@@ -3,7 +3,7 @@ title: "RPhenoscape Intro"
 author: "Hong Xu"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{rphenoscape Intro}
+  %\VignetteIndexEntry{RPhenoscape Intro}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
