@@ -58,6 +58,14 @@ Once installed, the package can be loaded ("attached") as any other R package:
 library(rphenoscape)
 ```
 
+### Upgrading from an earlier version
+
+Until v1.x is released, upgrades from one minor (patch) release to another, i.e., from v0.x.n to v0.x.m where m > n, can be expected to be fully backwards compatible. Upgrading to a new major release, i.e., from v0.n.x to v0.m.y, where m > n, should be expected to be at least in part backwards incompatible.
+
+A backwards incompatible change may result in deprecation warnings being issued, or errors when using a no longer supported function. Whenever possible, we will try to provide a deprecation path. Function or arguments that are deprecated in one major release may be dropped and thus result in an error in the next major release.
+
+Specifically, upgrading from v0.2.x to v0.3.y includes a number of backwards incompatible changes, including a large-scale streamlining and restructuring of the function API.
+
 ## Package Usage Information
 The functionality and operations of the RPhenoscape package can be viewed on the dedicated package website: <http://rphenoscape.phenoscape.org/>
 

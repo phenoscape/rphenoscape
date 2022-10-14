@@ -82,17 +82,17 @@
 <li>Author: Hong Xu, Hilmar Lapp, John Bradley</li>
 <li>Maintainer: Hilmar Lapp</li>
 </ul>
-<p>Most of the services provided with the <a href="http://kb.phenoscape.org/apidocs/" class="external-link">Phenoscape Knowledgebase API</a> return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.</p>
+<p>Most of the services provided with the <a href="https://kb.phenoscape.org/api/v2/docs/" class="external-link">Phenoscape Knowledgebase API</a> return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>The development version of RPhenoscape is available on <a href="http://github.com/phenoscape/rphenoscape" class="external-link">Github</a>. It has not yet been released to <a href="https://cran.r-project.org" class="external-link">CRAN</a>. To install RPhenoscape from Github, use the <code>install_github()</code> function in the <code>remotes</code> package (which can be installed from CRAN using <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code>):</p>
+<p>The development version of RPhenoscape is available on <a href="https://github.com/phenoscape/rphenoscape" class="external-link">Github</a>. It has not yet been released to <a href="https://cran.r-project.org" class="external-link">CRAN</a>. To install RPhenoscape from Github, use the <code>install_github()</code> function in the <code>remotes</code> package (which can be installed from CRAN using <code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code>):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"phenoscape/rphenoscape"</span><span class="op">)</span></span></code></pre></div>
 <p>By default, this will skip building the package vignettes. To build and install package vignettes as well, you must have recent versions of the <code>knitr</code> and <code>rmarkdown</code> packages installed, and use additional parameters, depending on the version of the <code>remotes</code> package you have installed, to request building vignettes.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">'2.1.1'</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] '2.4.2'</span></span></code></pre></div>
 <p>If the version is 2.1.0 or higher, use the <code>build_vignettes</code> parameter (which by default is FALSE):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"phenoscape/rphenoscape"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -102,6 +102,13 @@
 <p>Once installed, the package can be loaded (“attached”) as any other R package:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/phenoscape/rphenoscape" class="external-link">rphenoscape</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="upgrading-from-an-earlier-version">Upgrading from an earlier version<a class="anchor" aria-label="anchor" href="#upgrading-from-an-earlier-version"></a>
+</h3>
+<p>Until v1.x is released, upgrades from one minor (patch) release to another, i.e., from v0.x.n to v0.x.m where m &gt; n, can be expected to be fully backwards compatible. Upgrading to a new major release, i.e., from v0.n.x to v0.m.y, where m &gt; n, should be expected to be at least in part backwards incompatible.</p>
+<p>A backwards incompatible change may result in deprecation warnings being issued, or errors when using a no longer supported function. Whenever possible, we will try to provide a deprecation path. Function or arguments that are deprecated in one major release may be dropped and thus result in an error in the next major release.</p>
+<p>Specifically, upgrading from v0.2.x to v0.3.y includes a number of backwards incompatible changes, including a large-scale streamlining and restructuring of the function API.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="package-usage-information">Package Usage Information<a class="anchor" aria-label="anchor" href="#package-usage-information"></a>
@@ -114,7 +121,7 @@
 <li>Subsetting matrices by taxonomic subgroup or anatomical part</li>
 <li>Searching for details for a given taxon</li>
 </ul>
-<p>By definition, most functions in this package connect to the <a href="http://kb.phenoscape.org/apidocs/" class="external-link">Phenoscape Knowledgebase API</a>. The base URL path to the API endpoints can changed from the default by setting the <code>PHENOSCAPE_API</code> environment variable. (See <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html" class="external-link">R Startup</a> and <a href="https://support.rstudio.com/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf" class="external-link">RStudio support on .Renviron</a> on how to control environment variables at R session startup.)</p>
+<p>By definition, most functions in this package connect to the <a href="https://kb.phenoscape.org/api/v2/docs/" class="external-link">Phenoscape Knowledgebase API</a>. The base URL path to the API endpoints can changed from the default by setting the <code>PHENOSCAPE_API</code> environment variable. (See <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html" class="external-link">R Startup</a> and <a href="https://support.rstudio.com/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf" class="external-link">RStudio support on .Renviron</a> on how to control environment variables at R session startup.)</p>
 <hr>
 <p><a href="http://kb.phenoscape.org" class="external-link"><img src="https://wiki.phenoscape.org/wg/phenoscape/images/f/f6/Phenoscape_Logo.png" alt="Phenoscape Knowledgebase"></a></p>
 </div>
