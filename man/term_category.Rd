@@ -12,20 +12,35 @@ objects (such as phenotype objects)}
 }
 \value{
 A character vector with the term categories ("entity", "quality",
-"phenotype", or "taxon") of the terms in the input list.
+"phenotype", or "taxon") of the terms in the input list. The category is
+NA for terms for which no determination could be made.
 }
 \description{
-Terms in the Phenoscape KB fall into different general categories: entity,
-quality, phenotype (which typically are entity-quality compositions), and
-taxon. The category is sometimes needed to plug a term IRI into the right
-parameter for a function or API call.
+Terms in the Phenoscape KB fall into different general categories: entity
+(anatomical entities), quality, phenotype (which typically are entity-quality
+compositions), and taxon. The category is sometimes needed to plug a term IRI
+into the right parameter for a function or API call.
 }
 \details{
-The implementation will first try infer the category from the object type
-and the ontology for terms of certain OBO ontologies. Where that fails
-it will rely subsumption by specific upper ontology terms, specifically
+The implementation uses the following successive steps until a determination
+is made, or all possibilities are exhausted:
+\itemize{
+\item Try infer the category from the object type and the ontology for terms of
+certain OBO ontologies.
+\item Consider subsumption by specific upper ontology terms, specifically
 the BFO terms "independent continuant" (for entity terms) and "quality"
 (for quality terms).
+\item If a label can be obtained, and it matches the pattern "p some X" with
+p being a property used for composing classes (e.g., part of, has part, etc),
+extract X and recursively apply the algorithm to X.
+\item If superclasses are retrievable and any of them has a label starting with
+"phenotype of", determine category as phenotype.
+\item If superclasses are retrievable, apply the algorithm recursively to each
+superclass until a positive determination is made.
+}
+
+Due to requiring potentially multiple KB API calls per term for those for which
+the first step fails, this algorithm can be slow.
 }
 \examples{
 term_category(c("http://purl.obolibrary.org/obo/UBERON_0011618",

@@ -58,10 +58,14 @@ test_that("determining term categories", {
 })
 
 test_that("success rate for entity subsumer terms", {
-  tt <- sapply(c("fin ray", "dorsal fin", "caudal fin"), pk_get_iri, as = "anatomy")
+  tt <- sapply(c("fin ray", "dorsal fin", "caudal fin"), get_term_iri, as = "anatomy")
   subs.mat <- subsumer_matrix(tt)
   tt.types <- term_category(rownames(subs.mat))
-  type.fracs <- table(tt.types)/nrow(subs.mat)
+  # less than 10% of the terms should be indeterminate
+  testthat::expect_lt(mean(is.na(tt.types)), .1)
+  # remove NA types
+  tt.types <- tt.types[!is.na(tt.types)]
+  type.fracs <- table(tt.types)/length(tt.types)
   testthat::expect_lte(length(names(type.fracs)), 3)
   testthat::expect_gt(max(type.fracs), 0.9)
   testthat::expect_equal(names(type.fracs)[type.fracs == max(type.fracs)], "entity")
@@ -69,58 +73,95 @@ test_that("success rate for entity subsumer terms", {
 })
 
 test_that("obtaining corpus size", {
-  s <- corpus_size("taxa")
+  s <- corpus_size("taxon-variation")
+  testthat::expect_gt(s, 100)
+  testthat::expect_lt(s, 10000)
+
+  s <- corpus_size("annotated-taxa")
   testthat::expect_gt(s, 100)
   testthat::expect_lt(s, 10000)
 
   s <- corpus_size("genes")
   testthat::expect_gt(s, 100)
-  testthat::expect_lt(s, 50000)
+  testthat::expect_lt(s, 100000)
 
-  s <- corpus_size("taxon_annotations")
+  s <- corpus_size("states")
+  testthat::expect_gt(s, 100)
+  testthat::expect_lt(s, 100000)
+
+  s <- corpus_size("taxon-annotations")
   testthat::expect_gt(s, 10000)
   testthat::expect_lt(s, 5000000)
   testthat::expect_equal(corpus_size(), s)
 
-  testthat::expect_error(corpus_size("gene_annotations"))
+  testthat::expect_error(corpus_size("gene-annotations"))
   testthat::expect_error(corpus_size("foobar"))
 })
 
 test_that("obtaining/calculating term frequencies", {
-  tl <- c("pelvic fin", "pectoral fin", "forelimb", "hindlimb", "dorsal fin", "caudal fin")
-  tt <- sapply(tl, pk_get_iri, as = "anatomy", exactOnly = TRUE)
-
-  wt <- term_freqs(tt, corpus = "taxon_annotations")
+  phens <- get_phenotypes(entity = "pectoral fin", quality = "present")
+  wt <- term_freqs(phens$id, as = "phenotype")
   testthat::expect_is(wt, "numeric")
-  testthat::expect_length(wt, length(tt))
+  testthat::expect_length(wt, length(phens$id))
   testthat::expect_true(all(wt >= 0))
   testthat::expect_true(all(wt <= 1))
 
-  wt1 <- term_freqs(tt, as = "auto", corpus = "taxon_annotations")
+  # check that the corpus defaults to "taxon-variation" passing phenotype IRIS
+  wt1 <- term_freqs(phens$id, as = "phenotype", corpus = "taxon-variation")
   testthat::expect_identical(wt1, wt)
-  wt1 <- term_freqs(tt, as = "entity", corpus = "taxon_annotations")
-  testthat::expect_identical(wt1, wt)
-  wt1 <- term_freqs(tt)
-  testthat::expect_identical(wt1, wt)
-  wt1 <- term_freqs(tt, as = c(rep("entity", times = 5), "quality"))
-  testthat::expect_false(all(wt1 == wt))
-  testthat::expect_true(all(wt1[1:5] == wt[1:5]))
-  testthat::expect_equal(wt1[6], 0)
 
-  phens <- get_phenotypes(entity = "pelvic fin", quality = "shape")
-  wt <- term_freqs(phens$id, as = "phenotype", corpus = "taxon_annotations")
-  testthat::expect_length(wt, nrow(phens))
+  # check that we can use genes corpus with term_freqs passing phenotype IRIS
+  wt <- term_freqs(phens$id, as = "phenotype", corpus = "genes")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(phens$id))
   testthat::expect_true(all(wt >= 0))
   testthat::expect_true(all(wt <= 1))
-  wt1 <- term_freqs(phens$id, as = "phenotype", corpus = "taxa")
-  testthat::expect_length(wt1, nrow(phens))
-  testthat::expect_true(all(wt1 >= 0))
-  testthat::expect_true(all(wt1 <= 1))
-  testthat::expect_true(all(wt < wt1))
-  # can use defaults
-  wt1 <- term_freqs(phens$id[1:3])
-  testthat::expect_identical(wt1, wt[1:3])
 
+  # check that we can use states corpus with term_freqs passing phenotype IRIS
+  wt <- term_freqs(phens$id, as = "phenotype", corpus = "states")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(phens$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+
+  entities <- find_term("basihyal bone")
+  # check that we can use taxa corpus with term_freqs passing entity IRIS
+  wt <- term_freqs(entities$id, as = "entity", corpus = "taxon-variation")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(entities$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+
+  # check that we can use genes corpus with term_freqs passing entity IRIS
+  wt <- term_freqs(entities$id, as = "entity", corpus = "genes")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(entities$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+
+  # check that we can use states corpus with term_freqs passing entity IRIS
+  wt <- term_freqs(entities$id, as = "entity", corpus = "states")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(entities$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+
+  # check that we can use states corpus with term_freqs passing entity IRIS with as vector
+  as_value = rep("entity", times=nrow(entities))
+  wt <- term_freqs(entities$id, as = as_value, corpus = "states")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(entities$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+
+  # check that we can use annotated-taxa corpus with term_freqs passing entity IRIS with as vector
+  as_value = rep("entity", times=nrow(entities))
+  wt <- term_freqs(entities$id, as = as_value, corpus = "annotated-taxa")
+  testthat::expect_is(wt, "numeric")
+  testthat::expect_length(wt, length(entities$id))
+  testthat::expect_true(all(wt >= 0))
+  testthat::expect_true(all(wt <= 1))
+  
   # checking of error conditions
   testthat::expect_error(term_freqs(phens$id, as = "foobar"))
   testthat::expect_error(term_freqs(phens$id, corpus = "foobar"))
@@ -128,17 +169,21 @@ test_that("obtaining/calculating term frequencies", {
   testthat::expect_error(term_freqs(phens$id, as = c(rep("phenotype",
                                                          times = nrow(phens)-1),
                                                      "auto")))
-  testthat::expect_error(term_freqs(phens$id, as = "entity", corpus = "taxa"))
+  testthat::expect_error(term_freqs(phens$id, as = "quality", corpus = "taxon-variation"))
+  # check that mismatched as values raises an error
+  as_value = rep("entity", times=nrow(entities))
+  as_value[1] <- "phenotype"
+  testthat::expect_error(term_freqs(entities$id, as = as_value, corpus = "states"))
 })
 
 test_that("term frequencies for post-comp subsumers of entities", {
-  tt <- sapply(c("fin ray", "dorsal fin", "caudal fin"), pk_get_iri, as = "anatomy")
+  tt <- sapply(c("fin ray", "dorsal fin", "caudal fin"), get_term_iri, as = "anatomy")
   subs <- rownames(subsumer_matrix(tt))
   # reduce to post-comps and test a handful
   onts <- obo_prefix(subs)
   subs <- subs[is.na(onts)]
-  if (length(subs) > 5) subs <- subs[1:5]
-  freqs <- term_freqs(subs, as = "entity", corpus = "taxon_annotations")
-  testthat::expect_true(any(freqs > 0))
+  # Expect an error since the taxon-annotations corpus is not yet supported.
+  testthat::expect_error(term_freqs(subs, as = "entity", corpus = "taxon-annotations"), 
+                         "corpus 'taxon-annotations' is currently unsupported")
 })
 

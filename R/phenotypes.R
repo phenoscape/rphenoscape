@@ -29,7 +29,6 @@
 #' @param verbose logical, whether to print messages informing about potentially
 #'   time-consuming operations. Default is FALSE.
 #' @examples
-#' \dontrun{
 #' phens1 <- get_phenotypes(entity = "pelvic fin")
 #' head(phens1)
 #'
@@ -65,7 +64,6 @@
 #' # can compute and visualize similarity
 #' sm <- jaccard_similarity(terms = phens2$id, .labels = phens2$label, .colnames = "label")
 #' plot(hclust(as.dist(1-sm)))
-#' }
 #' @return A data frame with columns "id" and "label".
 #'
 #'   If a character value for `taxon` was provided, and `.withTaxon` is TRUE’,
@@ -84,7 +82,7 @@ get_phenotypes <- function(entity = NA, quality = NA, taxon = NA, study = NA,
   # note that evaluation needs to be in this function's parent frame, or
   # otherwise using it in apply() and friends won't work
   queryseq <- do.call(pkb_args_to_query, argsInCall, envir = parent.frame())
-  queryseq <- c(queryseq, limit = "1000000")
+  queryseq <- c(queryseq, limit = "0")
 
   mssg(verbose, "Querying for phenotypes ...")
   if (is.na(taxon) || ! .withTaxon)
@@ -127,7 +125,7 @@ get_phenotypes <- function(entity = NA, quality = NA, taxon = NA, study = NA,
 #' x <- get_phenotypes(entity = "basihyal bone")
 #' nrow(x)
 #' # which of these are in the same study or studies as the first one?
-#' phenotype_matches(x, pk_get_study_list(phenotype = x$id[1]))
+#' phenotype_matches(x, get_studies(phenotype = x$id[1]))
 #' @export
 phenotype_matches <- function(x, studies) {
   if ("id" %in% colnames(x)) x <- x$id
@@ -140,7 +138,7 @@ phenotype_matches <- function(x, studies) {
     rep(FALSE, times = length(x))
   else
     sapply(x, function(phen) {
-      phen.studies <- pk_get_study_list(phenotype = phen)
+      phen.studies <- get_studies(phenotype = phen)
       if (is.logical(phen.studies))
         FALSE
       else

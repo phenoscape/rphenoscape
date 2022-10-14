@@ -10,15 +10,22 @@
 \usage{
 nexml_drop_otu(nexml, filter, at = NA, block = 1, ...)
 
-nexml_drop_char(nexml, filter, at = NA, block = 1, ...,
-  pruneStates = TRUE, pruneRows = TRUE)
+nexml_drop_char(
+  nexml,
+  filter,
+  at = NA,
+  block = 1,
+  ...,
+  pruneStates = TRUE,
+  pruneRows = TRUE
+)
 
 is_unused_char(charList, ...)
 
 is_unused_otu(otuList, ...)
 }
 \arguments{
-\item{nexml}{the \link[RNeXML:nexml]{nexml} object from which to drop parts}
+\item{nexml}{the \link[RNeXML:nexml-class]{nexml} object from which to drop parts}
 
 \item{filter}{logical, or a function returning a logical. If the latter,
 it will be passed the list of selected values for filtering (see parameter
@@ -65,7 +72,7 @@ to filter on.}
 to filter on.}
 }
 \value{
-The functions for dropping components return a \link[RNeXML:nexml]{nexml}
+The functions for dropping components return a \link[RNeXML:nexml-class]{nexml}
 object with the filtered components dropped.
 
 \code{is_unused_char} returns a logical vector with TRUE for each \code{char}
@@ -78,7 +85,7 @@ block(s), or, unless \code{ignoreTrees = TRUE}, for a node of a tree, and FALSE
 otherwise.
 }
 \description{
-\code{nexml_drop_otu} drops OTUs (taxa) from a \link[RNeXML:nexml]{nexml} object.
+\code{nexml_drop_otu} drops OTUs (taxa) from a \link[RNeXML:nexml-class]{nexml} object.
 Currently none of the OTUs to be dropped can be used in a tree that's part
 of the \code{nexml} object. If they are, first drop the OTUs from the tree(s)
 (for example, using \link[ape:drop.tip]{drop.tip()} from package "ape"), then
@@ -87,7 +94,7 @@ block, but will also drop matrix rows that referenced the OTUs to be dropped.
 This may in turn leave some characters unused. Therefore, it is recommended
 to drop unused characters afterwards.
 
-\code{nexml_drop_char} drops characters from a \link[RNeXML:nexml]{nexml} object. Note
+\code{nexml_drop_char} drops characters from a \link[RNeXML:nexml-class]{nexml} object. Note
 that dropping characters may make some OTUs unused if they result in empty
 rows and empty rows are pruned (see parameter \code{pruneRows}). It is therefore
 recommended to drop unused OTUs afterwards.
@@ -109,17 +116,17 @@ nexml_drop_char(nex, filter = function(x) grepl("pelvic", x), at = "label") \%>\
   nexml_drop_otu(filter = is_unused_otu)
 
 \dontrun{
-nex <- pk_get_ontotrace_xml(taxon = "Ictaluridae",
-                            entity = "fin", variable_only = FALSE)
+nex <- get_ontotrace_data(taxon = "Ictaluridae",
+                          entity = "fin", variable_only = FALSE)
 # ontotrace results store VTO IRIs in dwc:taxonID annotations:
 nexml_drop_otu(nex,
-               filter = function(x) !pk_is_descendant("Ictalurus", x),
+               filter = function(x) !is_descendant("Ictalurus", x),
                at = "dwc:taxonID") \%>\%
   nexml_drop_char(filter = is_unused_char)
 # anatomy IRIs are in obo:IAO_0000219 ("denotes") annotations:
 nexml_drop_char(nex,
                filter = function(x)
-                 !pk_is_descendant("paired fin", x, includeRels = "part_of"),
+                 !is_descendant("paired fin", x, includeRels = "part_of"),
                at = "obo:IAO_0000219") \%>\%
   nexml_drop_otu(filter = is_unused_otu)
 }

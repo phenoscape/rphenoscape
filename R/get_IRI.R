@@ -67,11 +67,10 @@ find_term <- function(query,
   }
   
   # apply limit to result
-  if (is.na(limit)) limit <- "1000000"
+  if (is.na(limit)) limit <- "0"
   queryseq <- c(queryseq, limit = limit)
 
-  res <- pk_GET(pkb_api("/term/search"), query = queryseq)
-
+  res <- get_json_data(pkb_api("/term/search"), query = queryseq)
   res <- res$results
 
   if (length(res) > 0 && nrow(res) > 0) {
@@ -99,7 +98,7 @@ find_term <- function(query,
   res
 }
 
-#' Resolve a text query to IRI
+#' Find the IRI of the term matching a text query
 #' 
 #' Finds the term matching the query text, and returns its IRI. If the query
 #' text is already a IRI, it is returned as is.
@@ -122,10 +121,10 @@ find_term <- function(query,
 #'   time-consuming operations. Default is FALSE.
 #' @return The IRI if a match is found.
 #' @export
-pk_get_iri <- function(text, as, 
-                       exactOnly = FALSE,
-                       nomatch = NA,
-                       verbose = FALSE) {
+get_term_iri <- function(text, as,
+                         exactOnly = FALSE,
+                         nomatch = NA,
+                         verbose = FALSE) {
   # if the query string is already a HTTP URI, return it as the result
   if (startsWith(text, "http://") || startsWith(text, "https://")) return(text)
 
@@ -228,8 +227,14 @@ anatomy_ontology_iris <- local({
                        matchBy = c("rdfs:label"),
                        matchTypes = c("exact", "partial"),
                        limit = 200)
+      # Include terms with labels begin with "anatomical structure"
+      # Exclude terms with labels containing "quality" or "abnormal" to remove PATO and ZP
       res <- dplyr::filter_at(res, "label",
-                              all_vars(startsWith(., "anatomical structure")))
+                              all_vars(
+                                startsWith(., "anatomical structure")
+                                & !grepl("quality", .)
+                                & !grepl("abnormal", .)
+                             ))
       .iris <<- unique(res$isDefinedBy)
     }
     .iris
@@ -268,7 +273,7 @@ anatomical_id <- function() ontology_iri('UBERON')
 phenotype_id <- function() ontology_iri('PATO')
 
 #' @description
-#' `partOf_iri` returns the IRI ofthe canonical "part_of" relationship in the
+#' `partOf_iri` returns the IRI of the canonical "part_of" relationship in the
 #'     database.
 #' @rdname term_iri
 #' @export
@@ -278,12 +283,21 @@ partOf_iri <- function() {
 }
 
 #' @description
-#' `hasPart_iri` returns the IRI ofthe canonical "has_part" relationship in the
+#' `hasPart_iri` returns the IRI of the canonical "has_part" relationship in the
 #'     database.
 #' @rdname term_iri
 #' @export
 hasPart_iri <- function() {
   term_iri("has_part", type = "owl:ObjectProperty", preferOntologies = c("BFO", "RO"))
+}
+
+#' @description
+#' `developsFrom_iri` returns the IRI of the canonical "develops from" relationship in the
+#'     database.
+#' @rdname term_iri
+#' @export
+developsFrom_iri <- function() {
+  term_iri("develops from", type = "owl:ObjectProperty", preferOntologies = c("BFO", "RO"))
 }
 
 #' Obtain IRI(s) for canonical terms and properties

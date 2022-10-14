@@ -1,179 +1,146 @@
 #' Obtains term frequencies for the Phenoscape KB
 #'
 #' Determines the frequencies for the given input list of terms, based on
-#' the selected corpus.
+#' the selected corpus and the type (category) of the terms.
 #'
 #' Depending on the corpus selected, the frequencies are queried directly
 #' from pre-computed counts through the KB API, or are calculated based on
 #' matching row counts obtained from query results. Currently, the Phenoscape KB
-#' has precomputed counts for corpora "taxa" and "genes". Calculated counts for
-#' the "taxon_annotations" corpus are most reliable for phenotype terms and their
-#' subsumers. For entity terms, subsumers can include many generated
-#' post-composed terms (such as "part_of some X", where X is, for example, an
-#' anatomy term), and at least currently these aren't handled correctly by the
-#' Phenoscape KB, resulting in counts of zero for such terms. For some of these
-#' the implementation here will try to rewrite the query (see parameter
-#' `decodeIRI`), but this only works to a limited extent.
+#' has precomputed counts for corpora "annotated-taxa","taxon-variation", "states", and "genes".
+#'
 #' @note
 #' Term categories being accurate is vital for obtaining correct counts and
-#' thus frequencies. Auto-determining term categories yields reasonably accurate
-#' results, but with caveats. One, it can be time-consuming, and two, especially
-#' for entity terms and their subsumers it is often not 100% accurate. This
-#' function will try to correct for that by assuming that if not all terms
-#' are determined to be of the same category, but one category holds for more
-#' than 90% of the terms, that it must be the correct category for all terms.
-#' If the list of terms is legitimately of different categories, it is best to
-#' determine (and possibly correct) categories beforehand, and then pass the
-#' result as `as`. If all terms are of the same category and the category is
-#' known beforehand, it saves time and prevents potential errors to supply this
-#' category using `as`.
+#' thus frequencies. In earlier (<=0.2.x) releases, auto-determining term
+#' category was an option, but this is no longer supported, in part because it
+#' was potentially time consuming and often inaccurate, in particular for
+#' the many post-composed subsumer terms returned by [subsumer_matrix()]. In the
+#' KB v2.0 API, auto-determining the category of a post-composed term is no
+#' longer supported. If the list of terms is legitimately of different categories,
+#' determine (and possibly correct) categories beforehand using [term_category()].
+#' 
+#' In earlier (<=0.2.x) releases one supported corpus was "taxon_annotations", albeit
+#' its implementation was very slow and potentially inaccurate because it relied on
+#' potentially multiple individudal KB API queries for each term, and this in turn
+#' relied on the ability to break down post-composed expressions into their component
+#' terms and expressions, which is (at least currently) no longer possible.
+#'
 #' @param x a vector or list of one or more terms, either as IRIs or as term
 #'   objects.
-#' @param as the category or categories of the input terms (see [term_category()]).
-#'   Supported categories are "entity", "quality", and "phenotype". The value
-#'   must either be a single category (applying to all terms), or a vector of
-#'   categories (of same length as `x`). If provided as "auto" (or NULL), the
-#'   category of each term is automatically determined. The default is "auto".
-#' @param corpus the name of the corpus for which to determine frequencies.
-#'   Supported values are "taxon_annotations", "taxa", "gene_annotations", and
-#'   "genes". (At present, support for "gene_annotations" is pending support in
-#'   the Phenoscape API.) The default is "taxon_annotations".
-#' @param decodeIRI boolean. If TRUE (the default), attempt to decode
-#'   post-composed entity IRIs, and under certain circumstances rewrite the
-#'   count query according to the results. At present, this is used only for
-#'   entity IRIs detected as "part_of some X" post-compositions, and only for
-#'   the "taxon_annotations" corpus. In those cases, the count query will be
-#'   rewritten to first query for X, then for X including parts, and the resulting
-#'   count is the result of the latter minus that of the former.
+#' @param as the category or categories (a.k.a. type) of the input terms (see [term_category()]).
+#'   Possible values are "anatomical_entity" (synonymous with "entity"), "quality", and
+#'   "phenotype". Unambiguous abbreviations are acceptable. The value must either be a
+#'   single category (applying to all terms), or a vector of categories (of same length as `x`).
+#'   The default is "phenotype".
+#' 
+#'   Note that at present, support by the KB API for "quality" remains pending and has thus been
+#'   disabled as of v0.3.0. Also, mixing different categories of terms is not yet supported, and
+#'   doing so will thus raise an error.
+#' @param corpus the name of the corpus for determining how to count, currently one of the following:
+#'   - "states" (counts character states),
+#'   - "taxon-variation" (counts taxa with variation profiles, and thus does not include terminal
+#'      and other taxa that do not have child taxa with phenotype annotations),
+#'   - "annotated-taxa" (counts taxa with phenotype annotations, and thus primarily those terminal
+#'      taxa that have annotations),
+#'   - "taxon-annotations" (counts phenotype annotations to character states and thus taxa),
+#'   - "gene-annotations" (counts phenotype annotations to genes or alleles), and
+#'   - "genes" (counts genes)
+#'   
+#'   Unambiguous abbreviations of corpus names are acceptable. The default is "taxon-variation".
+#'   Note that at present "taxon-annotations" and "gene-annotations" are not yet
+#'   supported by the KB API and will thus result in an error.
 #'
-#'   The decoding algorithm may be imprecise, so one may want to turn this off,
-#'   the result of which will usually be a frequency of zero for those IRIs, due
-#'   to limitations in the Phenoscape KB API.
+#'   Note that previously "taxa" was allowed as a corpus, but is no longer supported.
+#'   The "taxon-variation" corpus is the equivalent of the deprecated "taxa" corpus.
+#' @param decodeIRI boolean. This parameter is deprecated (as of v0.3.x) and must be set
+#'  to FALSE (the default). If TRUE is passed an error will be raised. In v0.2.x
+#'  when TRUE this parameter would attempt to decode post-composed entity IRIs.
+#'  Due to changes in the IRI returned by the Phenoscape KB v2.x API decoding
+#'  post-composed entity IRIs is no longer possible. Prior to v0.3.x, the default
+#'  value for this parameter was TRUE.
 #' @param ... additional query parameters to be passed to the function querying
-#'   for counts, see [pkb_args_to_query()]. Currently this is only used for
-#'   corpus "taxon_annotations", and the only useful parameter is `includeRels`,
-#'   which can be used to include historical and serial homologues in the counts.
-#'   It can also be used to always include parts for entity terms.
+#'   for counts, see [pkb_args_to_query()]. This is currently (as of v0.3.0) not
+#'   used.
 #' @return a vector of frequencies as floating point numbers (between zero
 #'   and 1.0), of the same length (and ordering) as the input list of terms.
 #' @examples
-#' terms <- c("pectoral fin", "pelvic fin", "dorsal fin", "paired fin")
-#' IRIs <- sapply(terms, pk_get_iri, as = "anatomy")
-#' term_freqs(IRIs)
-#' 
 #' phens <- get_phenotypes(entity = "basihyal bone")
-#' term_freqs(phens$id, as = "phenotype", corpus = "taxon_annotations")
-#' term_freqs(phens$id, as = "phenotype", corpus = "taxa")
-#' 
+#' # see which phenotypes we have:
+#' phens$label
+#' # frequencies by counting taxa:
+#' freqs.t <- term_freqs(phens$id, as = "phenotype", corpus = "taxon-variation")
+#' freqs.t
+#' # we can convert this to absolute counts:
+#' freqs.t * corpus_size("taxon-variation")
+#' # frequencies by counting character states:
+#' freqs.s <- term_freqs(phens$id, as = "phenotype", corpus = "states")
+#' freqs.s
+#' # and as absolute counts:
+#' freqs.s * corpus_size("states")
+#' # we can compare the absolute counts by computing a ratio
+#' freqs.s * corpus_size("states") / (freqs.t * corpus_size("taxon-variation"))
 #' @export
 term_freqs <- function(x,
-                       as = c("auto", "entity", "quality", "phenotype"),
-                       corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes"),
-                       decodeIRI = TRUE,
+                       as = c("phenotype", "entity", "anatomical_entity", "quality"),
+                       corpus = c("taxon-variation", "annotated-taxa", "taxon-annotations", "states", "gene-annotations", "genes"),
+                       decodeIRI = FALSE,
                        ...) {
   as <- match.arg(as, several.ok = TRUE)
   corpus <- match.arg(corpus)
-
-  if (as[1] == "auto") {
-    as <- term_category(x)
-    # check for signs of mistakes and auto-correct
-    fracs <- table(as) / length(as)
-    if (any(fracs < 0.1) && any(fracs > 0.9)) {
-      majorType <- names(fracs)[fracs == max(fracs)]
-      as[as != majorType] <- majorType
-    }
-  } else if (length(as) > 1 && length(as) != length(x))
+  if (decodeIRI) stop("Decoding an IRI is no longer supported.")
+  if (length(as) > 1 && length(as) != length(x))
     stop("'as' must be a single value, or have the same length as 'x'", call. = FALSE)
-  else if (any(as == "auto"))
-    stop("'auto' can only be applied to all terms", call. = FALSE)
-  
-  ctotal <- corpus_size(corpus = corpus)
-  if (corpus == "taxa" || corpus == "genes") {
-    if (any(as != "phenotype"))
-      stop("corpus '", corpus, "' requires phenotype terms", call. = FALSE)
-    corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
+  if (length(unique(as)) != 1)
+    stop("'as' currently requires all values to be the same", call. = FALSE)
+  if (corpus == "annotated-taxa" || corpus == "taxon-variation" || corpus == "genes" || corpus == "states") {
+    ctotal <- corpus_size(corpus = corpus)
+    # for now 'as' must contain the same value so use the first one since
+    # /similarity/frequency type field only allows one value
+    ontology_terms_type <- as[1]
+    if (ontology_terms_type == "entity") {
+      ontology_terms_type <- "anatomical_entity"
+    }
     query <- list(terms = as.character(jsonlite::toJSON(x)),
-                  corpus_graph = corpusID)
+                  corpus = corpus,
+                  type = ontology_terms_type)
     freqs <- get_csv_data(pkb_api("/similarity/frequency"), query = query,
                           header = FALSE, row.names = 1, check.names = FALSE)
     reordering <- match(x, rownames(freqs))
     freqs <- freqs[reordering,] / ctotal
-  } else if (corpus == "taxon_annotations") {
-    freqs <- mapply(annotations_count,
-                    iri = x, termType = as, decodeIRI = decodeIRI, ...)
-    freqs <- freqs / ctotal
   } else {
     stop("corpus '", corpus, "' is currently unsupported", call. = FALSE)
   }
   unname(freqs)
 }
 
-#' @importFrom utils URLdecode
-decode_entity_postcomp <- function(x) {
-  res <- stringi::stri_match_all_regex(
-    URLdecode(x),
-    pattern = "<(https?://[A-Za-z0-9-_/.]+)>[ +]+some[ +]+<(https?://[A-Za-z0-9-_/.]+)>")
-  lapply(res, function(m) {
-    if (all(is.na(m[1,])))
-      list(rels=c(), entities=c())
-    else
-      list(rels=m[,2], entities=m[,3])
-  })
-}
-
-annotations_count <- function(iri, termType, decodeIRI = TRUE,
-                              apiEndpoint = "/taxon/annotations",
-                              ...) {
-  query <- pkb_args_to_query(...)
-  query$total <- TRUE
-  if (termType == "entity" && decodeIRI) {
-    comps <- decode_entity_postcomp(iri)[[1]]
-    if ((length(comps$entities) == 1) && any(partOf_iri() %in% comps$rels)) {
-      query[[termType]] <- comps$entities
-    }
-  }
-  if (is.null(query[[termType]])) query[[termType]] <- iri
-  res <- get_json_data(pkb_api(apiEndpoint), query = query)
-  # if the IRI used for counting is a result of decoding the IRI, _and_ if
-  # we haven't included parts in the count already
-  if ((query[[termType]] != iri) && (is.null(query$parts) || ! query$parts)) {
-    # count with including parts, then subtract entities alone (counted before)
-    query$parts <- TRUE
-    res2 <- get_json_data(pkb_api(apiEndpoint), query = query)
-    res2$total - res$total
-  } else
-    res$total
-}
-
 #' Obtain the size of different corpora
 #'
 #' Obtains the size of a certain number of predefined corpora. The total size
-#' of a corpus is important for calculating term frequencies.
+#' of a corpus is important for calculating term frequencies. That is, for a given
+#' corpus, the possible range for any term frequency is between 0 and the corpus size.
 #'
 #' Corpus sizes are cached per session after they have first been obtained.
 #' Thus, if the Phenoscape KB changes, a session needs to be restarted to
 #' have those changes be reflected.
 #'
-#' @param corpus the name of the corpus, currently one of "taxon_annotations",
-#'   "taxa", "gene_annotations", and "genes". (At present "gene_annotations" is
-#'   pending support by the Phenoscape API.) Unambiguous abbreviations are
-#'   acceptable.
-#' @return the size of the specified corpus as an integer number.
+#' @param corpus the name of the corpus, see [term_freqs()] for allowed values.
+#'
+#' @return The total size of the specified corpus as an integer number.
 #' @examples
-#' corpus_size("taxa")
-#' corpus_size("taxon_annotations")
+#' corpus_size("taxon-variation")
+#' corpus_size("annotated-taxa")
+#' corpus_size("states")
+#' corpus_size("genes")
 #' @export
 corpus_size <- local({
   .sizes <- list()
-  function(corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes")) {
+  function(corpus = c("taxon-annotations", "taxon-variation", "annotated-taxa", "gene-annotations", "genes", "states")) {
     corpus <- match.arg(corpus)
     if (is.null(.sizes[[corpus]])) {
-      if (corpus == "taxa" || corpus == "genes") {
-        corpusID <- paste0("http://kb.phenoscape.org/sim/", corpus)
+      if (corpus == "taxon-variation" || corpus == "annotated-taxa" || corpus == "genes"|| corpus == "states") {
         res <- get_json_data(pkb_api("/similarity/corpus_size"),
-                             query = list(corpus_graph = corpusID))
+                             query = list(corpus = corpus))
         .sizes[[corpus]] <- res$total
-      } else if (corpus == "taxon_annotations") {
+      } else if (corpus == "taxon-annotations") {
         res <- get_json_data(pkb_api("/taxon/annotations"), list(total = TRUE))
         .sizes[[corpus]] <- res$total
       } else {

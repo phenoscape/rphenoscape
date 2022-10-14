@@ -9,3 +9,4 @@ vignettes/cache
 ^_pkgdown\.yml$
 
 ^\.github$
+^\.circleci$

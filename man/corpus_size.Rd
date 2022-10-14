@@ -4,21 +4,21 @@
 \alias{corpus_size}
 \title{Obtain the size of different corpora}
 \usage{
-corpus_size(corpus = c("taxon_annotations", "taxa", "gene_annotations",
-  "genes"))
+corpus_size(
+  corpus = c("taxon-annotations", "taxon-variation", "annotated-taxa",
+    "gene-annotations", "genes", "states")
+)
 }
 \arguments{
-\item{corpus}{the name of the corpus, currently one of "taxon_annotations",
-"taxa", "gene_annotations", and "genes". (At present "gene_annotations" is
-pending support by the Phenoscape API.) Unambiguous abbreviations are
-acceptable.}
+\item{corpus}{the name of the corpus, see \code{\link[=term_freqs]{term_freqs()}} for allowed values.}
 }
 \value{
-the size of the specified corpus as an integer number.
+The total size of the specified corpus as an integer number.
 }
 \description{
 Obtains the size of a certain number of predefined corpora. The total size
-of a corpus is important for calculating term frequencies.
+of a corpus is important for calculating term frequencies. That is, for a given
+corpus, the possible range for any term frequency is between 0 and the corpus size.
 }
 \details{
 Corpus sizes are cached per session after they have first been obtained.
@@ -26,6 +26,8 @@ Thus, if the Phenoscape KB changes, a session needs to be restarted to
 have those changes be reflected.
 }
 \examples{
-corpus_size("taxa")
-corpus_size("taxon_annotations")
+corpus_size("taxon-variation")
+corpus_size("annotated-taxa")
+corpus_size("states")
+corpus_size("genes")
 }

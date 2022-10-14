@@ -7,7 +7,7 @@
 add_provenance_record(nexml, cmd = NA, creator = Sys.getenv("USER"))
 }
 \arguments{
-\item{nexml}{the \link[RNeXML:nexml]{nexml} object to which to add provenance
+\item{nexml}{the \link[RNeXML:nexml-class]{nexml} object to which to add provenance
 documentation}
 
 \item{cmd}{character, the command (such as a function invocation) to document
@@ -18,10 +18,10 @@ function calling this one will be used as the command.}
 software. The default is the system's \code{USER} environment variable.}
 }
 \value{
-A \link[RNeXML:nexml]{nexml} object with provenance records added.
+A \link[RNeXML:nexml-class]{nexml} object with provenance records added.
 }
 \description{
-If the content of a \link[RNeXML:nexml]{nexml} object is modified, this
+If the content of a \link[RNeXML:nexml-class]{nexml} object is modified, this
 function can add a provenance record documenting the modification.
 The provenance documentation is added to the toplevel metadata (i.e.,
 at the \link[RNeXML:get_metadata]{"nexml" level}).
@@ -40,7 +40,9 @@ see parameter \code{cmd}.
 \item A provenance record using \href{https://www.w3.org/TR/prov-o/}{Prov-O}
 (a W3C recommendation) nested within \code{prov:wasGeneratedBy} is added.
 In RDF Turtle representation, the record would have the following structure
-(cf. \href{http://purl.obolibrary.org/obo/IAO_0000591}{obo:IAO_0000591}):\preformatted{:nexml prov:wasGeneratedBy [
+(cf. \href{http://purl.obolibrary.org/obo/IAO_0000591}{obo:IAO_0000591}):
+
+\if{html}{\out{<div class="sourceCode ttl">}}\preformatted{:nexml prov:wasGeneratedBy [
   prov:endedAtTime "2019-06-20 15:09:08 GMT" ;
   prov:wasAssociatedWith [
     a obo:IAO_0000591 ;
@@ -55,6 +57,6 @@ In RDF Turtle representation, the record would have the following structure
     prov:value "<modifying command>" ;
   ] ;
 ] .
-}
+}\if{html}{\out{</div>}}
 }
 }

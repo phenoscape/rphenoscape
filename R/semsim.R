@@ -42,7 +42,6 @@
 #'   Note that these extra attributes will be lost upon subsetting the returned
 #'   matrix.
 #' @examples
-#' \dontrun{
 #' tl <- c("http://purl.obolibrary.org/obo/UBERON_0000981",
 #'         "http://purl.obolibrary.org/obo/UBERON_0002103",
 #'         "http://purl.obolibrary.org/obo/UBERON_0000976",
@@ -56,7 +55,6 @@
 #' m # term labels as column names
 #' mat_terms <- attr(m, "term.iris")
 #' mat_terms # term IRIs in the same order as columns
-#' }
 #' @importFrom stringi stri_match_first_regex
 #' @export
 subsumer_matrix <- function(terms,
@@ -71,8 +69,8 @@ subsumer_matrix <- function(terms,
   }
   term_iris <- 
     unname(sapply(terms,
-                  function(x) pk_get_iri(x, as = "anatomy",
-                                         exactOnly = TRUE, verbose = verbose)))
+                  function(x) get_term_iri(x, as = "anatomy",
+                                           exactOnly = TRUE, verbose = verbose)))
   if (any(is.na(term_iris))) {
     warnings()
     stop("Could not resolve all term names to IRIs.", call. = FALSE)
@@ -151,7 +149,6 @@ tanimoto_similarity <- function(subsumer_mat = NA, terms = NULL, ...) {
 #' one. If any weights are different, a warning is issued. 
 #'
 #' @examples
-#' \dontrun{
 #' sm <- jaccard_similarity(terms = c("pelvic fin", "pectoral fin",
 #'                                    "forelimb", "hindlimb",
 #'                                    "dorsal fin", "caudal fin"),
@@ -160,7 +157,6 @@ tanimoto_similarity <- function(subsumer_mat = NA, terms = NULL, ...) {
 #'
 #' # e.g., turn into distance matrix, cluster, and plot
 #' plot(hclust(as.dist(1-sm)))
-#' }
 #' @export
 #' @rdname similarity
 jaccard_similarity <- function(subsumer_mat = NA, terms = NULL, ...) {

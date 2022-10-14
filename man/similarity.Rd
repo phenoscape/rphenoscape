@@ -14,8 +14,14 @@ jaccard_similarity(subsumer_mat = NA, terms = NULL, ...)
 
 cosine_similarity(subsumer_mat = NA, terms = NULL, ...)
 
-resnik_similarity(subsumer_mat = NA, terms = NULL, ...,
-  wt = term_freqs, wt_args = list(), base = 10)
+resnik_similarity(
+  subsumer_mat = NA,
+  terms = NULL,
+  ...,
+  wt = term_freqs,
+  wt_args = list(),
+  base = 10
+)
 }
 \arguments{
 \item{subsumer_mat}{matrix or data.frame, the vector-encoded matrix M of
@@ -37,8 +43,8 @@ information content, and where a term will always have a score equal to or
 greater than any of its superclasses. If a function, it must accept parameter
 \code{x} as the vector of term IRIs and return a vector of frequencies (\emph{not}
 IC scores) for the terms. The default is to use function \code{\link[=term_freqs]{term_freqs()}}.
-Subsumer terms with zero or missing (NA) frequency will be omitted from the
-calculation.}
+Subsumer terms with zero or missing (NA) frequency will be omitted from
+the calculation.}
 
 \item{wt_args}{list, named parameters for the function calculating term
 frequencies. Ignored if \code{wt} is not a function. For the default \code{wt}
@@ -77,7 +83,6 @@ their most informative common ancestor (MICA), which is the common subsumer
 with the greatest information content.
 }
 \examples{
-\dontrun{
 sm <- jaccard_similarity(terms = c("pelvic fin", "pectoral fin",
                                    "forelimb", "hindlimb",
                                    "dorsal fin", "caudal fin"),
@@ -86,7 +91,6 @@ sm
 
 # e.g., turn into distance matrix, cluster, and plot
 plot(hclust(as.dist(1-sm)))
-}
 \dontrun{
 phens <- get_phenotypes("basihyal bone", taxon = "Cyprinidae")
 sm.ic <- resnik_similarity(terms = phens$id,

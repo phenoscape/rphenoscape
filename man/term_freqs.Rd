@@ -4,42 +4,58 @@
 \alias{term_freqs}
 \title{Obtains term frequencies for the Phenoscape KB}
 \usage{
-term_freqs(x, as = c("auto", "entity", "quality", "phenotype"),
-  corpus = c("taxon_annotations", "taxa", "gene_annotations", "genes"),
-  decodeIRI = TRUE, ...)
+term_freqs(
+  x,
+  as = c("phenotype", "entity", "anatomical_entity", "quality"),
+  corpus = c("taxon-variation", "annotated-taxa", "taxon-annotations", "states",
+    "gene-annotations", "genes"),
+  decodeIRI = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{a vector or list of one or more terms, either as IRIs or as term
 objects.}
 
-\item{as}{the category or categories of the input terms (see \code{\link[=term_category]{term_category()}}).
-Supported categories are "entity", "quality", and "phenotype". The value
-must either be a single category (applying to all terms), or a vector of
-categories (of same length as \code{x}). If provided as "auto" (or NULL), the
-category of each term is automatically determined. The default is "auto".}
+\item{as}{the category or categories (a.k.a. type) of the input terms (see \code{\link[=term_category]{term_category()}}).
+Possible values are "anatomical_entity" (synonymous with "entity"), "quality", and
+"phenotype". Unambiguous abbreviations are acceptable. The value must either be a
+single category (applying to all terms), or a vector of categories (of same length as \code{x}).
+The default is "phenotype".
 
-\item{corpus}{the name of the corpus for which to determine frequencies.
-Supported values are "taxon_annotations", "taxa", "gene_annotations", and
-"genes". (At present, support for "gene_annotations" is pending support in
-the Phenoscape API.) The default is "taxon_annotations".}
+Note that at present, support by the KB API for "quality" remains pending and has thus been
+disabled as of v0.3.0. Also, mixing different categories of terms is not yet supported, and
+doing so will thus raise an error.}
 
-\item{decodeIRI}{boolean. If TRUE (the default), attempt to decode
-post-composed entity IRIs, and under certain circumstances rewrite the
-count query according to the results. At present, this is used only for
-entity IRIs detected as "part_of some X" post-compositions, and only for
-the "taxon_annotations" corpus. In those cases, the count query will be
-rewritten to first query for X, then for X including parts, and the resulting
-count is the result of the latter minus that of the former.
+\item{corpus}{the name of the corpus for determining how to count, currently one of the following:
+\itemize{
+\item "states" (counts character states),
+\item "taxon-variation" (counts taxa with variation profiles, and thus does not include terminal
+and other taxa that do not have child taxa with phenotype annotations),
+\item "annotated-taxa" (counts taxa with phenotype annotations, and thus primarily those terminal
+taxa that have annotations),
+\item "taxon-annotations" (counts phenotype annotations to character states and thus taxa),
+\item "gene-annotations" (counts phenotype annotations to genes or alleles), and
+\item "genes" (counts genes)
+}
 
-The decoding algorithm may be imprecise, so one may want to turn this off,
-the result of which will usually be a frequency of zero for those IRIs, due
-to limitations in the Phenoscape KB API.}
+Unambiguous abbreviations of corpus names are acceptable. The default is "taxon-variation".
+Note that at present "taxon-annotations" and "gene-annotations" are not yet
+supported by the KB API and will thus result in an error.
+
+Note that previously "taxa" was allowed as a corpus, but is no longer supported.
+The "taxon-variation" corpus is the equivalent of the deprecated "taxa" corpus.}
+
+\item{decodeIRI}{boolean. This parameter is deprecated (as of v0.3.x) and must be set
+to FALSE (the default). If TRUE is passed an error will be raised. In v0.2.x
+when TRUE this parameter would attempt to decode post-composed entity IRIs.
+Due to changes in the IRI returned by the Phenoscape KB v2.x API decoding
+post-composed entity IRIs is no longer possible. Prior to v0.3.x, the default
+value for this parameter was TRUE.}
 
 \item{...}{additional query parameters to be passed to the function querying
-for counts, see \code{\link[=pkb_args_to_query]{pkb_args_to_query()}}. Currently this is only used for
-corpus "taxon_annotations", and the only useful parameter is \code{includeRels},
-which can be used to include historical and serial homologues in the counts.
-It can also be used to always include parts for entity terms.}
+for counts, see \code{\link[=pkb_args_to_query]{pkb_args_to_query()}}. This is currently (as of v0.3.0) not
+used.}
 }
 \value{
 a vector of frequencies as floating point numbers (between zero
@@ -47,42 +63,44 @@ and 1.0), of the same length (and ordering) as the input list of terms.
 }
 \description{
 Determines the frequencies for the given input list of terms, based on
-the selected corpus.
+the selected corpus and the type (category) of the terms.
 }
 \details{
 Depending on the corpus selected, the frequencies are queried directly
 from pre-computed counts through the KB API, or are calculated based on
 matching row counts obtained from query results. Currently, the Phenoscape KB
-has precomputed counts for corpora "taxa" and "genes". Calculated counts for
-the "taxon_annotations" corpus are most reliable for phenotype terms and their
-subsumers. For entity terms, subsumers can include many generated
-post-composed terms (such as "part_of some X", where X is, for example, an
-anatomy term), and at least currently these aren't handled correctly by the
-Phenoscape KB, resulting in counts of zero for such terms. For some of these
-the implementation here will try to rewrite the query (see parameter
-\code{decodeIRI}), but this only works to a limited extent.
+has precomputed counts for corpora "annotated-taxa","taxon-variation", "states", and "genes".
 }
 \note{
 Term categories being accurate is vital for obtaining correct counts and
-thus frequencies. Auto-determining term categories yields reasonably accurate
-results, but with caveats. One, it can be time-consuming, and two, especially
-for entity terms and their subsumers it is often not 100% accurate. This
-function will try to correct for that by assuming that if not all terms
-are determined to be of the same category, but one category holds for more
-than 90% of the terms, that it must be the correct category for all terms.
-If the list of terms is legitimately of different categories, it is best to
-determine (and possibly correct) categories beforehand, and then pass the
-result as \code{as}. If all terms are of the same category and the category is
-known beforehand, it saves time and prevents potential errors to supply this
-category using \code{as}.
+thus frequencies. In earlier (<=0.2.x) releases, auto-determining term
+category was an option, but this is no longer supported, in part because it
+was potentially time consuming and often inaccurate, in particular for
+the many post-composed subsumer terms returned by \code{\link[=subsumer_matrix]{subsumer_matrix()}}. In the
+KB v2.0 API, auto-determining the category of a post-composed term is no
+longer supported. If the list of terms is legitimately of different categories,
+determine (and possibly correct) categories beforehand using \code{\link[=term_category]{term_category()}}.
+
+In earlier (<=0.2.x) releases one supported corpus was "taxon_annotations", albeit
+its implementation was very slow and potentially inaccurate because it relied on
+potentially multiple individudal KB API queries for each term, and this in turn
+relied on the ability to break down post-composed expressions into their component
+terms and expressions, which is (at least currently) no longer possible.
 }
 \examples{
-terms <- c("pectoral fin", "pelvic fin", "dorsal fin", "paired fin")
-IRIs <- sapply(terms, pk_get_iri, as = "anatomy")
-term_freqs(IRIs)
-
 phens <- get_phenotypes(entity = "basihyal bone")
-term_freqs(phens$id, as = "phenotype", corpus = "taxon_annotations")
-term_freqs(phens$id, as = "phenotype", corpus = "taxa")
-
+# see which phenotypes we have:
+phens$label
+# frequencies by counting taxa:
+freqs.t <- term_freqs(phens$id, as = "phenotype", corpus = "taxon-variation")
+freqs.t
+# we can convert this to absolute counts:
+freqs.t * corpus_size("taxon-variation")
+# frequencies by counting character states:
+freqs.s <- term_freqs(phens$id, as = "phenotype", corpus = "states")
+freqs.s
+# and as absolute counts:
+freqs.s * corpus_size("states")
+# we can compare the absolute counts by computing a ratio
+freqs.s * corpus_size("states") / (freqs.t * corpus_size("taxon-variation"))
 }

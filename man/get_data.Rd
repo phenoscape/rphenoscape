@@ -6,14 +6,23 @@
 \alias{pk_GET}
 \alias{get_csv_data}
 \alias{get_nexml_data}
+\alias{get_plain_text}
 \title{Get data from an API endpoint}
 \usage{
-get_json_data(url, query, verbose = FALSE, ensureNames = NULL,
-  forceGET = FALSE)
+get_json_data(
+  url,
+  query,
+  verbose = FALSE,
+  ensureNames = NULL,
+  forceGET = FALSE,
+  cleanNames = FALSE
+)
 
 get_csv_data(url, query, ..., verbose = FALSE, forceGET = FALSE)
 
 get_nexml_data(url, query, verbose = FALSE, forceGET = FALSE)
+
+get_plain_text(url, query, verbose = FALSE)
 }
 \arguments{
 \item{url}{character, the URL of the API endpoint to query}
@@ -31,8 +40,11 @@ access regardless of request length. The default is FALSE, meaning queries
 exceeding a certain size for transmission will automatically use HTTP POST
 for accessing the KB API.}
 
+\item{cleanNames}{for \code{get_json_data}, logical, whether to clean names in the returned data
+replacing  "@id" with "id"}
+
 \item{...}{for \code{get_csv_data}, additional parameters to be passed on to
-\link[utils:read.csv]{read.csv()}}
+\link[utils:read.table]{read.csv()}}
 }
 \value{
 For \code{get_json_data}, a data frame or list, depending on the result of
@@ -40,7 +52,7 @@ For \code{get_json_data}, a data frame or list, depending on the result of
 
 For \code{get_csv_data}, a data frame.
 
-For \code{get_nexml_data}, a \link[RNeXML:nexml]{nexml} object.
+For \code{get_nexml_data}, a \link[RNeXML:nexml-class]{nexml} object.
 }
 \description{
 Obtains and parses data from JSON, CSV, and NeXML-returning API endpoints,

@@ -38,7 +38,6 @@
 #'   Note that these extra attributes will be lost upon subsetting the returned
 #'   matrix.
 #' @examples
-#' \dontrun{
 #' tl <- c("http://purl.obolibrary.org/obo/UBERON_0000981",
 #'         "http://purl.obolibrary.org/obo/UBERON_0002103",
 #'         "http://purl.obolibrary.org/obo/UBERON_0000976",
@@ -52,7 +51,6 @@
 #' m # term labels as row and column names
 #' mat_terms <- attr(m, "term.iris")
 #' mat_terms # term IRIs in the same order as rows (and columns)
-#' }
 #' @importFrom stringi stri_match_first_regex
 #' @export
 pa_dep_matrix <- function(terms,
@@ -67,8 +65,8 @@ pa_dep_matrix <- function(terms,
   }
   term_iris <- 
     unname(sapply(terms,
-                  function(x) pk_get_iri(x, as = "anatomy",
-                                         exactOnly = TRUE, verbose = verbose)))
+                  function(x) get_term_iri(x, as = "anatomy",
+                                           exactOnly = TRUE, verbose = verbose)))
   if (any(is.na(term_iris))) {
     warnings("Removing unresolved terms")
     term_iris <- term_iris[! is.na(term_iris)]

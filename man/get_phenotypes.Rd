@@ -4,8 +4,15 @@
 \alias{get_phenotypes}
 \title{Retrieve phenotypes by entity, quality, taxon, and study}
 \usage{
-get_phenotypes(entity = NA, quality = NA, taxon = NA, study = NA,
-  includeRels = c("part of"), .withTaxon = FALSE, verbose = FALSE)
+get_phenotypes(
+  entity = NA,
+  quality = NA,
+  taxon = NA,
+  study = NA,
+  includeRels = c("part of"),
+  .withTaxon = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{entity}{character, the anatomical entity by which to filter, if any.}
@@ -56,7 +63,6 @@ PATO, and taxonomy ontologies, respectively. Warnings will be issued if only
 a partial match can be found. The study must be given as IRI.
 }
 \examples{
-\dontrun{
 phens1 <- get_phenotypes(entity = "pelvic fin")
 head(phens1)
 
@@ -92,5 +98,4 @@ nrow(unique(phens2a[,c("id", "label")])) == nrow(phens2) # but same #phenotypes
 # can compute and visualize similarity
 sm <- jaccard_similarity(terms = phens2$id, .labels = phens2$label, .colnames = "label")
 plot(hclust(as.dist(1-sm)))
-}
 }

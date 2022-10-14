@@ -28,5 +28,5 @@ IDs). A phenotype matches if it is linked to at least one of the studies.
 x <- get_phenotypes(entity = "basihyal bone")
 nrow(x)
 # which of these are in the same study or studies as the first one?
-phenotype_matches(x, pk_get_study_list(phenotype = x$id[1]))
+phenotype_matches(x, get_studies(phenotype = x$id[1]))
 }

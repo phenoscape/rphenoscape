@@ -37,7 +37,7 @@ test_that("obtaining subsumer matrix works", {
 
 test_that("edge-based similarity metrics work", {
   tl <- c("pelvic fin", "pectoral fin", "forelimb", "hindlimb", "dorsal fin", "caudal fin")
-  tt <- sapply(tl, pk_get_iri, as = "anatomy", exactOnly = TRUE)
+  tt <- sapply(tl, get_term_iri, as = "anatomy", exactOnly = TRUE)
 
   sim.jc <- jaccard_similarity(terms = tt, .colnames = "label", .labels = tl)
   testthat::expect_equal(row.names(sim.jc), colnames(sim.jc))
@@ -63,36 +63,18 @@ test_that("Resnik similarity", {
   phens <- get_phenotypes("basihyal bone", taxon = "Cyprinidae")
   subs.mat <- subsumer_matrix(phens$id, .colnames = "label", .labels = phens$label,
                               preserveOrder = TRUE)
-  s <- unique(c(sample(1:nrow(subs.mat), size = 10),
-                match(phens$id, rownames(subs.mat))))
-  subs1 <- rownames(subs.mat)[s]
-  subs.mat1 <- subs.mat[s,]
-  rownames(subs.mat1) <- subs1
-  sm.ic <- resnik_similarity(subs.mat1,
-                             wt_args = list(as = "phenotype", corpus = "taxon_annotations"))
-  testthat::expect_equal(dim(sm.ic), c(nrow(phens), nrow(phens)))
-  testthat::expect_true(all(sm.ic > 0))
-  testthat::expect_true(all(sm.ic <= -log10(1 / corpus_size("taxon_annotations"))))
-  termICs <- -log10(term_freqs(phens$id, as = "phenotype", corpus = "taxon_annotations"))
-  testthat::expect_equivalent(diag(sm.ic), termICs)
-
   sm.ic <- resnik_similarity(subs.mat,
-                             wt_args = list(as = "phenotype", corpus = "taxa"))
+                             wt_args = list(as = "phenotype", corpus = "taxon-variation"))
   testthat::expect_equal(dim(sm.ic), c(nrow(phens), nrow(phens)))
   testthat::expect_true(all(sm.ic > 0))
-  testthat::expect_true(all(sm.ic <= -log10(1 / corpus_size("taxa"))))
-  termICs <- -log10(term_freqs(phens$id, as = "phenotype", corpus = "taxa"))
+  testthat::expect_true(all(sm.ic <= -log10(1 / corpus_size("taxon-variation"))))
+  termICs <- -log10(term_freqs(phens$id, as = "phenotype", corpus = "taxon-variation"))
   testthat::expect_equivalent(diag(sm.ic), termICs)
-
-  tfreqs <- term_freqs(rownames(subs.mat), as = "phenotype", corpus = "taxa")
-  sm.ic2 <- resnik_similarity(subs.mat[! (is.na(tfreqs) | tfreqs == 0), ],
-                              wt = -log10(tfreqs[! (is.na(tfreqs) | tfreqs == 0)]))
-  testthat::expect_equal(sm.ic, sm.ic2)
 })
 
 test_that("profile similarity with Jaccard", {
   tl <- c("pelvic fin", "pectoral fin", "forelimb", "hindlimb", "dorsal fin", "caudal fin")
-  tt <- sapply(tl, pk_get_iri, as = "anatomy", exactOnly = TRUE)
+  tt <- sapply(tl, get_term_iri, as = "anatomy", exactOnly = TRUE)
 
   tt.f1 <- c(rep("paired", times = 4), rep("unpaired", times = 2))
   tt.f2 <- c("fins", "fins", "limbs", "limbs", "fins", "fins")
@@ -150,7 +132,7 @@ test_that("profile similarity with Resnik", {
     if (length(phen$eqs$related_entities) > 0) "relational" else "monadic"
   }))
 
-  freqs <- term_freqs(rownames(subs.mat), as = "phenotype", corpus = "taxa")
+  freqs <- term_freqs(rownames(subs.mat), as = "phenotype", corpus = "taxon-variation")
   toKeep <- ! (is.na(freqs) | freqs == 0)
   freqs <- freqs[toKeep]
   subs.mat <- subs.mat[toKeep,]
@@ -159,7 +141,7 @@ test_that("profile similarity with Resnik", {
   testthat::expect_equal(colnames(sm), levels(phens.f))
   testthat::expect_equal(rownames(sm), levels(phens.f))
   testthat::expect_gt(min(sm), 0)
-  testthat::expect_lte(max(sm), -log10(1 / corpus_size("taxa")))
+  testthat::expect_lte(max(sm), -log10(1 / corpus_size("taxon-variation")))
 
   # for Resnik as metric, group-wise is the same as pair-wise with maxIC
   sm1 <- profile_similarity(resnik_similarity, subs.mat, wt = -log10(freqs),

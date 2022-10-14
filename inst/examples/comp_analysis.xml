@@ -96,6 +96,7 @@
       <states id="ss33">
         <state id="s1" symbol="0"/>
         <state id="s2" symbol="1"/>
+        <state id="foo1" symbol="2" label="unclear"/>
       </states>
       <char id="cr35" states="ss33" label="reef-dwelling"/>
     </format>

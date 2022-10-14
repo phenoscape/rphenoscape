@@ -36,7 +36,7 @@ obtaining taxa requires an additional query per object.}
 \item{...}{additional parameters where applicable; ignored for printing}
 }
 \value{
-\code{as.phenotype} returns and object of type "phenotype", or a list of such objects
+\code{as.phenotype} returns an object of type "phenotype", or a list of such objects
 if the object to be coerced had multiple elements (if a vector) or rows (if a
 data.frame). A phenotype object has properties "id" (ID, i.e., IRI of the
 phenotype), "label" (label of the phenotype if one exists), "states" (a
@@ -115,10 +115,8 @@ objs[[3]]
 charstates(obj)
 chars(obj)
 
-\dontrun{
 # IDs that don't resolve still yield an object, but is not valid
-obj <- as.phenotype("http://foo")
+suppressWarnings(obj <- as.phenotype("http://foo"))
 is.phenotype(obj)
 is_valid_phenotype(obj)
-}
 }

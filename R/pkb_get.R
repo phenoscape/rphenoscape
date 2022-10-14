@@ -14,6 +14,8 @@
 #'   access regardless of request length. The default is FALSE, meaning queries
 #'   exceeding a certain size for transmission will automatically use HTTP POST
 #'   for accessing the KB API.
+#' @param cleanNames for `get_json_data`, logical, whether to clean names in the returned data 
+#'   replacing  "@id" with "id"
 #' @param ... for `get_csv_data`, additional parameters to be passed on to
 #'   [read.csv()][utils::read.csv()]
 #' @return
@@ -29,7 +31,8 @@
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr GET content
 get_json_data <- function(url, query,
-                          verbose = FALSE, ensureNames = NULL, forceGET = FALSE) {
+                          verbose = FALSE, ensureNames = NULL, forceGET = FALSE,
+                          cleanNames = FALSE) {
   if (forceGET || nchar(jsonlite::toJSON(query)) < 3072)
     res <- httr::GET(url, httr::accept_json(), httr::user_agent(ua()),
                      query = query)
@@ -78,9 +81,43 @@ get_json_data <- function(url, query,
         res$results <- resFixed
     }
   }
-  res
+  if (cleanNames) {
+    rclean_jsonld_names(res)
+  } else {
+    res
+  }
 }
-pk_GET <- get_json_data
+
+
+#' Clean JSON-LD names in a list/data.frame
+#'
+#' Recursively cleans names in a list/data.frame replacing `@id` names with `id`.
+#'
+#' @param x a data frame or list, typically created using [jsonlite::fromJSON()]
+#'
+#' @return the input data frame or list with changed names
+#' @export
+rclean_jsonld_names <- function(x) {
+  UseMethod("rclean_jsonld_names", x)
+}
+
+#' @export
+rclean_jsonld_names.default <- function(x) x
+
+#' @export
+rclean_jsonld_names.list <- function(x) {
+  x <- clean_jsonld_names(x)
+  lapply(x, rclean_jsonld_names)
+}
+
+#' @export
+rclean_jsonld_names.data.frame <- function(x) clean_jsonld_names(x)
+
+clean_jsonld_names <- function(x) {
+  # replace "@id" at the end of names with "id"
+  names(x) <- sub("@id$", "id", names(x))
+  x
+}
 
 #' @rdname get_data
 #' @importFrom httr GET content
@@ -117,6 +154,14 @@ get_nexml_data <- function(url, query, verbose = FALSE, forceGET = FALSE) {
   RNeXML::nexml_read(out)
 }
 
+#' @rdname get_data
+#' @importFrom httr GET content
+get_plain_text <- function(url, query, verbose = FALSE) {
+  res <- httr::GET(url, httr::accept("text/plain"), query=query)
+  stop_for_pk_status(res)
+  httr::content(res, as = "text")
+}
+
 pkb_api <- function(...) {
   path <- paste(..., sep = "/")
   if (! startsWith(path, "/")) path <- paste0("/", path)
@@ -130,7 +175,7 @@ pkb_api <- function(...) {
 #' query result. This function aids in preparing the query string for these
 #' endpoints. It is internal to the package.
 #' @param ... any combination of zero or more parameters from `entity`,
-#'   `quality`, `taxon`, and `study`. Any provided with value `NA` will be
+#'   `quality`, `taxon`, `study`, and `phenotype`. Any provided with value `NA` will be
 #'   ignored. Entity, quality, and taxon will be resolved to IRI if not
 #'   already provided as such.
 #' @param includeRels character, in which case it is the relationship(s) for
@@ -153,7 +198,8 @@ pkb_args_to_query <- function(...,
                   "entity" = "entity",
                   "quality" = "quality",
                   "taxon" = "in_taxon",
-                  "study" = "publication")
+                  "study" = "publication",
+                  "phenotype" = "phenotype")
   ont_lookups <- c("entity" = "anatomy",
                    "quality" = "PATO",
                    "taxon" = "taxon")
@@ -186,8 +232,8 @@ pkb_args_to_query <- function(...,
                            paramVal <- argList[[x]]
                            ont <- ont_lookups[x]
                            if (! is.na(ont))
-                             paramVal <- pk_get_iri(paramVal, as = ont,
-                                                    verbose = verbose)
+                             paramVal <- get_term_iri(paramVal, as = ont,
+                                                      verbose = verbose)
                            names(paramVal) <- param
                            paramVal
                          },
@@ -216,8 +262,9 @@ phenoscape_api <- local({
   .api <- NA;
   function() {
     if (is.na(.api)) {
-      .api <<- Sys.getenv("PHENOSCAPE_API", "https://kb.phenoscape.org/api")
+      .api <<- Sys.getenv("PHENOSCAPE_API", "https://kb.phenoscape.org/api/v2")
     }
     .api
   }
 })
+

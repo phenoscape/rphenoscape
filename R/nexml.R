@@ -60,17 +60,17 @@
 #'   nexml_drop_otu(filter = is_unused_otu)
 #'
 #' \dontrun{
-#' nex <- pk_get_ontotrace_xml(taxon = "Ictaluridae",
-#'                             entity = "fin", variable_only = FALSE)
+#' nex <- get_ontotrace_data(taxon = "Ictaluridae",
+#'                           entity = "fin", variable_only = FALSE)
 #' # ontotrace results store VTO IRIs in dwc:taxonID annotations:
 #' nexml_drop_otu(nex,
-#'                filter = function(x) !pk_is_descendant("Ictalurus", x),
+#'                filter = function(x) !is_descendant("Ictalurus", x),
 #'                at = "dwc:taxonID") %>%
 #'   nexml_drop_char(filter = is_unused_char)
 #' # anatomy IRIs are in obo:IAO_0000219 ("denotes") annotations:
 #' nexml_drop_char(nex,
 #'                filter = function(x)
-#'                  !pk_is_descendant("paired fin", x, includeRels = "part_of"),
+#'                  !is_descendant("paired fin", x, includeRels = "part_of"),
 #'                at = "obo:IAO_0000219") %>%
 #'   nexml_drop_otu(filter = is_unused_otu)
 #' }
@@ -425,4 +425,207 @@ add_provenance_record <- function(nexml, cmd = NA, creator = Sys.getenv("USER"))
                                    obo = "http://purl.obolibrary.org/obo/",
                                    rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"))
   nexml
+}
+
+
+#' Obtains a character-state matrix from a nexml object
+#'
+#' @param nex a [nexml][RNeXML::nexml-class] object
+#' @param otus_id logical, default TRUE, return a column with the otus block id.
+#' @param states_as_labels logical, default FALSE, when TRUE returns states as labels instead of symbols.
+#'   One can also use [state_symbols2labels()] to translate symbols to labels later.
+#' @param verbose logical, default FALSE, If TRUE, messages informing about steps is printed.
+#'
+#' @return data.frame: The character-state matrix. The first column (taxa) contains taxon ids.
+#' The second column (otu) contains otu ids. When the otus_id parameter is TRUE the third column (otus) will
+#' contain otu block ids. The remaining columns are named for each anatomical label in the dataset and 
+#' contain the associated state values.
+#'
+#' @seealso [get_char_matrix_meta()] to retrieve metadata for a nexml object.
+#' @examples
+#' # applied to a (synthetic) Ontotrace matrix:
+#' nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
+#' get_char_matrix(nex, otus_id = FALSE)
+#' 
+#' # applied to a data matrix for a study
+#' slist <- get_studies(taxon = "Ictalurus australis", entity = "fin spine")
+#' nex <- get_study_data(slist$id[1])[[1]]
+#' # for brevity show only 6 character data columns and first 5 rows
+#' get_char_matrix(nex, otus_id = FALSE)[1:5,1:8]
+#' # same, but states as labels (this can take a while)
+#' get_char_matrix(nex, otus_id = FALSE, states_as_labels = TRUE)
+#' 
+#' @importFrom RNeXML get_characters
+#' @export
+get_char_matrix <- function(nex, otus_id = TRUE, states_as_labels = FALSE, verbose = FALSE) {
+  
+  m <- get_characters(nex, rownames_as_col = TRUE,
+                      otu_id = TRUE, otus_id = otus_id)
+  if (states_as_labels) {
+    metacols = c(1,2)
+    if (otus_id) metacols <- c(metacols, 3)
+    state_symbols2labels(nex, charmat = m, metacolumns = metacols)
+  } else
+    m
+}
+
+#' Translates state symbols to labels in a character matrix
+#'
+#' Translates a character matrix using symbols for states to one using labels
+#' instead. The character matrix must have been obtained from a [nexml][RNeXML::nexml-class]
+#' object, usually using [get_char_matrix()], and the nexml object is required
+#' for the translation.
+#'
+#' If state labels are missing for some characters, a warning will be issued.
+#' If the nexml object has no state labels at all, a warning will be issued and
+#' no translation will be attempted. If a symbol cannot be matched to a state
+#' definition in the nexml object, or if the matching state definition does not
+#' give a label for the state, the symbol will not be translated.
+#'
+#' @note If the nexml object contains multiple character matrices, currently the character labels
+#' must be distinct between them.
+#' @param nex the [nexml][RNeXML::nexml-class] object from which the character matrix was obtained
+#' @param charmat the character matrix (as a data.frame, usually obtained using [get_char_matrix()])
+#' @param metacolumns the indexes of the columns in the matrix that contain metadata (such as taxa,
+#'   identifiers, etc), not character states. If not all of these columns are before all character
+#'   columns, then the returned matrix will move all of them to the front. The default is the first
+#'   two columns.
+#' @return
+#' A data.frame of the character matrix, with cells as state labels instead of symbols, and rows
+#' and columns in the same order as the input matrix (see parameter `metacolumns` for a possible exception).
+#' The data types of the columns may change as a result of translation, and even if no translation
+#' can take place (due to missing state labels) (although in the absence of translation a numeric
+#' type column should still have a numeric type).
+#' @examples
+#' # obtain a (synthetic) Ontotrace matrix:
+#' nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
+#' m <- get_char_matrix(nex, otus_id = FALSE)
+#' # by default it uses symbols
+#' m
+#' # translate symbols to labels without having to re-obtain the matrix
+#' state_symbols2labels(nex, m)
+#' # if we obtained the matrix with otus_id, then we have one more metadata column
+#' m <- get_char_matrix(nex, otus_id = TRUE)
+#' state_symbols2labels(nex, m, metacolumns = c(1,2,3))
+#'
+#' @importFrom dplyr inner_join  "%>%"
+#' @export
+state_symbols2labels <- function(nex, charmat, metacolumns = c(1,2)) {
+  # create lookup tables for character ID (by column name), state symbol, and polymorphic symbol
+  states <- 
+    (get_level(nex, "characters/format/states/state")[, c("symbol", "label", "state", "states", "characters")]
+     %>% dplyr::inner_join(get_level(nex, "characters/format/char"),
+                           by = c("states" = "states", "characters" = "characters"),
+                           suffix = c(".state", ".char")))
+  # if there are no labels, there's nothing to be done
+  if (all(is.na(states$label.state))) {
+    warning("No state labels present in nexml object, cannot translate symbols", call. = FALSE)
+    return(charmat)
+  }
+  if (any(is.na(states$label.state))) {
+    warning("One or more discrete state(s) lack(s) labels, cannot translate corresponding symbols", call. = FALSE)
+  }
+  polymorph <- data.frame()
+  polymorp_mems <- get_level(nex, "characters/format/states/polymorphic_state_set/member")
+  if (nrow(polymorp_mems) > 0)
+    polymorph <- dplyr::inner_join(polymorp_mems,
+                                   get_level(nex, "characters/format/states/polymorphic_state_set"),
+                                   by = c("polymorphic_state_set" = "polymorphic_state_set",
+                                          "states" = "states",
+                                          "characters" = "characters"))
+
+  # utility function for translating one column
+  # (where first row is the column name, i.e., character)
+  translate_symbol <- function(col, charname) {
+    # find character matching column (character) name / label
+    states_for_char <- states[states$label.char == charname, ]
+    if (nrow(states_for_char) == 0)
+      states_for_char <- states[states$char == charname, ]
+    # map symbols to labels using the match table
+    sapply(col, function(x) {
+      if(!is.na(x)) {
+        labl <- states_for_char$label.state[states_for_char$symbol == x]
+        if ((length(labl) == 0) && (nrow(polymorph) > 0)) {
+          # if we can't match the symbol, try it as a polymorphic state symbol
+          state_members <- polymorph[polymorph$symbol == x
+                                     & polymorph$characters %in% states_for_char$characters, ]
+          labl <- paste(states_for_char$label.state[states_for_char$state %in% state_members$state
+                                                    & states_for_char$states %in% state_members$states],
+                        collapse = " and ")
+        }
+        # if state symbol can't be matched or if label is missing, fall back to symbol
+        if (length(labl) == 0 || is.na(labl))
+          x
+        else
+          labl
+      } else
+        NA
+    })
+  }
+
+  # create a modified matrix where the metadata columns are removed
+  mat <- if (length(metacolumns) == 0)
+    charmat
+  else
+    charmat[, -metacolumns]
+
+  # translate each column using the utility function, convert to data.frame
+  ret <- as.data.frame(mapply(translate_symbol, mat, colnames(mat)), stringsAsFactors = FALSE)
+  # return after combining with the metadata columns
+  return(cbind(charmat[, metacolumns], ret))
+}
+
+#' Obtains taxa and character metadata from a nexml object
+#'
+#' @param nex a [nexml][RNeXML::nexml-class] object
+#'
+#' @return A list of two data frames. The first list item, `id_taxa`, contains
+#' a data frame with columns label, href (taxon IRI), otu (OTU ID) and otus (OTUs block ID) columns. The second list item,
+#' `id_entities`, contains a data frame with columns label, href (character ID), and char (character ID in NeXML document).
+#' For nexml objects obtained with [get_ontotrace_data()] the href column will contain the entity term IRI
+#' rather than the character ID, and the char column will contain the entity term ID (the term IRI without the
+#' HTTP path prefix).
+#'
+#' @examples
+#' # apply to (synthetic) Ontotrace data matrix
+#' nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
+#' get_char_matrix_meta(nex)
+#'
+#' # apply to data matrix from a study
+#' slist <- get_studies(taxon = "Ictalurus australis", entity = "fin spine")
+#' nex <- get_study_data(slist$id[1])[[1]]
+#' metadata <- get_char_matrix_meta(nex)
+#' # for brevity show only first 5 rows
+#' metadata$id_taxa[1:5,]
+#' metadata$id_entities[1:5,]
+#'
+#' @importFrom RNeXML get_taxa get_metadata get_level
+#' @importFrom dplyr filter inner_join select rename "%>%"
+#' @export
+get_char_matrix_meta <- function(nex) {
+  
+  # NULLing out : for the R CMD CHECK
+  property <- label <- href <- otu <- otus.x <- char <- NULL
+  
+  id_taxa <- get_taxa(nex)
+  id_taxa_meta <- get_metadata(nex, "otu")
+  
+  id_taxa <- (id_taxa_meta
+              %>% filter(property == meta_attr_taxon)
+              %>% inner_join(id_taxa, by = c("otu" = "otu"))
+              %>% select(label, href, otu, otus.x)
+              %>% rename(otus = otus.x))
+  
+  id_entities <- get_level(nex, "characters/format/char")
+  id_entities_meta <- get_metadata(nex, level="characters/format/char")
+  
+  id_entities <- (id_entities_meta
+                  %>% filter(property == meta_attr_entity)
+                  %>% inner_join(id_entities, by = c("char" = "char"))
+                  %>% select(label, href, char))
+  
+  m_re <- list(id_taxa = id_taxa,
+               id_entities = id_entities)
+  
+  return(m_re)
 }
