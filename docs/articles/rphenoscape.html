@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rphenoscape</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/rphenoscape.html">Get started</a>
 </li>
@@ -52,8 +48,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/phenoscape/rphenoscape/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/phenoscape/rphenoscape/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -71,62 +67,84 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>RPhenoscape Intro</h1>
-                        <h4 class="author">Hong Xu</h4>
+                        <h4 data-toc-skip class="author">Hong Xu</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/phenoscape/rphenoscape/blob/master/vignettes/rphenoscape.Rmd"><code>vignettes/rphenoscape.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/phenoscape/rphenoscape/blob/HEAD/vignettes/rphenoscape.Rmd" class="external-link"><code>vignettes/rphenoscape.Rmd</code></a></small>
       <div class="hidden name"><code>rphenoscape.Rmd</code></div>
 
     </div>
 
     
     
-<p>Most of the services provided with the <a href="http://kb.phenoscape.org/apidocs/">Phenoscape Knowledgebase web API</a> return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>The development version of RPhenoscape is available on <a href="http://www.github.com/phenoscape/rphenoscape">Github</a>. It has not yet been released to [CRAN]. To install RPhenoscape from Github, use the <code>install_github()</code> function in the <code>remotes</code> package (which can be installed from CRAN using <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code>). See the <a href="https://rphenoscape.phenoscape.org">package README</a> for details.</p>
-<p>Once installed, the package can be loaded (“attached”) as any other R package:</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/phenoscape/rphenoscape">rphenoscape</a></span><span class="op">)</span></code></pre></div>
+<p>Most of the services provided with the <a href="http://kb.phenoscape.org/apidocs/" class="external-link">Phenoscape Knowledgebase web
+API</a> return data in JSON format, plain text (usually tab-delimited),
+and NeXML. This package facilitates interfacing with the Phenoscape
+Knowledgebase for searching ontology terms, retrieving term info, and
+querying data matrices.</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>The development version of RPhenoscape is available on <a href="http://www.github.com/phenoscape/rphenoscape" class="external-link">Github</a>. It has
+not yet been released to [CRAN]. To install RPhenoscape from Github, use
+the <code>install_github()</code> function in the <code>remotes</code>
+package (which can be installed from CRAN using
+<code><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages()</a></code>). See the <a href="https://rphenoscape.phenoscape.org" class="external-link">package README</a> for
+details.</p>
+<p>Once installed, the package can be loaded (“attached”) as any other R
+package:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/phenoscape/rphenoscape" class="external-link">rphenoscape</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="character-matrix-via-ontotrace" class="section level2">
-<h2 class="hasAnchor">
-<a href="#character-matrix-via-ontotrace" class="anchor"></a>Character Matrix via OntoTrace</h2>
-<p>Use OntoTrace to obtain a character matrix for a taxonomic clade and anatomical region of interest.</p>
-<p>The <a href="http://kb.phenoscape.org/apidocs/#/OntoTrace/get_ontotrace">Phenoscape Knowledgebase web API</a> returns the evolutionary character matrix in NeXML format. The first step is to get the NeXML object using <code>pk_get_ontotrace_xml</code> method.</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">nex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pk_get_ontotrace_xml.html">pk_get_ontotrace_xml</a></span><span class="op">(</span>taxon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Ictalurus"</span>, <span class="st">"Ameiurus"</span><span class="op">)</span>, entity <span class="op">=</span> <span class="st">"fin spine"</span><span class="op">)</span></code></pre></div>
-<p>The result is an object of class <code>nexml</code> defined in the RNeXML package. The object mirrors the structure of a NeXML file, and can be inspected accordingly. Note that although generically NeXML files can contain multiple OTUs blocks and multiple characters blocks, NeXML files generated by the KB’s OntoTrace API contain only one. This means we can, for example, inspect the number of taxa and characters as follows:</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># number of taxa in the first (and only) OTUs block</span>
-<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">nex</span><span class="op">@</span><span class="va">otus</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">otu</span><span class="op">)</span></code></pre></div>
+<div class="section level2">
+<h2 id="character-matrix-via-ontotrace">Character Matrix via OntoTrace<a class="anchor" aria-label="anchor" href="#character-matrix-via-ontotrace"></a>
+</h2>
+<p>Use OntoTrace to obtain a character matrix of inferred and
+author-asserted presence/absence associations for a taxonomic clade and
+anatomical region of interest.</p>
+<p>The <a href="http://kb.phenoscape.org/apidocs/#/OntoTrace/get_ontotrace" class="external-link">Phenoscape
+Knowledgebase web API</a> returns the presence/absence character matrix
+in NeXML format. The first step is to get the NeXML object using
+<code>get_ontotrace_data</code> method.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_ontotrace_data.html">get_ontotrace_data</a></span><span class="op">(</span>taxon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Ictalurus"</span>, <span class="st">"Ameiurus"</span><span class="op">)</span>, entity <span class="op">=</span> <span class="st">"fin spine"</span><span class="op">)</span></span></code></pre></div>
+<p>The result is an object of class <code>nexml</code> defined in the
+RNeXML package. The object mirrors the structure of a NeXML file, and
+can be inspected accordingly. Note that although generically NeXML files
+can contain multiple OTUs blocks and multiple characters blocks, NeXML
+files generated by the KB’s OntoTrace API contain only one. This means
+we can, for example, inspect the number of taxa and characters as
+follows:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># number of taxa in the first (and only) OTUs block</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">nex</span><span class="op">@</span><span class="va">otus</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">otu</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] 15</code></pre>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># number of characters in the first (and only) characters block</span>
-<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">nex</span><span class="op">@</span><span class="va">characters</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">format</span><span class="op">@</span><span class="va">char</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># number of characters in the first (and only) characters block</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">nex</span><span class="op">@</span><span class="va">characters</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">format</span><span class="op">@</span><span class="va">char</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] 2</code></pre>
-<p>More details on the <a href="https://docs.ropensci.org/RNeXML/reference/nexml-class.html"><code>nexml</code> object</a> can be found in the <a href="https://docs.ropensci.org/RNeXML">RNeXML documentation</a>.</p>
+<p>More details on the <a href="https://docs.ropensci.org/RNeXML/reference/nexml-class.html" class="external-link"><code>nexml</code>
+object</a> can be found in the <a href="https://docs.ropensci.org/RNeXML" class="external-link">RNeXML documentation</a>.</p>
 <p>Then retrieve wanted information from the NeXML object.<br>
 Get character matrix:</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pk_ontotrace.html">pk_get_ontotrace</a></span><span class="op">(</span><span class="va">nex</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_char_matrix.html">get_char_matrix</a></span><span class="op">(</span><span class="va">nex</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>                     taxa         otu                                  otus
-1       Ameiurus brunneus VTO_0036273 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-2          Ameiurus catus VTO_0036275 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-3          Ameiurus melas VTO_0036272 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-4        Ameiurus natalis VTO_0036274 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-5      Ameiurus nebulosus VTO_0036278 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-6  Ameiurus platycephalus VTO_0036276 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-7   Ameiurus serracanthus VTO_0036277 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-8     Ictalurus australis VTO_0061495 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-9      Ictalurus balsanus VTO_0036221 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-10      Ictalurus dugesii VTO_0061497 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-11     Ictalurus furcatus VTO_0036223 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-12        Ictalurus lupus VTO_0036220 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-13    Ictalurus mexicanus VTO_0061498 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-14       Ictalurus pricei VTO_0036218 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-15    Ictalurus punctatus VTO_0036225 t7b654510-76d9-4b80-9e8c-00f72d1358b8
+1       Ameiurus brunneus VTO_0036273 tcb028860-571e-478a-9449-947a521946a1
+2          Ameiurus catus VTO_0036275 tcb028860-571e-478a-9449-947a521946a1
+3          Ameiurus melas VTO_0036272 tcb028860-571e-478a-9449-947a521946a1
+4        Ameiurus natalis VTO_0036274 tcb028860-571e-478a-9449-947a521946a1
+5      Ameiurus nebulosus VTO_0036278 tcb028860-571e-478a-9449-947a521946a1
+6  Ameiurus platycephalus VTO_0036276 tcb028860-571e-478a-9449-947a521946a1
+7   Ameiurus serracanthus VTO_0036277 tcb028860-571e-478a-9449-947a521946a1
+8     Ictalurus australis VTO_0061495 tcb028860-571e-478a-9449-947a521946a1
+9      Ictalurus balsanus VTO_0036221 tcb028860-571e-478a-9449-947a521946a1
+10      Ictalurus dugesii VTO_0061497 tcb028860-571e-478a-9449-947a521946a1
+11     Ictalurus furcatus VTO_0036223 tcb028860-571e-478a-9449-947a521946a1
+12        Ictalurus lupus VTO_0036220 tcb028860-571e-478a-9449-947a521946a1
+13    Ictalurus mexicanus VTO_0061498 tcb028860-571e-478a-9449-947a521946a1
+14       Ictalurus pricei VTO_0036218 tcb028860-571e-478a-9449-947a521946a1
+15    Ictalurus punctatus VTO_0036225 tcb028860-571e-478a-9449-947a521946a1
    anterior dentation of pectoral fin spine
 1                                         1
 2                                         1
@@ -146,78 +164,84 @@ Get character matrix:</p>
    anterior distal serration of pectoral fin spine
 1                                                1
 2                                                1
-3                                          1 and 0
+3                                          0 and 1
 4                                                1
 5                                                1
 6                                                1
 7                                                1
 8                                                1
-9                                          1 and 0
+9                                          0 and 1
 10                                               1
 11                                               1
 12                                               1
 13                                               1
 14                                               1
 15                                               1</code></pre>
-<p>The character matrix can be integrated with other data, such as meta data which include taxon identifiers, character identifiers, etc. Get meta data:</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pk_ontotrace.html">pk_get_ontotrace_meta</a></span><span class="op">(</span><span class="va">nex</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>The character matrix can be integrated with other data, such as meta
+data which include taxon identifiers, character identifiers, etc. Get
+meta data:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">meta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_char_matrix_meta.html">get_char_matrix_meta</a></span><span class="op">(</span><span class="va">nex</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>$id_taxa
                     label                                       href
-1     Ictalurus mexicanus http://purl.obolibrary.org/obo/VTO_0061498
-2         Ictalurus lupus http://purl.obolibrary.org/obo/VTO_0036220
-3          Ameiurus catus http://purl.obolibrary.org/obo/VTO_0036275
-4  Ameiurus platycephalus http://purl.obolibrary.org/obo/VTO_0036276
-5      Ameiurus nebulosus http://purl.obolibrary.org/obo/VTO_0036278
-6     Ictalurus australis http://purl.obolibrary.org/obo/VTO_0061495
-7        Ictalurus pricei http://purl.obolibrary.org/obo/VTO_0036218
-8     Ictalurus punctatus http://purl.obolibrary.org/obo/VTO_0036225
-9   Ameiurus serracanthus http://purl.obolibrary.org/obo/VTO_0036277
-10         Ameiurus melas http://purl.obolibrary.org/obo/VTO_0036272
-11       Ameiurus natalis http://purl.obolibrary.org/obo/VTO_0036274
-12     Ictalurus furcatus http://purl.obolibrary.org/obo/VTO_0036223
-13      Ameiurus brunneus http://purl.obolibrary.org/obo/VTO_0036273
-14     Ictalurus balsanus http://purl.obolibrary.org/obo/VTO_0036221
+1          Ameiurus catus http://purl.obolibrary.org/obo/VTO_0036275
+2        Ictalurus pricei http://purl.obolibrary.org/obo/VTO_0036218
+3     Ictalurus punctatus http://purl.obolibrary.org/obo/VTO_0036225
+4   Ameiurus serracanthus http://purl.obolibrary.org/obo/VTO_0036277
+5        Ameiurus natalis http://purl.obolibrary.org/obo/VTO_0036274
+6      Ictalurus furcatus http://purl.obolibrary.org/obo/VTO_0036223
+7       Ameiurus brunneus http://purl.obolibrary.org/obo/VTO_0036273
+8      Ictalurus balsanus http://purl.obolibrary.org/obo/VTO_0036221
+9     Ictalurus mexicanus http://purl.obolibrary.org/obo/VTO_0061498
+10        Ictalurus lupus http://purl.obolibrary.org/obo/VTO_0036220
+11 Ameiurus platycephalus http://purl.obolibrary.org/obo/VTO_0036276
+12     Ameiurus nebulosus http://purl.obolibrary.org/obo/VTO_0036278
+13    Ictalurus australis http://purl.obolibrary.org/obo/VTO_0061495
+14         Ameiurus melas http://purl.obolibrary.org/obo/VTO_0036272
 15      Ictalurus dugesii http://purl.obolibrary.org/obo/VTO_0061497
            otu                                  otus
-1  VTO_0061498 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-2  VTO_0036220 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-3  VTO_0036275 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-4  VTO_0036276 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-5  VTO_0036278 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-6  VTO_0061495 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-7  VTO_0036218 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-8  VTO_0036225 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-9  VTO_0036277 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-10 VTO_0036272 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-11 VTO_0036274 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-12 VTO_0036223 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-13 VTO_0036273 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-14 VTO_0036221 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-15 VTO_0061497 t7b654510-76d9-4b80-9e8c-00f72d1358b8
+1  VTO_0036275 tcb028860-571e-478a-9449-947a521946a1
+2  VTO_0036218 tcb028860-571e-478a-9449-947a521946a1
+3  VTO_0036225 tcb028860-571e-478a-9449-947a521946a1
+4  VTO_0036277 tcb028860-571e-478a-9449-947a521946a1
+5  VTO_0036274 tcb028860-571e-478a-9449-947a521946a1
+6  VTO_0036223 tcb028860-571e-478a-9449-947a521946a1
+7  VTO_0036273 tcb028860-571e-478a-9449-947a521946a1
+8  VTO_0036221 tcb028860-571e-478a-9449-947a521946a1
+9  VTO_0061498 tcb028860-571e-478a-9449-947a521946a1
+10 VTO_0036220 tcb028860-571e-478a-9449-947a521946a1
+11 VTO_0036276 tcb028860-571e-478a-9449-947a521946a1
+12 VTO_0036278 tcb028860-571e-478a-9449-947a521946a1
+13 VTO_0061495 tcb028860-571e-478a-9449-947a521946a1
+14 VTO_0036272 tcb028860-571e-478a-9449-947a521946a1
+15 VTO_0061497 tcb028860-571e-478a-9449-947a521946a1
 
 $id_entities
                                             label
-1 anterior distal serration of pectoral fin spine
-2        anterior dentation of pectoral fin spine
+1        anterior dentation of pectoral fin spine
+2 anterior distal serration of pectoral fin spine
                                            href           char
-1 http://purl.obolibrary.org/obo/UBERON_2002002 UBERON_2002002
-2 http://purl.obolibrary.org/obo/UBERON_2002001 UBERON_2002001</code></pre>
+1 http://purl.obolibrary.org/obo/UBERON_2002001 UBERON_2002001
+2 http://purl.obolibrary.org/obo/UBERON_2002002 UBERON_2002002</code></pre>
 </div>
-<div id="character-matrices-for-studies" class="section level2">
-<h2 class="hasAnchor">
-<a href="#character-matrices-for-studies" class="anchor"></a>Character Matrices for Studies</h2>
-<p>To obtain the character matrices for studies published for a taxonomic clade and anatomical region of interest.</p>
-<p>First step is to retrieve the list of studies given a taxonomic clade and anatomical structures (returned as <code>data.frame</code>).</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">slist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pk_get_study_list.html">pk_get_study_list</a></span><span class="op">(</span>taxon <span class="op">=</span> <span class="st">"Ictalurus australis"</span>, entity <span class="op">=</span> <span class="st">"fin"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="section level2">
+<h2 id="character-matrices-for-studies">Character Matrices for Studies<a class="anchor" aria-label="anchor" href="#character-matrices-for-studies"></a>
+</h2>
+<p>To obtain the character matrices for studies published for a
+taxonomic clade and anatomical region of interest.</p>
+<p>First step is to retrieve the list of studies given a taxonomic clade
+and anatomical structures (returned as <code>data.frame</code>).</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">slist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_studies.html">get_studies</a></span><span class="op">(</span>taxon <span class="op">=</span> <span class="st">"Ictalurus australis"</span>, entity <span class="op">=</span> <span class="st">"fin"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>                                                                                                                                 id
 1 https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&amp;btnG=&amp;hl=en&amp;as_sdt=0%2C42
             label
 1 Lundberg (1992)</code></pre>
-<p>Based off the study ids retained from previous step, get the evolutionary character matrix for each study id (in NeXML-format) using <code>pk_get_study_xml</code>.</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">nex_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pk_get_study_xml.html">pk_get_study_xml</a></span><span class="op">(</span><span class="va">slist</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>Based off the study ids retained from previous step, get the
+evolutionary character matrix for each study id (in NeXML-format) using
+<code>get_study_data</code>.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">nex_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_study_data.html">get_study_data</a></span><span class="op">(</span><span class="va">slist</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code>$`https://scholar.google.com/scholar?q=The+Phylogeny+of+Ictalurid+Catfishes%3A+A+Synthesis+of+Recent+Work&amp;btnG=&amp;hl=en&amp;as_sdt=0%2C42`
 A nexml object representing:
      0 phylogenetic tree block(s),  
@@ -226,7 +250,7 @@ A nexml object representing:
         and  0 polymorphic or uncertain state(s) defined 
        matrix 1 has 22 row(s) 
      22 taxonomic units in 1 block(s) 
-  Taxa:  Ictalurus pricei, Ictalurus lupus, Ameiurus natalis, Ameiurus nebulosus, Noturus insignis, Ictalurus australis ...
+  Taxa:  Noturus flavus, Ictalurus lupus, Noturus insignis, Ameiurus nebulosus, Ictalurus pricei, Pylodictis olivaris ...
   Metadata annotations: 
     3 at top level 
     22 in block 1 at otu level 
@@ -236,15 +260,15 @@ A nexml object representing:
 NeXML generated by RNeXML using schema version: 0.9 
 Size: 7.3 Mb </code></pre>
 <p>From the list of NeXML objects, retrieve the character matrices.</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">study_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pk_get_study.html">pk_get_study</a></span><span class="op">(</span><span class="va">nex_list</span><span class="op">)</span>
-<span class="va">study_matrix</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">study_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">nex_list</span>, <span class="kw">function</span><span class="op">(</span><span class="va">nex</span><span class="op">)</span> <span class="fu"><a href="../reference/get_char_matrix.html">get_char_matrix</a></span><span class="op">(</span><span class="va">nex</span>, otus_id <span class="op">=</span> <span class="cn">FALSE</span>, states_as_labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">study_matrix</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
 <pre><code>                taxa                                      otu
-1  Ameiurus brunneus otu_905bdcf6-5e27-4f66-9961-a34e81b03140
-2     Ameiurus catus otu_65e45284-e2fd-4867-a53e-36475b267e2f
-3     Ameiurus melas otu_ca02c929-3632-49d9-8564-df319184a5a5
-4   Ameiurus natalis otu_34dd3fce-8268-43b5-af73-df184afc8f4d
-5 Ameiurus nebulosus otu_9916d34b-9b21-4292-95b2-ac550e495c3a
+1  Ameiurus brunneus otu_331eacec-f62a-489b-aa97-01f88c469d4a
+2     Ameiurus catus otu_f0b4abb4-c4ca-4d99-b6d3-d069176eea82
+3     Ameiurus melas otu_5a3062f1-9803-4120-ae34-d2aa1ce02a75
+4   Ameiurus natalis otu_b92dfa0d-8c16-4228-815f-c418c6e92781
+5 Ameiurus nebulosus otu_31f42c8a-cd70-4bf4-994d-9bc483822ba7
   Anal-fin rays, species mean count Anterior dentations of pectoral spine
 1                           16.1-20                                 large
 2                         20.1-25.5                              moderate
@@ -257,80 +281,82 @@ Size: 7.3 Mb </code></pre>
 3             absent or scarcely developed
 4              3-6 moderately sharp serrae
 5               &lt;3 moderately sharp serrae</code></pre>
-<p>Each character matrix can be integrated with other data, such as meta data which include taxon identifiers, character identifiers, etc. Get meta data:</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">study_metas</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pk_get_study_meta.html">pk_get_study_meta</a></span><span class="op">(</span><span class="va">nex_list</span><span class="op">)</span>
-<span class="va">study_metas</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></code></pre></div>
+<p>Each character matrix can be integrated with other data, such as meta
+data which include taxon identifiers, character identifiers, etc. Get
+meta data:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">study_metas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">nex_list</span>, <span class="kw">function</span><span class="op">(</span><span class="va">nex</span><span class="op">)</span> <span class="fu"><a href="../reference/get_char_matrix_meta.html">get_char_matrix_meta</a></span><span class="op">(</span><span class="va">nex</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">study_metas</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code>$id_taxa
                      label                                       href
-1         Ictalurus pricei http://purl.obolibrary.org/obo/VTO_0036218
+1           Noturus flavus http://purl.obolibrary.org/obo/VTO_0036263
 2          Ictalurus lupus http://purl.obolibrary.org/obo/VTO_0036220
-3         Ameiurus natalis http://purl.obolibrary.org/obo/VTO_0036274
+3         Noturus insignis http://purl.obolibrary.org/obo/VTO_0036237
 4       Ameiurus nebulosus http://purl.obolibrary.org/obo/VTO_0036278
-5         Noturus insignis http://purl.obolibrary.org/obo/VTO_0036237
-6      Ictalurus australis http://purl.obolibrary.org/obo/VTO_0061495
-7      Ictalurus mexicanus http://purl.obolibrary.org/obo/VTO_0061498
+5         Ictalurus pricei http://purl.obolibrary.org/obo/VTO_0036218
+6      Pylodictis olivaris http://purl.obolibrary.org/obo/VTO_0036282
+7           Ameiurus melas http://purl.obolibrary.org/obo/VTO_0036272
 8   Prietella phreatophila http://purl.obolibrary.org/obo/VTO_0036265
-9           Ameiurus melas http://purl.obolibrary.org/obo/VTO_0036272
-10     Pylodictis olivaris http://purl.obolibrary.org/obo/VTO_0036282
-11      Ictalurus furcatus http://purl.obolibrary.org/obo/VTO_0036223
-12       Ictalurus dugesii http://purl.obolibrary.org/obo/VTO_0061497
-13        Satan eurystomus http://purl.obolibrary.org/obo/VTO_0061485
-14  Ameiurus platycephalus http://purl.obolibrary.org/obo/VTO_0036276
-15      Ictalurus balsanus http://purl.obolibrary.org/obo/VTO_0036221
-16   Ameiurus serracanthus http://purl.obolibrary.org/obo/VTO_0036277
-17          Noturus flavus http://purl.obolibrary.org/obo/VTO_0036263
-18       Noturus stigmosus http://purl.obolibrary.org/obo/VTO_0036261
-19     Ictalurus punctatus http://purl.obolibrary.org/obo/VTO_0036225
-20          Ameiurus catus http://purl.obolibrary.org/obo/VTO_0036275
-21       Ameiurus brunneus http://purl.obolibrary.org/obo/VTO_0036273
-22 Trogloglanis pattersoni http://purl.obolibrary.org/obo/VTO_0061501
+9         Ameiurus natalis http://purl.obolibrary.org/obo/VTO_0036274
+10     Ictalurus australis http://purl.obolibrary.org/obo/VTO_0061495
+11          Ameiurus catus http://purl.obolibrary.org/obo/VTO_0036275
+12       Ameiurus brunneus http://purl.obolibrary.org/obo/VTO_0036273
+13      Ictalurus furcatus http://purl.obolibrary.org/obo/VTO_0036223
+14       Noturus stigmosus http://purl.obolibrary.org/obo/VTO_0036261
+15   Ameiurus serracanthus http://purl.obolibrary.org/obo/VTO_0036277
+16     Ictalurus mexicanus http://purl.obolibrary.org/obo/VTO_0061498
+17        Satan eurystomus http://purl.obolibrary.org/obo/VTO_0061485
+18       Ictalurus dugesii http://purl.obolibrary.org/obo/VTO_0061497
+19 Trogloglanis pattersoni http://purl.obolibrary.org/obo/VTO_0061501
+20  Ameiurus platycephalus http://purl.obolibrary.org/obo/VTO_0036276
+21      Ictalurus balsanus http://purl.obolibrary.org/obo/VTO_0036221
+22     Ictalurus punctatus http://purl.obolibrary.org/obo/VTO_0036225
                                         otu
-1  otu_ad5e6e49-2a9e-43e8-af87-3016bd16cd35
-2  otu_e473e64d-055e-4364-8022-2158dc2a523e
-3  otu_34dd3fce-8268-43b5-af73-df184afc8f4d
-4  otu_9916d34b-9b21-4292-95b2-ac550e495c3a
-5  otu_8b30cd95-359c-4a54-a2fd-72002b9ff0d4
-6  otu_ce8050ad-493d-494b-ac73-508917b9207a
-7  otu_3aebb08b-5385-476e-a2fd-dc356c0606dd
-8  otu_c2e9a6a8-6582-4249-8836-7597ae6cc9e6
-9  otu_ca02c929-3632-49d9-8564-df319184a5a5
-10 otu_df074a9c-9fd4-433d-80a5-70211a534348
-11 otu_2cf53956-e59a-4c22-a625-ebd0f5e1b7e5
-12 otu_3a012267-3f5d-44e2-91b3-d5e0e10bbcbe
-13 otu_2dbc0322-7fe9-4d13-9c14-64818e24cc24
-14 otu_08b57892-301f-4c1b-91a5-1349949be25f
-15 otu_7bad6a92-00b9-41e4-a357-6c29fb74dfc6
-16 otu_bb9223d2-a342-464f-83e0-25fdbd76865c
-17 otu_b54b9416-f054-4879-8f64-62d446c87c85
-18 otu_e309e6a6-2c40-4271-9296-85b11a8dad2a
-19 otu_ee040977-66bc-4b65-b3ea-a036131c096c
-20 otu_65e45284-e2fd-4867-a53e-36475b267e2f
-21 otu_905bdcf6-5e27-4f66-9961-a34e81b03140
-22 otu_7b401d3e-4732-4c59-9e21-df0d9a5e406a
+1  otu_3d644586-19a2-49d5-ab3c-673f483c362f
+2  otu_7359fcc3-edb3-4ed9-a236-c1e846b8a5f6
+3  otu_dddcc44c-8c9a-40a7-a7b3-277ce9871593
+4  otu_31f42c8a-cd70-4bf4-994d-9bc483822ba7
+5  otu_da138745-cedf-4cbc-8305-0e602518548c
+6  otu_f2bb7423-f928-4655-a602-5c2143f1c877
+7  otu_5a3062f1-9803-4120-ae34-d2aa1ce02a75
+8  otu_40ea9c47-775f-4be1-80da-c4b7535ad5ce
+9  otu_b92dfa0d-8c16-4228-815f-c418c6e92781
+10 otu_01d184a9-d779-42dd-b6bc-1764b04d4cb1
+11 otu_f0b4abb4-c4ca-4d99-b6d3-d069176eea82
+12 otu_331eacec-f62a-489b-aa97-01f88c469d4a
+13 otu_8257dd55-8ed2-409f-b92a-cb9e609da7cb
+14 otu_b2b0135f-ded2-4f4b-8e4e-1d015ad342e2
+15 otu_6eff3beb-3ab5-4b2c-a104-4a5821fbb152
+16 otu_3dde3e49-d73d-48bb-945b-fc97f2040cc0
+17 otu_eeefeec8-36f7-4b66-9002-ca445fce493c
+18 otu_0b52014d-f9df-4cc3-9694-48c0234c195b
+19 otu_b42e7ffd-330e-4ea2-a099-fb59a0058857
+20 otu_aa535d43-f38d-435e-b7d5-3f413e7ad714
+21 otu_2b0b6c19-e51c-400f-b738-000d9d82a36f
+22 otu_0ac943f8-08df-4b21-ba82-cea20cff25cd
                                         otus
-1  otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-2  otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-3  otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-4  otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-5  otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-6  otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-7  otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-8  otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-9  otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-10 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-11 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-12 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-13 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-14 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-15 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-16 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-17 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-18 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-19 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-20 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-21 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
-22 otus_26bc085e-8dc3-42c0-854d-afbc0aaa09d4
+1  otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+2  otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+3  otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+4  otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+5  otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+6  otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+7  otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+8  otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+9  otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+10 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+11 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+12 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+13 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+14 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+15 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+16 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+17 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+18 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+19 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+20 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+21 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
+22 otus_623e5db5-d4a5-40b9-b087-e4047cea0e75
 
 $id_entities
                                                               label
@@ -449,148 +475,268 @@ $id_entities
 113                         Posterolateral process of basipterygium
 114                                                   Pelvic splint
 115                           Pelvic-fin rays, species modal counts
+                                                                    href
+1   http://purl.org/phenoscape/uuid/9a83ecb3-e4fc-4232-8144-c90dd8c9f19b
+2   http://purl.org/phenoscape/uuid/1c9fac46-3ea1-414a-a43b-18a8cbc94371
+3   http://purl.org/phenoscape/uuid/9484e795-2f20-459c-9fc0-75118931d621
+4   http://purl.org/phenoscape/uuid/89a17565-fb95-4d57-9db6-654724adb470
+5   http://purl.org/phenoscape/uuid/9480950e-79ae-4c8e-98f3-4e55663ecf8f
+6   http://purl.org/phenoscape/uuid/22489031-7e11-4ccf-98bf-45f2f7d3cce5
+7   http://purl.org/phenoscape/uuid/95b0a238-5fe4-43ce-add4-170435e42f97
+8   http://purl.org/phenoscape/uuid/227408ae-0263-4807-87ab-87a54e7c50eb
+9   http://purl.org/phenoscape/uuid/ac1a1cf3-e53f-4ff3-942c-6efd2f549475
+10  http://purl.org/phenoscape/uuid/803947a1-c916-4bc4-9caf-c778c13b22e7
+11  http://purl.org/phenoscape/uuid/3742927c-cc89-48e3-aa98-172dc002f370
+12  http://purl.org/phenoscape/uuid/d26f34da-4b90-489f-85e7-9d590fbbceae
+13  http://purl.org/phenoscape/uuid/8c76a977-8157-4554-ac76-b28a4a2ff755
+14  http://purl.org/phenoscape/uuid/3fe604f9-526d-4c37-aac8-5ebf1888a1b5
+15  http://purl.org/phenoscape/uuid/05ed62ee-3bad-4c76-93c1-6e0a70507d7e
+16  http://purl.org/phenoscape/uuid/76876861-2e77-4337-9a45-f44417d60595
+17  http://purl.org/phenoscape/uuid/83588dd3-18ac-4784-ad19-57f48ef5af8d
+18  http://purl.org/phenoscape/uuid/ae7b7c50-3783-4a2e-b933-45e880dc7a1a
+19  http://purl.org/phenoscape/uuid/0280336a-d748-4c84-8296-ebf9881c299a
+20  http://purl.org/phenoscape/uuid/0fd57ff4-627f-49ea-b421-7f93c2147a18
+21  http://purl.org/phenoscape/uuid/87a31a84-3413-4a85-a009-911f51015a98
+22  http://purl.org/phenoscape/uuid/39b4b20f-2bd3-4ace-9907-fa531478bb76
+23  http://purl.org/phenoscape/uuid/b65c0d5a-d63d-4283-bf51-78d1af8bfe70
+24  http://purl.org/phenoscape/uuid/b0d1b8af-17ec-4c4e-82c6-39a4eedc1938
+25  http://purl.org/phenoscape/uuid/a16aee1f-6463-4a7c-8770-7fdca8ec82e8
+26  http://purl.org/phenoscape/uuid/d8365a53-7640-4dca-bc2c-cafc56864474
+27  http://purl.org/phenoscape/uuid/da3aa64a-5613-473e-a561-f96c2ae85990
+28  http://purl.org/phenoscape/uuid/b2affab0-6157-419a-aaa0-f3bb5f696ad9
+29  http://purl.org/phenoscape/uuid/95113a49-6854-484b-8152-4a9e0265a0e9
+30  http://purl.org/phenoscape/uuid/e1f6a2fa-77d7-48d1-ae71-920b6c7088dc
+31  http://purl.org/phenoscape/uuid/3d2cb310-9a25-457e-a5c7-637cb00e6be3
+32  http://purl.org/phenoscape/uuid/b8b91632-9f40-4b3f-ae77-7923008ebdb7
+33  http://purl.org/phenoscape/uuid/f2bd54a8-a819-41eb-9b62-ceeeaa72ae21
+34  http://purl.org/phenoscape/uuid/ae8b895b-7b5e-475c-a3d7-91de3c2f32b7
+35  http://purl.org/phenoscape/uuid/788ac46f-a7fa-4bb9-99b8-bbbc605ef9f6
+36  http://purl.org/phenoscape/uuid/1a13d23b-88f6-4b66-8fce-2fbdcaae8ca0
+37  http://purl.org/phenoscape/uuid/39eff64e-06dc-45e3-92af-b10f3afca103
+38  http://purl.org/phenoscape/uuid/4648c2dd-206a-43fe-8174-cd681f9ce979
+39  http://purl.org/phenoscape/uuid/a68adcb1-4fe6-4092-9d77-cb823e08b247
+40  http://purl.org/phenoscape/uuid/febb5d18-e38b-4b86-ada0-91039afb411c
+41  http://purl.org/phenoscape/uuid/f9024429-23a1-4681-bcaf-a684756c5658
+42  http://purl.org/phenoscape/uuid/859c0edc-66f4-4bee-8342-e9f0999ed052
+43  http://purl.org/phenoscape/uuid/c175f441-7aa8-4387-90c7-7c62c97d1143
+44  http://purl.org/phenoscape/uuid/ec73df3f-d73e-48f4-b670-db4fdbff3c6b
+45  http://purl.org/phenoscape/uuid/5305450f-86e2-4d15-8e91-c239fb4763e5
+46  http://purl.org/phenoscape/uuid/28478ece-5f6d-4ed6-a93e-5b21475e9594
+47  http://purl.org/phenoscape/uuid/ae2ba00b-b732-4ec0-8cc5-13736e98ebbe
+48  http://purl.org/phenoscape/uuid/f581c9a1-851a-4628-9eff-bd32f4c096e5
+49  http://purl.org/phenoscape/uuid/99b89fad-dd49-49ec-9ad3-a21c3e150565
+50  http://purl.org/phenoscape/uuid/580367a2-4824-4745-823d-9ba5a91fb2b9
+51  http://purl.org/phenoscape/uuid/6af3a531-b5d1-40ff-87a6-aa9ade63e718
+52  http://purl.org/phenoscape/uuid/9c84117e-dd73-4293-b2bc-fd7acf109452
+53  http://purl.org/phenoscape/uuid/090617eb-c026-44b0-a75e-44407f2082c8
+54  http://purl.org/phenoscape/uuid/eb3d5418-19de-4dcb-93f3-8a5c4d83c172
+55  http://purl.org/phenoscape/uuid/54778867-6f82-4af6-b7c1-343d35bbbba2
+56  http://purl.org/phenoscape/uuid/48ac528c-dc6c-451a-8d65-7031ae2bd066
+57  http://purl.org/phenoscape/uuid/3963090a-c1e9-4ccc-9396-968b6f30a017
+58  http://purl.org/phenoscape/uuid/c9d79125-f471-484a-9511-2ec53f5072bf
+59  http://purl.org/phenoscape/uuid/e85e3e47-04cc-4d65-95f3-3fdb9323ce96
+60  http://purl.org/phenoscape/uuid/1e720a22-afac-4303-b2b7-7efa8970c141
+61  http://purl.org/phenoscape/uuid/31ff5ea8-d2eb-4c60-8ac8-6851ca5843d4
+62  http://purl.org/phenoscape/uuid/10d3e995-8a01-4751-bbfd-880b56833a27
+63  http://purl.org/phenoscape/uuid/80812d32-14c5-4027-9653-f3d3ded9a784
+64  http://purl.org/phenoscape/uuid/07eaad99-30e6-4595-b4ab-a6bc3bef5658
+65  http://purl.org/phenoscape/uuid/be43fee2-d0ab-4f39-985c-b49d1ea479aa
+66  http://purl.org/phenoscape/uuid/05fa3ccb-2ce4-4b4b-b48e-143d356d7c98
+67  http://purl.org/phenoscape/uuid/8dd70efe-4599-49db-9054-bbb1c0692cf8
+68  http://purl.org/phenoscape/uuid/9c863f1f-f590-4e5b-bd0a-484e0138a50e
+69  http://purl.org/phenoscape/uuid/30194856-8c2d-42b1-b517-42706ea0030e
+70  http://purl.org/phenoscape/uuid/ddd00db5-1cc7-4e0f-bee1-9537df0b265c
+71  http://purl.org/phenoscape/uuid/ca4896f6-aa02-4ab7-b362-642e989583fd
+72  http://purl.org/phenoscape/uuid/e2cfb2f5-d39f-4a4c-99fc-aefd3fda6813
+73  http://purl.org/phenoscape/uuid/48d0bc1b-69fc-4ce6-a879-2e9962c70626
+74  http://purl.org/phenoscape/uuid/6fd3f3e8-2351-4355-90bf-3c8d2dba499d
+75  http://purl.org/phenoscape/uuid/de8f4c54-c823-4148-978e-d0a80fb4386e
+76  http://purl.org/phenoscape/uuid/5b5c781b-67b7-4081-bcaf-cebf1595c547
+77  http://purl.org/phenoscape/uuid/5dc41c8b-4a39-4c79-8d3f-06a5e37157f1
+78  http://purl.org/phenoscape/uuid/001feaf3-b8b5-4f33-9358-b3969c76b7e2
+79  http://purl.org/phenoscape/uuid/230958be-876d-4b3c-af7f-e79fd4bf857a
+80  http://purl.org/phenoscape/uuid/a87a010c-8078-41a6-acbf-204dbce551e6
+81  http://purl.org/phenoscape/uuid/b1787273-01a1-4203-8661-695b8564eeb4
+82  http://purl.org/phenoscape/uuid/b8ab17e1-e3eb-4372-84e6-2b49c7f94da8
+83  http://purl.org/phenoscape/uuid/3fe42c23-8fbd-4371-9d86-c2ca24b990d8
+84  http://purl.org/phenoscape/uuid/1eaee821-8bb7-4194-b711-e598c546ab3e
+85  http://purl.org/phenoscape/uuid/266987fb-17cc-464f-9806-372dc7c8ce4b
+86  http://purl.org/phenoscape/uuid/6d8fceb6-d688-4d44-9607-39a71b94cd6d
+87  http://purl.org/phenoscape/uuid/eadf2a00-723e-425a-b226-78dab22a67de
+88  http://purl.org/phenoscape/uuid/64f47595-dcf1-4b9c-aadf-2822545c63d7
+89  http://purl.org/phenoscape/uuid/0a85e808-e9e7-4466-bbc4-72e24ec80ca2
+90  http://purl.org/phenoscape/uuid/065964c2-7eeb-45c5-9cef-35d717c83ba0
+91  http://purl.org/phenoscape/uuid/941de864-9689-4e4c-8b7b-fcb1be051247
+92  http://purl.org/phenoscape/uuid/3e8489ee-eae2-429b-9613-dc1f9086ff9a
+93  http://purl.org/phenoscape/uuid/22ae7b38-a1d3-4859-8950-95dc94eaaa47
+94  http://purl.org/phenoscape/uuid/9c935a10-8744-4a6e-af5f-6c9851158877
+95  http://purl.org/phenoscape/uuid/5bab9b4c-0da1-4d81-967c-164ef0840927
+96  http://purl.org/phenoscape/uuid/fce83015-1459-46b9-998e-2237d961f90b
+97  http://purl.org/phenoscape/uuid/6902ed68-3e01-4b3b-adbf-ac63aa9a2522
+98  http://purl.org/phenoscape/uuid/d3900fea-d545-4e2a-ac51-a8ce112ce36c
+99  http://purl.org/phenoscape/uuid/f39d8620-21bf-4b30-9d2b-c8c292253574
+100 http://purl.org/phenoscape/uuid/b2d67542-490e-42f9-8bfa-ce80bdef7af5
+101 http://purl.org/phenoscape/uuid/dccc11c2-a342-4c13-9677-28179d4522ea
+102 http://purl.org/phenoscape/uuid/77e434fe-d94b-449c-b2f5-a4c955f22ee4
+103 http://purl.org/phenoscape/uuid/f2d2eb7f-0956-4e8e-8be8-86c9a20cf24a
+104 http://purl.org/phenoscape/uuid/d74bfb1d-1fee-4fed-b4c7-4456994dea17
+105 http://purl.org/phenoscape/uuid/c4481873-f96f-4b3c-83d6-1e1afd225fe8
+106 http://purl.org/phenoscape/uuid/aa65952a-fcb3-4245-aafa-019ea400c018
+107 http://purl.org/phenoscape/uuid/632a52dd-a5f7-47f9-a0c7-b7706ebe0873
+108 http://purl.org/phenoscape/uuid/1ec151d2-61b5-44f7-a4c3-09e594d2c4fe
+109 http://purl.org/phenoscape/uuid/5c7de91c-e120-4477-a50b-95d02c82802d
+110 http://purl.org/phenoscape/uuid/011e0f69-4d2a-4870-a876-ebb45a6977fd
+111 http://purl.org/phenoscape/uuid/82c33135-8479-4512-b4ac-81a36b93d416
+112 http://purl.org/phenoscape/uuid/8e24a21e-58c5-481e-bfd5-3cc6781c7fd0
+113 http://purl.org/phenoscape/uuid/6d802c7d-cb3f-4149-95ad-fcfe97a22199
+114 http://purl.org/phenoscape/uuid/8f9ae87b-b70d-4e86-a46f-4cb312a2daa2
+115 http://purl.org/phenoscape/uuid/924233c8-1023-4c4a-842a-4b2a39b1e3a3
                                               char
-1   character_545ff179-7751-4f3b-b9e9-d3fa0155f209
-2   character_dd0306f5-231e-432f-8eed-a85dce575589
-3   character_1f41bdfe-d17c-4aa6-a138-68a073c9622e
-4   character_aa593948-b7c3-43a9-a54d-5e059f8a9a58
-5   character_991c67c0-7921-4946-949f-fa3409bbf0af
-6   character_604dc50b-128a-41d8-9d14-0ead2f590bd0
-7   character_d937bba3-a2d4-492f-ad2f-f4e4b98e6e8b
-8   character_674516ca-883c-4244-b41f-6a84c7e29273
-9   character_f39fb87b-e83a-4be1-a47d-bd6c67d63581
-10  character_69a07fa8-4909-46c7-a6e0-5ba99a467b01
-11  character_0d1395be-ac1f-43b5-9d2e-bb2b56030bba
-12  character_e7129b3d-b6d9-4988-82b2-63bbdef4d1de
-13  character_eda6b122-4877-47a9-a392-5b55735d0d0e
-14  character_c02831fd-8c80-40a9-9119-4eefdc422867
-15  character_20f9e536-8247-41ed-81c2-c7bef8640ba5
-16  character_0a359962-aa1d-4ba3-bba5-3fb28495f3a4
-17  character_4fece5ef-a658-4688-b661-4367c30f4847
-18  character_f938af0e-7b2a-4623-aaee-dcacdac2b2e2
-19  character_a83460d2-7189-4d5f-a9ad-1d8c36036a9c
-20  character_6f9c64ff-ff2d-426a-8b5a-a348400d50f6
-21  character_b2495975-5d49-461a-8e3a-a21103f8a467
-22  character_b4a1f760-049b-4bd9-b771-b800d7a21240
-23  character_bc98cc56-6e59-4586-9376-3611feddd0f9
-24  character_637bc1e7-6bce-4422-93cc-3d75fe8ff46e
-25  character_7cade8b6-c291-46a4-bca8-cba58d42b6e8
-26  character_59fbf7d5-dd39-41ba-85e5-f92522cd9cea
-27  character_14d3c0d6-d04f-4477-971e-7455401f333f
-28  character_46745de4-4b95-4248-b443-090caf010037
-29  character_5440aa6c-860f-41b6-bff5-b4edb23fe71c
-30  character_16ffa62a-03ba-4cc4-af7a-ead325664fbe
-31  character_7a5fb1f8-0613-405d-80f0-65171b7a5ae1
-32  character_0362e064-79eb-4726-9de1-538b80a5222a
-33  character_5ca0eaeb-3ec3-4f57-a990-f699f45aa62f
-34  character_96a05bb2-1e83-485b-a0ca-77622c3db9f7
-35  character_3830700a-fe13-448b-bc9a-7b8ae27bb6eb
-36  character_67d37538-46e3-4fc0-ac1e-67af25ee7260
-37  character_fea2501d-fed1-46dd-b416-e30b41431d69
-38  character_973f0454-2349-4789-8070-e47473174f0c
-39  character_80a8e783-01fe-4495-95cc-4e4f4251935c
-40  character_ca2f3d7f-4063-40f4-bd28-76e9e1dad20a
-41  character_16b27047-073d-4e38-b740-d1992d420892
-42  character_932df5cc-8fe5-41eb-9eff-9986cfdcbaf0
-43  character_fe9463a8-7f6f-4d24-a2cb-2e7abbf24b07
-44  character_ec22e364-288b-4538-8eb7-c9c287b2bb21
-45  character_40ac0e29-72ee-4075-9e66-290cd0c9fc31
-46  character_dc0839e7-d983-4078-82c6-ca1cfbef7d04
-47  character_9d172273-98e3-45e4-86c9-42515b8046d1
-48  character_50177de7-6de1-401e-bf3f-571080178ab3
-49  character_720d1c43-20e1-4c06-9282-9698af40f3f5
-50  character_70dd9ebd-d6b7-4a9f-90c6-481b147d881c
-51  character_4bf94765-0ae8-4ed8-b049-b4e30d30d3f9
-52  character_bea8a71a-f265-49bd-ba9e-5a7c4a186a46
-53  character_993fd249-d9ac-41af-a2cc-820090c0e483
-54  character_40b2b697-416b-420b-970c-09d8cf86a1cc
-55  character_9af79554-acaf-4017-8bbf-aa8761b9cebb
-56  character_7e4911a8-5c74-44dc-b0a0-b16c054995b5
-57  character_b53b88c1-e207-4019-b68c-d0eb46f94362
-58  character_db4c883a-df2c-4ee7-bc5e-deb2f708f3d6
-59  character_949cc346-a0e9-45c1-82be-ebd6ab202cf5
-60  character_d91504d4-bb2a-4a39-aad5-6eeb02e85d75
-61  character_bd2f1f00-ac36-43bf-8efb-f3c748b4556b
-62  character_db7516f3-c971-4091-bc5d-20fa5fbf9fd9
-63  character_7576102e-736f-4de1-8dca-50443191c43f
-64  character_b26f095c-a548-4601-9a94-73b3c912126c
-65  character_98a0e343-630c-4704-a9c2-92349f8e4aed
-66  character_30905456-231e-4b35-93a5-1a4d02a0d160
-67  character_4d867aed-98b7-4810-a614-13a25d7f1abf
-68  character_9d9e6971-31e0-46c9-a83e-1c8c6f20086f
-69  character_b9f720da-cb48-4752-9244-e7c322b3a8c4
-70  character_b737767a-0573-4c71-9470-e17372de3824
-71  character_1a416a84-5d2b-4f3c-8105-fff680214a60
-72  character_d9c73ccd-abf9-4060-9bc4-d0f5a4032770
-73  character_d981d210-362c-49ca-9dc9-553beb81e378
-74  character_4c33cff8-571a-409f-a49f-4efd100dc7a1
-75  character_296bcaf7-7a26-4796-b3fe-655113e0d44c
-76  character_f2995ba3-f004-4a36-a164-093850f5129c
-77  character_f4d7e694-ed60-4905-afea-c4852aef2f80
-78  character_242dc530-c906-4a71-adf4-fb7d40a19be9
-79  character_4e7cc26a-9dab-4247-8771-1193a9f3dd32
-80  character_a30610b4-ad6f-4645-8b42-b648ec365fad
-81  character_b3c10e5b-65ee-4944-a998-78c6402eede7
-82  character_72645c24-88ab-4263-99c2-93c7e6338ba4
-83  character_80518fa9-e96f-4c1a-88f7-41b0ab50abf5
-84  character_90cc567e-df14-40fc-9120-1470087f86e0
-85  character_45734467-df6b-48e5-82e5-659aeb72ecae
-86  character_5af443b6-55d1-4db0-89c4-2e9b504aa6ae
-87  character_2d3fff46-1e36-427b-8523-d7c2f99be7be
-88  character_b820c41b-d63a-4ba2-8a62-e7f148a94963
-89  character_8b9c06d5-bb3f-43dc-bc39-efdad59c1ef2
-90  character_b32935c4-622a-4fb7-b16b-369b4e326a7d
-91  character_79249498-1cf3-4d89-822a-43213ab6bb73
-92  character_3fba0cdb-6a82-4a82-a5ad-7a9796cd7a83
-93  character_dae83bd5-1ab2-4d9e-8fb6-0b9f2319f4bf
-94  character_f64fb043-0011-4123-b954-61ec30cdfab8
-95  character_234f4665-20ee-43e6-8938-1da2e5c5a9ab
-96  character_9d40a70e-3cdc-40f6-a2c9-9cfb5064adff
-97  character_f33db9f1-1ae0-4e0b-bb56-6bc1642c3772
-98  character_b50d5646-1ae8-42a9-88c4-11f0aacfe5af
-99  character_6b088f13-2efd-4757-a51a-5b4851273432
-100 character_4a6f5266-e4aa-4537-9a30-bb2f79225018
-101 character_92a1f1f9-a6e0-41b7-86fd-d3d426ea55c0
-102 character_a40cf987-fe21-4d33-8617-1daf43210649
-103 character_2df39fe7-99f0-4d8c-a7f6-7e01f5ba60e3
-104 character_611956a4-0533-4a82-bba5-1258f5b5bc25
-105 character_a32f71ec-0bb1-46c1-bd20-07237bf0e2bf
-106 character_91733b6c-3381-4ab5-8b0c-62bc85ae3f86
-107 character_538ea3ca-6401-4086-84c2-54fdf47288d4
-108 character_3d6c610f-25e6-4689-bb9e-5e59a017ac6f
-109 character_baede3f1-f154-46b1-be5a-0c35e90c5a3e
-110 character_bcda4da1-0738-4de9-be68-23db5d16e8a6
-111 character_00c5b8d1-7dc2-454c-84e2-5ae44070c3c9
-112 character_98af142a-4863-4384-bbe3-f77e0a8705b5
-113 character_b11abedc-1302-458d-b44b-147e55e58f26
-114 character_5f591638-fff4-409b-bfe3-74cb3396bece
-115 character_bc73b575-e7fb-4d8f-8f8d-fc6dc6be2f21</code></pre>
+1   character_9bd0cd96-aa92-4a07-b735-83be9046467e
+2   character_1b7cb4d8-2021-4fe6-a43a-a32d6be9879e
+3   character_edea1753-087e-4f7c-8d5d-472fbe2c8f38
+4   character_9f3e078d-05fd-465f-b137-227d6fb847d9
+5   character_31d06b95-7175-4c5a-8f92-3de324699507
+6   character_08f231b3-5277-4e39-8274-e459e22ed50b
+7   character_b0c132d0-cb3e-45ef-9923-e5adb5c81c33
+8   character_3cf98f1c-ddeb-4f17-9fc7-facb54f796d6
+9   character_8b984cd3-8abf-4def-a155-6871ea55e12f
+10  character_6a96634e-571c-491b-83b8-fbf00ef66b08
+11  character_9632d682-1047-4bde-bbc7-36fdbf85a54d
+12  character_4817cbc6-bb97-42ac-8f0e-f8984f248108
+13  character_06d80696-5895-4319-aaea-af16031ab4d0
+14  character_35a576be-d910-4ac2-9fbb-5edca040e666
+15  character_3f936539-a466-40a3-b9de-ed2823acfef0
+16  character_2e74855c-c9ab-456c-96ba-3174bbf38640
+17  character_67abdd5b-26fc-4268-8081-0faaa7de95d3
+18  character_af482a4b-8bf3-460c-8480-ed5f4371eabf
+19  character_c1b94d1e-0034-46c1-8df1-1f1873965fd2
+20  character_72acbafe-a795-4a1d-ab84-334823b3d64a
+21  character_5bfd1b60-95ec-4aae-8bae-a40cd9b9dd68
+22  character_06112e2b-ad31-46d5-ba62-2915b406f11f
+23  character_4b23b49f-b5e9-403c-88b0-fff8682defff
+24  character_8921f55d-f862-497d-9928-78afdba5bc76
+25  character_a64d90c6-8812-4d76-8e5e-e53af634d90e
+26  character_5de9ebe7-31b0-4b42-b3ff-75e740a0ad69
+27  character_44364d1d-feec-43ba-8bb8-a582bb8a0c95
+28  character_1471e393-2c3c-4f4f-bd9e-2a181a334bb0
+29  character_f84e9329-22c6-4153-a7cd-b6dadac78797
+30  character_cefb1207-d06d-4c51-8d31-746f8c45366d
+31  character_86d0ad2a-18e6-4492-881f-0dfb78cc79ed
+32  character_6a21e09c-b419-4440-9453-88f4af407634
+33  character_b0c1441d-be32-48fb-9caf-d1a16fa620c1
+34  character_f3eb6a6f-4e68-487f-81bc-5fb4b54fefa2
+35  character_37c90967-2d76-4e6f-a2a1-4b23b8077215
+36  character_59b8c211-5362-4688-93ed-a1934a0bc210
+37  character_6adbccb6-4334-41f7-9b5c-4d7339583615
+38  character_a13918b0-22ae-40f5-8944-e486ba5f758a
+39  character_db89288d-48ca-4a85-aa81-d1f879c98bca
+40  character_6b785c32-5594-4d44-8aab-e6ece6127576
+41  character_73ea684b-3ff4-46b9-8d26-4715edb95fe6
+42  character_bf19c26b-f90d-486a-965a-423643b3c19d
+43  character_85df5d1f-c4b3-4fae-a9df-caa543ebd4ba
+44  character_fa194b1e-c8ff-4c33-975b-26088f94913f
+45  character_fc790818-0b93-4c03-90cf-2a559f9a2a0c
+46  character_7ddf09bb-9cde-4f28-8cb5-a1c193902043
+47  character_557d620c-2258-4c83-b0c4-18c86ddb8996
+48  character_1e8a28f0-8cdf-48a1-996e-72c08ecd6a76
+49  character_d9a40e4c-dc80-4ff0-83e6-e87f164f6380
+50  character_fd886612-8267-4264-8376-f64198c2baf4
+51  character_e18c6a01-9d21-4414-bd25-2b6d018d9a44
+52  character_fd2d9e87-6d88-426c-9303-e45e4a44cb7f
+53  character_2b18f56e-b905-467b-a87d-9fae1afd8cb6
+54  character_0a57d181-8fce-4369-a269-8a99f0c0497d
+55  character_1bc46b91-d002-4b02-a7a8-5015e5c0c8b1
+56  character_cd813fd5-7c0e-4809-b792-bac70553f7aa
+57  character_3eb6cabd-53b2-4718-8f0b-c979ca254a9c
+58  character_85d49b45-8533-414c-ba4a-1d3b891e7dd5
+59  character_1a287cc8-4ac0-4186-9e0f-dc559774aa4c
+60  character_4a79b12e-a2df-4f05-8746-31f8099fb5a7
+61  character_8af59038-a60f-44cd-9622-f5c4859d2a66
+62  character_ef4f6ae5-9e9c-4573-9c34-2356df3ae1f3
+63  character_4d55179f-2e34-4b48-89bc-023651b71817
+64  character_01c88315-39f8-40d0-978a-99ce023e5275
+65  character_2b8d92c5-7577-4f67-a9b6-9b0589eba527
+66  character_6816f8a0-a363-4c0b-81be-1637206b50af
+67  character_da196539-ab59-4623-9603-00698c2c6a41
+68  character_816d02e4-1a66-42b2-aefc-c52a4f205290
+69  character_e4ef701b-0478-4228-a3d0-c43d8e7ddfa1
+70  character_4466d0a0-51b3-4170-a2e7-06d71fb3cf29
+71  character_4aba4f0f-e255-4889-b539-6555add1d224
+72  character_bc80fa8b-7698-4826-949c-c99a1bd9570f
+73  character_8047cf82-64b8-46d5-8916-73a69aafb89c
+74  character_32c0de56-6241-4e37-94cc-f9db71589792
+75  character_029da492-9a53-4d1a-ac08-9911d1a96547
+76  character_ddb9635b-c8a9-4c48-81fb-74ef99451625
+77  character_553b042f-3842-46b5-b82f-2bc3fb0bf5d5
+78  character_01c7ff7e-05c5-46c3-ba69-da13bf47706e
+79  character_5a7b69c8-6a9e-4862-9446-7b75c7976c86
+80  character_b96631f3-1aee-4311-b9f0-98091d986e59
+81  character_a7353b65-c3ad-46bc-be2c-588975f81dc2
+82  character_5bcbfe0a-c228-423c-8c12-0cb98bb25278
+83  character_c5edbee4-d875-4a6f-aa7f-fc510a448f0a
+84  character_ed9eb74a-d65e-46ec-bb4b-3e423fd8e06c
+85  character_dbb23ba8-6769-4700-9a36-aa586470a6d3
+86  character_fdd1cba3-aa32-4383-8356-1282d22ed6fb
+87  character_53ab4334-76e7-41d9-9398-6814e8f4116c
+88  character_e55e3b61-2e71-4e87-a042-e8d658541b9a
+89  character_ec28bc1f-f0f4-4784-ae05-bb0c97220f50
+90  character_1c9ed314-0818-4cb9-96d6-1ea7d518ddb4
+91  character_d32c94f0-d162-47b2-bb8c-4a67f2ccae05
+92  character_183dd8fc-df38-4b38-80d8-174671e58d5e
+93  character_cad610c6-0793-40eb-9cef-3a94f9e42393
+94  character_e006d5d6-bd1e-4124-8d7e-fae870ce39d2
+95  character_bad0e4a4-deee-475d-9bae-008320819dca
+96  character_1a4924ce-7f0f-46ef-8428-4dc2cdb11b33
+97  character_e4906d09-cf40-4861-9a5a-a905857a4937
+98  character_e574d5fa-57f4-451a-ad44-28685631c214
+99  character_1da4b0d1-4191-481f-92cb-b574f0dd8ea1
+100 character_c05c4fcf-80ea-4142-8d45-e59fb424c0e2
+101 character_ed98aabf-31fd-498d-b245-51bba8538904
+102 character_74d73298-187c-4b1f-b8f8-2aa67935dbae
+103 character_683b6dc4-87c5-4293-8a8f-01d18f4958b6
+104 character_c5b5d69e-cd02-4301-9a59-8e4bbf27e2e2
+105 character_71b71e02-e316-44b4-84f2-ba15c93a2a9f
+106 character_9e425775-0ff5-46a1-b30f-7cff0298fd7e
+107 character_eb2f5afb-8067-401c-aed8-6dfc4ab850cd
+108 character_a68421df-7da8-4bbe-8170-5be8db4989a6
+109 character_193f94df-1659-48e8-9eff-af3f8683d8b5
+110 character_5e770d08-4a93-47a0-8e23-3289f372b5be
+111 character_d8ab1c12-d853-4043-b115-38be317078e7
+112 character_46b7b884-5ada-4014-a06a-f1706a72cba0
+113 character_f6fa2f2b-10d3-4016-aa17-20a4c4b0de4c
+114 character_b2fb860b-6b2f-4185-8955-24d8d3e3c8d8
+115 character_d1b62841-b3f4-4f4f-b84b-d7cbd3db5bed</code></pre>
 </div>
-<div id="obtain-other-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#obtain-other-data" class="anchor"></a>Obtain Other Data</h2>
-<div id="subsetting-a-matrix" class="section level3">
-<h3 class="hasAnchor">
-<a href="#subsetting-a-matrix" class="anchor"></a>Subsetting a Matrix</h3>
-<p>A matrix obtained from Phenoscape can be subsetted (filtered) by taxonomic subgroup or anatomical part. For example, using <code>pk_is_descendant</code> and <code>pk_is_ancestor</code> methods, a matrix can be subsetted to a taxonomic subgroup that is the descendants/ancestors of a given taxon.</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m</span> <span class="co"># original character matrix</span></code></pre></div>
+<div class="section level2">
+<h2 id="obtain-other-data">Obtain Other Data<a class="anchor" aria-label="anchor" href="#obtain-other-data"></a>
+</h2>
+<div class="section level3">
+<h3 id="subsetting-a-matrix">Subsetting a Matrix<a class="anchor" aria-label="anchor" href="#subsetting-a-matrix"></a>
+</h3>
+<p>A matrix obtained from Phenoscape can be subsetted (filtered) by
+taxonomic subgroup or anatomical part. For example, using
+<code>is_descendant</code> and <code>is_ancestor</code> methods, a
+matrix can be subsetted to a taxonomic subgroup that is the
+descendants/ancestors of a given taxon.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span> <span class="co"># original character matrix</span></span></code></pre></div>
 <pre><code>                     taxa         otu                                  otus
-1       Ameiurus brunneus VTO_0036273 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-2          Ameiurus catus VTO_0036275 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-3          Ameiurus melas VTO_0036272 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-4        Ameiurus natalis VTO_0036274 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-5      Ameiurus nebulosus VTO_0036278 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-6  Ameiurus platycephalus VTO_0036276 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-7   Ameiurus serracanthus VTO_0036277 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-8     Ictalurus australis VTO_0061495 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-9      Ictalurus balsanus VTO_0036221 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-10      Ictalurus dugesii VTO_0061497 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-11     Ictalurus furcatus VTO_0036223 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-12        Ictalurus lupus VTO_0036220 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-13    Ictalurus mexicanus VTO_0061498 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-14       Ictalurus pricei VTO_0036218 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-15    Ictalurus punctatus VTO_0036225 t7b654510-76d9-4b80-9e8c-00f72d1358b8
+1       Ameiurus brunneus VTO_0036273 tcb028860-571e-478a-9449-947a521946a1
+2          Ameiurus catus VTO_0036275 tcb028860-571e-478a-9449-947a521946a1
+3          Ameiurus melas VTO_0036272 tcb028860-571e-478a-9449-947a521946a1
+4        Ameiurus natalis VTO_0036274 tcb028860-571e-478a-9449-947a521946a1
+5      Ameiurus nebulosus VTO_0036278 tcb028860-571e-478a-9449-947a521946a1
+6  Ameiurus platycephalus VTO_0036276 tcb028860-571e-478a-9449-947a521946a1
+7   Ameiurus serracanthus VTO_0036277 tcb028860-571e-478a-9449-947a521946a1
+8     Ictalurus australis VTO_0061495 tcb028860-571e-478a-9449-947a521946a1
+9      Ictalurus balsanus VTO_0036221 tcb028860-571e-478a-9449-947a521946a1
+10      Ictalurus dugesii VTO_0061497 tcb028860-571e-478a-9449-947a521946a1
+11     Ictalurus furcatus VTO_0036223 tcb028860-571e-478a-9449-947a521946a1
+12        Ictalurus lupus VTO_0036220 tcb028860-571e-478a-9449-947a521946a1
+13    Ictalurus mexicanus VTO_0061498 tcb028860-571e-478a-9449-947a521946a1
+14       Ictalurus pricei VTO_0036218 tcb028860-571e-478a-9449-947a521946a1
+15    Ictalurus punctatus VTO_0036225 tcb028860-571e-478a-9449-947a521946a1
    anterior dentation of pectoral fin spine
 1                                         1
 2                                         1
@@ -610,34 +756,34 @@ $id_entities
    anterior distal serration of pectoral fin spine
 1                                                1
 2                                                1
-3                                          1 and 0
+3                                          0 and 1
 4                                                1
 5                                                1
 6                                                1
 7                                                1
 8                                                1
-9                                          1 and 0
+9                                          0 and 1
 10                                               1
 11                                               1
 12                                               1
 13                                               1
 14                                               1
 15                                               1</code></pre>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">is_desc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pk_is_descendant.html">pk_is_descendant</a></span><span class="op">(</span><span class="st">'Ictalurus'</span>, <span class="va">m</span><span class="op">$</span><span class="va">taxa</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">is_desc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/is_relation.html">is_descendant</a></span><span class="op">(</span><span class="st">'Ictalurus'</span>, <span class="va">m</span><span class="op">$</span><span class="va">taxa</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code> [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
 [13]  TRUE  TRUE  TRUE</code></pre>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m</span><span class="op">[</span><span class="va">is_desc</span>, <span class="op">]</span> <span class="co">#subsetting to the descendants of Ictalurus</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span><span class="op">[</span><span class="va">is_desc</span>, <span class="op">]</span> <span class="co">#subsetting to the descendants of Ictalurus</span></span></code></pre></div>
 <pre><code>                  taxa         otu                                  otus
-8  Ictalurus australis VTO_0061495 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-9   Ictalurus balsanus VTO_0036221 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-10   Ictalurus dugesii VTO_0061497 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-11  Ictalurus furcatus VTO_0036223 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-12     Ictalurus lupus VTO_0036220 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-13 Ictalurus mexicanus VTO_0061498 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-14    Ictalurus pricei VTO_0036218 t7b654510-76d9-4b80-9e8c-00f72d1358b8
-15 Ictalurus punctatus VTO_0036225 t7b654510-76d9-4b80-9e8c-00f72d1358b8
+8  Ictalurus australis VTO_0061495 tcb028860-571e-478a-9449-947a521946a1
+9   Ictalurus balsanus VTO_0036221 tcb028860-571e-478a-9449-947a521946a1
+10   Ictalurus dugesii VTO_0061497 tcb028860-571e-478a-9449-947a521946a1
+11  Ictalurus furcatus VTO_0036223 tcb028860-571e-478a-9449-947a521946a1
+12     Ictalurus lupus VTO_0036220 tcb028860-571e-478a-9449-947a521946a1
+13 Ictalurus mexicanus VTO_0061498 tcb028860-571e-478a-9449-947a521946a1
+14    Ictalurus pricei VTO_0036218 tcb028860-571e-478a-9449-947a521946a1
+15 Ictalurus punctatus VTO_0036225 tcb028860-571e-478a-9449-947a521946a1
    anterior dentation of pectoral fin spine
 8                                         1
 9                                         0
@@ -649,7 +795,7 @@ $id_entities
 15                                        1
    anterior distal serration of pectoral fin spine
 8                                                1
-9                                          1 and 0
+9                                          0 and 1
 10                                               1
 11                                               1
 12                                               1
@@ -657,40 +803,40 @@ $id_entities
 14                                               1
 15                                               1</code></pre>
 </div>
-<div id="term-search" class="section level3">
-<h3 class="hasAnchor">
-<a href="#term-search" class="anchor"></a>Term Search</h3>
+<div class="section level3">
+<h3 id="term-search">Term Search<a class="anchor" aria-label="anchor" href="#term-search"></a>
+</h3>
 <p>Search for details for a given taxon:</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/pk_terms.html">pk_taxon_detail</a></span><span class="op">(</span><span class="st">"Coralliozetus"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/terms.html">taxon_info</a></span><span class="op">(</span><span class="st">"Coralliozetus"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>                                          id         label extinct
 1 http://purl.obolibrary.org/obo/VTO_0042955 Coralliozetus   FALSE
                                          rank.id rank.label common_name
 1 http://purl.obolibrary.org/obo/TAXRANK_0000005      genus        &lt;NA&gt;</code></pre>
 <p>Search for details for a given anatomical structure:</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/pk_terms.html">pk_anatomical_detail</a></span><span class="op">(</span><span class="st">"basihyal bone"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/terms.html">anatomy_term_info</a></span><span class="op">(</span><span class="st">"basihyal bone"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>          label                               isDefinedBy
 1 basihyal bone http://purl.obolibrary.org/obo/uberon.owl
                                                                                 definition
 1 Replacement bone that is median and is the anterior-most bone of the ventral hyoid arch.
                                              id
 1 http://purl.obolibrary.org/obo/UBERON_0011618</code></pre>
-<div id="miscellaneous-methods" class="section level4">
-<h4 class="hasAnchor">
-<a href="#miscellaneous-methods" class="anchor"></a>Miscellaneous methods:</h4>
+<div class="section level4">
+<h4 id="miscellaneous-methods">Miscellaneous methods:<a class="anchor" aria-label="anchor" href="#miscellaneous-methods"></a>
+</h4>
 <p>Resolve a given term to its IRI:</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/pk_get_iri.html">pk_get_iri</a></span><span class="op">(</span><span class="st">"Coralliozetus"</span>, <span class="st">"vto"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_term_iri.html">get_term_iri</a></span><span class="op">(</span><span class="st">"Coralliozetus"</span>, <span class="st">"vto"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "http://purl.obolibrary.org/obo/VTO_0042955"</code></pre>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/pk_get_iri.html">pk_get_iri</a></span><span class="op">(</span><span class="st">"basihyal bone"</span>, <span class="st">"uberon"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_term_iri.html">get_term_iri</a></span><span class="op">(</span><span class="st">"basihyal bone"</span>, <span class="st">"uberon"</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] "http://purl.obolibrary.org/obo/UBERON_0011618"</code></pre>
 <p>Test if a taxon is extinct:</p>
-<div class="sourceCode"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/pk_is_extinct.html">pk_is_extinct</a></span><span class="op">(</span><span class="st">"Fisherichthys"</span><span class="op">)</span></code></pre></div>
-<pre><code>Fisherichthys 
-         TRUE </code></pre>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/is_extinct.html">is_extinct</a></span><span class="op">(</span><span class="st">"Fisherichthys"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="va">Fisherichthys</span> </span>
+<span>         <span class="cn">TRUE</span> </span></code></pre>
 </div>
 </div>
 </div>
@@ -707,11 +853,13 @@ $id_entities
 
 
       <footer><div class="copyright">
-  <p>Developed by Hong Xu, Hilmar Lapp, John Bradley.</p>
+  <p></p>
+<p>Developed by Hong Xu, Hilmar Lapp, John Bradley.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>
@@ -719,6 +867,8 @@ $id_entities
 
   
 
+
+  
 
   </body>
 </html>

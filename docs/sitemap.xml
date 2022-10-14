@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://rphenoscape.phenoscape.org/404.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/articles/rphenoscape.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/authors.html</loc>
+  </url>
+  <url>
     <loc>http://rphenoscape.phenoscape.org/index.html</loc>
   </url>
   <url>
@@ -19,19 +34,55 @@
     <loc>http://rphenoscape.phenoscape.org/reference/get_KBinfo.html</loc>
   </url>
   <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/get_char_matrix.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/get_char_matrix_meta.html</loc>
+  </url>
+  <url>
     <loc>http://rphenoscape.phenoscape.org/reference/get_data.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/get_ontotrace_data.html</loc>
   </url>
   <url>
     <loc>http://rphenoscape.phenoscape.org/reference/get_phenotypes.html</loc>
   </url>
   <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/get_studies.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/get_study_data.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/get_term_iri.html</loc>
+  </url>
+  <url>
     <loc>http://rphenoscape.phenoscape.org/reference/get_term_label.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/is_extinct.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/is_relation.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/mutual_exclusivity_pairwise.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/mutually_exclusive.html</loc>
   </url>
   <url>
     <loc>http://rphenoscape.phenoscape.org/reference/nexml_drop.html</loc>
   </url>
   <url>
     <loc>http://rphenoscape.phenoscape.org/reference/obo_prefix.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/owl.html</loc>
   </url>
   <url>
     <loc>http://rphenoscape.phenoscape.org/reference/pa_dep_matrix.html</loc>
@@ -82,7 +133,19 @@
     <loc>http://rphenoscape.phenoscape.org/reference/profile_similarity.html</loc>
   </url>
   <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/rclean_jsonld_names.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/resolve_label_expression.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/rphenoscape-deprecated.html</loc>
+  </url>
+  <url>
     <loc>http://rphenoscape.phenoscape.org/reference/similarity.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/state_symbols2labels.html</loc>
   </url>
   <url>
     <loc>http://rphenoscape.phenoscape.org/reference/subsumer_matrix.html</loc>
@@ -94,12 +157,18 @@
     <loc>http://rphenoscape.phenoscape.org/reference/term_category.html</loc>
   </url>
   <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/term_classification.html</loc>
+  </url>
+  <url>
     <loc>http://rphenoscape.phenoscape.org/reference/term_freqs.html</loc>
   </url>
   <url>
     <loc>http://rphenoscape.phenoscape.org/reference/term_iri.html</loc>
   </url>
   <url>
-    <loc>http://rphenoscape.phenoscape.org/articles/rphenoscape.html</loc>
+    <loc>http://rphenoscape.phenoscape.org/reference/terminfo.html</loc>
+  </url>
+  <url>
+    <loc>http://rphenoscape.phenoscape.org/reference/terms.html</loc>
   </url>
 </urlset>
