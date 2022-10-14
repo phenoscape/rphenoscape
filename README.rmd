@@ -7,7 +7,7 @@ output:
 <!-- README.md is generated from README.rmd. Please edit that file -->
 # RPhenoscape: Semantically rich phenotypic traits from the Phenoscape Knowledgebase
 
-[![Build Status](https://github.com/phenoscape/rphenoscape/workflows/R-CMD-check/badge.svg)](https://github.com/phenoscape/rphenoscape/actions)
+[![Build Status](https://circleci.com/gh/phenoscape/rphenoscape.svg?style=svg)](https://circleci.com/gh/phenoscape/rphenoscape)
 
 - Author: Hong Xu, Hilmar Lapp, John Bradley
 - Maintainer: Hilmar Lapp
@@ -16,7 +16,7 @@ Most of the services provided with the [Phenoscape Knowledgebase API] return dat
 
 
 ## Installation
-The development version of RPhenoscape is available on [Github](http://github.com/phenoscape/rphenoscape). It has not yet been released to [CRAN]. To install RPhenoscape from Github, use the `install_github()` function in the `remotes` package (which can be installed from CRAN using `install.packages()`):
+The development version of RPhenoscape is available on [Github](https://github.com/phenoscape/rphenoscape). It has not yet been released to [CRAN]. To install RPhenoscape from Github, use the `install_github()` function in the `remotes` package (which can be installed from CRAN using `install.packages()`):
 
 
 ```{r compile-settings, include=FALSE}
@@ -75,6 +75,6 @@ By definition, most functions in this package connect to the [Phenoscape Knowled
 
 [Use cases]: https://github.com/phenoscape/rphenoscape/wiki/User-Stories
 [CRAN]: https://cran.r-project.org
-[Phenoscape Knowledgebase API]: http://kb.phenoscape.org/apidocs/
+[Phenoscape Knowledgebase API]: https://kb.phenoscape.org/api/v2/docs/
 [R Startup]: https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html
 [RStudio support on .Renviron]: https://support.rstudio.com/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf
