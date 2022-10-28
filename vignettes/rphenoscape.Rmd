@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Most of the services provided with the [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.
+Most of the services provided with the [Phenoscape Knowledgebase (KB) API](https://kb.phenoscape.org/api/v2/docs/) return data in JSON format, plain text (usually tab-delimited), and NeXML. This package facilitates interfacing with the Phenoscape Knowledgebase for searching ontology terms, retrieving term info, and querying data matrices.
 
 
 ```{r compile-settings, include=FALSE}
@@ -32,7 +32,7 @@ library(rphenoscape)
 ## Character Matrix via OntoTrace
 Use OntoTrace to obtain a character matrix of inferred and author-asserted presence/absence associations for a taxonomic clade and anatomical region of interest. 
 
-The [Phenoscape Knowledgebase web API](http://kb.phenoscape.org/apidocs/#/OntoTrace/get_ontotrace) returns the presence/absence character matrix in NeXML format. The first step is to get the NeXML object using ```get_ontotrace_data``` method.
+The [ontotrace endpoint in the Phenoscape KB API](https://kb.phenoscape.org/api/v2/docs/#/OntoTrace/get_ontotrace) returns the presence/absence character matrix in NeXML format. The first step is to get the NeXML object using ```get_ontotrace_data``` method.
 ```{r}
 nex <- get_ontotrace_data(taxon = c("Ictalurus", "Ameiurus"), entity = "fin spine")
 ```

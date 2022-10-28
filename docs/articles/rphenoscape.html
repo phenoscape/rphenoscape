@@ -77,11 +77,11 @@
 
     
     
-<p>Most of the services provided with the <a href="http://kb.phenoscape.org/apidocs/" class="external-link">Phenoscape Knowledgebase web
-API</a> return data in JSON format, plain text (usually tab-delimited),
-and NeXML. This package facilitates interfacing with the Phenoscape
-Knowledgebase for searching ontology terms, retrieving term info, and
-querying data matrices.</p>
+<p>Most of the services provided with the <a href="https://kb.phenoscape.org/api/v2/docs/" class="external-link">Phenoscape Knowledgebase
+(KB) API</a> return data in JSON format, plain text (usually
+tab-delimited), and NeXML. This package facilitates interfacing with the
+Phenoscape Knowledgebase for searching ontology terms, retrieving term
+info, and querying data matrices.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -102,10 +102,10 @@ package:</p>
 <p>Use OntoTrace to obtain a character matrix of inferred and
 author-asserted presence/absence associations for a taxonomic clade and
 anatomical region of interest.</p>
-<p>The <a href="http://kb.phenoscape.org/apidocs/#/OntoTrace/get_ontotrace" class="external-link">Phenoscape
-Knowledgebase web API</a> returns the presence/absence character matrix
-in NeXML format. The first step is to get the NeXML object using
-<code>get_ontotrace_data</code> method.</p>
+<p>The <a href="https://kb.phenoscape.org/api/v2/docs/#/OntoTrace/get_ontotrace" class="external-link">ontotrace
+endpoint in the Phenoscape KB API</a> returns the presence/absence
+character matrix in NeXML format. The first step is to get the NeXML
+object using <code>get_ontotrace_data</code> method.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_ontotrace_data.html">get_ontotrace_data</a></span><span class="op">(</span>taxon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Ictalurus"</span>, <span class="st">"Ameiurus"</span><span class="op">)</span>, entity <span class="op">=</span> <span class="st">"fin spine"</span><span class="op">)</span></span></code></pre></div>
 <p>The result is an object of class <code>nexml</code> defined in the

@@ -145,25 +145,25 @@ and thus ignores this possibility.</p>
 <span class="r-in"><span><span class="co"># resultant matrix</span></span></span>
 <span class="r-in"><span><span class="va">exclusivity</span><span class="op">$</span><span class="va">matrix</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1 2 3 4 5 6 7 8 9 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 2 2 2 2 2 2 2 2  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 1 2 2 2 2 2 2 2  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1 2 2 4 2 4 4 4 4  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 1 2 2 2 2 2 2 4  2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3  2 2 1 2 2 2 2 2 4  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  2 2 2 1 2 2 2 2 4  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  2 2 2 2 1 2 2 2 2  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  2 2 2 2 2 1 2 2 2  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  2 2 2 2 2 2 1 2 2  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  2 2 2 2 2 2 2 1 2  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  2 2 4 4 2 2 2 2 1  2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 2 2 2 2 2 2 2 2 2  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 2 2 1 2 4 2 2 4  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  2 2 2 2 1 2 2 2 4  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  4 2 2 4 2 1 2 4 4  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  4 2 2 2 2 2 1 2 2  2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  4 2 2 2 2 4 2 1 4  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  4 4 4 4 4 4 2 4 1  4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 2 2 2 4 2 4 2 4 4  1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># resultant dataframe</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">exclusivity</span><span class="op">$</span><span class="va">dataframe</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	45 obs. of  5 variables:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ id.1              : chr  "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ label.1           : chr  "premaxilla vertical" "premaxilla vertical" "premaxilla vertical" "premaxilla vertical" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ id.2              : chr  "http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ label.2           : chr  "anatomical projection and (part_of some dorsal hypohyal bone) and (part_of some ventral hypohyal bone) absent" "articular surface and (part_of some (anterior region and (part_of some epibranchial 3 bone))) undivided" "lateral ethmoid-ectopterygoid ligament present" "anatomical projection and (part_of some (dorsal region and (part_of some supracleithrum))) decreased size" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ mutual_exclusivity: Ord.factor w/ 5 levels "strong_compatibility"&lt;..: 2 2 2 2 2 2 2 2 2 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ label.1           : chr  "ventral margin and (part_of some maxilla) acute angle to" "ventral margin and (part_of some maxilla) acute angle to" "ventral margin and (part_of some maxilla) acute angle to" "ventral margin and (part_of some maxilla) acute angle to" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ id.2              : chr  "http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+"| __truncated__ ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ label.2           : chr  "anatomical projection and (part_of some (ventral region and (part_of some autopalatine))) absent" "infraorbital sensory canal branched" "ceratobranchial 5 tooth robust" "anatomical projection and (part_of some (dorsal region and (part_of some vertebral element 3))) absent" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ mutual_exclusivity: Ord.factor w/ 5 levels "strong_compatibility"&lt;..: 2 2 4 2 4 4 4 4 2 2 ...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># filter dataframe to contain only mutually exclusive phenotypes</span></span></span>
 <span class="r-in"><span><span class="va">exclusivity_df</span> <span class="op">&lt;-</span> <span class="va">exclusivity</span><span class="op">$</span><span class="va">dataframe</span></span></span>
@@ -181,19 +181,19 @@ and thus ignores this possibility.</p>
 <span class="r-in"><span><span class="co"># resultant matrix</span></span></span>
 <span class="r-in"><span><span class="va">exclusivity</span><span class="op">$</span><span class="va">matrix</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1 2 3 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 2 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 2 1 4 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 2 4 1 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 2 2 2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 4 2 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 4 1 2 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 2 2 1 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 4 4 2 1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># resultant dataframe</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">exclusivity</span><span class="op">$</span><span class="va">dataframe</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	6 obs. of  5 variables:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ id.1              : chr  "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ label.1           : chr  "dorsal fin proximal radial bone 1 posterior to neural spine 4" "dorsal fin proximal radial bone 1 posterior to neural spine 4" "dorsal fin proximal radial bone 1 posterior to neural spine 4" "sac and (part_of some anterior chamber swim bladder) present" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ id.2              : chr  "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%28%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+"| __truncated__ ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ label.2           : chr  "sac and (part_of some anterior chamber swim bladder) present" "sensory canal and (part_of some extrascapula) absent" "anatomical projection and (part_of some (ventro-medial region and (part_of some mesethmoid bone))) decreased size" "sensory canal and (part_of some extrascapula) absent" ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ mutual_exclusivity: Ord.factor w/ 5 levels "strong_compatibility"&lt;..: 2 2 2 4 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ label.1           : chr  "proximal region and (part_of some rib 1) size and (not (increased size))" "proximal region and (part_of some rib 1) size and (not (increased size))" "proximal region and (part_of some rib 1) size and (not (increased size))" "melanophore spot and (posterior to some supraoccipital crest) present" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ id.2              : chr  "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ "http://purl.org/phenoscape/expression?value=%3Chttp%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FBFO_0000051%3E+some+%0A"| __truncated__ ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ label.2           : chr  "melanophore spot and (posterior to some supraoccipital crest) present" "posterior region and (part_of some mesethmoid element) notched" "subdivision of head and (adjacent to some orbital region) width" "posterior region and (part_of some mesethmoid element) notched" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ mutual_exclusivity: Ord.factor w/ 5 levels "strong_compatibility"&lt;..: 4 2 4 2 4 2</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 3: determine mutual exclusivity for two phenotypes</span></span></span>
 <span class="r-in"><span><span class="co"># fetch phenotypes for an entity/taxon combination</span></span></span>
