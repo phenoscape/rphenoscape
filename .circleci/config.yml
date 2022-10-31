@@ -4,7 +4,7 @@ steps: &steps
   steps:
     - restore_cache:
         keys:
-          - cache-{{ .Environment.CIRCLE_JOB }}
+          - cache-{{ .Environment.CACHE_VERSION }}-{{ .Environment.CIRCLE_JOB }}
     - checkout
     - run:
         name: Install package dependencies
@@ -18,7 +18,7 @@ steps: &steps
     - store_artifacts:
         path: rphenoscape.Rcheck/
     - save_cache:
-        key: cache-{{ .Environment.CIRCLE_JOB }}
+        key: cache-{{ .Environment.CACHE_VERSION }}-{{ .Environment.CIRCLE_JOB }}
         paths:
           - "/usr/local/lib/R/site-library"
 
