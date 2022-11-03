@@ -8,7 +8,8 @@ mutual_exclusivity_pairwise(
   phenotype.a,
   phenotype.b,
   studies = NULL,
-  charstates = NULL
+  charstates = NULL,
+  quality_opposites = NULL
 )
 }
 \arguments{
@@ -29,6 +30,11 @@ passing a list of the two phenotypes as argument. This optional parameter exists
 the computation for the \code{\link[=mutually_exclusive]{mutually_exclusive()}} function since \code{mutually_exclusive()}
 repeatedly calls mutual_exclusivity_pairwise(). The default is NULL. \emph{Note that passing this argument
 but doing so incorrectly can result in wrong output.}}
+
+\item{quality_opposites}{dataframe, an optional dataframe containing columns
+"quality.a" and "quality.b" to denote pairs of phenotypic quality terms, in
+the form of their term IRIs, to be considered opposites of each others.
+See documentation under \code{\link[=mutually_exclusive]{mutually_exclusive()}} for more details.}
 }
 \value{
 A character (string), the mutual exclusivity type among the two phenotypes.

@@ -27,11 +27,16 @@ exclusivity_types <- list(strong_compatibility='strong_compatibility',
 #' the computation for the [mutually_exclusive()] function since `mutually_exclusive()`
 #' repeatedly calls mutual_exclusivity_pairwise(). The default is NULL. _Note that passing this argument
 #' but doing so incorrectly can result in wrong output._
+#' @param quality_opposites dataframe, an optional dataframe containing columns
+#' "quality.a" and "quality.b" to denote pairs of phenotypic quality terms, in
+#' the form of their term IRIs, to be considered opposites of each others.
+#' See documentation under [mutually_exclusive()] for more details.
 #'
 #' @return A character (string), the mutual exclusivity type among the two phenotypes.
 #' See [mutually_exclusive()] for documentation on the possible values, although note
 #' that this function returns these as a character vector, not levels of an ordered factor.
-mutual_exclusivity_pairwise <- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL){
+mutual_exclusivity_pairwise <- function(phenotype.a, phenotype.b, studies=NULL, charstates=NULL,
+                                        quality_opposites=NULL){
 
     # convert phenotypes to phenotype objects for faster computation
     if (!is.phenotype(phenotype.a)) {
@@ -40,6 +45,17 @@ mutual_exclusivity_pairwise <- function(phenotype.a, phenotype.b, studies=NULL, 
 
     if (!is.phenotype(phenotype.b)) {
         phenotype.b <- as.phenotype(phenotype.b, withTaxa=TRUE)
+    }
+
+    if (!is.null(quality_opposites)) {
+      # check validity of the quality_opposites dataframe
+      if (!all(c("quality.a","quality.b") %in% colnames(quality_opposites))) {
+        stop("Missing a required column for the quality_opposites parameter. The quality_opposites dataframe parameter requires 'quality.a' and 'quality.b' columns to be present.")
+      }
+
+      # trim white space from quality opposite IRIs
+      quality_opposites$quality.a <- trimws(quality_opposites$quality.a)
+      quality_opposites$quality.b <- trimws(quality_opposites$quality.b)
     }
 
     is_pair_mutually_exclusive <- exclusivity_types$inconclusive_evidence
@@ -121,8 +137,31 @@ mutual_exclusivity_pairwise <- function(phenotype.a, phenotype.b, studies=NULL, 
         }
     }
 
+    # if we have quality opposite data and phenotype entities match
+    if (!is.null(quality_opposites) && phenotype.a$eqs$entities == phenotype.b$eqs$entities) {
+      # only check phenotypes that both have a single quality
+      if (length(phenotype.a$eqs$qualities) == 1 && length(phenotype.b$eqs$qualities) == 1) {
+        # find the list of opposites for phenotype.a
+        phenotype.a.opposites <- find_quality_opposites(phenotype.a$eqs$qualities, quality_opposites)
+        if (any(phenotype.a.opposites == phenotype.b$eqs$qualities)) {
+          # strong exclusivity if phenotypes are opposite
+          is_pair_mutually_exclusive <- exclusivity_types$strong_exclusivity
+        }
+      }
+    }
+
     # return mutual exclusivity
     is_pair_mutually_exclusive
+}
+
+find_quality_opposites <- function(phenotype_quality, quality_opposites) {
+  # returns a vector of quality IRIs that are opposite of phenotype_qualities
+  union(
+    # for phenotype_quality == quality.a return matching quality.b opposites
+    quality_opposites[phenotype_quality == quality_opposites$quality.a]$quality.b,
+    # for phenotype_quality == quality.b return matching quality.a opposites
+    quality_opposites[phenotype_quality == quality_opposites$quality.b]$quality.a
+  )
 }
 
 #' Determine mutual exclusivity between two or more phenotypes
@@ -163,6 +202,15 @@ mutual_exclusivity_pairwise <- function(phenotype.a, phenotype.b, studies=NULL, 
 #'
 #' WARNING: setting progress_bar to TRUE clears the R console by executing the
 #' cat('\014') command before printing the progress.
+#'
+#' @param quality_opposites dataframe, an optional dataframe containing columns
+#' "quality.a" and "quality.b" to denote pairs of phenotypic quality terms, in
+#' the form of their term IRIs, to be considered opposites of each others. If
+#' provided, two phenotypes will be determined to have _strong exclusivity_ if
+#' their qualities match a pair of opposites. The test will only be applied to
+#' pairs of phenotypes in which the EQ expressions of both comprise of the same
+#' number of entities and only a single quality term. Columns included in the
+#' dataframe other than "quality.a" and "quality.b" will be ignored.
 #'
 #' @return A list consisting a matrix and a dataframe that contain mutual exclusivity
 #' results for the phenotypes.
@@ -238,8 +286,33 @@ mutual_exclusivity_pairwise <- function(phenotype.a, phenotype.b, studies=NULL, 
 #'
 #' # exclusivity value
 #' exclusivity$dataframe$mutual_exclusivity
+#'
+#' # Example 4: determine mutual exclusivity for two phenotypes including opposite quality data
+#'
+#' # create a list of phenotypes to compare (femur elongated vs femur decreased length)
+#' phens <- get_phenotypes(entity="femur", quality="elongated")
+#' femur_elongated_iri <- phens$id[phens$label == "femur elongated"]
+#' phens <- get_phenotypes(entity="femur", quality="decreased length")
+#' femur_decreased_length_iri <- phens$id[phens$label == "femur decreased length"]
+#' phenotypes_to_compare <- c(femur_elongated_iri, femur_decreased_length_iri)
+#'
+#' # compare the phenotypes without using opposite quality data
+#' exclusivity <- mutually_exclusive(phenotypes_to_compare)
+#' exclusivity$dataframe$mutual_exclusivity
+#'
+#' # create a dataframe containing the quality opposites
+#' elongated_iri <- find_term("elongated", matchTypes = "exact")$id
+#' decreased_length_iri <- find_term("decreased length", matchTypes = "exact")$id
+#' quality_opposites <- data.frame(
+#'   quality.a = elongated_iri,
+#'   quality.b = decreased_length_iri
+#' )
+#'
+#' # compare the phenotypes using opposite quality data
+#' exclusivity <- mutually_exclusive(phenotypes_to_compare, quality_opposites=quality_opposites)
+#' exclusivity$dataframe$mutual_exclusivity
 #' @export
-mutually_exclusive <- function(phenotypes, studies=NULL, progress_bar=FALSE){
+mutually_exclusive <- function(phenotypes, studies=NULL, progress_bar=FALSE, quality_opposites=NULL){
 
     # make sure that at least two phenotypes are passed
     if (is.null(phenotypes) || length(phenotypes) == 1) {
@@ -308,7 +381,8 @@ mutually_exclusive <- function(phenotypes, studies=NULL, progress_bar=FALSE){
                 mutual_exclusivity <- mutual_exclusivity_pairwise(phenotypes[[row]],
                                                               phenotypes[[column]],
                                                               studies=studies,
-                                                              charstates=character_states)
+                                                              charstates=character_states,
+                                                              quality_opposites=quality_opposites)
 
                 # store exclusivity result in matrix
                 mutual_exclusivity_integer <- match(mutual_exclusivity, exclusivity_types)

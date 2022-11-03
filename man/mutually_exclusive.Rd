@@ -4,7 +4,12 @@
 \alias{mutually_exclusive}
 \title{Determine mutual exclusivity between two or more phenotypes}
 \usage{
-mutually_exclusive(phenotypes, studies = NULL, progress_bar = FALSE)
+mutually_exclusive(
+  phenotypes,
+  studies = NULL,
+  progress_bar = FALSE,
+  quality_opposites = NULL
+)
 }
 \arguments{
 \item{phenotypes}{character or phenotype, a vector of phenotype IDs, or
@@ -18,6 +23,15 @@ particular set of studies. By default \emph{all} studies in the KB are considere
 
 WARNING: setting progress_bar to TRUE clears the R console by executing the
 cat('\014') command before printing the progress.}
+
+\item{quality_opposites}{dataframe, an optional dataframe containing columns
+"quality.a" and "quality.b" to denote pairs of phenotypic quality terms, in
+the form of their term IRIs, to be considered opposites of each others. If
+provided, two phenotypes will be determined to have \emph{strong exclusivity} if
+their qualities match a pair of opposites. The test will only be applied to
+pairs of phenotypes in which the EQ expressions of both comprise of the same
+number of entities and only a single quality term. Columns included in the
+dataframe other than "quality.a" and "quality.b" will be ignored.}
 }
 \value{
 A list consisting a matrix and a dataframe that contain mutual exclusivity
@@ -124,5 +138,30 @@ phenotypes_ids <- c(
 exclusivity <- mutually_exclusive(phenotypes_ids)
 
 # exclusivity value
+exclusivity$dataframe$mutual_exclusivity
+
+# Example 4: determine mutual exclusivity for two phenotypes including opposite quality data
+
+# create a list of phenotypes to compare (femur elongated vs femur decreased length)
+phens <- get_phenotypes(entity="femur", quality="elongated")
+femur_elongated_iri <- phens$id[phens$label == "femur elongated"]
+phens <- get_phenotypes(entity="femur", quality="decreased length")
+femur_decreased_length_iri <- phens$id[phens$label == "femur decreased length"]
+phenotypes_to_compare <- c(femur_elongated_iri, femur_decreased_length_iri)
+
+# compare the phenotypes without using opposite quality data
+exclusivity <- mutually_exclusive(phenotypes_to_compare)
+exclusivity$dataframe$mutual_exclusivity
+
+# create a dataframe containing the quality opposites
+elongated_iri <- find_term("elongated", matchTypes = "exact")$id
+decreased_length_iri <- find_term("decreased length", matchTypes = "exact")$id
+quality_opposites <- data.frame(
+  quality.a = elongated_iri,
+  quality.b = decreased_length_iri
+)
+
+# compare the phenotypes using opposite quality data
+exclusivity <- mutually_exclusive(phenotypes_to_compare, quality_opposites=quality_opposites)
 exclusivity$dataframe$mutual_exclusivity
 }

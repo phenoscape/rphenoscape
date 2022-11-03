@@ -61,3 +61,72 @@ test_that("test progress bar when determining mutual exclusive evidence", {
   # test that there is no output printed when progress_bar is TRUE
   expect_output(result_list <- mutually_exclusive(phenotype_ids, progress_bar = TRUE))
 })
+
+test_that("test determining mutual exclusive evidence with opposites", {
+  weak_exclusivity_factor <- factor("weak_exclusivity", levels = exclusivity_types, ordered = TRUE)
+  strong_exclusivity_factor <- factor("strong_exclusivity", levels = exclusivity_types, ordered = TRUE)
+  phens <- get_phenotypes(entity="femur", quality="elongated")
+  femur_elongated_iri <- phens$id[phens$label == "femur elongated"]
+  phens <- get_phenotypes(entity="femur", quality="decreased length")
+  femur_decreased_length_iri <- phens$id[phens$label == "femur decreased length"]
+  phenotypes_to_compare <- c(femur_elongated_iri, femur_decreased_length_iri)
+
+  me <- mutually_exclusive(phenotypes_to_compare, progress_bar = FALSE)$dataframe$mutual_exclusivity
+  expect_equal(me, weak_exclusivity_factor)
+
+  elongated_iri <- "http://purl.obolibrary.org/obo/PATO_0001154"
+  decreased_length_iri <- "http://purl.obolibrary.org/obo/PATO_0000574"
+
+  quality_opposites <- data.frame(
+    quality.a = elongated_iri,
+    quality.b = decreased_length_iri,
+    other.data = "stuff"
+  )
+  me <- mutually_exclusive(phenotypes_to_compare, progress_bar = FALSE,
+                           quality_opposites = quality_opposites)$dataframe$mutual_exclusivity
+  expect_equal(me, strong_exclusivity_factor)
+
+  # order of opposites does not matter and extra columns are allowed
+  quality_opposites <- data.frame(
+    quality.a = decreased_length_iri,
+    quality.a_label = "decreased length",
+    quality.b = elongated_iri,
+    quality.b_label = "elongated_iri"
+  )
+  me <- mutually_exclusive(phenotypes_to_compare, progress_bar = FALSE,
+                           quality_opposites = quality_opposites)$dataframe$mutual_exclusivity
+  expect_equal(me, strong_exclusivity_factor)
+})
+
+test_that("test determining mutual exclusive evidence with opposites trims IRIs", {
+  strong_exclusivity_factor <- factor("strong_exclusivity", levels = exclusivity_types, ordered = TRUE)
+  phens <- get_phenotypes(entity="femur", quality="elongated")
+  femur_elongated_iri <- phens$id[phens$label == "femur elongated"]
+  phens <- get_phenotypes(entity="femur", quality="decreased length")
+  femur_decreased_length_iri <- phens$id[phens$label == "femur decreased length"]
+  phenotypes_to_compare <- c(femur_elongated_iri, femur_decreased_length_iri)
+
+  elongated_iri <- " http://purl.obolibrary.org/obo/PATO_0001154 "
+  decreased_length_iri <- "\thttp://purl.obolibrary.org/obo/PATO_0000574   "
+
+  quality_opposites <- data.frame(
+    quality.a = elongated_iri,
+    quality.b = decreased_length_iri
+  )
+  me <- mutually_exclusive(phenotypes_to_compare, progress_bar = FALSE,
+                           quality_opposites = quality_opposites)$dataframe$mutual_exclusivity
+  expect_equal(me, strong_exclusivity_factor)
+})
+
+test_that("test determining mutual exclusive evidence with opposites checks dataframe columns", {
+  elongated_iri <- "http://purl.obolibrary.org/obo/PATO_0001154"
+  decreased_length_iri <- "http://purl.obolibrary.org/obo/PATO_0000574"
+  phenotype1 <- get_phenotypes("basihyal bone", quality = "bifurcated")
+  phenotype2 <- get_phenotypes("basihyal bone", quality = "cylindrical")
+  phenotypes <- c(phenotype1$id, phenotype2$id)
+  quality_opposites <- data.frame(
+    quality.a = elongated_iri,
+    quality.two = decreased_length_iri
+  )
+  expect_error(mutually_exclusive(phenotypes, quality_opposites = quality_opposites))
+})
