@@ -223,8 +223,10 @@ print.phenotype <- function(x, ...) {
   isValid <- is_valid_phenotype(x)
   cat("Phenotype '", if (is.na(x$label)) x$id else x$label, "'\n", sep = "")
   if (isValid) {
-    cat("Linked to states:\n")
-    print(x$states[, c("label", "character.label", "study.label")])
+    if (length(x$states) > 0) {
+      cat("Linked to states:\n")
+      print(x$states[, c("label", "character.label", "study.label")])
+    }
     l_e <- get_term_label(x$eqs$entities, preserveOrder = TRUE)
     l_q <- get_term_label(x$eqs$qualities, preserveOrder = TRUE)
     cat("\nEntities:\n    ",

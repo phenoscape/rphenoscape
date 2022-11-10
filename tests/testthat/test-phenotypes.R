@@ -203,4 +203,8 @@ test_that("pretty-printing phenotype objects", {
   testthat::expect_output(print(foo), "'http://foo'")
   testthat::expect_output(print(foo), "No states")
   testthat::expect_output(print(foo), "No EQs")
+
+  # does not bomb for phenotype without states
+  testthat::expect_output(
+    print(as.phenotype("http://purl.obolibrary.org/obo/MP_0030825")))
 })
