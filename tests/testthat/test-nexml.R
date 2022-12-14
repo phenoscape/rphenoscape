@@ -218,3 +218,12 @@ test_that("translating state symbols to labels works", {
   testthat::expect_warning(mc_t <- state_symbols2labels(nex1, mc), "cannot translate .*symbols")
   testthat::expect_equal(mc_t, mc)
 })
+
+test_that("get_char_matrix_meta returns expected results", {
+  nex <- nexml_read(system.file("examples", "ontotrace-result.xml", package = "rphenoscape"))
+  ontotrace_metas <- get_char_matrix_meta(nex)
+  testthat::expect_true(all(c("label", "href", "otu", "otus") %in% colnames(ontotrace_metas$id_taxa)))
+  testthat::expect_equal(nrow(ontotrace_metas$id_taxa), 9)
+  testthat::expect_true(all(c("label", "href", "char") %in% colnames(ontotrace_metas$id_entities)))
+  testthat::expect_equal(nrow(ontotrace_metas$id_entities), 3)
+})
