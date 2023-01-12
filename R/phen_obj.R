@@ -237,7 +237,7 @@ print.phenotype <- function(x, ...) {
         sep = "")
     if (length(x$eqs$related_entities) > 0) {
       l_r <- get_term_label(x$eqs$related_entities, preserveOrder = TRUE)
-      cat("Towards:\n    ",
+      cat("Related entities:\n    ",
           paste(l_r$label, " <", l_r$id, ">", collapse = "\n    ", sep = ""),
           "\n", sep = "")
     } else

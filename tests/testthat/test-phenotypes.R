@@ -197,6 +197,7 @@ test_that("pretty-printing phenotype objects", {
                           paste("<", obj$eqs$entities[1], ">", sep = ""))
   testthat::expect_output(print(obj),
                           paste("<", obj$eqs$qualities[1], ">", sep = ""))
+  testthat::expect_output(print(obj), "Related entities")
 
   # does not bomb for an invalid phenotype object
   testthat::expect_warning(foo <- as.phenotype("http://foo"))
