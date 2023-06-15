@@ -1,6 +1,7 @@
 context("Phenoscape KB metadata etc")
 
 test_that("custom user agent is set", {
+  skip_on_cran()
   reflect_api <- "http://httpbin.org/user-agent"
   ua_resp <- get_json_data(reflect_api, {})$`user-agent`
   testthat::expect_match(ua_resp, "r-curl/[0-9.]+")
