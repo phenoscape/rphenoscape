@@ -70,6 +70,16 @@ test_that("taxon details works", {
   expect_false(all(is.na(dd$common_name)))
 })
 
+test_that("taxon info can use includeRelatedSynonyms", {
+  expect_warning(d <- taxon_info("Chrosomus eos"))
+  expect_true(is.na(d))
+  expect_warning(d2 <- taxon_info("Chrosomus eos", includeRelatedSynonyms = FALSE))
+  expect_true(is.na(d2))
+  expect_warning(d3 <- taxon_info("Chrosomus eos", includeRelatedSynonyms = TRUE))
+  expect_equal(nrow(d3), 1)
+  expect_equal(d3$id, "http://purl.obolibrary.org/obo/VTO_0040309")
+})
+
 test_that("Test deprecated taxon details", {
   skip_on_cran()
   expect_warning(a <- pk_taxon_detail("Coralliozetus"))
@@ -125,6 +135,17 @@ test_that("Test retrieving IRI", {
   expect_warning(tiri <- get_term_iri("anatomical structure", as = NA, exactOnly = TRUE))
   expect_is(tiri, "character")
   expect_true(startsWith(tiri, "http://purl.obolibrary.org/obo/"))
+})
+
+test_that("Test retrieving IRI using includeRelatedSynonyms", {
+  expect_warning(IRI <- get_term_iri("Chrosomus eos", as="taxon"))
+  expect_equal(IRI, NA)
+
+  expect_warning(IRI <- get_term_iri("Chrosomus eos", as = "taxon", includeRelatedSynonyms = TRUE))
+  expect_equal(IRI, "http://purl.obolibrary.org/obo/VTO_0040309")
+
+  expect_warning(IRI <- get_term_iri("Chrosomus eos", as = "taxon", includeRelatedSynonyms = FALSE))
+  expect_equal(IRI, NA)
 })
 
 test_that("Test finding terms without a limit", {

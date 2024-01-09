@@ -10,6 +10,8 @@
 #'   For `taxon_info` this can also be a list (or vector) of terms (taxa).
 #' @param taxon character, the NCBI taxon name or corresponding NCBITaxon
 #'   ontology IRI for which to match the gene name.
+#' @param includeRelatedSynonyms logical: optional. If TRUE when looking up
+#'   the IRI for a term label, matches against related synonyms will be included.
 #' @param verbose logical, whether informative messages should be printed. The
 #'   default is `FALSE`.
 #' @return A data.frame, with at least columns "id" and "label".
@@ -26,14 +28,16 @@
 #'   or 'partial').
 #' @examples
 #' taxon_info("Coralliozetus")
+#' taxon_info("Chrosomus eos", includeRelatedSynonyms = TRUE)
 #' anatomy_term_info("basihyal bone")
 #' gene_info("socs5")
 #'
 #' @export
 #' @rdname terms
-taxon_info <- function(term, verbose=FALSE) {
+taxon_info <- function(term, includeRelatedSynonyms = FALSE, verbose=FALSE) {
   iriList <- sapply(term,
                     get_term_iri, as = "taxon",  verbose = verbose,
+                    includeRelatedSynonyms = includeRelatedSynonyms,
                     USE.NAMES = FALSE)
   if (length(iriList) == 1 && is.na(iriList)) return(invisible(NA))
 

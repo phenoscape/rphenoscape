@@ -117,6 +117,8 @@ find_term <- function(query,
 #' @param exactOnly logical. Whether to require an exact match. If TRUE, only
 #'   the first exact match is returned. Default is FALSE.
 #' @param nomatch the value to return if there is no match, by default NA.
+#' @param includeRelatedSynonyms logical: optional. If TRUE when looking up
+#'   the IRI, text will be matched against related synonyms as well.
 #' @param verbose logical: optional. If TRUE, prints messages prior to potentially
 #'   time-consuming operations. Default is FALSE.
 #' @return The IRI if a match is found.
@@ -124,6 +126,7 @@ find_term <- function(query,
 get_term_iri <- function(text, as,
                          exactOnly = FALSE,
                          nomatch = NA,
+                         includeRelatedSynonyms = FALSE,
                          verbose = FALSE) {
   # if the query string is already a HTTP URI, return it as the result
   if (startsWith(text, "http://") || startsWith(text, "https://")) return(text)
@@ -135,15 +138,22 @@ get_term_iri <- function(text, as,
     else if (startsWith(as, "anatom"))
       as <- anatomy_ontology_iris()
   }
+
+  matchBy <- c("rdfs:label", "oboInOwl:hasExactSynonym", "oboInOwl:NarrowSynonym",  "oboInOwl:hasBroadSynonym")
+  if (includeRelatedSynonyms) {
+    matchBy <- append(matchBy, "oboInOwl:hasRelatedSynonym")
+  }
   if (exactOnly)
     iri_df <- find_term(query = text,
                         definedBy = as,
                         nomatch = nomatch,
+                        matchBy = matchBy,
                         matchTypes = c("exact"), limit = 20, verbose = verbose)
   else
     iri_df <- find_term(query = text,
                         definedBy = as,
                         nomatch = nomatch,
+                        matchBy = matchBy,
                         limit = 20, verbose = verbose)
 
   if (identical(iri_df, nomatch)) {
