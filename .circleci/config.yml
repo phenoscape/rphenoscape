@@ -26,6 +26,10 @@ steps: &steps
           - "/usr/local/lib/R/site-library"
 
 jobs:
+  devel:
+    docker:
+      - image: rocker/verse:devel
+    <<: *steps
   r4:
     docker:
       - image: rocker/verse:4
@@ -40,4 +44,4 @@ workflows:
   all:
     jobs:
       - r4
-      - r3
+      - devel
