@@ -24,7 +24,7 @@ BugReports: https://github.com/phenoscape/rphenoscape/issues
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Depends: 
-    R (>= 3.4.0)
+    R (>= 4.0.0)
 Imports: 
     jsonlite,
     httr,
