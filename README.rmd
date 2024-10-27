@@ -7,7 +7,7 @@ output:
 <!-- README.md is generated from README.rmd. Please edit that file -->
 # RPhenoscape: Semantically rich phenotypic traits from the Phenoscape Knowledgebase
 
-[![Build Status](https://circleci.com/gh/phenoscape/rphenoscape.svg?style=svg)](https://circleci.com/gh/phenoscape/rphenoscape)
+[![Build Status](https://circleci.com/gh/phenoscape/rphenoscape.svg?style=svg)](https://app.circleci.com/pipelines/github/phenoscape/rphenoscape)
 
 - Author: Hong Xu, Hilmar Lapp, John Bradley
 - Maintainer: Hilmar Lapp
@@ -85,4 +85,4 @@ By definition, most functions in this package connect to the [Phenoscape Knowled
 [CRAN]: https://cran.r-project.org
 [Phenoscape Knowledgebase API]: https://kb.phenoscape.org/api/v2/docs/
 [R Startup]: https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html
-[RStudio support on .Renviron]: https://support.rstudio.com/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf
+[RStudio support on .Renviron]: https://support.posit.co/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf
