@@ -4,7 +4,14 @@
 \alias{get_term_iri}
 \title{Find the IRI of the term matching a text query}
 \usage{
-get_term_iri(text, as, exactOnly = FALSE, nomatch = NA, verbose = FALSE)
+get_term_iri(
+  text,
+  as,
+  exactOnly = FALSE,
+  nomatch = NA,
+  includeRelatedSynonyms = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{text}{character. The search text to be resolved.}
@@ -20,6 +27,9 @@ combined. There is no default.}
 the first exact match is returned. Default is FALSE.}
 
 \item{nomatch}{the value to return if there is no match, by default NA.}
+
+\item{includeRelatedSynonyms}{logical: optional. If TRUE when looking up
+the IRI, text will be matched against related synonyms as well.}
 
 \item{verbose}{logical: optional. If TRUE, prints messages prior to potentially
 time-consuming operations. Default is FALSE.}

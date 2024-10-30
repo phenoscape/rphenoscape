@@ -3,7 +3,7 @@
 # RPhenoscape: Semantically rich phenotypic traits from the Phenoscape Knowledgebase
 
 [![Build
-Status](https://circleci.com/gh/phenoscape/rphenoscape.svg?style=svg)](https://circleci.com/gh/phenoscape/rphenoscape)
+Status](https://circleci.com/gh/phenoscape/rphenoscape.svg?style=svg)](https://app.circleci.com/pipelines/github/phenoscape/rphenoscape)
 
 -   Author: Hong Xu, Hilmar Lapp, John Bradley
 -   Maintainer: Hilmar Lapp
@@ -96,8 +96,7 @@ Knowledgebase API](https://kb.phenoscape.org/api/v2/docs/). The base URL
 path to the API endpoints can changed from the default by setting the
 `PHENOSCAPE_API` environment variable. (See [R
 Startup](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html)
-and [RStudio support on
-.Renviron](https://support.rstudio.com/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf)
+and [.Renviron](https://bookdown.org/csgillespie/efficientR/set-up.html#renviron)
 on how to control environment variables at R session startup.)
 
 ------------------------------------------------------------------------

@@ -8,7 +8,7 @@
 \alias{gene_info}
 \title{Get term details (ID, label, definition)}
 \usage{
-taxon_info(term, verbose = FALSE)
+taxon_info(term, includeRelatedSynonyms = FALSE, verbose = FALSE)
 
 anatomy_term_info(term, verbose = FALSE)
 
@@ -22,6 +22,9 @@ up against taxonomies, anatomy ontologies, and PATO for \code{taxon_info},
 \code{anatomy_term_info}, and \code{phenotypic_quality_term_info}, respectively.
 
 For \code{taxon_info} this can also be a list (or vector) of terms (taxa).}
+
+\item{includeRelatedSynonyms}{logical: optional. If TRUE when looking up
+the IRI for a term label, matches against related synonyms will be included.}
 
 \item{verbose}{logical, whether informative messages should be printed. The
 default is \code{FALSE}.}
@@ -49,6 +52,7 @@ quality.
 }
 \examples{
 taxon_info("Coralliozetus")
+taxon_info("Chrosomus eos", includeRelatedSynonyms = TRUE)
 anatomy_term_info("basihyal bone")
 gene_info("socs5")
 
