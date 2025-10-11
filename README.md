@@ -102,4 +102,4 @@ on how to control environment variables at R session startup.)
 ------------------------------------------------------------------------
 
 [![Phenoscape
-Knowledgebase](https://wiki.phenoscape.org/wg/phenoscape/images/f/f6/Phenoscape_Logo.png)](http://kb.phenoscape.org)
+Knowledgebase](https://wiki.phenoscape.org/wiki/Phenoscape_Logo.png)](http://kb.phenoscape.org)
